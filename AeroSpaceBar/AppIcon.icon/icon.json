@@ -1,0 +1,47 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "extended-srgb:0.79608,0.18824,0.87843,1.00000",
+      "extended-srgb:1.00000,0.55294,0.15686,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "hidden" : true,
+          "image-name" : "AeroSpaceBarSmall.svg",
+          "name" : "AeroSpaceBarSmall"
+        },
+        {
+          "fill" : "automatic",
+          "image-name" : "AeroSpaceBar.svg",
+          "name" : "AeroSpaceBar",
+          "position" : {
+            "scale" : 0.44,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}

@@ -1,0 +1,244 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "kill",
+            "type": "shell",
+            "command": "pgrep -f AeroSpaceBar && pkill -f AeroSpaceBar || true",
+            "group": "build",
+            "detail": "Kill any running AeroSpaceBar instances",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "build",
+            "type": "sweetpad",
+            "action": "build",
+            "problemMatcher": [
+                "$sweetpad-watch",
+                "$sweetpad-xcodebuild-default",
+                "$sweetpad-xcbeautify-errors",
+                "$sweetpad-xcbeautify-warnings"
+            ],
+            "detail": "Build the app using sweetpad",
+            "isBackground": false
+        },
+        {
+            "label": "run (without build)",
+            "type": "shell",
+            "command": "${HOME}/Library/Developer/Xcode/DerivedData/AeroSpaceBar-fifbaernwsaqwhfwajnuubouitxw/Build/Products/Debug/AeroSpaceBar.app/Contents/MacOS/AeroSpaceBar",
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Run the built app",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "run",
+            "detail": "Build the app then run it",
+            "dependsOn": [
+                "kill",
+                "build",
+                "run (without build)"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "gradle: runDebug",
+            "type": "gradle",
+            "id": "runDebug",
+            "script": "runDebug",
+            "description": "Build Debug variant and run the application",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: runRelease",
+            "type": "gradle",
+            "id": "runRelease",
+            "script": "runRelease",
+            "description": "Build Release variant and run the application",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: lint",
+            "type": "gradle",
+            "id": "lint",
+            "script": "lint",
+            "description": "Run lint checks",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: lintFix",
+            "type": "gradle",
+            "id": "lintFix",
+            "script": "lintFix",
+            "description": "Run lint checks and fix issues",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: format",
+            "type": "gradle",
+            "id": "format",
+            "script": "format",
+            "description": "Format code",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: test",
+            "type": "gradle",
+            "id": "test",
+            "script": "test",
+            "description": "Run tests",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "gradle: all",
+            "type": "gradle",
+            "id": "all",
+            "script": "all",
+            "description": "Run all tasks",
+            "group": "build",
+            "project": "AeroSpaceBar",
+            "buildFile": "${workspaceFolder}/build.gradle.kts",
+            "rootProject": "AeroSpaceBar",
+            "projectFolder": "${workspaceFolder}",
+            "workspaceFolder": "${workspaceFolder}",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        }
+    ]
+  }

@@ -1,0 +1,18 @@
+{
+    "makefile.configureOnOpen": false,
+    "[swift]": {
+        "editor.defaultFormatter": "sweetpad.sweetpad",
+        "editor.formatOnSave": true
+    },
+    "sweetpad.format.path": "swiftformat",
+    "sweetpad.format.args": [
+        "--config",
+        ".swiftformat",
+        "${file}"
+    ],
+    "sweetpad.tuist.autogenerate": true,
+    "sweetpad.system.taskExecutor": "v2",
+    "sweetpad.system.logLevel": "info",
+    "sweetpad.build.configuration": "Debug",
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
