@@ -5,14 +5,6 @@ import Combine
 import XCTest
 
 final class SpacesGatewayTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testSpacesGatewayProtocol() {
         // TODO: Test SpacesGateway protocol conformance
     }

@@ -62,6 +62,7 @@ struct IntroForm<Content>: View where Content: View {
                             image
                                 .resizable()
                                 .frame(width: 64, height: 64)
+                                .tag("intro-form-icon")
 
                             Spacer()
                         }
@@ -71,21 +72,25 @@ struct IntroForm<Content>: View where Content: View {
                         Text(title)
                             .font(.title)
                             .bold()
+                            .tag("intro-form-title")
 
                         Text(subtitle)
                             .multilineTextAlignment(.center)
                             .font(.system(size: 12))
                             .foregroundStyle(.secondary)
+                            .tag("intro-form-subtitle")
 
                         Spacer()
                     }
                     .padding(8)
+                    .tag("intro-form-intro-section")
                 case .compact:
                     HStack(alignment: .top) {
                         let displayImage = image
                             .resizable()
                             .frame(width: 18, height: 18)
                             .padding(4)
+                            .tag("intro-form-compact-icon")
 
                         if #available(macOS 26.0, *) {
                             displayImage
@@ -100,13 +105,16 @@ struct IntroForm<Content>: View where Content: View {
                         VStack(alignment: .leading) {
                             Text(title)
                                 .font(.none)
+                                .tag("intro-form-compact-title")
 
                             Text(subtitle)
                                 .multilineTextAlignment(.leading)
                                 .font(.system(size: 11))
                                 .foregroundStyle(.secondary)
+                                .tag("intro-form-compact-subtitle")
                         }
                     }
+                    .tag("intro-form-compact-section")
                 }
             }
 
@@ -117,6 +125,7 @@ struct IntroForm<Content>: View where Content: View {
         .navigationTitle(
             style == .intro ? "" : navigationTitle
         )
+        .tag("intro-form")
     }
 }
 

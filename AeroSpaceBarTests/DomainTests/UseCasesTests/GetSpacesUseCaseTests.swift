@@ -5,23 +5,21 @@ import Combine
 import XCTest
 
 final class GetSpacesUseCaseTests: XCTestCase {
-    var useCase: GetSpacesUseCase!
-    fileprivate var mockSpacesGateway: MockSpacesGateway!
-    var cancellables: Set<AnyCancellable>!
+    var useCase: GetSpacesUseCase?
+    private var mockSpacesGateway: MockSpacesGateway?
+    var cancellables: Set<AnyCancellable>?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // mockSpacesGateway = MockSpacesGateway()
         // useCase = GetSpacesUseCase(spacesGateway: mockSpacesGateway)
         cancellables = Set<AnyCancellable>()
     }
 
-    override func tearDown() {
-        cancellables.removeAll()
+    func tearDown() {
+        cancellables?.removeAll()
         useCase = nil
         mockSpacesGateway = nil
-        super.tearDown()
     }
 
     func testGetSpacesUseCaseInitialization() {

@@ -20,51 +20,65 @@ struct AdvancedSettingsView: View {
         ) {
             Section {
                 Toggle(isOn: $viewModel.focusWindowOnClick) {
-                    Text("Focus window on click")
-                    Text("Immediately focus a window when clicking on it")
-                }.toggleStyle(.switch)
+                    Text(LocalizedStringResource("Focus window on click"))
+                    Text(LocalizedStringResource("Immediately focus a window when clicking on it"))
+                }
+                .toggleStyle(.switch)
+                .tag("advanced-focus-window-toggle")
             }
+            .tag("advanced-behavior-section")
 
-            Section("Diagnostics") {
+            Section(LocalizedStringResource("Diagnostics")) {
                 VStack(alignment: .leading) {
-                    Picker("Log Level", selection: $viewModel.logLevel) {
+                    Picker(LocalizedStringResource("Log Level"), selection: $viewModel.logLevel) {
                         ForEach(Logger.Level.allCases, id: \.self) { level in
                             Text(level.rawValue.capitalized).tag(level)
                         }
                     }
                     .pickerStyle(.menu)
+                    .tag("advanced-log-level-picker")
 
-                    Text("Set the verbosity of logging output")
+                    Text(LocalizedStringResource("Set the verbosity of logging output"))
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
+                        .tag("advanced-log-level-help")
                 }
 
                 Toggle(isOn: $viewModel.enablePerformanceMetrics) {
-                    Text("Enable performance metrics")
-                    Text("Track and log performance data for debugging")
+                    Text(LocalizedStringResource("Enable performance metrics"))
+                    Text(LocalizedStringResource("Track and log performance data for debugging"))
                 }
+                .toggleStyle(.switch)
+                .tag("advanced-performance-metrics-toggle")
 
                 Toggle(isOn: $viewModel.isOptimizedPerformanceEnabled) {
-                    Text("Enable optimized performance")
-                    Text("Utilize AeroSpace's event system for CPU consumption optimization")
+                    Text(LocalizedStringResource("Enable optimized performance"))
+                    Text(LocalizedStringResource("Utilize AeroSpace's event system for CPU consumption optimization"))
                 }
+                .toggleStyle(.switch)
+                .tag("advanced-optimized-performance-toggle")
             }
+            .tag("advanced-diagnostics-section")
 
-            Section("Reset") {
+            Section(LocalizedStringResource("Reset")) {
                 VStack(alignment: .leading) {
-                    Button("Reset All Settings") {
+                    Button(LocalizedStringResource("Reset All Settings")) {
                         Task {
                             await viewModel.resetAllSettings()
                         }
                     }
                     .foregroundColor(.red)
+                    .tag("advanced-reset-settings-button")
 
-                    Text("Reset all settings to their default values")
+                    Text(LocalizedStringResource("Reset all settings to their default values"))
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
+                        .tag("advanced-reset-help-text")
                 }
             }
+            .tag("advanced-reset-section")
         }
+        .tag("advanced-settings-view")
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0D92972E6806BC0097C410 /* RswiftLibrary */; };
 		1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4525C02E66D944003156C3 /* TOMLKit */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +35,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C1BB4B422D526B5C00A1F46E /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */ = {
+		1AD7453E2E677C2900FA1445 /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -57,7 +58,7 @@
 		C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C1BB4B422D526B5C00A1F46E /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */,
+				1AD7453E2E677C2900FA1445 /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */,
 			);
 			path = AeroSpaceBar;
 			sourceTree = "<group>";
@@ -84,6 +85,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */,
+				1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +172,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1A0D929A2E6806D40097C410 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */,
@@ -177,6 +180,7 @@
 			name = AeroSpaceBar;
 			packageProductDependencies = (
 				1A4525C02E66D944003156C3 /* TOMLKit */,
+				1A0D92972E6806BC0097C410 /* RswiftLibrary */,
 			);
 			productName = AeroSpaceBar;
 			productReference = C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */;
@@ -215,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */,
+				1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -277,6 +282,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1A0D929A2E6806D40097C410 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A0D92992E6806D40097C410 /* RswiftGenerateInternalResources */;
+		};
 		1AFC28812E609B9E00258BEE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
@@ -434,6 +443,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_PREPROCESS = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -496,6 +508,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_PREPROCESS = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -533,14 +548,15 @@
 				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableCopyright = rdrkr;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses location permission for display WiFi network name";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -580,14 +596,15 @@
 				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableCopyright = rdrkr;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses location permission for display WiFi network name";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -644,6 +661,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mac-cain13/R.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.8.0;
+			};
+		};
 		1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LebJe/TOMLKit";
@@ -655,6 +680,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A0D92972E6806BC0097C410 /* RswiftLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
+			productName = RswiftLibrary;
+		};
+		1A0D92992E6806D40097C410 /* RswiftGenerateInternalResources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
+			productName = "plugin:RswiftGenerateInternalResources";
+		};
 		1A4525C02E66D944003156C3 /* TOMLKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;

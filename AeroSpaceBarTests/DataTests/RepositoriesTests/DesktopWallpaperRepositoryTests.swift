@@ -5,20 +5,18 @@ import Combine
 import XCTest
 
 final class DesktopWallpaperRepositoryTests: XCTestCase {
-    var repository: DesktopWallpaperRepository!
-    var cancellables: Set<AnyCancellable>!
+    var repository: DesktopWallpaperRepository?
+    var cancellables: Set<AnyCancellable>?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // repository = DesktopWallpaperRepository()
         cancellables = Set<AnyCancellable>()
     }
 
-    override func tearDown() {
-        cancellables.removeAll()
+    func tearDown() {
+        cancellables?.removeAll()
         repository = nil
-        super.tearDown()
     }
 
     func testDesktopWallpaperRepositoryInitialization() {

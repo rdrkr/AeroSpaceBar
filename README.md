@@ -37,8 +37,8 @@ AeroSpaceBar/
 ├── 📁 AeroSpaceBar/                    # Main Application
 │   ├── 📁 Data/                        # Data Layer
 │   │   ├── 📁 Models/                  # External data models
-│   │   └── 📁 Network/                 # AeroSpace CLI client
-│   │   ├── 📁 Repositories/            # Repository implementations
+│   │   ├── 📁 Network/                 # AeroSpace CLI client
+│   │   └── 📁 Repositories/            # Repository implementations
 │   ├── 📁 Domain/                      # Business Layer
 │   │   ├── 📁 Entities/                # Business models, configuration & logging
 │   │   ├── 📁 Gateways/                # Repository contracts
@@ -83,6 +83,8 @@ AeroSpaceBar/
 ├── 📄 gradle.properties                # Gradle properties
 ├── 📄 gradlew                          # Gradle wrapper script (Unix)
 ├── 📄 gradlew.bat                      # Gradle wrapper script (Windows)
+├── 📄 Package.swift                    # Swift Package Manager configuration
+├── 📄 Package.resolved                 # Swift Package Manager lock file
 └── 📄 README.md                        # Project documentation
 ```
 
@@ -134,14 +136,21 @@ If macOS blocks the app from launching:
    cd AeroSpaceBar
    ```
 
-2. **Open in Xcode**
+2. **Choose your build method:**
+
+   **Option A: Xcode (Traditional)**
    ```bash
    open AeroSpaceBar.xcodeproj
    ```
+   
+   **Option B: Gradle (Modern)**
+   ```bash
+   ./gradlew build
+   ```
 
 3. **Build and Run**
-   - Select your target device (Mac)
-   - Press `Cmd + R` or click the Run button
+   - **Xcode**: Select your target device (Mac), press `Cmd + R` or click the Run button
+   - **Gradle**: Use `./gradlew run` to build and launch the app
    - The app will appear in your menu bar
 
 #### Option 2: Download Release
@@ -235,6 +244,7 @@ The project is organized following Clean Architecture principles with comprehens
 #### Development Tools
 - **VS Code**: Development environment configuration
 - **Gradle**: Build system and task automation
+- **Swift Package Manager**: Dependency management for Swift packages
 
 ### Code Style
 
@@ -245,7 +255,11 @@ The project is organized following Clean Architecture principles with comprehens
 - **Architecture**: Strict adherence to Clean Architecture principles
 - **SOLID Principles**: Strict adherence to SOLID principles
 
-### Gradle commands
+### Build System
+
+AeroSpaceBar supports **dual build systems** for maximum flexibility:
+
+#### Gradle Commands
 
 Use the provided Gradle build system for common developer tasks:
 
@@ -253,6 +267,28 @@ Use the provided Gradle build system for common developer tasks:
 # Show available tasks
 ./gradlew showHelp
 ```
+
+#### Xcode Commands
+
+Traditional Xcode build commands still work:
+
+```bash
+# Build project
+xcodebuild -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar build
+
+# Run tests
+xcodebuild -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar test
+
+# Build specific configuration
+xcodebuild -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -configuration Debug build
+```
+
+### Dependencies
+
+The project uses modern Swift Package Manager dependencies:
+
+- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML configuration file parsing
+- **[R.swift](https://github.com/mac-cain13/R.swift)**: Type-safe resource management for images, fonts, and other assets
 
 ### Linting & Formatting
 
@@ -269,6 +305,16 @@ Use the provided Gradle build system for common developer tasks:
 
 ### Running Tests
 
+#### Using Gradle (Recommended)
+```bash
+# Run all tests
+./gradlew test
+
+# Run specific test target
+./gradlew test -PtestTarget=AeroSpaceBarTests
+```
+
+#### Using Xcode
 ```bash
 # Run all tests
 xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar
@@ -296,6 +342,9 @@ We welcome contributions! Please follow these guidelines:
 2. **Make your changes**
 3. **Add tests** for new functionality
 4. **Ensure all tests pass**
+   ```bash
+   ./gradlew check test
+   ```
 5. **Submit a pull request**
 
 ### Code Standards
@@ -330,6 +379,8 @@ The AGPL-3.0 license ensures that:
 - **[Clean Architecture MVVM](https://github.com/kudoleh/iOS-Clean-Architecture-MVVM)**: Architecture inspiration and guidelines
 - **[SwiftUI](https://developer.apple.com/xcode/swiftui/)**: Modern UI framework from Apple
 - **[Combine](https://developer.apple.com/documentation/combine)**: Reactive programming framework
+- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML parsing library
+- **[R.swift](https://github.com/mac-cain13/R.swift)**: Type-safe resource management
 
 ## 📞 Support
 

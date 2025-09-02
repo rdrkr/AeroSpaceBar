@@ -4,14 +4,6 @@
 import XCTest
 
 final class AppErrorTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testAeroSpaceNotRunningError() {
         // TODO: Test AeroSpace not running error
     }

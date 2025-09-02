@@ -4,14 +4,6 @@
 import XCTest
 
 final class UserDefaultsKeysTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testGeneralPreferencesKeys() {
         // TODO: Test general preferences keys
     }

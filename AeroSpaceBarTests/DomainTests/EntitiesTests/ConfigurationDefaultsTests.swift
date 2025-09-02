@@ -4,14 +4,6 @@
 import XCTest
 
 final class ConfigurationDefaultsTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testShowWindowTitlesDefault() {
         // TODO: Test show window titles default
     }

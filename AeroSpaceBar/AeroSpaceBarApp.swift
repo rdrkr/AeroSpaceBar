@@ -19,7 +19,7 @@ struct AeroSpaceBarApp: App {
         MenuBarExtra {
             AppMenuView()
         } label: {
-            Image("AppGlyph")
+            Image(R.image.appGlyph)
         }
 
         #if os(macOS)

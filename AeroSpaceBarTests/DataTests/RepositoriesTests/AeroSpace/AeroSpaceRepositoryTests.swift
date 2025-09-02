@@ -5,19 +5,17 @@ import Combine
 import XCTest
 
 final class AeroSpaceRepositoryTests: XCTestCase {
-    var repository: AeroSpaceRepository!
-    var cancellables: Set<AnyCancellable>!
+    var repository: AeroSpaceRepository?
+    var cancellables: Set<AnyCancellable>?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with mock dependencies
         cancellables = Set<AnyCancellable>()
     }
 
-    override func tearDown() {
-        cancellables.removeAll()
+    func tearDown() {
+        cancellables?.removeAll()
         repository = nil
-        super.tearDown()
     }
 
     func testAeroSpaceRepositoryInitialization() {

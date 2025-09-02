@@ -25,26 +25,31 @@ struct AboutView: View {
                 .frame(width: 128, height: 128)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                .accessibilityLabel(LocalizedStringResource("App Icon"))
+                .tag("about-app-icon")
 
             // App Name
-            Text("AeroSpaceBar")
+            Text(LocalizedStringResource("AeroSpaceBar"))
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(.primary)
+                .tag("about-app-name")
 
             // Version
             HStack(spacing: 4) {
-                Text("Version \(appVersion) (\(appBuild))")
+                Text(LocalizedStringResource("Version \(appVersion) (\(appBuild))"))
                     .font(.system(size: 14))
                     .foregroundColor(.secondary)
+                    .tag("about-version")
 
                 #if DEBUG
-                    Text("Debug")
+                    Text(LocalizedStringResource("Debug"))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.orange)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(Color.orange.opacity(0.1))
                         .cornerRadius(8)
+                        .tag("about-debug-badge")
                 #endif
             }
 
@@ -58,6 +63,7 @@ struct AboutView: View {
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+                .tag("about-description")
             }
             .padding(.horizontal, 20)
 
@@ -65,23 +71,27 @@ struct AboutView: View {
 
             // Acknowledgements
             VStack(spacing: 8) {
-                Text("Acknowledgements")
+                Text(LocalizedStringResource("Acknowledgements"))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.primary)
+                    .tag("about-acknowledgements-title")
 
                 HStack(spacing: 6) {
-                    Button("AeroSpace") {
+                    Button(LocalizedStringResource("AeroSpace")) {
                         if let url = URL(string: "https://github.com/nikitabobko/AeroSpace") {
                             NSWorkspace.shared.open(url)
                         }
                     }
                     .buttonStyle(.plain)
                     .foregroundColor(.blue)
+                    .tag("about-aerospace-link")
 
-                    Text("(MIT)")
+                    Text(LocalizedStringResource("(MIT)"))
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
-                    Button("View License") {
+                        .tag("about-aerospace-license")
+
+                    Button(LocalizedStringResource("View License")) {
                         if let path = Bundle.main.path(forResource: "AeroSpace-MIT", ofType: "txt") {
                             NSWorkspace.shared.open(URL(fileURLWithPath: path))
                         } else if
@@ -96,14 +106,16 @@ struct AboutView: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundColor(.blue)
+                    .tag("about-view-license-button")
                 }
             }
 
             // Made with love credit
             HStack(spacing: 4) {
-                Text("Made with ❤️ by")
+                Text(LocalizedStringResource("Made with ❤️ by"))
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
+                    .tag("about-made-with-love")
 
                 Button(
                     action: {
@@ -112,17 +124,19 @@ struct AboutView: View {
                         }
                     },
                     label: {
-                        Text("Ronen Druker")
+                        Text(LocalizedStringResource("Ronen Druker"))
                             .font(.system(size: 11, weight: .medium))
                             .foregroundColor(.blue)
                     }
                 )
                 .buttonStyle(.plain)
+                .tag("about-author-link")
             }
             .padding(.bottom, 10)
         }
         .padding(30)
         .frame(width: 450, height: 450)
+        .tag("about-view")
     }
 }
 

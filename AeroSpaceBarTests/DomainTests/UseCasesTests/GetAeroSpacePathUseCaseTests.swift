@@ -5,23 +5,21 @@ import Combine
 import XCTest
 
 final class GetAeroSpacePathUseCaseTests: XCTestCase {
-    var useCase: GetAeroSpacePathUseCase!
-    fileprivate var mockConfigurationGateway: MockConfigurationGateway!
-    var cancellables: Set<AnyCancellable>!
+    var useCase: GetAeroSpacePathUseCase?
+    private var mockConfigurationGateway: MockConfigurationGateway?
+    var cancellables: Set<AnyCancellable>?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // mockConfigurationGateway = MockConfigurationGateway()
         // useCase = GetAeroSpacePathUseCase(configurationGateway: mockConfigurationGateway)
         cancellables = Set<AnyCancellable>()
     }
 
-    override func tearDown() {
-        cancellables.removeAll()
+    func tearDown() {
+        cancellables?.removeAll()
         useCase = nil
         mockConfigurationGateway = nil
-        super.tearDown()
     }
 
     func testGetAeroSpacePathUseCaseInitialization() {

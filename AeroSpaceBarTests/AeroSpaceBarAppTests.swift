@@ -4,14 +4,6 @@
 import XCTest
 
 final class AeroSpaceBarAppTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testAeroSpaceBarAppInitialization() {
         // TODO: Test app initialization
     }

@@ -4,14 +4,6 @@
 import XCTest
 
 final class SpaceTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testSpaceDataInitialization() {
         // TODO: Test SpaceData initialization
     }

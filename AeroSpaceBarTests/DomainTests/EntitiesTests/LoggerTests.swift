@@ -4,14 +4,6 @@
 import XCTest
 
 final class LoggerTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testLogLevelEnum() {
         // TODO: Test log level enum
     }

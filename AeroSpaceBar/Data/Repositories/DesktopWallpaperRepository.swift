@@ -17,8 +17,18 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
     /// The last captured wallpaper image data for comparison.
     private var lastWallpaperData: Data?
 
+    /// The observer for the screens did sleep notification.
+    private var screenSleepNotificationObserver: NSObjectProtocol?
+
+    /// The observer for the screens did wake up notification.
+    private var screenWakeNotificationObserver: NSObjectProtocol?
+
+    /// The task for capturing the wallpaper.
+    private var captureTask: Task<Void, Never>?
+
     /// Initializes the desktop wallpaper gateway.
     init() {
+        setupObservers()
         startPeriodicUpdates()
     }
 
@@ -34,17 +44,49 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
 
     /// Starts periodic wallpaper updates.
     private func startPeriodicUpdates() {
-        Task {
+        stopPeriodicUpdates()
+
+        captureTask = Task.detached(priority: .utility) { [weak self] in
             repeat {
-                self.performWallpaperCapture()
-                try? await Task.sleep(for: .seconds(1))
+                await self?.performWallpaperCapture()
+                try? await Task.sleep(for: .seconds(4))
             } while !Task.isCancelled
         }
     }
 
+    /// Sets up observers for the desktop wallpaper repository.
+    private func setupObservers() {
+        let notificationCenter = NSWorkspace.shared.notificationCenter
+
+        screenSleepNotificationObserver = notificationCenter.addObserver(
+            forName: NSWorkspace.screensDidSleepNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.stopPeriodicUpdates()
+            }
+        }
+
+        screenWakeNotificationObserver = notificationCenter.addObserver(
+            forName: NSWorkspace.screensDidWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.startPeriodicUpdates()
+            }
+        }
+    }
+
+    /// Stops the periodic wallpaper updates.
+    private func stopPeriodicUpdates() {
+        captureTask?.cancel()
+        captureTask = nil
+    }
+
     /// Performs wallpaper capture and updates the publisher.
-    @MainActor
-    private func performWallpaperCapture() {
+    private func performWallpaperCapture() async {
         // Find the wallpaper window for the main display
         guard let wallpaperWindow = findWallpaperWindow() else {
             Logger.info("No wallpaper window found", category: Logger.config)

@@ -10,7 +10,6 @@ plugins {
 val projectName = "AeroSpaceBar"
 val xcodeProject = "$projectName.xcodeproj"
 val xcodeScheme = projectName
-val swiftSourceDir = "$projectName/"
 val productDir = "${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData/AeroSpaceBar-fifbaernwsaqwhfwajnuubouitxw/Build/Products"
 
 // Task groups for better organization
@@ -128,7 +127,7 @@ tasks.register("format") {
     description = "Format code with SwiftFormat"
     doLast {
         exec {
-            commandLine("swiftformat", swiftSourceDir)
+            commandLine("swiftformat", projectDir)
         }
         println("✅ Code formatting completed")
     }
@@ -140,8 +139,9 @@ tasks.register("lint") {
     description = "Lint code with SwiftLint"
     doLast {
         exec {
-            commandLine("swiftlint", "lint", "--strict", swiftSourceDir)
+            commandLine("swiftlint", "lint", "--strict")
         }
+
         println("✅ Code linting completed")
     }
 }
@@ -152,8 +152,9 @@ tasks.register("lintFix") {
     description = "Auto-fix linting issues (where possible)"
     doLast {
         exec {
-            commandLine("swiftlint", "--fix", swiftSourceDir)
+            commandLine("swiftlint", "--fix")
         }
+
         println("✅ Lint fixes applied")
     }
 }

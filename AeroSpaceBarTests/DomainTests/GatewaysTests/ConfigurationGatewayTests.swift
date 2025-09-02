@@ -5,14 +5,6 @@ import Combine
 import XCTest
 
 final class ConfigurationGatewayTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testConfigurationGatewayProtocol() {
         // TODO: Test ConfigurationGateway protocol conformance
     }

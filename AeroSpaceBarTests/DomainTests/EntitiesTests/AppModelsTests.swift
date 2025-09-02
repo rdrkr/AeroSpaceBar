@@ -4,14 +4,6 @@
 import XCTest
 
 final class AppModelsTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testWindowInitialization() {
         // TODO: Test Window initialization
     }

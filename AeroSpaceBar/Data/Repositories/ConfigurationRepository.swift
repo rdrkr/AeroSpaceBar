@@ -482,27 +482,27 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     /// Resets all configuration settings to their default values.
     func resetToDefaults() async {
+        for item in UserDefaultsKeys.allCases {
+            UserDefaults.standard.removeObject(forKey: item.rawValue)
+        }
+
         // Reset all subjects to default values
-        showWindowTitlesSubject.send(ConfigurationDefaults.showWindowTitles)
-        aeroSpacePathSubject.send(ConfigurationDefaults.aeroSpacePath)
-        transparencySubject.send(ConfigurationDefaults.transparency)
-        focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
-        enablePerformanceMetricsSubject.send(ConfigurationDefaults.enablePerformanceMetrics)
-        isOptimizedPerformanceEnabledSubject.send(ConfigurationDefaults.isOptimizedPerformanceEnabled)
-        logLevelSubject.send(ConfigurationDefaults.logLevel)
+        await setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
+        await setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
+        await setTransparency(ConfigurationDefaults.transparency)
+        await setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
+        await setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
+        await setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
+        await setLogLevel(ConfigurationDefaults.logLevel)
 
         // Reset UI configuration subjects
         menuBarVerticalPaddingSubject.send(ConfigurationDefaults.menuBarVerticalPadding)
         menuBarHorizontalPaddingSubject.send(ConfigurationDefaults.menuBarHorizontalPadding)
-        widgetSpacingSubject.send(ConfigurationDefaults.widgetSpacing)
-        animationDurationSubject.send(ConfigurationDefaults.animationDuration)
-        windowIconSizeSubject.send(ConfigurationDefaults.windowIconSize)
-        spaceCornerRadiusSubject.send(ConfigurationDefaults.spaceCornerRadius)
-        windowCornerRadiusSubject.send(ConfigurationDefaults.windowCornerRadius)
-
-        for item in UserDefaultsKeys.allCases {
-            UserDefaults.standard.removeObject(forKey: item.rawValue)
-        }
+        await setWidgetSpacing(ConfigurationDefaults.widgetSpacing)
+        await setAnimationDuration(ConfigurationDefaults.animationDuration)
+        await setWindowIconSize(ConfigurationDefaults.windowIconSize)
+        await setSpaceCornerRadius(ConfigurationDefaults.spaceCornerRadius)
+        await setWindowCornerRadius(ConfigurationDefaults.windowCornerRadius)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }

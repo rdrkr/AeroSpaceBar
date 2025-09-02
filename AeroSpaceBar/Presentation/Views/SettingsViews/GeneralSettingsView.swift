@@ -26,10 +26,11 @@ struct GeneralSettingsView: View {
         ) {
             Section {
                 Toggle(isOn: $viewModel.launchAtLogin) {
-                    Text("Launch at login")
-                    Text("Automatically start AeroSpaceBar when you log in")
+                    Text(LocalizedStringResource("Launch at login"))
+                    Text(LocalizedStringResource("Automatically start AeroSpaceBar when you log in"))
                 }
                 .toggleStyle(.switch)
+                .tag("general-launch-at-login-toggle")
                 .onAppear {
                     // Update launch at login status every second until the view disappears
                     // This is necessary because the user can change the launch at login setting
@@ -47,20 +48,23 @@ struct GeneralSettingsView: View {
                     launchAtLoginUpdateTask?.cancel()
                 }
             }
+            .tag("general-launch-section")
 
-            Section("AeroSpace") {
+            Section(LocalizedStringResource("AeroSpace")) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Path")
+                        Text(LocalizedStringResource("Path"))
+                            .tag("general-path-label")
 
                         TextField(
-                            "Path",
+                            String(localized: LocalizedStringResource("Path")),
                             text: $viewModel.aeroSpacePath
                         )
                         .labelsHidden()
                         .textFieldStyle(.roundedBorder)
+                        .tag("general-path-textfield")
 
-                        Button("Browse…") {
+                        Button(LocalizedStringResource("Browse…")) {
                             let panel = NSOpenPanel()
                             panel.canChooseDirectories = false
                             panel.canChooseFiles = true
@@ -69,21 +73,30 @@ struct GeneralSettingsView: View {
                                 viewModel.aeroSpacePath = url.path
                             }
                         }
+                        .tag("general-browse-button")
                     }
 
                     if let error = viewModel.customPathValidationError {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.orange)
+                                .tag("general-path-error-icon")
                             Text(error)
                                 .font(.system(size: 11))
                                 .foregroundColor(.secondary)
+                                .tag("general-path-error-text")
                         }
+                        .tag("general-path-error-container")
                     }
 
-                    Text("Path to the AeroSpace binary. Leave empty to auto-detect from common locations.")
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                    Text(
+                        LocalizedStringResource(
+                            "Path to the AeroSpace binary. Leave empty to auto-detect from common locations."
+                        )
+                    )
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .tag("general-path-help-text")
 
                     Spacer(minLength: 8)
 
@@ -92,57 +105,70 @@ struct GeneralSettingsView: View {
                         if let version = viewModel.aeroSpaceVersion {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
+                                .tag("general-aerospace-status-success-icon")
 
-                            Text("AeroSpace version: \(version)")
+                            Text(LocalizedStringResource("AeroSpace version: \(version)"))
                                 .font(.system(size: 11))
                                 .foregroundColor(.green)
                                 .textSelection(.enabled)
+                                .tag("general-aerospace-version-success")
                         } else {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.red)
+                                .tag("general-aerospace-status-error-icon")
 
-                            Text("AeroSpace Not Found")
+                            Text(LocalizedStringResource("AeroSpace Not Found"))
                                 .font(.system(size: 11))
                                 .foregroundColor(.red)
                                 .textSelection(.enabled)
+                                .tag("general-aerospace-not-found-error")
                         }
                     }
+                    .tag("general-aerospace-status-container")
 
                     Spacer(minLength: 8)
 
-                    Button("Open Configuration…") {
-                        Task {
+                    Button(LocalizedStringResource("Open Configuration…")) {
+                        Task.detached(priority: .utility) {
                             await viewModel.openAeroSpaceConfig()
                         }
                     }
+                    .tag("general-open-config-button")
                 }
                 .onChange(of: viewModel.aeroSpacePath) { _, _ in
                     // Trigger version update when path changes
                     viewModel.objectWillChange.send()
                 }
+                .tag("general-aerospace-section")
             }
 
-            Section("Appearance") {
+            Section(LocalizedStringResource("Appearance")) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Transparency")
+                        Text(LocalizedStringResource("Transparency"))
+                            .tag("general-transparency-label")
 
                         Slider(
                             value: $viewModel.transparency,
                             in: 0.1 ... 1.0
                         )
+                        .tag("general-transparency-slider")
 
                         Text("\(Int(viewModel.transparency * 100))%")
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
+                            .tag("general-transparency-value")
                     }
 
-                    Text("Adjust the transparency of the menu bar panel")
+                    Text(LocalizedStringResource("Adjust the transparency of the menu bar panel"))
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
+                        .tag("general-transparency-help-text")
                 }
+                .tag("general-appearance-section")
             }
         }
+        .tag("general-settings-view")
     }
 }
 

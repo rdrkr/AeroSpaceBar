@@ -4,17 +4,15 @@
 import XCTest
 
 final class IconCacheTests: XCTestCase {
-    var iconCache: IconCache!
+    var iconCache: IconCache?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // iconCache = IconCache()
     }
 
-    override func tearDown() {
+    func tearDown() {
         iconCache = nil
-        super.tearDown()
     }
 
     func testIconCacheInitialization() {

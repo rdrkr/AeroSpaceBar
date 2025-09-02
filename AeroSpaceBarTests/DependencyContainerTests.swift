@@ -4,17 +4,15 @@
 import XCTest
 
 final class DependencyContainerTests: XCTestCase {
-    var container: DependencyContainer!
+    var container: DependencyContainer?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // container = DependencyContainer.shared
     }
 
-    override func tearDown() {
+    func tearDown() {
         container = nil
-        super.tearDown()
     }
 
     func testDependencyContainerSingleton() {

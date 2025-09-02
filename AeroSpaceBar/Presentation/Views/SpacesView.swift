@@ -15,62 +15,116 @@ struct SpacesView: View {
     /// Whether the wallpaper should be visible (faded in).
     @State private var isWallpaperVisible = false
 
+    // MARK: - Computed Properties
+
+    /// Computed property for wallpaper to avoid repeated access
+    private var wallpaper: NSImage? {
+        viewModel.widgetState.wallpaper
+    }
+
+    /// Computed property for spaces to avoid repeated access
+    private var spaces: [Space] {
+        viewModel.widgetState.spaces
+    }
+
+    /// Computed property for animation duration
+    private var animationDuration: Double {
+        viewModel.animationDuration
+    }
+
+    /// Computed property for widget spacing
+    private var widgetSpacing: CGFloat {
+        viewModel.widgetSpacing
+    }
+
+    /// Computed property for menu bar horizontal padding
+    private var menuBarHorizontalPadding: CGFloat {
+        viewModel.menuBarHorizontalPadding
+    }
+
+    /// Computed property for menu bar height
+    private var menuBarHeight: CGFloat {
+        viewModel.menuBarHeight
+    }
+
+    /// Computed property for window corner radius
+    private var cornerRadius: CGFloat {
+        viewModel.spaceCornerRadius
+    }
+
     /// The body of the spaces view.
     ///
     /// This view creates a horizontal layout of spaces with their associated windows,
     /// using the captured desktop wallpaper as background.
     var body: some View {
         // Main menu bar content
-        HStack(spacing: viewModel.widgetSpacing) {
+        HStack(spacing: widgetSpacing) {
             ZStack(alignment: .leading) {
                 // Use captured desktop wallpaper as background
-                if let originalWallpaper = viewModel.widgetState.wallpaper {
+                if let originalWallpaper = wallpaper {
                     Group {
                         let screenWidth = originalWallpaper.size.width
                         let screenHeight = originalWallpaper.size.height
 
                         Image(nsImage: originalWallpaper)
-                            .frame(width: (screenWidth / 2) - viewModel.menuBarHorizontalPadding, height: screenHeight)
+                            .frame(width: (screenWidth / 2) - menuBarHorizontalPadding, height: screenHeight)
                             .offset(
-                                x: (screenWidth / 4) - (viewModel.menuBarHorizontalPadding / 2),
+                                x: (screenWidth / 4) - (menuBarHorizontalPadding / 2),
                                 y: 0
                             )
                             .clipped()
+                            .tag("spaces-wallpaper-background")
 
-                        HStack(spacing: viewModel.widgetSpacing) {
-                            ForEach(viewModel.widgetState.spaces) { space in
+                        HStack(spacing: widgetSpacing) {
+                            ForEach(spaces) { space in
                                 SpaceView(space: space)
+                                    .tag("space-\(space.id)")
                             }
                         }
+                        .offset(y: isWallpaperVisible ? 0 : -menuBarHeight)
+                        .tag("spaces-container")
                     }
+                    .spaceCornerRadius(cornerRadius)
                     .opacity(isWallpaperVisible ? 1.0 : 0.0)
-                    .offset(y: isWallpaperVisible ? 0 : -viewModel.menuBarHeight)
-                    .animation(.smooth(duration: viewModel.animationDuration), value: isWallpaperVisible)
+                    .animation(.smooth(duration: animationDuration), value: isWallpaperVisible)
+                    .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set
                     Color.black.opacity(0)
+                        .tag("spaces-default-background")
                 }
             }
+            .tag("spaces-content-zstack")
         }
         .animation(
-            .smooth(duration: viewModel.animationDuration),
-            value: viewModel.widgetState.spaces
+            .smooth(duration: animationDuration),
+            value: spaces
         )
-        .padding(.leading, viewModel.menuBarHorizontalPadding)
-        .onChange(of: viewModel.widgetState) { oldWigetState, newWidgetState in
-            if newWidgetState.wallpaper != nil, !newWidgetState.spaces.isEmpty {
-                // Fade in wallpaper when spaces are available and image is loaded
-                if !isWallpaperVisible {
+        .padding(.leading, menuBarHorizontalPadding)
+        .onChange(of: viewModel.widgetState) { oldWidgetState, newWidgetState in
+            handleWidgetStateChange(oldState: oldWidgetState, newState: newWidgetState)
+        }
+        .tag("spaces-main-view")
+    }
+
+    // MARK: - Private Methods
+
+    /// Handles widget state changes to manage wallpaper visibility
+    private func handleWidgetStateChange(
+        oldState: SpacesViewModel.WidgetState,
+        newState: SpacesViewModel.WidgetState
+    ) {
+        if newState.wallpaper != nil, !newState.spaces.isEmpty {
+            // Fade in wallpaper when spaces are available and image is loaded
+            if !isWallpaperVisible {
+                isWallpaperVisible = true
+            }
+            // Fade out and back in when image is loaded and spaces are available
+            else if oldState.wallpaper != newState.wallpaper, isWallpaperVisible {
+                isWallpaperVisible = false
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
                     isWallpaperVisible = true
-                }
-
-                // Fade out and back in when image is loaded and spaces are available
-                else if oldWigetState.wallpaper != newWidgetState.wallpaper, isWallpaperVisible {
-                    isWallpaperVisible = false
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + viewModel.animationDuration) {
-                        isWallpaperVisible = true
-                    }
                 }
             }
         }
@@ -92,12 +146,28 @@ private struct SpaceView: View {
     /// Whether the space view is currently being hovered.
     @State var isHovered = false
 
+    // MARK: - Computed Properties
+
+    /// Computed property for focus state to avoid repeated calculations
+    private var isFocused: Bool {
+        space.windows.contains { $0.isFocused } || space.isFocused
+    }
+
+    /// Computed property for space corner radius
+    private var cornerRadius: CGFloat {
+        viewModel.spaceCornerRadius
+    }
+
+    /// Computed property for widget spacing
+    private var widgetSpacing: CGFloat {
+        viewModel.widgetSpacing
+    }
+
     /// The body of the space view.
     ///
     /// This view creates a horizontal layout showing the space identifier
     /// and its associated windows with proper styling and interactions.
     var body: some View {
-        let isFocused = space.windows.contains { $0.isFocused } || space.isFocused
         HStack(spacing: 0) {
             Spacer().frame(width: 10)
 
@@ -105,36 +175,31 @@ private struct SpaceView: View {
                 .font(.headline)
                 .frame(minWidth: 15)
                 .fixedSize(horizontal: true, vertical: false)
+                .tag("space-\(space.id)-identifier")
 
             Spacer().frame(width: 5)
 
             HStack(spacing: 2) {
                 ForEach(space.windows) { window in
                     WindowView(window: window, space: space)
+                        .tag("window-\(window.id)")
                 }
             }
+            .tag("space-\(space.id)-windows-container")
 
-            Spacer().frame(width: viewModel.widgetSpacing)
+            Spacer().frame(width: widgetSpacing)
         }
-        .background(
-            isFocused
-                ? Color.active
-                : isHovered ? Color.noActive : Color.noActive
-        )
-        .clipShape(
-            RoundedRectangle(cornerRadius: viewModel.spaceCornerRadius, style: .continuous)
-        )
-        .shadow(color: .shadow, radius: 2)
-        .transition(.blurReplace)
+        .spaceFocusState(isFocused)
+        .spaceCornerRadius(cornerRadius)
+        .standardShadow()
+        .blurReplaceTransition()
         .onTapGesture {
             DispatchQueue.main.async {
                 viewModel.switchToSpace(space, needWindowFocus: true)
             }
         }
-        .animation(.smooth, value: isHovered)
-        .onHover { value in
-            isHovered = value
-        }
+        .hoverState($isHovered)
+        .tag("space-\(space.id)-view")
     }
 }
 
@@ -156,52 +221,80 @@ private struct WindowView: View {
     /// Whether the window view is currently being hovered.
     @State var isHovered = false
 
+    // MARK: - Computed Properties
+
+    /// Computed property for window icon size
+    private var iconSize: CGFloat {
+        viewModel.windowIconSize
+    }
+
+    /// Computed property for window corner radius
+    private var cornerRadius: CGFloat {
+        viewModel.windowCornerRadius
+    }
+
+    /// Computed property for menu bar vertical padding
+    private var verticalPadding: CGFloat {
+        viewModel.menuBarVerticalPadding
+    }
+
+    /// Computed property for title text to avoid repeated calculations
+    private var titleText: String {
+        let sameAppCount = space.windows.count(where: { $0.appName == window.appName })
+        return sameAppCount > 1 ? window.title : (window.appName ?? "")
+    }
+
+    /// Computed property for space focus state to avoid repeated calculations
+    private var spaceIsFocused: Bool {
+        space.windows.contains { $0.isFocused }
+    }
+
     /// The body of the window view.
     ///
     /// This view creates a horizontal layout showing the window's application icon
     /// and optionally its title, with proper styling and interactions.
     var body: some View {
-        let size: CGFloat = viewModel.windowIconSize
-        let sameAppCount = space.windows.count(where: { $0.appName == window.appName })
-
-        let title = sameAppCount > 1 ? window.title : (window.appName ?? "")
-        let spaceIsFocused = space.windows.contains { $0.isFocused }
         HStack {
             ZStack {
                 if let icon = window.appIcon {
                     Image(nsImage: icon)
                         .resizable()
-                        .frame(width: size, height: size)
-                        .shadow(color: .iconShadow, radius: 2)
+                        .frame(width: iconSize, height: iconSize)
+                        .iconShadow()
+                        .tag("window-\(window.id)-icon")
                 } else {
                     Image(systemName: "questionmark.circle")
                         .resizable()
-                        .frame(width: size, height: size)
+                        .frame(width: iconSize, height: iconSize)
+                        .tag("window-\(window.id)-fallback-icon")
                 }
             }
-            .opacity(spaceIsFocused && !window.isFocused ? 0.5 : 1)
-            .transition(.blurReplace)
+            .windowFocusState(window.isFocused, spaceIsFocused: spaceIsFocused)
+            .blurReplaceTransition()
+            .tag("window-\(window.id)-icon-container")
 
-            if window.isFocused, !title.isEmpty {
+            if window.isFocused, !titleText.isEmpty {
                 HStack {
                     Text(
-                        title.count > 50
-                            ? String(title.prefix(50)) + "..."
-                            : title
+                        titleText.count > 50
+                            ? String(titleText.prefix(50)) + "..."
+                            : titleText
                     )
                     .fixedSize(horizontal: true, vertical: false)
-                    .shadow(color: .foregroundShadow, radius: 2)
+                    .textShadow()
                     .fontWeight(.semibold)
+                    .tag("window-\(window.id)-title")
 
                     Spacer().frame(width: 5)
                 }
                 .transition(.blurReplace)
+                .tag("window-\(window.id)-title-container")
             }
         }
-        .padding(.vertical, viewModel.menuBarVerticalPadding)
+        .padding(.vertical, verticalPadding)
         .background(isHovered ? .selected : .clear)
-        .clipShape(RoundedRectangle(cornerRadius: viewModel.windowCornerRadius, style: .continuous))
-        .animation(.smooth, value: isHovered)
+        .windowCornerRadius(cornerRadius)
+        .smoothAnimation()
         .contentShape(.rect)
         .onTapGesture {
             DispatchQueue.main.async {
@@ -210,8 +303,7 @@ private struct WindowView: View {
                 viewModel.switchToWindow(window)
             }
         }
-        .onHover { value in
-            isHovered = value
-        }
+        .hoverState($isHovered)
+        .tag("window-\(window.id)-view")
     }
 }

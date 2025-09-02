@@ -5,20 +5,18 @@ import Combine
 import XCTest
 
 final class ConfigurationRepositoryTests: XCTestCase {
-    var repository: ConfigurationRepository!
-    var cancellables: Set<AnyCancellable>!
+    var repository: ConfigurationRepository?
+    var cancellables: Set<AnyCancellable>?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         // TODO: Initialize with proper actor context
         // repository = ConfigurationRepository()
         cancellables = Set<AnyCancellable>()
     }
 
-    override func tearDown() {
-        cancellables.removeAll()
+    func tearDown() {
+        cancellables?.removeAll()
         repository = nil
-        super.tearDown()
     }
 
     func testConfigurationRepositoryInitialization() {
