@@ -4,8 +4,8 @@
 import Combine
 import XCTest
 
-final class SpacesRepositoryTests: XCTestCase {
-    var repository: SpacesRepository!
+final class AeroSpaceRepositoryTests: XCTestCase {
+    var repository: AeroSpaceRepository!
     var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
@@ -20,7 +20,7 @@ final class SpacesRepositoryTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSpacesRepositoryInitialization() {
+    func testAeroSpaceRepositoryInitialization() {
         // TODO: Test repository initialization
     }
 

@@ -25,6 +25,9 @@ protocol ConfigurationGateway {
     /// Publisher that emits enable performance metrics updates.
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> { get }
 
+    /// Publisher that emits optimized performance enabled updates.
+    var isOptimizedPerformanceEnabledPublisher: AnyPublisher<Bool, Never> { get }
+
     /// Publisher that emits log level updates.
     var logLevelPublisher: AnyPublisher<Logger.Level, Never> { get }
 
@@ -75,6 +78,10 @@ protocol ConfigurationGateway {
     /// - Parameter value: Whether to enable performance metrics
     func setEnablePerformanceMetrics(_ value: Bool) async
 
+    /// Sets whether to enable optimized performance behavior.
+    /// - Parameter value: Whether to enable optimized performance
+    func setIsOptimizedPerformanceEnabled(_ value: Bool) async
+
     /// Sets the current log level for application logging.
     /// - Parameter level: The log level
     func setLogLevel(_ level: Logger.Level) async
@@ -118,6 +125,10 @@ protocol ConfigurationGateway {
     /// Opens the AeroSpace configuration file.
     /// If no config file exists, creates a default one.
     func openAeroSpaceConfig() async
+
+    /// Gets the AeroSpace configuration file path.
+    /// - Returns: The AeroSpace configuration file path
+    func getAeroSpaceConfigPath() async -> URL
 
     // MARK: - Configuration Management
 

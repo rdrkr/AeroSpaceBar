@@ -43,6 +43,11 @@ struct AdvancedSettingsView: View {
                     Text("Enable performance metrics")
                     Text("Track and log performance data for debugging")
                 }
+
+                Toggle(isOn: $viewModel.isOptimizedPerformanceEnabled) {
+                    Text("Enable optimized performance")
+                    Text("Utilize AeroSpace's event system for CPU consumption optimization")
+                }
             }
 
             Section("Reset") {

@@ -1,7 +1,9 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import AppKit
+import ApplicationServices
 import Combine
+import Foundation
 
 /// Repository for managing spaces data through AeroSpace.
 ///
@@ -10,24 +12,42 @@ import Combine
 /// It runs on the main actor and uses a dedicated dispatch queue for AeroSpace operations.
 /// This is the data layer implementation of the SpacesGateway.
 @MainActor
-final class SpacesRepository: SpacesGateway {
+final class AeroSpaceRepository: SpacesGateway {
+    /// The callback to update AeroSpaceBar on focus change
+    private static let onFocusChangedCallback = """
+    exec-and-forget osascript -e \"
+    tell application \\\"System Events\\\" to
+        if (get name of every process) contains \\\"AeroSpaceBar\\\" then
+            tell application \\\"AeroSpaceBar\\\" to «event ascrpsbr» \\\"updateOnFocusChanged\\\"
+    \"
+    """.replacingOccurrences(of: "\n", with: " ")
+
     /// The icon cache gateway for loading app icons.
     private let iconCache: IconCache
 
     /// Use case for getting the AeroSpace executable path.
     private let getAeroSpacePathUseCase: GetAeroSpacePathUseCase
 
+    /// Use case for getting the AeroSpace configuration file path.
+    private let getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase
+
+    /// Use case for getting the optimized performance enabled setting.
+    private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
+
     /// Cached AeroSpace executable path.
-    private var aeroSpaceExecutable: String = ""
+    private var aeroSpaceExecutable: String
+
+    /// Whether optimized performance is enabled.
+    private var optimizedPerformanceEnabled: Bool
+
+    /// Task for window focus monitoring.
+    private var windowFocusMonitoringTask: Task<Void, Never>?
 
     /// Cancellables for publisher subscriptions.
     private var cancellables: Set<AnyCancellable> = []
 
     /// A dedicated dispatch queue for AeroSpace operations.
     private let queue = DispatchQueue(label: "com.aerospacebar.spaces", qos: .userInitiated)
-
-    /// Task for checking if a window is in focus.
-    private var windowInFocusObserverTask: Task<Void, Never>?
 
     // MARK: - Publisher Subjects
 
@@ -48,41 +68,150 @@ final class SpacesRepository: SpacesGateway {
     /// - Parameters:
     ///   - iconCache: The icon cache gateway for loading app icons
     ///   - getAeroSpacePathUseCase: Use case to resolve AeroSpace binary path dynamically
+    ///   - getAeroSpaceConfigPathUseCase: Use case to get the AeroSpace configuration file path
+    ///   - getOptimizedPerformanceEnabledUseCase: Use case to get the optimized performance enabled setting
     init(
         iconCache: IconCache,
-        getAeroSpacePathUseCase: GetAeroSpacePathUseCase
+        getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
+        getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase,
+        getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
     ) {
         self.iconCache = iconCache
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
+        self.getAeroSpaceConfigPathUseCase = getAeroSpaceConfigPathUseCase
+        self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
 
-        setupExecutablePathSubscription()
-        setupWindowInFocusObserver()
+        aeroSpaceExecutable = getAeroSpacePathUseCase.execute().blockingFirst()
+        optimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
+
+        setupUseCaseObservers()
+        configureWindowFocusMonitoring()
+    }
+
+    /// Configures the AeroSpace configuration.
+    private func configureAeroSpaceConfig() async {
+        let success = if optimizedPerformanceEnabled {
+            try? await AeroSpaceConfiguration.appendOnFocusChanged(
+                at: getAeroSpaceConfigPathUseCase.execute(),
+                command: AeroSpaceRepository.onFocusChangedCallback
+            )
+        } else {
+            try? await AeroSpaceConfiguration.removeOnFocusChanged(
+                at: getAeroSpaceConfigPathUseCase.execute(),
+                command: AeroSpaceRepository.onFocusChangedCallback
+            )
+        }
+
+        if success == true {
+            await reloadAeroSpaceConfig()
+            Logger.info("Successfully configured AeroSpace configuration", category: Logger.config)
+
+        } else {
+            Logger.warning("Failed to configure AeroSpace configuration", category: Logger.config)
+        }
+    }
+
+    /// Reloads the AeroSpace configuration.
+    private func reloadAeroSpaceConfig() async {
+        let executablePath = aeroSpaceExecutable
+        guard !executablePath.isEmpty else {
+            Logger.warning("Cannot reload AeroSpace config: executable path not set", category: Logger.config)
+            return
+        }
+
+        do {
+            let cli = AeroSpaceCLIClient(executablePath: executablePath)
+            _ = try cli.execute(arguments: ["reload-config"])
+            Logger.info("Successfully reloaded AeroSpace configuration", category: Logger.config)
+        } catch {
+            Logger.error("Failed to reload AeroSpace configuration", error: error, category: Logger.config)
+        }
+    }
+
+    /// Sets up Apple Event handling for focus change notifications.
+    private func configureWindowFocusMonitoring() {
+        Logger.info("Configuring window focus monitoring", category: Logger.spaces)
+
+        // Cancel any existing task
+        windowFocusMonitoringTask?.cancel()
+        windowFocusMonitoringTask = nil
+
+        // Remove any existing event handlers
+        NSAppleEventManager.shared().removeEventHandler(
+            forEventClass: AEEventClass(0x6173_6372), // 'ascr'
+            andEventID: AEEventID(0x7073_6272) // 'psbr'
+        )
+
+        Logger.info("Event handlers removed", category: Logger.spaces)
+
+        // Set up event handlers for optimized performance
+        if optimizedPerformanceEnabled {
+            NSAppleEventManager.shared().setEventHandler(
+                self,
+                andSelector: #selector(handleAppleEvent(_:withReplyEvent:)),
+                forEventClass: AEEventClass(0x6173_6372), // 'ascr'
+                andEventID: AEEventID(0x7073_6272) // 'psbr'
+            )
+
+            Logger.info("Event handlers set up", category: Logger.spaces)
+        } else {
+            windowFocusMonitoringTask = Task.detached(priority: .utility) { [weak self] in
+                guard let self else { return }
+                repeat {
+                    await updateSpacesData()
+                    try? await Task.sleep(for: .seconds(0.5))
+                } while !Task.isCancelled
+            }
+
+            Logger.info("Window focus monitoring task set up", category: Logger.spaces)
+        }
+
+        // Fire-and-forget: don't await these operations
+        let executable = aeroSpaceExecutable
+        let optimized = optimizedPerformanceEnabled
+
+        Task.detached(priority: .utility) { [weak self] in
+            guard let self else { return }
+            await reconfigureAeroSpaceOffMain(executablePath: executable, optimized: optimized)
+            await updateSpacesData()
+        }
+
+        Logger.info("AeroSpace configuration reconfiguration started", category: Logger.spaces)
+    }
+
+    /// Handles Apple Events from osascript calls.
+    @objc private func handleAppleEvent(_ event: NSAppleEventDescriptor, withReplyEvent _: NSAppleEventDescriptor) {
+        // Extract the command from the Apple Event
+        if let command = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue {
+            switch command {
+            case "updateOnFocusChanged":
+                Task.detached(priority: .utility) { [self] in
+                    await updateSpacesData()
+                }
+            default:
+                Logger.debug("Received unknown Apple Event command: \(command)", category: Logger.spaces)
+            }
+        }
     }
 
     deinit {
-        windowInFocusObserverTask?.cancel()
+        // Apple Events cleanup is handled automatically when the object is deallocated
     }
 
     // MARK: - SpacesGateway Implementation
 
     /// Sets up subscription to monitor executable path changes.
-    private func setupExecutablePathSubscription() {
+    private func setupUseCaseObservers() {
         getAeroSpacePathUseCase.execute()
-            .sink { [weak self] path in
-                self?.aeroSpaceExecutable = path
+            .assign(to: \.aeroSpaceExecutable, on: self)
+            .store(in: &cancellables)
+
+        getOptimizedPerformanceEnabledUseCase.execute()
+            .sink { [weak self] enabled in
+                self?.optimizedPerformanceEnabled = enabled
+                self?.configureWindowFocusMonitoring()
             }
             .store(in: &cancellables)
-    }
-
-    /// Sets up observer for on-focus-changed URL events to trigger spaces data updates.
-    private func setupWindowInFocusObserver() {
-        windowInFocusObserverTask?.cancel()
-        windowInFocusObserverTask = Task {
-            repeat {
-                await self.updateSpacesData()
-                try? await Task.sleep(for: .seconds(0.5))
-            } while windowInFocusObserverTask?.isCancelled == false
-        }
     }
 
     /// Updates spaces data and emits via publisher.
@@ -101,11 +230,12 @@ final class SpacesRepository: SpacesGateway {
             }
 
             let spacesWithIcons = await loadIconsForWindows(in: spaces)
-            spacesWithWindowsSubject.send(spacesWithIcons)
-
-            // Update AeroSpace running status
             let isRunning = isAeroSpaceRunning()
-            aeroSpaceRunningSubject.send(isRunning)
+
+            Task { @MainActor in
+                spacesWithWindowsSubject.send(spacesWithIcons)
+                aeroSpaceRunningSubject.send(isRunning)
+            }
 
         } catch {
             Logger.error("Failed to update spaces data", error: error, category: Logger.spaces)
@@ -367,5 +497,32 @@ final class SpacesRepository: SpacesGateway {
         }
 
         return updatedSpaces
+    }
+
+    // Add this new method that does the heavy work off-main
+    private nonisolated func reconfigureAeroSpaceOffMain(executablePath: String, optimized: Bool) async {
+        let success: Bool? = try? await {
+            if optimized {
+                try await AeroSpaceConfiguration.appendOnFocusChanged(
+                    at: getAeroSpaceConfigPathUseCase.execute(),
+                    command: AeroSpaceRepository.onFocusChangedCallback
+                )
+            } else {
+                try await AeroSpaceConfiguration.removeOnFocusChanged(
+                    at: getAeroSpaceConfigPathUseCase.execute(),
+                    command: AeroSpaceRepository.onFocusChangedCallback
+                )
+            }
+        }()
+
+        if success == true, !executablePath.isEmpty {
+            do {
+                let cli = AeroSpaceCLIClient(executablePath: executablePath)
+                _ = try cli.execute(arguments: ["reload-config"])
+                Logger.info("Successfully reloaded AeroSpace configuration", category: Logger.config)
+            } catch {
+                Logger.error("Failed to reload AeroSpace configuration", error: error, category: Logger.config)
+            }
+        }
     }
 }

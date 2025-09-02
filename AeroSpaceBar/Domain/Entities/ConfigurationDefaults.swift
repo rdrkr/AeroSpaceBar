@@ -9,6 +9,12 @@ import Foundation
 /// design pattern by keeping configuration concerns within the domain layer.
 @MainActor
 struct ConfigurationDefaults {
+    #if DEBUG
+        private static let debugMode = true
+    #else
+        private static let debugMode = false
+    #endif
+
     // MARK: - Application Settings
 
     /// Whether to show window titles by default.
@@ -24,7 +30,10 @@ struct ConfigurationDefaults {
     static let focusWindowOnClick = true
 
     /// Whether to enable performance metrics collection by default.
-    static let enablePerformanceMetrics = true
+    static let enablePerformanceMetrics = debugMode
+
+    /// Whether to enable optimized performance behavior by default.
+    static let isOptimizedPerformanceEnabled = true
 
     /// Default log level for application logging.
     static let logLevel = Logger.Level.info

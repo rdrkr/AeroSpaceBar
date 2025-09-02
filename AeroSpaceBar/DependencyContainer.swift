@@ -22,9 +22,11 @@ final class DependencyContainer {
     ///
     /// This service is lazily initialized and provides access to spaces data
     /// and window management functionality.
-    private lazy var spacesGateway: SpacesGateway = SpacesRepository(
+    private lazy var spacesGateway: SpacesGateway = AeroSpaceRepository(
         iconCache: iconCache,
-        getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase()
+        getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
+        getAeroSpaceConfigPathUseCase: makeGetAeroSpaceConfigPathUseCase(),
+        getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase()
     )
 
     /// The configuration gateway for managing application settings.
@@ -67,7 +69,9 @@ final class DependencyContainer {
         getLogLevelUseCase: makeGetLogLevelUseCase(),
         setLogLevelUseCase: makeSetLogLevelUseCase(),
         getEnablePerformanceMetricsUseCase: makeGetEnablePerformanceMetricsUseCase(),
-        setEnablePerformanceMetricsUseCase: makeSetEnablePerformanceMetricsUseCase()
+        setEnablePerformanceMetricsUseCase: makeSetEnablePerformanceMetricsUseCase(),
+        getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
+        setOptimizedPerformanceEnabledUseCase: makeSetOptimizedPerformanceEnabledUseCase()
     )
 
     /// Gets the settings view model instance.
@@ -185,6 +189,12 @@ final class DependencyContainer {
         OpenAeroSpaceConfigUseCase(configurationGateway: configurationGateway)
     }
 
+    /// Creates a new GetAeroSpaceConfigPathUseCase instance.
+    /// - Returns: A new GetAeroSpaceConfigPathUseCase instance
+    func makeGetAeroSpaceConfigPathUseCase() -> GetAeroSpaceConfigPathUseCase {
+        GetAeroSpaceConfigPathUseCase(configurationGateway: configurationGateway)
+    }
+
     /// Creates a new ResetConfigurationUseCase instance.
     /// - Returns: A new ResetConfigurationUseCase instance
     func makeResetConfigurationUseCase() -> ResetConfigurationUseCase {
@@ -203,6 +213,18 @@ final class DependencyContainer {
     /// - Returns: A new SetEnablePerformanceMetricsUseCase instance
     func makeSetEnablePerformanceMetricsUseCase() -> SetEnablePerformanceMetricsUseCase {
         SetEnablePerformanceMetricsUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetOptimizedPerformanceEnabledUseCase instance.
+    /// - Returns: A new GetOptimizedPerformanceEnabledUseCase instance
+    func makeGetOptimizedPerformanceEnabledUseCase() -> GetOptimizedPerformanceEnabledUseCase {
+        GetOptimizedPerformanceEnabledUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetOptimizedPerformanceEnabledUseCase instance.
+    /// - Returns: A new SetOptimizedPerformanceEnabledUseCase instance
+    func makeSetOptimizedPerformanceEnabledUseCase() -> SetOptimizedPerformanceEnabledUseCase {
+        SetOptimizedPerformanceEnabledUseCase(configurationGateway: configurationGateway)
     }
 
     /// Creates a new GetLogLevelUseCase instance.

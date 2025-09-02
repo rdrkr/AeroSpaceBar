@@ -13,7 +13,7 @@ final class GetSpacesUseCase {
     private let spacesGateway: SpacesGateway
 
     /// Initializes the use case with the specified gateway.
-    /// - Parameter spacesRepository: The gateway for spaces data access
+    /// - Parameter spacesGateway: The gateway for spaces data access
     init(spacesGateway: SpacesGateway) {
         self.spacesGateway = spacesGateway
     }

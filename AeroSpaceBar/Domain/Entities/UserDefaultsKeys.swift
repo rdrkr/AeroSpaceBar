@@ -35,6 +35,9 @@ enum UserDefaultsKeys: String, CaseIterable {
     /// Whether to enable performance metrics collection and logging.
     case enablePerformanceMetrics = "com.aerospacebar.preferences.enablePerformanceMetrics"
 
+    /// Whether to enable optimized performance behavior.
+    case isOptimizedPerformanceEnabled = "com.aerospacebar.preferences.isOptimizedPerformanceEnabled"
+
     // MARK: - AeroSpace Integration
 
     /// Source of AeroSpace installation to use: homebrew or

@@ -12,30 +12,40 @@ import Combine
 /// This is the data layer implementation of the ConfigurationGateway.
 @MainActor
 final class ConfigurationRepository: ConfigurationGateway {
-    // MARK: - Private Subjects for Publishers
-
+    /// Cancellables for publisher subscriptions.
     private var cancellables = Set<AnyCancellable>()
 
+    /// Subject for showing window titles.
     private let showWindowTitlesSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showWindowTitles
     )
 
+    /// Subject for AeroSpace path.
     private let aeroSpacePathSubject = CurrentValueSubject<String, Never>(
         ConfigurationDefaults.aeroSpacePath
     )
 
+    /// Subject for current AeroSpace version.
     private let currentAeroSpaceVersionSubject = CurrentValueSubject<String?, Never>(
         nil
     )
 
+    /// Subject for focus window on click.
     private let focusWindowOnClickSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.focusWindowOnClick
     )
 
+    /// Subject for enable performance metrics.
     private let enablePerformanceMetricsSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.enablePerformanceMetrics
     )
 
+    /// Subject for optimized performance flag.
+    private let isOptimizedPerformanceEnabledSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.isOptimizedPerformanceEnabled
+    )
+
+    /// Subject for log level.
     private let logLevelSubject = CurrentValueSubject<Logger.Level, Never>(
         ConfigurationDefaults.logLevel
     )
@@ -94,6 +104,10 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> {
         enablePerformanceMetricsSubject.eraseToAnyPublisher()
+    }
+
+    var isOptimizedPerformanceEnabledPublisher: AnyPublisher<Bool, Never> {
+        isOptimizedPerformanceEnabledSubject.eraseToAnyPublisher()
     }
 
     var logLevelPublisher: AnyPublisher<Logger.Level, Never> {
@@ -176,6 +190,11 @@ final class ConfigurationRepository: ConfigurationGateway {
             .object(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) as? Bool
             ?? enablePerformanceMetricsSubject.value
         enablePerformanceMetricsSubject.send(enablePerformanceMetrics)
+
+        let isOptimizedPerformanceEnabled = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.isOptimizedPerformanceEnabled.rawValue) as? Bool
+            ?? isOptimizedPerformanceEnabledSubject.value
+        isOptimizedPerformanceEnabledSubject.send(isOptimizedPerformanceEnabled)
 
         let logLevelRaw = UserDefaults.standard.string(forKey: UserDefaultsKeys.logLevel.rawValue)
         let logLevel = Logger.Level(rawValue: logLevelRaw ?? "") ?? logLevelSubject.value
@@ -278,6 +297,14 @@ final class ConfigurationRepository: ConfigurationGateway {
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue)
         enablePerformanceMetricsSubject.send(value)
+    }
+
+    /// Sets whether optimized performance is enabled and emits update.
+    func setIsOptimizedPerformanceEnabled(_ value: Bool) async {
+        if value == isOptimizedPerformanceEnabledSubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.isOptimizedPerformanceEnabled.rawValue)
+        isOptimizedPerformanceEnabledSubject.send(value)
     }
 
     /// Sets the log level and emits update.
@@ -419,7 +446,7 @@ final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Gets the AeroSpace configuration file path, creating a default one if needed
-    private func getAeroSpaceConfigPath() async -> URL {
+    func getAeroSpaceConfigPath() async -> URL {
         let cliPath = await fetchAeroSpaceConfigPathFromCLI()
         let resolvedURL = if let path = cliPath, !path.isEmpty {
             URL(fileURLWithPath: path)
@@ -434,7 +461,7 @@ final class ConfigurationRepository: ConfigurationGateway {
     private func fetchAeroSpaceConfigPathFromCLI() async -> String? {
         let executablePath = aeroSpacePathSubject.value
         return await withCheckedContinuation { continuation in
-            Task { @MainActor in
+            Task.detached {
                 do {
                     let cli = AeroSpaceCLIClient(executablePath: executablePath)
                     let data = try cli.execute(arguments: ["config", "--config-path"])
@@ -461,6 +488,7 @@ final class ConfigurationRepository: ConfigurationGateway {
         transparencySubject.send(ConfigurationDefaults.transparency)
         focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
         enablePerformanceMetricsSubject.send(ConfigurationDefaults.enablePerformanceMetrics)
+        isOptimizedPerformanceEnabledSubject.send(ConfigurationDefaults.isOptimizedPerformanceEnabled)
         logLevelSubject.send(ConfigurationDefaults.logLevel)
 
         // Reset UI configuration subjects

@@ -14,5 +14,9 @@
     "sweetpad.system.taskExecutor": "v2",
     "sweetpad.system.logLevel": "info",
     "sweetpad.build.configuration": "Debug",
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.associations": {
+        ".fantomasignore": "ignore",
+        "__node_handle": "cpp"
+    }
 }

@@ -4,18 +4,16 @@
 import XCTest
 
 final class CompleteUserJourneyUITests: XCTestCase {
-    var app: XCUIApplication!
+    var app: XCUIApplication?
 
-    override func setUp() {
-        super.setUp()
+    func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launch()
+        app?.launch()
     }
 
-    override func tearDown() {
+    func tearDown() {
         app = nil
-        super.tearDown()
     }
 
     func testCompleteUserJourneyFromLaunchToSettingsConfiguration() {

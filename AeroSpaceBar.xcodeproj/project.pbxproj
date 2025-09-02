@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4525C02E66D944003156C3 /* TOMLKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1AFC28802E609B9E00258BEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -79,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +176,7 @@
 			);
 			name = AeroSpaceBar;
 			packageProductDependencies = (
+				1A4525C02E66D944003156C3 /* TOMLKit */,
 			);
 			productName = AeroSpaceBar;
 			productReference = C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */;
@@ -208,6 +214,7 @@
 			mainGroup = C10E2F812D41235900AC957C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -635,6 +642,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LebJe/TOMLKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A4525C02E66D944003156C3 /* TOMLKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
+			productName = TOMLKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C10E2F822D41235900AC957C /* Project object */;
 }

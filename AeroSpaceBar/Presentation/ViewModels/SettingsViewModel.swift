@@ -15,7 +15,7 @@ class SettingsViewModel: ObservableObject {
     /// The transparency level of the menu bar panel (0.1 to 1.0).
     @Published var transparency: Double {
         didSet {
-            Task {
+            Task.detached(priority: .utility) { [self] in
                 await setTransparencyUseCase.execute(transparency: transparency)
             }
         }
@@ -24,7 +24,7 @@ class SettingsViewModel: ObservableObject {
     /// Whether to immediately focus a window when clicking on it.
     @Published var focusWindowOnClick: Bool {
         didSet {
-            Task {
+            Task.detached(priority: .utility) { [self] in
                 await setFocusWindowOnClickUseCase.execute(enabled: focusWindowOnClick)
             }
         }
@@ -35,7 +35,7 @@ class SettingsViewModel: ObservableObject {
     /// The absolute path to the AeroSpace CLI binary.
     @Published var aeroSpacePath: String {
         didSet {
-            Task {
+            Task.detached(priority: .utility) { [self] in
                 await setAeroSpacePathUseCase.execute(value: aeroSpacePath)
             }
         }
@@ -44,7 +44,7 @@ class SettingsViewModel: ObservableObject {
     /// The current log level for application logging.
     @Published var logLevel: Logger.Level {
         didSet {
-            Task {
+            Task.detached(priority: .utility) { [self] in
                 await setLogLevelUseCase.execute(value: logLevel)
             }
         }
@@ -53,8 +53,17 @@ class SettingsViewModel: ObservableObject {
     /// Whether to enable performance metrics collection and logging.
     @Published var enablePerformanceMetrics: Bool {
         didSet {
-            Task {
+            Task.detached(priority: .utility) { [self] in
                 await setEnablePerformanceMetricsUseCase.execute(value: enablePerformanceMetrics)
+            }
+        }
+    }
+
+    /// Whether to enable optimized performance behavior.
+    @Published var isOptimizedPerformanceEnabled: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setOptimizedPerformanceEnabledUseCase.execute(value: isOptimizedPerformanceEnabled)
             }
         }
     }
@@ -115,6 +124,8 @@ class SettingsViewModel: ObservableObject {
     private let setLogLevelUseCase: SetLogLevelUseCase
     private let getEnablePerformanceMetricsUseCase: GetEnablePerformanceMetricsUseCase
     private let setEnablePerformanceMetricsUseCase: SetEnablePerformanceMetricsUseCase
+    private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
+    private let setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -135,7 +146,9 @@ class SettingsViewModel: ObservableObject {
         getLogLevelUseCase: GetLogLevelUseCase,
         setLogLevelUseCase: SetLogLevelUseCase,
         getEnablePerformanceMetricsUseCase: GetEnablePerformanceMetricsUseCase,
-        setEnablePerformanceMetricsUseCase: SetEnablePerformanceMetricsUseCase
+        setEnablePerformanceMetricsUseCase: SetEnablePerformanceMetricsUseCase,
+        getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
+        setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
     ) {
         // Initialize Display Use Cases
         self.getTransparencyUseCase = getTransparencyUseCase
@@ -153,6 +166,8 @@ class SettingsViewModel: ObservableObject {
         self.setLogLevelUseCase = setLogLevelUseCase
         self.getEnablePerformanceMetricsUseCase = getEnablePerformanceMetricsUseCase
         self.setEnablePerformanceMetricsUseCase = setEnablePerformanceMetricsUseCase
+        self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
+        self.setOptimizedPerformanceEnabledUseCase = setOptimizedPerformanceEnabledUseCase
 
         // Load initial values from use cases
         transparency = getTransparencyUseCase.execute().blockingFirst()
@@ -161,6 +176,7 @@ class SettingsViewModel: ObservableObject {
         aeroSpaceVersion = getAeroSpaceVersionUseCase.execute().blockingFirst()
         logLevel = getLogLevelUseCase.execute().blockingFirst()
         enablePerformanceMetrics = getEnablePerformanceMetricsUseCase.execute().blockingFirst()
+        isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         setupReactiveSubscriptions()
@@ -229,6 +245,10 @@ class SettingsViewModel: ObservableObject {
 
         getEnablePerformanceMetricsUseCase.execute()
             .assign(to: \.enablePerformanceMetrics, on: self)
+            .store(in: &cancellables)
+
+        getOptimizedPerformanceEnabledUseCase.execute()
+            .assign(to: \.isOptimizedPerformanceEnabled, on: self)
             .store(in: &cancellables)
     }
 }
