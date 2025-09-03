@@ -27,6 +27,7 @@ extension Publisher {
         guard let result else {
             fatalError("Publisher did not emit any value")
         }
+
         return result
     }
 }

@@ -15,6 +15,7 @@
 --wrapcollections before-first
 --wrapconditions before-first
 --wraptypealiases before-first
+--type-attributes prev-line
 
 # Spacing
 --trimwhitespace always
@@ -35,6 +36,7 @@
 --hexliteralcase uppercase
 --exponentcase lowercase
 --decimal-grouping 3,4
+--line-between-guards true
 
 # Imports
 --importgrouping alphabetized
@@ -47,4 +49,17 @@
 --swiftversion 6.2
 
 # rules
+--enable blankLineAfterImports
+--enable blankLineAfterSwitchCase
+--enable blankLinesAfterGuardStatements
+--enable blankLinesBetweenScopes
+--enable consecutiveBlankLines
+--enable consecutiveSpaces
+--enable docCommentsBeforeModifiers
+--enable duplicateImports
+--enable leadingDelimiters
+--enable linebreakAtEndOfFile
+--enable spaceAroundComments
+--enable wrapMultilineFunctionChains
+--enable wrapSwitchCases
 --disable preferForLoop

@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// This view contains settings that affect the basic functionality and appearance
 /// of the AeroSpaceBar application, such as:
-/// - Launch at login
+/// - Launch at Login
 /// - AeroSpace path
 /// - Appearance settings
 struct GeneralSettingsView: View {
@@ -26,7 +26,7 @@ struct GeneralSettingsView: View {
         ) {
             Section {
                 Toggle(isOn: $viewModel.launchAtLogin) {
-                    Text(LocalizedStringResource("Launch at login"))
+                    Text(LocalizedStringResource("Launch at Login"))
                     Text(LocalizedStringResource("Automatically start AeroSpaceBar when you log in"))
                 }
                 .toggleStyle(.switch)
@@ -140,32 +140,6 @@ struct GeneralSettingsView: View {
                     viewModel.objectWillChange.send()
                 }
                 .tag("general-aerospace-section")
-            }
-
-            Section(LocalizedStringResource("Appearance")) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text(LocalizedStringResource("Transparency"))
-                            .tag("general-transparency-label")
-
-                        Slider(
-                            value: $viewModel.transparency,
-                            in: 0.1 ... 1.0
-                        )
-                        .tag("general-transparency-slider")
-
-                        Text("\(Int(viewModel.transparency * 100))%")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
-                            .tag("general-transparency-value")
-                    }
-
-                    Text(LocalizedStringResource("Adjust the transparency of the menu bar panel"))
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
-                        .tag("general-transparency-help-text")
-                }
-                .tag("general-appearance-section")
             }
         }
         .tag("general-settings-view")

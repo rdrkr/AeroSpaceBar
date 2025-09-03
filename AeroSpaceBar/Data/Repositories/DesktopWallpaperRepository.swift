@@ -315,6 +315,7 @@ private extension NSImage {
         else {
             return nil
         }
+
         return bitmapImage.representation(using: .png, properties: [:])
     }
 }

@@ -20,7 +20,7 @@ struct AdvancedSettingsView: View {
         ) {
             Section {
                 Toggle(isOn: $viewModel.focusWindowOnClick) {
-                    Text(LocalizedStringResource("Focus window on click"))
+                    Text(LocalizedStringResource("Focus Window on Click"))
                     Text(LocalizedStringResource("Immediately focus a window when clicking on it"))
                 }
                 .toggleStyle(.switch)
@@ -45,14 +45,14 @@ struct AdvancedSettingsView: View {
                 }
 
                 Toggle(isOn: $viewModel.enablePerformanceMetrics) {
-                    Text(LocalizedStringResource("Enable performance metrics"))
+                    Text(LocalizedStringResource("Enable Performance Metrics"))
                     Text(LocalizedStringResource("Track and log performance data for debugging"))
                 }
                 .toggleStyle(.switch)
                 .tag("advanced-performance-metrics-toggle")
 
                 Toggle(isOn: $viewModel.isOptimizedPerformanceEnabled) {
-                    Text(LocalizedStringResource("Enable optimized performance"))
+                    Text(LocalizedStringResource("Enable Optimized Performance"))
                     Text(LocalizedStringResource("Utilize AeroSpace's event system for CPU consumption optimization"))
                 }
                 .toggleStyle(.switch)

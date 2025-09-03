@@ -255,6 +255,7 @@ enum Logger {
     /// Starts a performance measurement interval
     static func beginInterval(_ name: String, id _: OSSignpostID) {
         guard enablePerformanceMetrics else { return }
+
         // For now, just log the start of the interval
         debug("Performance interval started: \(name)", category: Logger.performance)
     }
@@ -262,6 +263,7 @@ enum Logger {
     /// Ends a performance measurement interval
     static func endInterval(_ name: String, id _: OSSignpostID) {
         guard enablePerformanceMetrics else { return }
+
         // For now, just log the end of the interval
         debug("Performance interval ended: \(name)", category: Logger.performance)
     }

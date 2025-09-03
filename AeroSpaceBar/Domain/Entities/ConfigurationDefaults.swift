@@ -1,6 +1,7 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
+import SwiftUI
 
 /// Configuration struct containing all default values for application settings.
 ///
@@ -18,13 +19,31 @@ struct ConfigurationDefaults {
     // MARK: - Application Settings
 
     /// Whether to show window titles by default.
-    static let showWindowTitles = false
+    static let showWindowTitles = true
 
     /// Default AeroSpace binary path (empty string means auto-detection).
     static let aeroSpacePath = ""
 
-    /// Default transparency level for the menu bar panel.
-    static let transparency = 0.9
+    /// Default background opacity level for the space elements.
+    static let spaceBackgroundOpacity = 0.4
+
+    /// Default background blur radius for space elements in points.
+    static let spaceBackgroundBlurRadius: CGFloat = 0.0
+
+    /// Default background tint color for space elements.
+    static let spaceBackgroundTintColor = Color.white
+
+    /// Default foreground color for space elements.
+    static let spaceForegroundColor = Color.white
+
+    /// Default border tint color for space elements.
+    static let spaceBorderTintColor = Color.white
+
+    /// Default border opacity level for the space elements.
+    static let spaceBorderOpacity = 0.0
+
+    /// Default border width for the space elements in points.
+    static let spaceBorderWidth: CGFloat = 1.0
 
     /// Whether to focus a window when clicking on it by default.
     static let focusWindowOnClick = true
@@ -59,8 +78,5 @@ struct ConfigurationDefaults {
     static let windowIconSize: CGFloat = 22.5
 
     /// Default corner radius for space elements in points.
-    static let spaceCornerRadius: CGFloat = 20
-
-    /// Default corner radius for window elements in points.
-    static let windowCornerRadius: CGFloat = 8
+    static let spaceCornerRadius: CGFloat = 14
 }

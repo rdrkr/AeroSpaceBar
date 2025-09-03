@@ -10,7 +10,8 @@ plugins {
 val projectName = "AeroSpaceBar"
 val xcodeProject = "$projectName.xcodeproj"
 val xcodeScheme = projectName
-val productDir = "${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData/AeroSpaceBar-fifbaernwsaqwhfwajnuubouitxw/Build/Products"
+val productDir = "${System.getProperty("user.home")}/Library/Developer/Xcode/" +
+        "DerivedData/AeroSpaceBar-fifbaernwsaqwhfwajnuubouitxw/Build/Products"
 
 // Task groups for better organization
 val buildGroup = "build"
@@ -26,7 +27,8 @@ tasks.register("showHelp") {
     group = "help"
     description = "Show available tasks"
     doLast {
-        println("""
+        println(
+            """
             🚀 AeroSpaceBar - Available Gradle Tasks
             
             📦 Build Tasks:
@@ -56,30 +58,27 @@ tasks.register("showHelp") {
             
             💡 Usage: ./gradlew <task>
             Example: ./gradlew build
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 }
 
 // Debug build task
-tasks.register("buildDebug") {
+tasks.register<Exec>("buildDebug") {
     group = buildGroup
     description = "Build the project in Debug configuration"
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "build")
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "build")
-        }
         println("✅ Debug build completed")
     }
 }
 
 // Release build task
-tasks.register("buildRelease") {
+tasks.register<Exec>("buildRelease") {
     group = buildGroup
     description = "Build the project in Release configuration"
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "build")
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "build")
-        }
         println("✅ Release build completed")
     }
 }
@@ -95,23 +94,27 @@ tasks.register("build") {
 }
 
 // Clean task
+val cleanXcode = tasks.register<Exec>("cleanXcode") {
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "clean")
+}
+
+val cleanDerivedData = tasks.register<Exec>("cleanDerivedData") {
+    commandLine("rm", "-rf", "DerivedData")
+}
+
+val cleanBuild = tasks.register<Exec>("cleanBuild") {
+    commandLine("rm", "-rf", "build")
+    commandLine("rm", "-rf", ".build")
+}
+
 tasks.register("clean") {
     group = buildGroup
     description = "Clean build artifacts, DerivedData, and Gradle build directory"
+    dependsOn(cleanXcode, cleanDerivedData, cleanBuild)
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "clean")
-        }
-        exec {
-            commandLine("rm", "-rf", "DerivedData")
-        }
-        exec {
-            commandLine("rm", "-rf", "build")
-        }
         println("✅ Clean completed (Xcode + DerivedData + Gradle build)")
     }
 }
-
 
 
 // All-in-one task
@@ -122,63 +125,48 @@ tasks.register("all") {
 }
 
 // Format task
-tasks.register("format") {
+tasks.register<Exec>("format") {
     group = codeQualityGroup
     description = "Format code with SwiftFormat"
+    workingDir = projectDir
+    commandLine("/opt/homebrew/bin/swiftformat", "--config", ".swiftformat", projectDir)
     doLast {
-        exec {
-            commandLine("swiftformat", projectDir)
-        }
         println("✅ Code formatting completed")
     }
 }
 
 // Lint task
-tasks.register("lint") {
+tasks.register<Exec>("lint") {
     group = codeQualityGroup
     description = "Lint code with SwiftLint"
+    commandLine("/opt/homebrew/bin/swiftlint", "lint", "--strict")
     doLast {
-        exec {
-            commandLine("swiftlint", "lint", "--strict")
-        }
-
         println("✅ Code linting completed")
     }
 }
 
 // Lint fix task
-tasks.register("lintFix") {
+tasks.register<Exec>("lintFix") {
     group = codeQualityGroup
     description = "Auto-fix linting issues (where possible)"
+    commandLine("/opt/homebrew/bin/swiftlint", "--fix")
     doLast {
-        exec {
-            commandLine("swiftlint", "--fix")
-        }
-
         println("✅ Lint fixes applied")
     }
 }
 
 // Lint rules task
-tasks.register("lintRules") {
+tasks.register<Exec>("lintRules") {
     group = codeQualityGroup
     description = "Show linting rules"
-    doLast {
-        exec {
-            commandLine("swiftlint", "rules")
-        }
-    }
+    commandLine("/opt/homebrew/bin/swiftlint", "rules")
 }
 
 // Format rules task
-tasks.register("formatRules") {
+tasks.register<Exec>("formatRules") {
     group = codeQualityGroup
     description = "Show SwiftFormat rules"
-    doLast {
-        exec {
-            commandLine("swiftformat", "--help")
-        }
-    }
+    commandLine("/opt/homebrew/bin/swiftformat", "--help")
 }
 
 // Check task (format + lint)
@@ -192,30 +180,35 @@ tasks.register("check") {
 }
 
 // Test task
-tasks.register("test") {
+tasks.register<Exec>("test") {
     group = testGroup
     description = "Run Xcode tests"
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "test")
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "test")
-        }
         println("✅ Tests completed")
     }
 }
 
 // Install tools task
+val installSwiftLint = tasks.register<Exec>("installSwiftLint") {
+    commandLine("brew", "install", "swiftlint")
+    doFirst {
+        println("Installing SwiftLint...")
+    }
+}
+
+val installSwiftFormat = tasks.register<Exec>("installSwiftFormat") {
+    commandLine("brew", "install", "swiftformat")
+    doFirst {
+        println("Installing SwiftFormat...")
+    }
+}
+
 tasks.register("installTools") {
     group = toolingGroup
     description = "Install SwiftLint and SwiftFormat"
+    dependsOn(installSwiftLint, installSwiftFormat)
     doLast {
-        println("Installing SwiftLint...")
-        exec {
-            commandLine("brew", "install", "swiftlint")
-        }
-        println("Installing SwiftFormat...")
-        exec {
-            commandLine("brew", "install", "swiftformat")
-        }
         println("✅ Development tools installed")
     }
 }
@@ -223,31 +216,37 @@ tasks.register("installTools") {
 // Additional utility tasks
 
 // Run Debug task
-tasks.register("runDebug") {
-    group = buildGroup
-    description = "Build Debug variant and run the application"
-    dependsOn("buildDebug")
-    doLast {
+val runDebugApp = tasks.register<Exec>("runDebugApp") {
+    commandLine("$productDir/Debug/AeroSpaceBar.app/Contents/MacOS/AeroSpaceBar")
+    doFirst {
         println("🚀 Launching Debug application...")
-        exec {
-            commandLine("$productDir/Debug/AeroSpaceBar.app/Contents/MacOS/AeroSpaceBar")
-        }
+    }
+    doLast {
         println("✅ Debug application stopped")
     }
 }
 
+tasks.register("runDebug") {
+    group = buildGroup
+    description = "Build Debug variant and run the application"
+    dependsOn("buildDebug", runDebugApp)
+}
+
 // Run Release task
+val runReleaseApp = tasks.register<Exec>("runReleaseApp") {
+    commandLine("$productDir/Release/AeroSpaceBar.app/Contents/MacOS/AeroSpaceBar")
+    doFirst {
+        println("🚀 Launching Release application...")
+    }
+    doLast {
+        println("✅ Release application stopped")
+    }
+}
+
 tasks.register("runRelease") {
     group = buildGroup
     description = "Build Release variant and run the application"
-    dependsOn("buildRelease")
-    doLast {
-        println("🚀 Launching Release application...")
-        exec {
-            commandLine("$productDir/Release/AeroSpaceBar.app/Contents/MacOS/AeroSpaceBar")
-        }
-        println("✅ Release application stopped")
-    }
+    dependsOn("buildRelease", runReleaseApp)
 }
 
 // Run task (default - uses Debug)
@@ -258,26 +257,33 @@ tasks.register("run") {
 }
 
 // Archive task
-tasks.register("archive") {
+tasks.register<Exec>("archive") {
     group = buildGroup
     description = "Create archive for distribution"
     dependsOn("clean", "build")
+    commandLine(
+        "xcodebuild",
+        "-project",
+        xcodeProject,
+        "-scheme",
+        xcodeScheme,
+        "-configuration",
+        "Release",
+        "archive",
+        "-archivePath",
+        "build/AeroSpaceBar.xcarchive"
+    )
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "archive", "-archivePath", "build/AeroSpaceBar.xcarchive")
-        }
         println("✅ Archive created at build/AeroSpaceBar.xcarchive")
     }
 }
 
 // Analyze task
-tasks.register("analyze") {
+tasks.register<Exec>("analyze") {
     group = codeQualityGroup
     description = "Run Xcode static analyzer"
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "analyze")
     doLast {
-        exec {
-            commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "analyze")
-        }
         println("✅ Static analysis completed")
     }
 }
@@ -287,7 +293,8 @@ tasks.register("info") {
     group = "help"
     description = "Show project information"
     doLast {
-        println("""
+        println(
+            """
             📋 AeroSpaceBar Project Information
             
             🏗️ Architecture: MVVM Clean Architecture
@@ -307,7 +314,8 @@ tasks.register("info") {
               - .swiftformat         - Code formatting rules
               - .swiftlint.yml       - Linting rules
               - build.gradle.kts     - This build configuration
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 }
 

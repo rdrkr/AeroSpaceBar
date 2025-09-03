@@ -2,12 +2,12 @@
 
 import Foundation
 
-/// Use case for setting the transparency configuration.
+/// Use case for setting the space border opacity configuration.
 ///
-/// This use case handles the business logic for updating the transparency setting,
+/// This use case handles the business logic for updating the space border opacity setting,
 /// following the domain-driven design pattern.
 @MainActor
-final class SetTransparencyUseCase {
+final class SetSpaceBorderOpacityUseCase {
     /// The configuration gateway for accessing configuration data.
     private let configurationGateway: ConfigurationGateway
 
@@ -17,10 +17,10 @@ final class SetTransparencyUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to set the transparency setting.
+    /// Executes the use case to set the space border opacity setting.
     ///
-    /// - Parameter transparency: The new transparency value (0.0 to 1.0).
-    func execute(transparency: Double) async {
-        await configurationGateway.setTransparency(transparency)
+    /// - Parameter spaceBorderOpacity: The new space border opacity value (0.0 to 1.0).
+    func execute(spaceBorderOpacity: Double) async {
+        await configurationGateway.setSpaceBorderOpacity(spaceBorderOpacity)
     }
 }

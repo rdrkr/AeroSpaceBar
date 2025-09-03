@@ -52,6 +52,11 @@ struct SpacesView: View {
         viewModel.spaceCornerRadius
     }
 
+    /// Computed property for whether to show window titles
+    private var showWindowTitles: Bool {
+        viewModel.showWindowTitles
+    }
+
     /// The body of the spaces view.
     ///
     /// This view creates a horizontal layout of spaces with their associated windows,
@@ -90,12 +95,17 @@ struct SpacesView: View {
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set
-                    Color.black.opacity(0)
+                    Color.black
+                        .opacity(0)
                         .tag("spaces-default-background")
                 }
             }
             .tag("spaces-content-zstack")
         }
+        .animation(
+            .smooth(duration: animationDuration),
+            value: showWindowTitles
+        )
         .animation(
             .smooth(duration: animationDuration),
             value: spaces
@@ -150,7 +160,9 @@ private struct SpaceView: View {
 
     /// Computed property for focus state to avoid repeated calculations
     private var isFocused: Bool {
-        space.windows.contains { $0.isFocused } || space.isFocused
+        space.windows.contains {
+            $0.isFocused
+        } || space.isFocused
     }
 
     /// Computed property for space corner radius
@@ -173,6 +185,7 @@ private struct SpaceView: View {
 
             Text(space.id)
                 .font(.headline)
+                .foregroundColor(viewModel.spaceForegroundColor)
                 .frame(minWidth: 15)
                 .fixedSize(horizontal: true, vertical: false)
                 .tag("space-\(space.id)-identifier")
@@ -189,7 +202,19 @@ private struct SpaceView: View {
 
             Spacer().frame(width: widgetSpacing)
         }
-        .spaceFocusState(isFocused)
+        .spaceFocusState(
+            isFocused,
+            configuration: SpaceFocusState.Configuration(
+                backgroundOpacity: viewModel.spaceBackgroundOpacity,
+                backgroundBlurRadius: viewModel.spaceBackgroundBlurRadius,
+                backgroundTintColor: viewModel.spaceBackgroundTintColor,
+                foregroundColor: viewModel.spaceForegroundColor,
+                borderTintColor: viewModel.spaceBorderTintColor,
+                borderOpacity: viewModel.spaceBorderOpacity,
+                borderCornerRadius: viewModel.spaceCornerRadius,
+                borderWidth: viewModel.spaceBorderWidth
+            )
+        )
         .spaceCornerRadius(cornerRadius)
         .standardShadow()
         .blurReplaceTransition()
@@ -228,11 +253,6 @@ private struct WindowView: View {
         viewModel.windowIconSize
     }
 
-    /// Computed property for window corner radius
-    private var cornerRadius: CGFloat {
-        viewModel.windowCornerRadius
-    }
-
     /// Computed property for menu bar vertical padding
     private var verticalPadding: CGFloat {
         viewModel.menuBarVerticalPadding
@@ -246,7 +266,14 @@ private struct WindowView: View {
 
     /// Computed property for space focus state to avoid repeated calculations
     private var spaceIsFocused: Bool {
-        space.windows.contains { $0.isFocused }
+        space.windows.contains {
+            $0.isFocused
+        }
+    }
+
+    /// Computed property for whether to show window titles
+    private var showWindowTitles: Bool {
+        viewModel.showWindowTitles
     }
 
     /// The body of the window view.
@@ -270,30 +297,32 @@ private struct WindowView: View {
                 }
             }
             .windowFocusState(window.isFocused, spaceIsFocused: spaceIsFocused)
-            .blurReplaceTransition()
             .tag("window-\(window.id)-icon-container")
 
-            if window.isFocused, !titleText.isEmpty {
+            if window.isFocused, showWindowTitles, !titleText.isEmpty {
                 HStack {
                     Text(
                         titleText.count > 50
                             ? String(titleText.prefix(50)) + "..."
                             : titleText
                     )
-                    .fixedSize(horizontal: true, vertical: false)
+                    .foregroundColor(viewModel.spaceForegroundColor)
                     .textShadow()
                     .fontWeight(.semibold)
                     .tag("window-\(window.id)-title")
 
                     Spacer().frame(width: 5)
                 }
-                .transition(.blurReplace)
                 .tag("window-\(window.id)-title-container")
             }
         }
         .padding(.vertical, verticalPadding)
-        .background(isHovered ? .selected : .clear)
-        .windowCornerRadius(cornerRadius)
+        .background(
+            viewModel.spaceBackgroundTintColor
+                .opacity(isHovered ? 0.4 : 0.0)
+        )
+        .windowCornerRadius(8)
+        .blurReplaceTransition()
         .smoothAnimation()
         .contentShape(.rect)
         .onTapGesture {

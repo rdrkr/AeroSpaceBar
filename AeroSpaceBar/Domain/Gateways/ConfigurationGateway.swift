@@ -2,6 +2,7 @@
 
 import AppKit
 import Combine
+import SwiftUI
 
 /// Protocol defining the interface for configuration operations.
 ///
@@ -36,8 +37,26 @@ protocol ConfigurationGateway {
 
     // MARK: - UI Configuration Publishers
 
-    /// Publisher that emits transparency updates.
-    var transparencyPublisher: AnyPublisher<Double, Never> { get }
+    /// Publisher that emits space background opacity updates.
+    var spaceBackgroundOpacityPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits space background blur radius updates.
+    var spaceBackgroundBlurRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
+
+    /// Publisher that emits space background tint color updates.
+    var spaceBackgroundTintColorPublisher: AnyPublisher<Color, Never> { get }
+
+    /// Publisher that emits space foreground color updates.
+    var spaceForegroundColorPublisher: AnyPublisher<Color, Never> { get }
+
+    /// Publisher that emits space border tint color updates.
+    var spaceBorderTintColorPublisher: AnyPublisher<Color, Never> { get }
+
+    /// Publisher that emits space border opacity updates.
+    var spaceBorderOpacityPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits space border width updates.
+    var spaceBorderWidthPublisher: AnyPublisher<CGFloat, Never> { get }
 
     /// Publisher that emits menu bar vertical padding updates.
     var menuBarVerticalPaddingPublisher: AnyPublisher<CGFloat, Never> { get }
@@ -56,9 +75,6 @@ protocol ConfigurationGateway {
 
     /// Publisher that emits space corner radius updates.
     var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
-
-    /// Publisher that emits window corner radius updates.
-    var windowCornerRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
 
     // MARK: - Async Setters (trigger updates via publishers)
 
@@ -88,9 +104,33 @@ protocol ConfigurationGateway {
 
     // MARK: - UI Configuration Async Setters
 
-    /// Sets the transparency level of the menu bar panel.
-    /// - Parameter value: The transparency level
-    func setTransparency(_ value: Double) async
+    /// Sets the background opacity level of the space elements.
+    /// - Parameter value: The space background opacity level
+    func setSpaceBackgroundOpacity(_ value: Double) async
+
+    /// Sets the background blur radius for space elements in points.
+    /// - Parameter value: The space background blur radius
+    func setSpaceBackgroundBlurRadius(_ value: CGFloat) async
+
+    /// Sets the background tint color for space elements.
+    /// - Parameter value: The space background tint color
+    func setSpaceBackgroundTintColor(_ value: Color) async
+
+    /// Sets the foreground color for space elements.
+    /// - Parameter value: The space foreground color
+    func setSpaceForegroundColor(_ value: Color) async
+
+    /// Sets the border tint color for space elements.
+    /// - Parameter value: The space border tint color
+    func setSpaceBorderTintColor(_ value: Color) async
+
+    /// Sets the border opacity level of the space elements.
+    /// - Parameter value: The space border opacity level
+    func setSpaceBorderOpacity(_ value: Double) async
+
+    /// Sets the border width for space elements in points.
+    /// - Parameter value: The space border width
+    func setSpaceBorderWidth(_ value: CGFloat) async
 
     /// Sets the vertical padding for the menu bar interface in points.
     /// - Parameter value: The vertical padding
@@ -115,10 +155,6 @@ protocol ConfigurationGateway {
     /// Sets the corner radius for space elements in points.
     /// - Parameter value: The space corner radius
     func setSpaceCornerRadius(_ value: CGFloat) async
-
-    /// Sets the corner radius for window elements in points.
-    /// - Parameter value: The window corner radius
-    func setWindowCornerRadius(_ value: CGFloat) async
 
     // MARK: - AeroSpace Configuration Management
 

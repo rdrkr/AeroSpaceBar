@@ -98,12 +98,40 @@ struct HoverState: ViewModifier {
 
 /// Focus state modifier for spaces
 struct SpaceFocusState: ViewModifier {
+    struct Configuration {
+        let backgroundOpacity: Double
+        let backgroundBlurRadius: CGFloat
+        let backgroundTintColor: Color
+        let foregroundColor: Color
+        let borderTintColor: Color
+        let borderOpacity: Double
+        let borderCornerRadius: CGFloat
+        let borderWidth: CGFloat
+    }
+
     let isFocused: Bool
+    let configuration: Configuration
 
     func body(content: Content) -> some View {
-        content.background(
-            isFocused ? Color.active : Color.noActive
-        )
+        content
+            .background(
+                configuration.backgroundTintColor
+                    .opacity(isFocused ? configuration
+                        .backgroundOpacity : (configuration.backgroundOpacity == 0 ? 0 : 0.2)
+                    )
+                    .blur(radius: configuration.backgroundBlurRadius)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: configuration.borderCornerRadius, style: .continuous)
+                    .stroke(
+                        configuration.borderTintColor
+                            .opacity(isFocused ? configuration
+                                .borderOpacity :
+                                (configuration.borderOpacity == 0 ? 0 : configuration.borderOpacity * 0.3)
+                            ),
+                        lineWidth: configuration.borderWidth
+                    )
+            )
     }
 }
 
@@ -161,8 +189,11 @@ extension View {
     }
 
     /// Apply space focus state modifier
-    func spaceFocusState(_ isFocused: Bool) -> some View {
-        modifier(SpaceFocusState(isFocused: isFocused))
+    func spaceFocusState(
+        _ isFocused: Bool,
+        configuration: SpaceFocusState.Configuration
+    ) -> some View {
+        modifier(SpaceFocusState(isFocused: isFocused, configuration: configuration))
     }
 
     /// Apply window focus state modifier

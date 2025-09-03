@@ -24,8 +24,26 @@ enum UserDefaultsKeys: String, CaseIterable {
 
     // MARK: - Appearance Preferences
 
-    /// The transparency level of the menu bar panel (0.1 to 1.0).
-    case transparency = "com.aerospacebar.preferences.transparency"
+    /// The background opacity level of the space elements (0.1 to 1.0).
+    case spaceBackgroundOpacity = "com.aerospacebar.preferences.spaceBackgroundOpacity"
+
+    /// The background blur radius for space elements in points.
+    case spaceBackgroundBlurRadius = "com.aerospacebar.preferences.spaceBackgroundBlurRadius"
+
+    /// The background tint color for space elements.
+    case spaceBackgroundTintColor = "com.aerospacebar.preferences.spaceBackgroundTintColor"
+
+    /// The foreground color for space elements.
+    case spaceForegroundColor = "com.aerospacebar.preferences.spaceForegroundColor"
+
+    /// The border tint color for space elements.
+    case spaceBorderTintColor = "com.aerospacebar.preferences.spaceBorderTintColor"
+
+    /// The border opacity level of the space elements (0.0 to 1.0).
+    case spaceBorderOpacity = "com.aerospacebar.preferences.spaceBorderOpacity"
+
+    /// The border width of the space elements in points.
+    case spaceBorderWidth = "com.aerospacebar.preferences.spaceBorderWidth"
 
     // MARK: - Logging Preferences
 
@@ -65,7 +83,4 @@ enum UserDefaultsKeys: String, CaseIterable {
 
     /// The corner radius for space elements in points.
     case spaceCornerRadius = "com.aerospacebar.preferences.ui.spaceCornerRadius"
-
-    /// The corner radius for window elements in points.
-    case windowCornerRadius = "com.aerospacebar.preferences.ui.windowCornerRadius"
 }

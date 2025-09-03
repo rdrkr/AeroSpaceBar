@@ -3,6 +3,7 @@
 import Combine
 import Foundation
 import ServiceManagement
+import SwiftUI
 
 /// A coordinator view model that manages the overall settings interface.
 ///
@@ -12,11 +13,65 @@ import ServiceManagement
 class SettingsViewModel: ObservableObject {
     // MARK: - Display Properties
 
-    /// The transparency level of the menu bar panel (0.1 to 1.0).
-    @Published var transparency: Double {
+    /// The background opacity level of the space elements (0.1 to 1.0).
+    @Published var spaceBackgroundOpacity: Double {
         didSet {
             Task.detached(priority: .utility) { [self] in
-                await setTransparencyUseCase.execute(transparency: transparency)
+                await setSpaceBackgroundOpacityUseCase.execute(spaceBackgroundOpacity: spaceBackgroundOpacity)
+            }
+        }
+    }
+
+    /// The background blur radius for space elements in points.
+    @Published var spaceBackgroundBlurRadius: CGFloat {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceBackgroundBlurRadiusUseCase.execute(spaceBackgroundBlurRadius: spaceBackgroundBlurRadius)
+            }
+        }
+    }
+
+    /// The background tint color for space elements.
+    @Published var spaceBackgroundTintColor: Color {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceBackgroundTintColorUseCase.execute(spaceBackgroundTintColor: spaceBackgroundTintColor)
+            }
+        }
+    }
+
+    /// The foreground color for space elements.
+    @Published var spaceForegroundColor: Color {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceForegroundColorUseCase.execute(spaceForegroundColor: spaceForegroundColor)
+            }
+        }
+    }
+
+    /// The border tint color for space elements.
+    @Published var spaceBorderTintColor: Color {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceBorderTintColorUseCase.execute(spaceBorderTintColor: spaceBorderTintColor)
+            }
+        }
+    }
+
+    /// The border opacity level of the space elements (0.0 to 1.0).
+    @Published var spaceBorderOpacity: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceBorderOpacityUseCase.execute(spaceBorderOpacity: spaceBorderOpacity)
+            }
+        }
+    }
+
+    /// The border width of the space elements in points.
+    @Published var spaceBorderWidth: CGFloat {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceBorderWidthUseCase.execute(spaceBorderWidth: spaceBorderWidth)
             }
         }
     }
@@ -26,6 +81,24 @@ class SettingsViewModel: ObservableObject {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setFocusWindowOnClickUseCase.execute(enabled: focusWindowOnClick)
+            }
+        }
+    }
+
+    /// Whether to show window titles in the interface.
+    @Published var showWindowTitles: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowWindowTitlesUseCase.execute(value: showWindowTitles)
+            }
+        }
+    }
+
+    /// The corner radius for spaces in points.
+    @Published var spaceCornerRadius: CGFloat {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpaceCornerRadiusUseCase.execute(spaceCornerRadius)
             }
         }
     }
@@ -88,7 +161,9 @@ class SettingsViewModel: ObservableObject {
             return _launchAtLogin
         }
         set(newValue) {
-            if newValue == launchAtLogin { return }
+            if newValue == launchAtLogin {
+                return
+            }
 
             objectWillChange.send()
 
@@ -108,10 +183,26 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Display Use Cases
 
-    private let getTransparencyUseCase: GetTransparencyUseCase
-    private let setTransparencyUseCase: SetTransparencyUseCase
+    private let getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase
+    private let setSpaceBackgroundOpacityUseCase: SetSpaceBackgroundOpacityUseCase
+    private let getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase
+    private let setSpaceBackgroundBlurRadiusUseCase: SetSpaceBackgroundBlurRadiusUseCase
+    private let getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase
+    private let setSpaceBackgroundTintColorUseCase: SetSpaceBackgroundTintColorUseCase
+    private let getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase
+    private let setSpaceForegroundColorUseCase: SetSpaceForegroundColorUseCase
+    private let getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase
+    private let setSpaceBorderTintColorUseCase: SetSpaceBorderTintColorUseCase
+    private let getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase
+    private let setSpaceBorderOpacityUseCase: SetSpaceBorderOpacityUseCase
+    private let getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
+    private let setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
+    private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
+    private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
+    private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
+    private let setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase
 
     // MARK: - AeroSpace Use Cases
 
@@ -134,10 +225,26 @@ class SettingsViewModel: ObservableObject {
 
     /// Initializes the settings view model with dependencies.
     init(
-        getTransparencyUseCase: GetTransparencyUseCase,
-        setTransparencyUseCase: SetTransparencyUseCase,
+        getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase,
+        setSpaceBackgroundOpacityUseCase: SetSpaceBackgroundOpacityUseCase,
+        getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase,
+        setSpaceBackgroundBlurRadiusUseCase: SetSpaceBackgroundBlurRadiusUseCase,
+        getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase,
+        setSpaceBackgroundTintColorUseCase: SetSpaceBackgroundTintColorUseCase,
+        getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase,
+        setSpaceForegroundColorUseCase: SetSpaceForegroundColorUseCase,
+        getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase,
+        setSpaceBorderTintColorUseCase: SetSpaceBorderTintColorUseCase,
+        getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase,
+        setSpaceBorderOpacityUseCase: SetSpaceBorderOpacityUseCase,
+        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase,
+        setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
+        getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
+        setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
+        getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase,
+        setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         setAeroSpacePathUseCase: SetAeroSpacePathUseCase,
         getAeroSpaceVersionUseCase: GetAeroSpaceVersionUseCase,
@@ -151,10 +258,26 @@ class SettingsViewModel: ObservableObject {
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
     ) {
         // Initialize Display Use Cases
-        self.getTransparencyUseCase = getTransparencyUseCase
-        self.setTransparencyUseCase = setTransparencyUseCase
+        self.getSpaceBackgroundOpacityUseCase = getSpaceBackgroundOpacityUseCase
+        self.setSpaceBackgroundOpacityUseCase = setSpaceBackgroundOpacityUseCase
+        self.getSpaceBackgroundBlurRadiusUseCase = getSpaceBackgroundBlurRadiusUseCase
+        self.setSpaceBackgroundBlurRadiusUseCase = setSpaceBackgroundBlurRadiusUseCase
+        self.getSpaceBackgroundTintColorUseCase = getSpaceBackgroundTintColorUseCase
+        self.setSpaceBackgroundTintColorUseCase = setSpaceBackgroundTintColorUseCase
+        self.getSpaceForegroundColorUseCase = getSpaceForegroundColorUseCase
+        self.setSpaceForegroundColorUseCase = setSpaceForegroundColorUseCase
+        self.getSpaceBorderTintColorUseCase = getSpaceBorderTintColorUseCase
+        self.setSpaceBorderTintColorUseCase = setSpaceBorderTintColorUseCase
+        self.getSpaceBorderOpacityUseCase = getSpaceBorderOpacityUseCase
+        self.setSpaceBorderOpacityUseCase = setSpaceBorderOpacityUseCase
+        self.getSpaceBorderWidthUseCase = getSpaceBorderWidthUseCase
+        self.setSpaceBorderWidthUseCase = setSpaceBorderWidthUseCase
         self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
         self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
+        self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
+        self.setShowWindowTitlesUseCase = setShowWindowTitlesUseCase
+        self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
+        self.setSpaceCornerRadiusUseCase = setSpaceCornerRadiusUseCase
 
         // Initialize AeroSpace Use Cases
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
@@ -170,8 +293,16 @@ class SettingsViewModel: ObservableObject {
         self.setOptimizedPerformanceEnabledUseCase = setOptimizedPerformanceEnabledUseCase
 
         // Load initial values from use cases
-        transparency = getTransparencyUseCase.execute().blockingFirst()
+        spaceBackgroundOpacity = getSpaceBackgroundOpacityUseCase.execute().blockingFirst()
+        spaceBackgroundBlurRadius = getSpaceBackgroundBlurRadiusUseCase.execute().blockingFirst()
+        spaceBackgroundTintColor = getSpaceBackgroundTintColorUseCase.execute().blockingFirst()
+        spaceForegroundColor = getSpaceForegroundColorUseCase.execute().blockingFirst()
+        spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
+        spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
+        spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
+        showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
+        spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
         aeroSpaceVersion = getAeroSpaceVersionUseCase.execute().blockingFirst()
         logLevel = getLogLevelUseCase.execute().blockingFirst()
@@ -223,12 +354,44 @@ class SettingsViewModel: ObservableObject {
     /// Setup reactive subscriptions to UseCase publishers.
     private func setupReactiveSubscriptions() {
         // Monitor configuration changes
-        getTransparencyUseCase.execute()
-            .assign(to: \.transparency, on: self)
+        getSpaceBackgroundOpacityUseCase.execute()
+            .assign(to: \.spaceBackgroundOpacity, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBackgroundBlurRadiusUseCase.execute()
+            .assign(to: \.spaceBackgroundBlurRadius, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBackgroundTintColorUseCase.execute()
+            .assign(to: \.spaceBackgroundTintColor, on: self)
+            .store(in: &cancellables)
+
+        getSpaceForegroundColorUseCase.execute()
+            .assign(to: \.spaceForegroundColor, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderTintColorUseCase.execute()
+            .assign(to: \.spaceBorderTintColor, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderOpacityUseCase.execute()
+            .assign(to: \.spaceBorderOpacity, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderWidthUseCase.execute()
+            .assign(to: \.spaceBorderWidth, on: self)
             .store(in: &cancellables)
 
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
+            .store(in: &cancellables)
+
+        getShowWindowTitlesUseCase.execute()
+            .assign(to: \.showWindowTitles, on: self)
+            .store(in: &cancellables)
+
+        getSpaceCornerRadiusUseCase.execute()
+            .assign(to: \.spaceCornerRadius, on: self)
             .store(in: &cancellables)
 
         getAeroSpacePathUseCase.execute()

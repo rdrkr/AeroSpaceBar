@@ -27,6 +27,7 @@ public struct AeroSpaceConfiguration: Codable {
                 userInfo: [NSLocalizedDescriptionKey: "Failed to decode file contents as UTF-8"]
             )
         }
+
         let table = try TOMLTable(string: content)
         let decoder = TOMLDecoder()
         return try decoder.decode(AeroSpaceConfiguration.self, from: table)

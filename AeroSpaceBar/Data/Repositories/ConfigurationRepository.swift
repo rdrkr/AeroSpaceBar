@@ -2,6 +2,7 @@
 
 import AppKit
 import Combine
+import SwiftUI
 
 /// Repository for managing application configuration and settings.
 ///
@@ -52,8 +53,32 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Subjects
 
-    private let transparencySubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.transparency
+    private let spaceBackgroundOpacitySubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.spaceBackgroundOpacity
+    )
+
+    private let spaceBackgroundBlurRadiusSubject = CurrentValueSubject<CGFloat, Never>(
+        ConfigurationDefaults.spaceBackgroundBlurRadius
+    )
+
+    private let spaceBackgroundTintColorSubject = CurrentValueSubject<Color, Never>(
+        ConfigurationDefaults.spaceBackgroundTintColor
+    )
+
+    private let spaceForegroundColorSubject = CurrentValueSubject<Color, Never>(
+        ConfigurationDefaults.spaceForegroundColor
+    )
+
+    private let spaceBorderTintColorSubject = CurrentValueSubject<Color, Never>(
+        ConfigurationDefaults.spaceBorderTintColor
+    )
+
+    private let spaceBorderOpacitySubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.spaceBorderOpacity
+    )
+
+    private let spaceBorderWidthSubject = CurrentValueSubject<CGFloat, Never>(
+        ConfigurationDefaults.spaceBorderWidth
     )
 
     private let menuBarVerticalPaddingSubject = CurrentValueSubject<CGFloat, Never>(
@@ -78,10 +103,6 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     private let spaceCornerRadiusSubject = CurrentValueSubject<CGFloat, Never>(
         ConfigurationDefaults.spaceCornerRadius
-    )
-
-    private let windowCornerRadiusSubject = CurrentValueSubject<CGFloat, Never>(
-        ConfigurationDefaults.windowCornerRadius
     )
 
     // MARK: - Publishers
@@ -116,8 +137,32 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Publishers
 
-    var transparencyPublisher: AnyPublisher<Double, Never> {
-        transparencySubject.eraseToAnyPublisher()
+    var spaceBackgroundOpacityPublisher: AnyPublisher<Double, Never> {
+        spaceBackgroundOpacitySubject.eraseToAnyPublisher()
+    }
+
+    var spaceBackgroundBlurRadiusPublisher: AnyPublisher<CGFloat, Never> {
+        spaceBackgroundBlurRadiusSubject.eraseToAnyPublisher()
+    }
+
+    var spaceBackgroundTintColorPublisher: AnyPublisher<Color, Never> {
+        spaceBackgroundTintColorSubject.eraseToAnyPublisher()
+    }
+
+    var spaceForegroundColorPublisher: AnyPublisher<Color, Never> {
+        spaceForegroundColorSubject.eraseToAnyPublisher()
+    }
+
+    var spaceBorderTintColorPublisher: AnyPublisher<Color, Never> {
+        spaceBorderTintColorSubject.eraseToAnyPublisher()
+    }
+
+    var spaceBorderOpacityPublisher: AnyPublisher<Double, Never> {
+        spaceBorderOpacitySubject.eraseToAnyPublisher()
+    }
+
+    var spaceBorderWidthPublisher: AnyPublisher<CGFloat, Never> {
+        spaceBorderWidthSubject.eraseToAnyPublisher()
     }
 
     var menuBarVerticalPaddingPublisher: AnyPublisher<CGFloat, Never> {
@@ -142,10 +187,6 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> {
         spaceCornerRadiusSubject.eraseToAnyPublisher()
-    }
-
-    var windowCornerRadiusPublisher: AnyPublisher<CGFloat, Never> {
-        windowCornerRadiusSubject.eraseToAnyPublisher()
     }
 
     /// Initializer for the configuration gateway.
@@ -177,9 +218,43 @@ final class ConfigurationRepository: ConfigurationGateway {
         aeroSpacePathSubject.send(resolvedPath)
 
         // Load other boolean settings
-        let transparency = UserDefaults.standard.object(forKey: UserDefaultsKeys.transparency.rawValue) as? Double
-            ?? transparencySubject.value
-        transparencySubject.send(transparency)
+        let spaceBackgroundOpacity = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.spaceBackgroundOpacity.rawValue) as? Double
+            ?? spaceBackgroundOpacitySubject.value
+        spaceBackgroundOpacitySubject.send(spaceBackgroundOpacity)
+
+        let spaceBackgroundBlurRadius = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue) as? CGFloat
+            ?? spaceBackgroundBlurRadiusSubject.value
+        spaceBackgroundBlurRadiusSubject.send(spaceBackgroundBlurRadius)
+
+        let spaceBackgroundTintColor = loadColorFromUserDefaults(
+            key: UserDefaultsKeys.spaceBackgroundTintColor.rawValue,
+            defaultValue: spaceBackgroundTintColorSubject.value
+        )
+        spaceBackgroundTintColorSubject.send(spaceBackgroundTintColor)
+
+        let spaceForegroundColor = loadColorFromUserDefaults(
+            key: UserDefaultsKeys.spaceForegroundColor.rawValue,
+            defaultValue: spaceForegroundColorSubject.value
+        )
+        spaceForegroundColorSubject.send(spaceForegroundColor)
+
+        let spaceBorderTintColor = loadColorFromUserDefaults(
+            key: UserDefaultsKeys.spaceBorderTintColor.rawValue,
+            defaultValue: spaceBorderTintColorSubject.value
+        )
+        spaceBorderTintColorSubject.send(spaceBorderTintColor)
+
+        let spaceBorderOpacity = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.spaceBorderOpacity.rawValue) as? Double
+            ?? spaceBorderOpacitySubject.value
+        spaceBorderOpacitySubject.send(spaceBorderOpacity)
+
+        let spaceBorderWidth = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.spaceBorderWidth.rawValue) as? CGFloat
+            ?? spaceBorderWidthSubject.value
+        spaceBorderWidthSubject.send(spaceBorderWidth)
 
         let focusWindowOnClick = UserDefaults.standard
             .object(forKey: UserDefaultsKeys.focusWindowOnClick.rawValue) as? Bool
@@ -230,11 +305,6 @@ final class ConfigurationRepository: ConfigurationGateway {
             .object(forKey: UserDefaultsKeys.spaceCornerRadius.rawValue) as? CGFloat
             ?? spaceCornerRadiusSubject.value
         spaceCornerRadiusSubject.send(spaceCornerRadius)
-
-        let windowCornerRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.windowCornerRadius.rawValue) as? CGFloat
-            ?? windowCornerRadiusSubject.value
-        windowCornerRadiusSubject.send(windowCornerRadius)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
@@ -317,12 +387,60 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Async Setters
 
-    /// Sets the transparency level and emits update.
-    func setTransparency(_ value: Double) async {
-        if value == transparencySubject.value { return }
+    /// Sets the space background opacity level and emits update.
+    func setSpaceBackgroundOpacity(_ value: Double) async {
+        if value == spaceBackgroundOpacitySubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.transparency.rawValue)
-        transparencySubject.send(value)
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBackgroundOpacity.rawValue)
+        spaceBackgroundOpacitySubject.send(value)
+    }
+
+    /// Sets the space background blur radius and emits update.
+    func setSpaceBackgroundBlurRadius(_ value: CGFloat) async {
+        if value == spaceBackgroundBlurRadiusSubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue)
+        spaceBackgroundBlurRadiusSubject.send(value)
+    }
+
+    /// Sets the space background tint color and emits update.
+    func setSpaceBackgroundTintColor(_ value: Color) async {
+        if value == spaceBackgroundTintColorSubject.value { return }
+
+        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceBackgroundTintColor.rawValue)
+        spaceBackgroundTintColorSubject.send(value)
+    }
+
+    /// Sets the space foreground color and emits update.
+    func setSpaceForegroundColor(_ value: Color) async {
+        if value == spaceForegroundColorSubject.value { return }
+
+        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceForegroundColor.rawValue)
+        spaceForegroundColorSubject.send(value)
+    }
+
+    /// Sets the space border tint color and emits update.
+    func setSpaceBorderTintColor(_ value: Color) async {
+        if value == spaceBorderTintColorSubject.value { return }
+
+        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceBorderTintColor.rawValue)
+        spaceBorderTintColorSubject.send(value)
+    }
+
+    /// Sets the space border opacity and emits update.
+    func setSpaceBorderOpacity(_ value: Double) async {
+        if value == spaceBorderOpacitySubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBorderOpacity.rawValue)
+        spaceBorderOpacitySubject.send(value)
+    }
+
+    /// Sets the space border width and emits update.
+    func setSpaceBorderWidth(_ value: CGFloat) async {
+        if value == spaceBorderWidthSubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBorderWidth.rawValue)
+        spaceBorderWidthSubject.send(value)
     }
 
     /// Sets the vertical padding for the menu bar interface in points.
@@ -371,14 +489,6 @@ final class ConfigurationRepository: ConfigurationGateway {
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceCornerRadius.rawValue)
         spaceCornerRadiusSubject.send(value)
-    }
-
-    /// Sets the corner radius for window elements in points.
-    func setWindowCornerRadius(_ value: CGFloat) async {
-        if value == windowCornerRadiusSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.windowCornerRadius.rawValue)
-        windowCornerRadiusSubject.send(value)
     }
 
     // MARK: - AeroSpace Integration
@@ -489,7 +599,12 @@ final class ConfigurationRepository: ConfigurationGateway {
         // Reset all subjects to default values
         await setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
         await setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
-        await setTransparency(ConfigurationDefaults.transparency)
+        await setSpaceBackgroundOpacity(ConfigurationDefaults.spaceBackgroundOpacity)
+        await setSpaceBackgroundBlurRadius(ConfigurationDefaults.spaceBackgroundBlurRadius)
+        await setSpaceBackgroundTintColor(ConfigurationDefaults.spaceBackgroundTintColor)
+        await setSpaceForegroundColor(ConfigurationDefaults.spaceForegroundColor)
+        await setSpaceBorderTintColor(ConfigurationDefaults.spaceBorderTintColor)
+        await setSpaceBorderOpacity(ConfigurationDefaults.spaceBorderOpacity)
         await setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
         await setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
         await setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
@@ -502,8 +617,65 @@ final class ConfigurationRepository: ConfigurationGateway {
         await setAnimationDuration(ConfigurationDefaults.animationDuration)
         await setWindowIconSize(ConfigurationDefaults.windowIconSize)
         await setSpaceCornerRadius(ConfigurationDefaults.spaceCornerRadius)
-        await setWindowCornerRadius(ConfigurationDefaults.windowCornerRadius)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }
+
+    // MARK: - Color Serialization Helpers
+
+    /// Loads a Color from UserDefaults with a default fallback.
+    /// - Parameters:
+    ///   - key: The UserDefaults key
+    ///   - defaultValue: The default value to use if not found
+    /// - Returns: The loaded Color or the default value
+    private func loadColorFromUserDefaults(key: String, defaultValue: Color) -> Color {
+        guard let data = UserDefaults.standard.data(forKey: key) else {
+            return defaultValue
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            let colorComponents = try decoder.decode(ColorComponents.self, from: data)
+            return Color(
+                .sRGB,
+                red: colorComponents.red,
+                green: colorComponents.green,
+                blue: colorComponents.blue,
+                opacity: colorComponents.alpha
+            )
+        } catch {
+            Logger.warning("Failed to decode color from UserDefaults for key \(key): \(error)", category: Logger.config)
+            return defaultValue
+        }
+    }
+
+    /// Saves a Color to UserDefaults by encoding its components.
+    /// - Parameters:
+    ///   - color: The Color to save
+    ///   - key: The UserDefaults key
+    private func saveColorToUserDefaults(color: Color, key: String) {
+        let resolved = color.resolve(in: EnvironmentValues())
+        let colorComponents = ColorComponents(
+            red: Double(resolved.red),
+            green: Double(resolved.green),
+            blue: Double(resolved.blue),
+            alpha: Double(resolved.opacity)
+        )
+
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(colorComponents)
+            UserDefaults.standard.set(data, forKey: key)
+        } catch {
+            Logger.error("Failed to encode color to UserDefaults for key \(key): \(error)", category: Logger.config)
+        }
+    }
+}
+
+/// Helper struct for Color serialization to UserDefaults.
+private struct ColorComponents: Codable {
+    let red: Double
+    let green: Double
+    let blue: Double
+    let alpha: Double
 }

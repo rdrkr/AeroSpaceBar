@@ -157,6 +157,7 @@ final class AeroSpaceRepository: SpacesGateway {
         } else {
             windowFocusMonitoringTask = Task.detached(priority: .utility) { [weak self] in
                 guard let self else { return }
+
                 repeat {
                     await updateSpacesData()
                     try? await Task.sleep(for: .seconds(0.5))
@@ -172,6 +173,7 @@ final class AeroSpaceRepository: SpacesGateway {
 
         Task.detached(priority: .utility) { [weak self] in
             guard let self else { return }
+
             await reconfigureAeroSpaceOffMain(executablePath: executable, optimized: optimized)
             await updateSpacesData()
         }
@@ -188,6 +190,7 @@ final class AeroSpaceRepository: SpacesGateway {
                 Task.detached(priority: .utility) { [self] in
                     await updateSpacesData()
                 }
+
             default:
                 Logger.debug("Received unknown Apple Event command: \(command)", category: Logger.spaces)
             }

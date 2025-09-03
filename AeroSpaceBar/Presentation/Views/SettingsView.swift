@@ -31,11 +31,6 @@ struct SettingsView: View {
         !forwardHistory.isEmpty
     }
 
-    /// Computed property for main pages to avoid repeated access
-    private var mainPages: [SettingsNavigationOptions] {
-        SettingsNavigationOptions.mainPages
-    }
-
     // MARK: - Body
 
     var body: some View {
@@ -43,7 +38,7 @@ struct SettingsView: View {
             if isWindowConfigured {
                 NavigationSplitView {
                     List(selection: $selectedPage) {
-                        ForEach(mainPages) { page in
+                        ForEach(SettingsNavigationOptions.allCases) { page in
                             NavigationLink(value: page) {
                                 Label(page.name, systemImage: page.symbolName)
                             }
@@ -81,7 +76,7 @@ struct SettingsView: View {
                 .tag("settings-navigation-split")
             }
         }
-        .frame(width: 620, height: 560)
+        .frame(width: 680, height: 560)
         .task {
             await configureWindow()
         }

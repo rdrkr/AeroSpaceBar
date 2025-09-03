@@ -84,6 +84,7 @@ struct IntroForm<Content>: View where Content: View {
                     }
                     .padding(8)
                     .tag("intro-form-intro-section")
+
                 case .compact:
                     HStack(alignment: .top) {
                         let displayImage = image

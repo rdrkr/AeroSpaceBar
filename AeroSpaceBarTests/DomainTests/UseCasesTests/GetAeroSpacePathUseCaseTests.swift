@@ -53,23 +53,36 @@ private class MockConfigurationGateway: ConfigurationGateway {
     var animationDurationPublisher: AnyPublisher<Double, Never> = Just(0.2).eraseToAnyPublisher()
     var windowIconSizePublisher: AnyPublisher<CGFloat, Never> = Just(20).eraseToAnyPublisher()
     var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> = Just(20).eraseToAnyPublisher()
-    var windowCornerRadiusPublisher: AnyPublisher<CGFloat, Never> = Just(8).eraseToAnyPublisher()
 
     func setShowWindowTitles(_: Bool) async { }
+
     func setAeroSpacePath(_: String) async { }
+
     func setLaunchAtLogin(_: Bool) async { }
+
     func setTransparency(_: Double) async { }
+
     func setFocusWindowOnClick(_: Bool) async { }
+
     func setEnablePerformanceMetrics(_: Bool) async { }
+
     func setLogLevel(_: Logger.Level) async { }
+
     func setMenuBarHeight(_: CGFloat) async { }
+
     func setMenuBarVerticalPadding(_: CGFloat) async { }
+
     func setMenuBarHorizontalPadding(_: CGFloat) async { }
+
     func setWidgetSpacing(_: CGFloat) async { }
+
     func setAnimationDuration(_: Double) async { }
+
     func setWindowIconSize(_: CGFloat) async { }
+
     func setSpaceCornerRadius(_: CGFloat) async { }
-    func setWindowCornerRadius(_: CGFloat) async { }
+
     func openAeroSpaceConfig() async { }
+
     func resetToDefaults() async { }
 }

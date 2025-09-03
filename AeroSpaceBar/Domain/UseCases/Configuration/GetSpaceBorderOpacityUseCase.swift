@@ -3,13 +3,13 @@
 import Combine
 import Foundation
 
-/// Use case for retrieving the transparency setting.
+/// Use case for retrieving the space border opacity setting.
 ///
-/// This use case encapsulates the business logic for getting the current transparency setting.
+/// This use case encapsulates the business logic for getting the current space border opacity setting.
 /// It belongs to the domain layer and coordinates between the presentation and data layers.
 /// Following reactive patterns similar to Kotlin Flow/StateFlow.
 @MainActor
-final class GetTransparencyUseCase {
+final class GetSpaceBorderOpacityUseCase {
     /// The configuration gateway for data access.
     private let configurationGateway: ConfigurationGateway
 
@@ -19,9 +19,9 @@ final class GetTransparencyUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to get the transparency setting as a publisher.
-    /// - Returns: A publisher that emits transparency values
+    /// Executes the use case to get the space border opacity setting as a publisher.
+    /// - Returns: A publisher that emits space border opacity values
     func execute() -> AnyPublisher<Double, Never> {
-        configurationGateway.transparencyPublisher
+        configurationGateway.spaceBorderOpacityPublisher
     }
 }
