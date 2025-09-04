@@ -141,6 +141,43 @@ struct GeneralSettingsView: View {
                 }
                 .tag("general-aerospace-section")
             }
+
+            Section(LocalizedStringResource("Tips")) {
+                VStack(alignment: .leading) {
+                    HStack(alignment: .top) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.orange)
+                            .font(.system(size: 14))
+                            .tag("general-tip-icon")
+
+                        VStack(alignment: .leading) {
+                            Text(LocalizedStringResource("Quick Hide Feature"))
+                                .font(.system(size: 12, weight: .semibold))
+                                .tag("general-tip-title")
+
+                            Group {
+                                HStack(alignment: .firstTextBaseline) {
+                                    Text(LocalizedStringResource("Hold"))
+                                    Image(systemName: "globe").foregroundColor(.secondary)
+                                    Text(
+                                        LocalizedStringResource(
+                                            "(Globe or Fn key) and hover over the menu bar to hide spaces."
+                                        )
+                                    )
+                                }
+
+                                Text(LocalizedStringResource("Release to show."))
+                            }
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .tag("general-tip-description")
+                        }
+                    }
+                }
+                .tag("general-tips-container")
+            }
+            .tag("general-tips-section")
         }
         .tag("general-settings-view")
     }

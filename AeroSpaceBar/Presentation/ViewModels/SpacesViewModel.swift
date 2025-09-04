@@ -44,6 +44,12 @@ final class SpacesViewModel: ObservableObject {
     @Published var spaceBorderOpacity: Double
     @Published var spaceBorderWidth: CGFloat
 
+    /// Whether the globe key is currently being held.
+    @Published var isGlobeKeyPressed: Bool = false
+
+    /// Monitor for global key events.
+    private nonisolated(unsafe) var keyMonitors: [Any] = []
+
     // MARK: - Spaces Use Cases
 
     /// The use cases for spaces operations.
@@ -168,6 +174,7 @@ final class SpacesViewModel: ObservableObject {
         spaceForegroundColor = getSpaceForegroundColorUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
+        setupGlobeKeyMonitors()
     }
 
     // MARK: - Public Methods
@@ -308,6 +315,44 @@ final class SpacesViewModel: ObservableObject {
             try await setFocusWindowUseCase.execute(windowId: String(window.id))
         } catch {
             Logger.error("Error focusing window", error: error, category: Logger.spaces)
+        }
+    }
+
+    // MARK: - Globe Key Monitoring
+
+    deinit {
+        removeGlobeKeyMonitors()
+    }
+
+    /// Sets up global key monitoring for the globe key (fn key)
+    private func setupGlobeKeyMonitors() {
+        let keyPressedCallback = { [weak self] (event: NSEvent) in
+            DispatchQueue.main.async {
+                // The globe/fn key is represented by the .function modifier flag
+                self?.isGlobeKeyPressed = event.modifierFlags.contains(.function)
+            }
+        }
+
+        keyMonitors = [
+            // Local monitor to capture key events when the app is focused
+            NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { event in
+                keyPressedCallback(event)
+                return event
+            },
+            // Global monitor to capture key events when the app is not focused
+            NSEvent.addGlobalMonitorForEvents(matching: [.flagsChanged], handler: keyPressedCallback)
+        ]
+        .compactMap(\.self)
+    }
+
+    /// Removes the global key monitor
+    private nonisolated func removeGlobeKeyMonitors() {
+        keyMonitors.forEach { monitor in
+            NSEvent.removeMonitor(monitor)
+        }
+
+        Task { @MainActor in
+            isGlobeKeyPressed = false
         }
     }
 }

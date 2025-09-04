@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import AppKit
 import SwiftUI
 
 /// The main spaces view that displays spaces and windows.
@@ -14,6 +15,9 @@ struct SpacesView: View {
 
     /// Whether the wallpaper should be visible (faded in).
     @State private var isWallpaperVisible = false
+
+    /// Whether the mouse is currently over the SpacesView.
+    @State private var isMouseHovering = false
 
     // MARK: - Computed Properties
 
@@ -57,6 +61,11 @@ struct SpacesView: View {
         viewModel.showWindowTitles
     }
 
+    /// Whether the view should be hidden based on globe key + mouse hover combination
+    private var shouldHideView: Bool {
+        isMouseHovering && viewModel.isGlobeKeyPressed
+    }
+
     /// The body of the spaces view.
     ///
     /// This view creates a horizontal layout of spaces with their associated windows,
@@ -74,12 +83,13 @@ struct SpacesView: View {
                         )
 
                         SpacesContainerView(spaces: spaces, widgetSpacing: widgetSpacing)
-                            .offset(y: isWallpaperVisible ? 0 : -menuBarHeight)
+                            .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
                             .tag("spaces-container")
                     }
                     .spaceCornerRadius(cornerRadius)
-                    .opacity(isWallpaperVisible ? 1.0 : 0.0)
+                    .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
                     .animation(.smooth(duration: animationDuration), value: isWallpaperVisible)
+                    .animation(.smooth(duration: animationDuration), value: shouldHideView)
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set
@@ -99,6 +109,9 @@ struct SpacesView: View {
             value: spaces
         )
         .padding(.leading, menuBarHorizontalPadding)
+        .onHover { hovering in
+            isMouseHovering = hovering
+        }
         .onChange(of: viewModel.widgetState) { oldWidgetState, newWidgetState in
             handleWidgetStateChange(oldState: oldWidgetState, newState: newWidgetState)
         }
