@@ -23,9 +23,9 @@ struct AboutView: View {
             Image(nsImage: NSApplication.shared.applicationIconImage)
                 .resizable()
                 .frame(width: 128, height: 128)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-                .accessibilityLabel(LocalizedStringResource("App Icon"))
+                .spaceCornerRadius(16)
+                .standardShadow()
+                .accessibleImage("App Icon")
                 .tag("about-app-icon")
 
             // App Name
@@ -82,8 +82,7 @@ struct AboutView: View {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    .buttonStyle(.plain)
-                    .foregroundColor(.blue)
+                    .settingsButton()
                     .tag("about-aerospace-link")
 
                     Text(LocalizedStringResource("(MIT)"))
@@ -104,8 +103,7 @@ struct AboutView: View {
                             NSWorkspace.shared.open(URL(fileURLWithPath: path))
                         }
                     }
-                    .buttonStyle(.plain)
-                    .foregroundColor(.blue)
+                    .settingsButton()
                     .tag("about-view-license-button")
                 }
             }
@@ -126,10 +124,9 @@ struct AboutView: View {
                     label: {
                         Text(LocalizedStringResource("Ronen Druker"))
                             .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(.blue)
                     }
                 )
-                .buttonStyle(.plain)
+                .settingsButton()
                 .tag("about-author-link")
             }
             .padding(.bottom, 10)

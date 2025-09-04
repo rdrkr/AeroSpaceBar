@@ -1,0 +1,54 @@
+// Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+
+import SwiftUI
+
+/// A view that displays the desktop wallpaper as background for the spaces.
+///
+/// This view handles the wallpaper display logic, including proper cropping
+/// and positioning to create an immersive menu bar experience.
+struct WallpaperBackgroundView: View {
+    /// The wallpaper image to display
+    let wallpaper: NSImage
+
+    /// The horizontal padding for the menu bar
+    let menuBarHorizontalPadding: CGFloat
+
+    // MARK: - Computed Properties
+
+    private var screenWidth: CGFloat {
+        wallpaper.size.width
+    }
+
+    private var screenHeight: CGFloat {
+        wallpaper.size.height
+    }
+
+    // MARK: - Body
+
+    var body: some View {
+        Image(nsImage: wallpaper)
+            .frame(
+                width: (screenWidth / 2) - menuBarHorizontalPadding,
+                height: screenHeight
+            )
+            .offset(
+                x: (screenWidth / 4) - (menuBarHorizontalPadding / 2),
+                y: 0
+            )
+            .clipped()
+            .tag("spaces-wallpaper-background")
+    }
+}
+
+#Preview {
+    if let wallpaper = NSImage(named: "AppIcon") {
+        WallpaperBackgroundView(
+            wallpaper: wallpaper,
+            menuBarHorizontalPadding: 16
+        )
+        .padding()
+    } else {
+        Text("No wallpaper available for preview")
+            .foregroundColor(.secondary)
+    }
+}

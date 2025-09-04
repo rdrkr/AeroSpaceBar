@@ -35,6 +35,7 @@ final class SpacesViewModel: ObservableObject {
     @Published var windowIconSize: CGFloat
     @Published var spaceCornerRadius: CGFloat
     @Published var showWindowTitles: Bool
+    @Published var focusWindowOnClick: Bool
     @Published var spaceBackgroundOpacity: Double
     @Published var spaceBackgroundBlurRadius: CGFloat
     @Published var spaceBackgroundTintColor: Color
@@ -63,6 +64,7 @@ final class SpacesViewModel: ObservableObject {
     private let getWindowIconSizeUseCase: GetWindowIconSizeUseCase
     private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
     private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
+    private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase
     private let getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase
     private let getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase
@@ -97,6 +99,7 @@ final class SpacesViewModel: ObservableObject {
         setFocusWindowUseCase: SetFocusWindowUseCase,
         getAeroSpaceStatusUseCase: GetAeroSpaceStatusUseCase,
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
+        getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         getWallpaperUseCase: GetWallpaperUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
         getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase,
@@ -122,6 +125,7 @@ final class SpacesViewModel: ObservableObject {
         // Initialize wallpaper use case
         self.getWallpaperUseCase = getWallpaperUseCase
         self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
+        self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
 
         // Initialize UI configuration use cases
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
@@ -154,6 +158,7 @@ final class SpacesViewModel: ObservableObject {
         windowIconSize = getWindowIconSizeUseCase.execute().blockingFirst()
         spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
+        focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
         spaceBackgroundOpacity = getSpaceBackgroundOpacityUseCase.execute().blockingFirst()
         spaceBackgroundBlurRadius = getSpaceBackgroundBlurRadiusUseCase.execute().blockingFirst()
         spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
@@ -244,6 +249,9 @@ final class SpacesViewModel: ObservableObject {
 
         getShowWindowTitlesUseCase.execute()
             .assign(to: \.showWindowTitles, on: self)
+            .store(in: &cancellables)
+        getFocusWindowOnClickUseCase.execute()
+            .assign(to: \.focusWindowOnClick, on: self)
             .store(in: &cancellables)
 
         getSpaceBackgroundOpacityUseCase.execute()

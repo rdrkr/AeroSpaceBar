@@ -145,6 +145,130 @@ struct WindowFocusState: ViewModifier {
     }
 }
 
+// MARK: - Interaction Modifiers
+
+/// Conditional interaction modifier for click and hover interactions
+struct ConditionalInteraction: ViewModifier {
+    let isEnabled: Bool
+    @Binding var isHovered: Bool
+    let onTap: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .modifier(ConditionalTapGesture(isEnabled: isEnabled, onTap: onTap))
+            .modifier(ConditionalHoverState(isEnabled: isEnabled, isHovered: $isHovered))
+    }
+}
+
+/// Conditional tap gesture modifier
+private struct ConditionalTapGesture: ViewModifier {
+    let isEnabled: Bool
+    let onTap: () -> Void
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.onTapGesture(perform: onTap)
+        } else {
+            content
+        }
+    }
+}
+
+/// Conditional hover state modifier
+private struct ConditionalHoverState: ViewModifier {
+    let isEnabled: Bool
+    @Binding var isHovered: Bool
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.modifier(HoverState(isHovered: $isHovered))
+        } else {
+            content
+        }
+    }
+}
+
+// MARK: - Additional Modifiers
+
+/// Button style modifier for settings buttons
+struct SettingsButton: ViewModifier {
+    let isEnabled: Bool
+
+    init(isEnabled: Bool = true) {
+        self.isEnabled = isEnabled
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(.plain)
+            .foregroundColor(isEnabled ? .blue : .secondary)
+            .disabled(!isEnabled)
+    }
+}
+
+/// Form styling modifier for consistent form appearance
+struct FormStyling: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .formStyle(.grouped)
+            .scrollContentBackground(.hidden)
+    }
+}
+
+/// Accessible image modifier for proper accessibility
+struct AccessibleImage: ViewModifier {
+    let label: LocalizedStringResource
+    let isDecorative: Bool
+
+    init(label: LocalizedStringResource, isDecorative: Bool = false) {
+        self.label = label
+        self.isDecorative = isDecorative
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityLabel(isDecorative ? "" : String(localized: label))
+            .accessibilityHidden(isDecorative)
+    }
+}
+
+/// Loading state modifier
+struct LoadingState: ViewModifier {
+    let isLoading: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .disabled(isLoading)
+            .opacity(isLoading ? 0.6 : 1.0)
+            .overlay {
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(0.8)
+                }
+            }
+    }
+}
+
+/// Card-like styling modifier
+struct CardStyle: ViewModifier {
+    let backgroundColor: Color
+    let cornerRadius: CGFloat
+
+    init(backgroundColor: Color = Color(.controlBackgroundColor), cornerRadius: CGFloat = 12) {
+        self.backgroundColor = backgroundColor
+        self.cornerRadius = cornerRadius
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .padding()
+            .background(backgroundColor)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+    }
+}
+
 // MARK: - View Extensions
 
 extension View {
@@ -199,5 +323,42 @@ extension View {
     /// Apply window focus state modifier
     func windowFocusState(_ isFocused: Bool, spaceIsFocused: Bool) -> some View {
         modifier(WindowFocusState(isFocused: isFocused, spaceIsFocused: spaceIsFocused))
+    }
+
+    /// Apply settings button modifier
+    func settingsButton(isEnabled: Bool = true) -> some View {
+        modifier(SettingsButton(isEnabled: isEnabled))
+    }
+
+    /// Apply form styling modifier
+    func formStyling() -> some View {
+        modifier(FormStyling())
+    }
+
+    /// Apply accessible image modifier
+    func accessibleImage(_ label: LocalizedStringResource, isDecorative: Bool = false) -> some View {
+        modifier(AccessibleImage(label: label, isDecorative: isDecorative))
+    }
+
+    /// Apply loading state modifier
+    func loadingState(_ isLoading: Bool) -> some View {
+        modifier(LoadingState(isLoading: isLoading))
+    }
+
+    /// Apply card style modifier
+    func cardStyle(
+        backgroundColor: Color = Color(.controlBackgroundColor),
+        cornerRadius: CGFloat = 12
+    ) -> some View {
+        modifier(CardStyle(backgroundColor: backgroundColor, cornerRadius: cornerRadius))
+    }
+
+    /// Apply conditional interaction modifier
+    func conditionalInteraction(
+        isEnabled: Bool,
+        isHovered: Binding<Bool>,
+        onTap: @escaping () -> Void
+    ) -> some View {
+        modifier(ConditionalInteraction(isEnabled: isEnabled, isHovered: isHovered, onTap: onTap))
     }
 }

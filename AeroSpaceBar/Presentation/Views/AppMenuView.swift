@@ -16,29 +16,27 @@ struct AppMenuView: View {
                 .keyboardShortcut(",")
                 .tag("app-menu-settings-link")
 
-            Divider()
-                .tag("app-menu-divider-1")
+            MenuDivider(identifier: "1")
 
             // About
-            Button(action: {
+            MenuItemView(
+                title: "About AeroSpaceBar",
+                systemImage: "info.circle"
+            ) {
                 showAboutWindow()
                 dismiss()
-            }, label: {
-                Label(LocalizedStringResource("About AeroSpaceBar"), systemImage: "info.circle")
-            })
-            .tag("app-menu-about-button")
+            }
 
-            Divider()
-                .tag("app-menu-divider-2")
+            MenuDivider(identifier: "2")
 
             // Quit
-            Button(action: {
+            MenuItemView(
+                title: "Quit AeroSpaceBar",
+                systemImage: "power",
+                keyboardShortcut: "q"
+            ) {
                 NSApplication.shared.terminate(nil)
-            }, label: {
-                Label(LocalizedStringResource("Quit AeroSpaceBar"), systemImage: "power")
-            })
-            .keyboardShortcut("q")
-            .tag("app-menu-quit-button")
+            }
         }
         .padding(.vertical, 4)
         .frame(minWidth: 200)

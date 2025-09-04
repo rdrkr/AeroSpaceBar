@@ -107,6 +107,7 @@ final class DependencyContainer {
         setFocusWindowUseCase: makeSetFocusWindowUseCase(),
         getAeroSpaceStatusUseCase: makeGetAeroSpaceStatusUseCase(),
         getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
+        getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
         getWallpaperUseCase: makeGetWallpaperUseCase(),
         getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
         getMenuBarVerticalPaddingUseCase: makeGetMenuBarVerticalPaddingUseCase(),
