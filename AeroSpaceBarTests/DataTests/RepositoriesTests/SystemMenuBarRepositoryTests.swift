@@ -4,13 +4,13 @@
 import Combine
 import XCTest
 
-final class DesktopWallpaperRepositoryTests: XCTestCase {
-    var repository: DesktopWallpaperRepository?
+final class SystemMenuBarRepositoryTests: XCTestCase {
+    var repository: SystemMenuBarRepository?
     var cancellables: Set<AnyCancellable>?
 
     func setUp() {
         // TODO: Initialize with proper actor context
-        // repository = DesktopWallpaperRepository()
+        // repository = SystemMenuBarRepository()
         cancellables = Set<AnyCancellable>()
     }
 

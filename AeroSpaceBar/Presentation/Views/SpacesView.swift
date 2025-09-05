@@ -61,9 +61,9 @@ struct SpacesView: View {
         viewModel.showWindowTitles
     }
 
-    /// Whether the view should be hidden based on globe key + mouse hover combination
+    /// Whether the view should be hidden based on globe key + mouse hover combination or menu bar visibility
     private var shouldHideView: Bool {
-        isMouseHovering && viewModel.isGlobeKeyPressed
+        (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel.isMenuBarVisible
     }
 
     /// The body of the spaces view.
@@ -90,6 +90,7 @@ struct SpacesView: View {
                     .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
                     .animation(.smooth(duration: animationDuration), value: isWallpaperVisible)
                     .animation(.smooth(duration: animationDuration), value: shouldHideView)
+                    .animation(.smooth(duration: animationDuration), value: viewModel.isMenuBarVisible)
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set

@@ -82,8 +82,7 @@ struct GeneralSettingsView: View {
                                 .foregroundColor(.orange)
                                 .tag("general-path-error-icon")
                             Text(error)
-                                .font(.system(size: 11))
-                                .foregroundColor(.secondary)
+                                .secondaryText()
                                 .tag("general-path-error-text")
                         }
                         .tag("general-path-error-container")
@@ -94,8 +93,7 @@ struct GeneralSettingsView: View {
                             "Path to the AeroSpace binary. Leave empty to auto-detect from common locations."
                         )
                     )
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .secondaryText()
                     .tag("general-path-help-text")
 
                     Spacer(minLength: 8)
@@ -108,9 +106,7 @@ struct GeneralSettingsView: View {
                                 .tag("general-aerospace-status-success-icon")
 
                             Text(LocalizedStringResource("AeroSpace version: \(version)"))
-                                .font(.system(size: 11))
-                                .foregroundColor(.green)
-                                .textSelection(.enabled)
+                                .successText(isSelectable: true)
                                 .tag("general-aerospace-version-success")
                         } else {
                             Image(systemName: "xmark.circle.fill")
@@ -118,9 +114,7 @@ struct GeneralSettingsView: View {
                                 .tag("general-aerospace-status-error-icon")
 
                             Text(LocalizedStringResource("AeroSpace Not Found"))
-                                .font(.system(size: 11))
-                                .foregroundColor(.red)
-                                .textSelection(.enabled)
+                                .errorText(isSelectable: true)
                                 .tag("general-aerospace-not-found-error")
                         }
                     }
@@ -152,7 +146,7 @@ struct GeneralSettingsView: View {
 
                         VStack(alignment: .leading) {
                             Text(LocalizedStringResource("Quick Hide Feature"))
-                                .font(.system(size: 12, weight: .semibold))
+                                .font(.themeSmallBody)
                                 .tag("general-tip-title")
 
                             Group {
@@ -168,8 +162,7 @@ struct GeneralSettingsView: View {
 
                                 Text(LocalizedStringResource("Release to show."))
                             }
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                            .secondaryText()
                             .fixedSize(horizontal: false, vertical: true)
                             .tag("general-tip-description")
                         }

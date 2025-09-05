@@ -5,14 +5,17 @@ import Combine
 import CoreGraphics
 import Foundation
 
-/// Repository for capturing and managing desktop wallpaper dynamically.
+/// Repository for capturing and managing desktop wallpaper dynamically and tracking system menu bar state.
 @MainActor
-final class DesktopWallpaperRepository: DesktopWallpaperGateway {
+final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Publisher that emits wallpaper image updates.
     private let wallpaperSubject = CurrentValueSubject<NSImage?, Never>(nil)
 
     /// Publisher that emits menu bar height updates.
     private let menuBarHeightSubject = CurrentValueSubject<CGFloat, Never>(ConfigurationDefaults.menuBarHeight)
+
+    /// Publisher that emits menu bar visibility updates.
+    private let menuBarVisibilitySubject = CurrentValueSubject<Bool, Never>(true)
 
     /// The last captured wallpaper image data for comparison.
     private var lastWallpaperData: Data?
@@ -23,39 +26,65 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
     /// The observer for the screens did wake up notification.
     private var screenWakeNotificationObserver: NSObjectProtocol?
 
-    /// The task for capturing the wallpaper.
-    private var captureTask: Task<Void, Never>?
+    /// The task for recognizing windows (menu bar detection).
+    private var windowRecognitionTask: Task<Void, Never>?
 
-    /// Initializes the desktop wallpaper gateway.
+    /// The task for capturing wallpaper images.
+    private var wallpaperCaptureTask: Task<Void, Never>?
+
+    /// Initializes the system menu bar repository.
     init() {
-        setupObservers()
-        startPeriodicUpdates()
+        setupScreenStateObservers()
+        startPeriodicTasks()
     }
 
     /// Publisher that emits wallpaper image updates.
+    /// - Returns: A publisher that emits optional NSImage instances when wallpaper changes.
     var wallpaperPublisher: AnyPublisher<NSImage?, Never> {
         wallpaperSubject.eraseToAnyPublisher()
     }
 
     /// Publisher that emits menu bar height updates.
+    /// - Returns: A publisher that emits CGFloat values representing menu bar height changes.
     var menuBarHeightPublisher: AnyPublisher<CGFloat, Never> {
         menuBarHeightSubject.eraseToAnyPublisher()
     }
 
-    /// Starts periodic wallpaper updates.
-    private func startPeriodicUpdates() {
-        stopPeriodicUpdates()
+    /// Publisher that emits menu bar visibility changes.
+    /// - Returns: A publisher that emits Boolean values indicating menu bar visibility state.
+    var menuBarVisibilityPublisher: AnyPublisher<Bool, Never> {
+        menuBarVisibilitySubject.eraseToAnyPublisher()
+    }
 
-        captureTask = Task.detached(priority: .utility) { [weak self] in
+    /// Starts periodic tasks for window recognition and wallpaper capture.
+    private func startPeriodicTasks() {
+        stopPeriodicTasks()
+        startWindowRecognition()
+        startWallpaperCapture()
+    }
+
+    /// Starts the periodic window recognition task (menu bar detection and height tracking).
+    private func startWindowRecognition() {
+        windowRecognitionTask = Task.detached(priority: .utility) { [weak self] in
             repeat {
-                await self?.performWallpaperCapture()
-                try? await Task.sleep(for: .seconds(4))
+                await self?.recognizeWindows()
+                try? await Task.sleep(for: .seconds(0.4))
             } while !Task.isCancelled
         }
     }
 
-    /// Sets up observers for the desktop wallpaper repository.
-    private func setupObservers() {
+    /// Starts the periodic wallpaper capture task.
+    private func startWallpaperCapture() {
+        wallpaperCaptureTask = Task.detached(priority: .background) { [weak self] in
+            repeat {
+                await self?.captureWallpaperImage()
+                try? await Task.sleep(for: .seconds(5.0))
+            } while !Task.isCancelled
+        }
+    }
+
+    /// Sets up observers for screen sleep and wake notifications.
+    private func setupScreenStateObservers() {
         let notificationCenter = NSWorkspace.shared.notificationCenter
 
         screenSleepNotificationObserver = notificationCenter.addObserver(
@@ -64,7 +93,7 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.stopPeriodicUpdates()
+                self?.stopPeriodicTasks()
             }
         }
 
@@ -74,34 +103,55 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.startPeriodicUpdates()
+                self?.startPeriodicTasks()
             }
         }
     }
 
-    /// Stops the periodic wallpaper updates.
-    private func stopPeriodicUpdates() {
-        captureTask?.cancel()
-        captureTask = nil
+    /// Stops the periodic tasks for window recognition and wallpaper capture.
+    private func stopPeriodicTasks() {
+        windowRecognitionTask?.cancel()
+        windowRecognitionTask = nil
+        wallpaperCaptureTask?.cancel()
+        wallpaperCaptureTask = nil
     }
 
-    /// Performs wallpaper capture and updates the publisher.
-    private func performWallpaperCapture() async {
+    /// Recognizes windows and updates menu bar visibility and height.
+    ///
+    /// This lightweight method runs frequently to detect menu bar state changes without
+    /// performing expensive wallpaper capture operations.
+    private func recognizeWindows() async {
+        // Find the menu bar window
+        let menuBarWindow = findSystemMenuBarWindow()
+        let isMenuBarVisible = menuBarWindow != nil
+
+        // Update menu bar visibility if it has changed
+        if isMenuBarVisible != menuBarVisibilitySubject.value {
+            Logger.debug("Menu bar visibility changed to: \(isMenuBarVisible)", category: Logger.userInterface)
+            menuBarVisibilitySubject.send(isMenuBarVisible)
+        }
+
+        // Update the menu bar height if it has changed and is visible
+        if let menuBarFrame = menuBarWindow?.frame, menuBarFrame.height != menuBarHeightSubject.value {
+            menuBarHeightSubject.send(menuBarFrame.height)
+        }
+    }
+
+    /// Captures wallpaper image and updates the publisher.
+    ///
+    /// This resource-intensive method runs less frequently to capture and update
+    /// the wallpaper image when the menu bar is visible.
+    private func captureWallpaperImage() async {
         // Find the wallpaper window for the main display
-        guard let wallpaperWindow = findWallpaperWindow() else {
+        guard let wallpaperWindow = findDesktopWallpaperWindow() else {
             Logger.info("No wallpaper window found", category: Logger.config)
             return
         }
 
-        // Find the menu bar window to determine the area to capture
-        guard let menuBarWindow = findMenuBarWindow() else {
-            Logger.info("No menu bar window found", category: Logger.config)
+        // Find the menu bar window to get its frame for clipping
+        guard let menuBarWindow = findSystemMenuBarWindow() else {
+            Logger.warning("Menu bar is hidden, skipping wallpaper capture", category: Logger.userInterface)
             return
-        }
-
-        // Update the menu bar height if it has changed
-        if menuBarWindow.frame.height != menuBarHeightSubject.value {
-            menuBarHeightSubject.send(menuBarWindow.frame.height)
         }
 
         // Capture the wallpaper window clipped to menu bar area
@@ -126,9 +176,9 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
         }
     }
 
-    /// Finds the wallpaper window for the main display.
+    /// Finds the desktop wallpaper window for the main display.
     /// - Returns: The wallpaper window info, or nil if not found
-    private func findWallpaperWindow() -> WindowInfo? {
+    private func findDesktopWallpaperWindow() -> WindowInfo? {
         let windows = WindowInfo.getOnScreenWindows()
         return windows.first { window in
             // Wallpaper window criteria:
@@ -141,9 +191,9 @@ final class DesktopWallpaperRepository: DesktopWallpaperGateway {
         }
     }
 
-    /// Finds the menu bar window for the main display.
+    /// Finds the system menu bar window for the main display.
     /// - Returns: The menu bar window info, or nil if not found
-    private func findMenuBarWindow() -> WindowInfo? {
+    private func findSystemMenuBarWindow() -> WindowInfo? {
         let windows = WindowInfo.getOnScreenWindows(excludeDesktopWindows: true)
         return windows.first { window in
             // Menu bar window criteria:
@@ -182,6 +232,7 @@ private struct WindowInfo {
     let ownerName: String?
 
     /// The application that owns the window.
+    /// - Returns: The NSRunningApplication instance for the window owner, or nil if not found.
     var owningApplication: NSRunningApplication? {
         NSRunningApplication(processIdentifier: ownerPID)
     }
@@ -190,11 +241,13 @@ private struct WindowInfo {
     var isOnScreen: Bool
 
     /// A Boolean value that indicates whether the window belongs to the window server.
+    /// - Returns: True if the window belongs to the Window Server process, false otherwise.
     var isWindowServerWindow: Bool {
         ownerName == "Window Server"
     }
 
     /// Creates a window with the given window identifier.
+    /// - Parameter windowID: The Core Graphics window identifier.
     init?(windowID: CGWindowID) {
         var pointer = UnsafeRawPointer(bitPattern: Int(windowID))
         guard
@@ -226,6 +279,7 @@ private struct WindowInfo {
     /// Returns the on screen windows.
     /// - Parameter excludeDesktopWindows: A Boolean value that indicates whether
     ///   to exclude desktop owned windows, such as the wallpaper and desktop icons.
+    /// - Returns: An array of WindowInfo instances representing visible windows.
     static func getOnScreenWindows(excludeDesktopWindows: Bool = false) -> [WindowInfo] {
         let options: CGWindowListOption = excludeDesktopWindows ? [.optionOnScreenOnly, .excludeDesktopElements] :
             .optionOnScreenOnly
@@ -237,6 +291,7 @@ private struct WindowInfo {
     }
 
     /// Creates a window with the given dictionary.
+    /// - Parameter dictionary: A dictionary containing window information from Core Graphics.
     private init?(dictionary: [CFString: CFTypeRef]) {
         guard
             let windowID = dictionary[kCGWindowNumber] as? CGWindowID,
@@ -265,6 +320,7 @@ private enum ScreenCapture {
     ///   - windowID: The identifier of the window to capture.
     ///   - screenBounds: The bounds to capture. Pass `nil` to capture the minimum rectangle that encloses the window.
     ///   - option: Options that specify the image to be captured.
+    /// - Returns: A CGImage of the captured window, or nil if capture fails.
     static func captureWindow(
         _ windowID: CGWindowID,
         screenBounds: CGRect? = nil,
@@ -286,15 +342,26 @@ private enum ScreenCapture {
 
 // MARK: - Screen Capture Implementation
 
-// A protocol used to suppress deprecation warnings for the `CGWindowList` screen capture APIs.
-//
-// ScreenCaptureKit doesn't support capturing composite images of offscreen menu bar items, but
-// this should be replaced once it does.
+/// A protocol used to suppress deprecation warnings for the `CGWindowList` screen capture APIs.
+///
+/// ScreenCaptureKit doesn't support capturing composite images of offscreen menu bar items, but
+/// this should be replaced once it does.
 private protocol WindowListImage {
+    /// Initializes a window list image from the specified parameters.
+    /// - Parameters:
+    ///   - windowListFromArrayScreenBounds: The screen bounds for the capture area.
+    ///   - windowArray: An array of window identifiers to capture.
+    ///   - imageOption: Options for image capture.
     init?(windowListFromArrayScreenBounds: CGRect, windowArray: CFArray, imageOption: CGWindowImageOption)
 }
 
 private extension WindowListImage {
+    /// Creates a window list image from the specified parameters.
+    /// - Parameters:
+    ///   - screenBounds: The screen bounds for the capture area.
+    ///   - windowArray: An array of window identifiers to capture.
+    ///   - imageOption: Options for image capture.
+    /// - Returns: A window list image instance, or nil if creation fails.
     static func windowListImage(
         from screenBounds: CGRect,
         windowArray: CFArray,
@@ -306,8 +373,10 @@ private extension WindowListImage {
 
 extension CGImage: WindowListImage { }
 
-// Extend NSImage to add PNG data conversion
+/// Extend NSImage to add PNG data conversion
 private extension NSImage {
+    /// Converts the image to PNG data.
+    /// - Returns: PNG data representation of the image, or nil if conversion fails.
     var pngData: Data? {
         guard
             let tiffRepresentation,

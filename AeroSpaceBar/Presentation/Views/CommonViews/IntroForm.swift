@@ -110,8 +110,7 @@ struct IntroForm<Content>: View where Content: View {
 
                             Text(subtitle)
                                 .multilineTextAlignment(.leading)
-                                .font(.system(size: 11))
-                                .foregroundStyle(.secondary)
+                                .secondaryText()
                                 .tag("intro-form-compact-subtitle")
                         }
                     }

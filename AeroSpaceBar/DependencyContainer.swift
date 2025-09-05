@@ -43,11 +43,11 @@ final class DependencyContainer {
     /// application icons for improved performance.
     private lazy var iconCache: IconCache = .init()
 
-    /// The desktop wallpaper gateway for capturing wallpaper.
+    /// The system menu bar gateway for capturing wallpaper and tracking menu bar state.
     ///
     /// This gateway is lazily initialized and provides dynamic capture of
-    /// the desktop wallpaper instead of using user-selected images.
-    private lazy var desktopWallpaperGateway: DesktopWallpaperGateway = DesktopWallpaperRepository()
+    /// the desktop wallpaper and monitoring of menu bar visibility and height.
+    private lazy var systemMenuBarGateway: SystemMenuBarGateway = SystemMenuBarRepository()
 
     // MARK: - Public Access
 
@@ -109,6 +109,7 @@ final class DependencyContainer {
         getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
         getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
         getWallpaperUseCase: makeGetWallpaperUseCase(),
+        getMenuBarVisibilityUseCase: makeGetMenuBarVisibilityUseCase(),
         getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
         getMenuBarVerticalPaddingUseCase: makeGetMenuBarVerticalPaddingUseCase(),
         getMenuBarHorizontalPaddingUseCase: makeGetMenuBarHorizontalPaddingUseCase(),
@@ -175,7 +176,7 @@ final class DependencyContainer {
     /// - Returns: A new GetWallpaperUseCase instance
 
     func makeGetWallpaperUseCase() -> GetWallpaperUseCase {
-        GetWallpaperUseCase(desktopWallpaperGateway: desktopWallpaperGateway)
+        GetWallpaperUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 
     // MARK: - Display Use Cases
@@ -323,7 +324,7 @@ final class DependencyContainer {
     /// - Returns: A new GetMenuBarHeightUseCase instance
 
     func makeGetMenuBarHeightUseCase() -> GetMenuBarHeightUseCase {
-        GetMenuBarHeightUseCase(desktopWallpaperGateway: desktopWallpaperGateway)
+        GetMenuBarHeightUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 
     /// Creates a new GetMenuBarVerticalPaddingUseCase instance.
@@ -478,5 +479,13 @@ final class DependencyContainer {
 
     func makeSetSpaceBorderWidthUseCase() -> SetSpaceBorderWidthUseCase {
         SetSpaceBorderWidthUseCase(configurationGateway: configurationGateway)
+    }
+
+    // MARK: - System State Use Cases
+
+    /// Creates a new GetMenuBarVisibilityUseCase instance.
+    /// - Returns: A new GetMenuBarVisibilityUseCase instance
+    func makeGetMenuBarVisibilityUseCase() -> GetMenuBarVisibilityUseCase {
+        GetMenuBarVisibilityUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 }

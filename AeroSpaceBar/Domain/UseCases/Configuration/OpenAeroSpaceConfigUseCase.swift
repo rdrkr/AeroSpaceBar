@@ -5,6 +5,9 @@ import Foundation
 
 /// Use case for opening the AeroSpace configuration file.
 ///
+/// This use case encapsulates the business logic for opening the AeroSpace configuration file.
+/// If no config file exists, it will create a default one. It belongs to the domain layer and
+/// coordinates between the presentation and data layers.
 @MainActor
 final class OpenAeroSpaceConfigUseCase {
     /// The configuration gateway for accessing configuration data.

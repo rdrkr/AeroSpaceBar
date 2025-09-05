@@ -30,24 +30,24 @@ struct AboutView: View {
 
             // App Name
             Text(LocalizedStringResource("AeroSpaceBar"))
-                .font(.system(size: 24, weight: .bold))
+                .font(.largeTitle.weight(.bold))
                 .foregroundColor(.primary)
                 .tag("about-app-name")
 
             // Version
             HStack(spacing: 4) {
                 Text(LocalizedStringResource("Version \(appVersion) (\(appBuild))"))
-                    .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                    .font(.themeTitle)
+                    .foregroundColor(.themeSecondary)
                     .tag("about-version")
 
                 #if DEBUG
                     Text(LocalizedStringResource("Debug"))
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.orange)
+                        .font(.themeSmallBody.weight(.medium))
+                        .foregroundColor(.themeWarning)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.orange.opacity(0.1))
+                        .background(Color.themeWarning.opacity(0.1))
                         .cornerRadius(8)
                         .tag("about-debug-badge")
                 #endif
@@ -59,7 +59,7 @@ struct AboutView: View {
                     "A modern macOS menu bar application for managing AeroSpace window manager " +
                         "spaces and windows with a beautiful interface."
                 )
-                .font(.system(size: 14))
+                .font(.themeTitle)
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -72,7 +72,7 @@ struct AboutView: View {
             // Acknowledgements
             VStack(spacing: 8) {
                 Text(LocalizedStringResource("Acknowledgements"))
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.themeSmallBody.weight(.semibold))
                     .foregroundColor(.primary)
                     .tag("about-acknowledgements-title")
 
@@ -86,8 +86,7 @@ struct AboutView: View {
                     .tag("about-aerospace-link")
 
                     Text(LocalizedStringResource("(MIT)"))
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .secondaryText()
                         .tag("about-aerospace-license")
 
                     Button(LocalizedStringResource("View License")) {
@@ -111,8 +110,7 @@ struct AboutView: View {
             // Made with love credit
             HStack(spacing: 4) {
                 Text(LocalizedStringResource("Made with ❤️ by"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .secondaryText()
                     .tag("about-made-with-love")
 
                 Button(
@@ -123,7 +121,7 @@ struct AboutView: View {
                     },
                     label: {
                         Text(LocalizedStringResource("Ronen Druker"))
-                            .font(.system(size: 11, weight: .medium))
+                            .font(.themeCaption)
                     }
                 )
                 .settingsButton()

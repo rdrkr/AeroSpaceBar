@@ -11,18 +11,18 @@ import Foundation
 /// between the presentation and data layers. Following reactive patterns similar to Kotlin Flow/StateFlow.
 @MainActor
 final class GetWallpaperUseCase {
-    /// The desktop wallpaper gateway for capturing wallpaper.
-    private let desktopWallpaperGateway: DesktopWallpaperGateway
+    /// The system menu bar gateway for capturing wallpaper.
+    private let systemMenuBarGateway: SystemMenuBarGateway
 
-    /// Initializes the use case with the desktop wallpaper gateway.
-    /// - Parameter desktopWallpaperRepository: The gateway for capturing desktop wallpaper
-    init(desktopWallpaperGateway: DesktopWallpaperGateway) {
-        self.desktopWallpaperGateway = desktopWallpaperGateway
+    /// Initializes the use case with the system menu bar gateway.
+    /// - Parameter systemMenuBarGateway: The gateway for capturing desktop wallpaper
+    init(systemMenuBarGateway: SystemMenuBarGateway) {
+        self.systemMenuBarGateway = systemMenuBarGateway
     }
 
     /// Returns a publisher that emits updates to the wallpaper image.
     /// - Returns: A publisher that emits wallpaper image updates
     func execute() -> AnyPublisher<NSImage?, Never> {
-        desktopWallpaperGateway.wallpaperPublisher
+        systemMenuBarGateway.wallpaperPublisher
     }
 }

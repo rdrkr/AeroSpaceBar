@@ -7,21 +7,21 @@ import SwiftUI
 /// Standard shadow modifier for spaces and windows
 struct StandardShadow: ViewModifier {
     func body(content: Content) -> some View {
-        content.shadow(color: .shadow, radius: 2)
+        content.shadow(color: .themeShadow, radius: 2)
     }
 }
 
 /// Icon shadow modifier for window icons
 struct IconShadow: ViewModifier {
     func body(content: Content) -> some View {
-        content.shadow(color: .iconShadow, radius: 2)
+        content.shadow(color: .themeIconShadow, radius: 2)
     }
 }
 
 /// Text shadow modifier for foreground text
 struct TextShadow: ViewModifier {
     func body(content: Content) -> some View {
-        content.shadow(color: .foregroundShadow, radius: 2)
+        content.shadow(color: .themeForegroundShadow, radius: 2)
     }
 }
 
@@ -53,7 +53,7 @@ struct BlurReplaceTransition: ViewModifier {
 struct SpaceCornerRadius: ViewModifier {
     let cornerRadius: CGFloat
 
-    init(cornerRadius: CGFloat = 8.0) {
+    init(cornerRadius: CGFloat = .themeSpaceCornerRadius) {
         self.cornerRadius = cornerRadius
     }
 
@@ -68,7 +68,7 @@ struct SpaceCornerRadius: ViewModifier {
 struct WindowCornerRadius: ViewModifier {
     let cornerRadius: CGFloat
 
-    init(cornerRadius: CGFloat = 4.0) {
+    init(cornerRadius: CGFloat = .themeWindowCornerRadius) {
         self.cornerRadius = cornerRadius
     }
 
@@ -90,7 +90,7 @@ struct HoverState: ViewModifier {
             .onHover { value in
                 isHovered = value
             }
-            .animation(.smooth, value: isHovered)
+            .animation(.themeSmooth, value: isHovered)
     }
 }
 
@@ -188,6 +188,135 @@ private struct ConditionalHoverState: ViewModifier {
     }
 }
 
+// MARK: - Text Styling Modifiers
+
+/// Small secondary text modifier for descriptions and help text.
+///
+/// Applies consistent styling for secondary information text throughout the app.
+struct SecondaryText: ViewModifier {
+    /// The body of the secondary text modifier.
+    /// - Returns: Content styled with small secondary text appearance.
+    func body(content: Content) -> some View {
+        content
+            .font(.themeCaption)
+            .foregroundColor(.themeSecondary)
+    }
+}
+
+/// Small success text modifier for positive status messages.
+///
+/// Applies styling for success or positive status indicators with optional text selection.
+struct SuccessText: ViewModifier {
+    /// Whether the text should be selectable by the user.
+    let isSelectable: Bool
+
+    /// Initializes a success text modifier.
+    /// - Parameter isSelectable: Whether to enable text selection. Defaults to false.
+    init(isSelectable: Bool = false) {
+        self.isSelectable = isSelectable
+    }
+
+    /// The body of the success text modifier.
+    /// - Returns: Content styled with success text appearance and optional selection.
+    func body(content: Content) -> some View {
+        if isSelectable {
+            content
+                .font(.themeCaption)
+                .foregroundColor(.themeSuccess)
+                .textSelection(.enabled)
+        } else {
+            content
+                .font(.themeCaption)
+                .foregroundColor(.themeSuccess)
+        }
+    }
+}
+
+/// Small error text modifier for error messages.
+///
+/// Applies styling for error or negative status indicators with optional text selection.
+struct ErrorText: ViewModifier {
+    /// Whether the text should be selectable by the user.
+    let isSelectable: Bool
+
+    /// Initializes an error text modifier.
+    /// - Parameter isSelectable: Whether to enable text selection. Defaults to false.
+    init(isSelectable: Bool = false) {
+        self.isSelectable = isSelectable
+    }
+
+    /// The body of the error text modifier.
+    /// - Returns: Content styled with error text appearance and optional selection.
+    func body(content: Content) -> some View {
+        if isSelectable {
+            content
+                .font(.themeCaption)
+                .foregroundColor(.themeError)
+                .textSelection(.enabled)
+        } else {
+            content
+                .font(.themeCaption)
+                .foregroundColor(.themeError)
+        }
+    }
+}
+
+/// Value display text modifier for numeric values next to sliders.
+///
+/// Applies consistent styling for numeric value display with fixed width and alignment.
+/// Commonly used to show slider values, percentages, and measurements.
+struct ValueDisplayText: ViewModifier {
+    /// The fixed width for the value display area.
+    let width: CGFloat
+    /// The alignment of text within the fixed width area.
+    let alignment: Alignment
+
+    /// Initializes a value display text modifier.
+    /// - Parameters:
+    ///   - width: The fixed width for the display area. Defaults to theme value.
+    ///   - alignment: The text alignment within the area. Defaults to .trailing.
+    init(width: CGFloat = .themeValueDisplayWidth, alignment: Alignment = .trailing) {
+        self.width = width
+        self.alignment = alignment
+    }
+
+    /// The body of the value display text modifier.
+    /// - Returns: Content styled as a fixed-width value display.
+    func body(content: Content) -> some View {
+        content
+            .secondaryText()
+            .frame(width: width, alignment: alignment)
+    }
+}
+
+/// Fixed size text modifier for multiline help text.
+///
+/// Applies styling for secondary text that needs to maintain its natural size
+/// without being compressed by container constraints. Ideal for help text and descriptions.
+struct FixedSizeText: ViewModifier {
+    /// Whether to fix the horizontal size.
+    let horizontal: Bool
+    /// Whether to fix the vertical size.
+    let vertical: Bool
+
+    /// Initializes a fixed size text modifier.
+    /// - Parameters:
+    ///   - horizontal: Whether to maintain natural horizontal size. Defaults to false.
+    ///   - vertical: Whether to maintain natural vertical size. Defaults to true.
+    init(horizontal: Bool = false, vertical: Bool = true) {
+        self.horizontal = horizontal
+        self.vertical = vertical
+    }
+
+    /// The body of the fixed size text modifier.
+    /// - Returns: Content styled with secondary text and fixed sizing.
+    func body(content: Content) -> some View {
+        content
+            .secondaryText()
+            .fixedSize(horizontal: horizontal, vertical: vertical)
+    }
+}
+
 // MARK: - Additional Modifiers
 
 /// Button style modifier for settings buttons
@@ -201,7 +330,7 @@ struct SettingsButton: ViewModifier {
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
-            .foregroundColor(isEnabled ? .blue : .secondary)
+            .foregroundColor(isEnabled ? .themePrimary : .themeSecondary)
             .disabled(!isEnabled)
     }
 }
@@ -255,7 +384,7 @@ struct CardStyle: ViewModifier {
     let backgroundColor: Color
     let cornerRadius: CGFloat
 
-    init(backgroundColor: Color = Color(.controlBackgroundColor), cornerRadius: CGFloat = 12) {
+    init(backgroundColor: Color = .themeCardBackground, cornerRadius: CGFloat = .themeCardCornerRadius) {
         self.backgroundColor = backgroundColor
         self.cornerRadius = cornerRadius
     }
@@ -292,18 +421,23 @@ extension View {
         modifier(SmoothAnimation(duration: duration))
     }
 
+    /// Apply smooth theme animation
+    func themeSmoothAnimation() -> some View {
+        animation(.themeSmooth, value: true)
+    }
+
     /// Apply blur replace transition modifier
     func blurReplaceTransition() -> some View {
         modifier(BlurReplaceTransition())
     }
 
     /// Apply space corner radius modifier
-    func spaceCornerRadius(_ cornerRadius: CGFloat = 8.0) -> some View {
+    func spaceCornerRadius(_ cornerRadius: CGFloat = .themeSpaceCornerRadius) -> some View {
         modifier(SpaceCornerRadius(cornerRadius: cornerRadius))
     }
 
     /// Apply window corner radius modifier
-    func windowCornerRadius(_ cornerRadius: CGFloat = 4.0) -> some View {
+    func windowCornerRadius(_ cornerRadius: CGFloat = .themeWindowCornerRadius) -> some View {
         modifier(WindowCornerRadius(cornerRadius: cornerRadius))
     }
 
@@ -347,8 +481,8 @@ extension View {
 
     /// Apply card style modifier
     func cardStyle(
-        backgroundColor: Color = Color(.controlBackgroundColor),
-        cornerRadius: CGFloat = 12
+        backgroundColor: Color = .themeCardBackground,
+        cornerRadius: CGFloat = .themeCardCornerRadius
     ) -> some View {
         modifier(CardStyle(backgroundColor: backgroundColor, cornerRadius: cornerRadius))
     }
@@ -360,5 +494,32 @@ extension View {
         onTap: @escaping () -> Void
     ) -> some View {
         modifier(ConditionalInteraction(isEnabled: isEnabled, isHovered: isHovered, onTap: onTap))
+    }
+
+    // MARK: - Text Styling Extensions
+
+    /// Apply secondary text styling
+    func secondaryText() -> some View {
+        modifier(SecondaryText())
+    }
+
+    /// Apply success text styling
+    func successText(isSelectable: Bool = false) -> some View {
+        modifier(SuccessText(isSelectable: isSelectable))
+    }
+
+    /// Apply error text styling
+    func errorText(isSelectable: Bool = false) -> some View {
+        modifier(ErrorText(isSelectable: isSelectable))
+    }
+
+    /// Apply value display text styling
+    func valueDisplayText(width: CGFloat = .themeValueDisplayWidth, alignment: Alignment = .trailing) -> some View {
+        modifier(ValueDisplayText(width: width, alignment: alignment))
+    }
+
+    /// Apply fixed size secondary text styling
+    func fixedSizeText(horizontal: Bool = false, vertical: Bool = true) -> some View {
+        modifier(FixedSizeText(horizontal: horizontal, vertical: vertical))
     }
 }

@@ -47,6 +47,9 @@ final class SpacesViewModel: ObservableObject {
     /// Whether the globe key is currently being held.
     @Published var isGlobeKeyPressed: Bool = false
 
+    /// Whether the system menu bar is currently visible.
+    @Published var isMenuBarVisible: Bool = true
+
     /// Monitor for global key events.
     private nonisolated(unsafe) var keyMonitors: [Any] = []
 
@@ -60,6 +63,9 @@ final class SpacesViewModel: ObservableObject {
 
     /// Use case for getting desktop wallpaper image.
     private let getWallpaperUseCase: GetWallpaperUseCase
+
+    /// Use case for getting menu bar visibility status.
+    private let getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase
 
     /// Use cases for UI configuration properties.
     private let getMenuBarHeightUseCase: GetMenuBarHeightUseCase
@@ -107,6 +113,7 @@ final class SpacesViewModel: ObservableObject {
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         getWallpaperUseCase: GetWallpaperUseCase,
+        getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
         getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase,
         getMenuBarHorizontalPaddingUseCase: GetMenuBarHorizontalPaddingUseCase,
@@ -130,6 +137,7 @@ final class SpacesViewModel: ObservableObject {
 
         // Initialize wallpaper use case
         self.getWallpaperUseCase = getWallpaperUseCase
+        self.getMenuBarVisibilityUseCase = getMenuBarVisibilityUseCase
         self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
         self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
 
@@ -287,6 +295,11 @@ final class SpacesViewModel: ObservableObject {
 
         getSpaceForegroundColorUseCase.execute()
             .assign(to: \.spaceForegroundColor, on: self)
+            .store(in: &cancellables)
+
+        // Monitor system menu bar visibility changes
+        getMenuBarVisibilityUseCase.execute()
+            .assign(to: \SpacesViewModel.isMenuBarVisible, on: self)
             .store(in: &cancellables)
     }
 

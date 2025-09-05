@@ -16,8 +16,7 @@ struct SettingsToggleRow: View {
                 Text(title)
                     .tag("settings-toggle-title")
                 Text(description)
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .secondaryText()
                     .tag("settings-toggle-description")
             }
         }
@@ -54,8 +53,7 @@ struct SettingsColorRow: View {
                     Text(title)
                         .tag("settings-color-title")
                     Text(description)
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .secondaryText()
                         .tag("settings-color-description")
                 }
 
@@ -108,8 +106,7 @@ struct SettingsSliderRow: View {
                 }
 
                 Text(displayValue)
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .secondaryText()
                     .frame(
                         width: valueWidth,
                         alignment: .trailing
@@ -118,8 +115,7 @@ struct SettingsSliderRow: View {
             }
 
             Text(description)
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
+                .secondaryText()
                 .tag("settings-slider-description")
         }
         .tag("settings-slider-row")
@@ -160,8 +156,7 @@ struct SettingsCGFloatSliderRow: View {
                 }
 
                 Text(displayValue)
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .secondaryText()
                     .frame(
                         width: valueWidth,
                         alignment: .trailing
@@ -170,8 +165,7 @@ struct SettingsCGFloatSliderRow: View {
             }
 
             Text(description)
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
+                .secondaryText()
                 .tag("settings-slider-description")
         }
         .tag("settings-cgfloat-slider-row")

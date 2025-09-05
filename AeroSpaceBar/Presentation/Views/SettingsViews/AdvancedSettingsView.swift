@@ -40,8 +40,7 @@ struct AdvancedSettingsView: View {
                     .tag("advanced-log-level-picker")
 
                     Text(LocalizedStringResource("Set the verbosity of logging output"))
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .secondaryText()
                         .tag("advanced-log-level-help")
                 }
 
@@ -70,8 +69,7 @@ struct AdvancedSettingsView: View {
                     .tag("advanced-reset-settings-button")
 
                     Text(LocalizedStringResource("Reset all settings to their default values"))
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                        .secondaryText()
                         .tag("advanced-reset-help-text")
                 }
             }

@@ -11,18 +11,18 @@ import SwiftUI
 /// clean architecture principles.
 @MainActor
 final class GetMenuBarHeightUseCase {
-    /// The desktop wallpaper gateway for capturing wallpaper.
-    private let desktopWallpaperGateway: DesktopWallpaperGateway
+    /// The system menu bar gateway for capturing wallpaper and tracking menu bar.
+    private let systemMenuBarGateway: SystemMenuBarGateway
 
-    /// Initializes the use case with the configuration gateway.
-    /// - Parameter desktopWallpaperGateway: The gateway for accessing desktop wallpaper data
-    init(desktopWallpaperGateway: DesktopWallpaperGateway) {
-        self.desktopWallpaperGateway = desktopWallpaperGateway
+    /// Initializes the use case with the system menu bar gateway.
+    /// - Parameter systemMenuBarGateway: The gateway for accessing system menu bar data
+    init(systemMenuBarGateway: SystemMenuBarGateway) {
+        self.systemMenuBarGateway = systemMenuBarGateway
     }
 
     /// Executes the use case to get the menu bar height setting as a publisher.
     /// - Returns: A publisher that emits menu bar height values
     func execute() -> AnyPublisher<CGFloat, Never> {
-        desktopWallpaperGateway.menuBarHeightPublisher
+        systemMenuBarGateway.menuBarHeightPublisher
     }
 }
