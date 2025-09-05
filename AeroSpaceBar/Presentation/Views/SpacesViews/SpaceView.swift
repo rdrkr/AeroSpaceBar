@@ -36,6 +36,12 @@ struct SpaceView: View {
         viewModel.widgetSpacing
     }
 
+    /// Computed property for minimum height to match spaces with windows
+    private var minimumHeight: CGFloat {
+        // Match the height of windows: icon size + vertical padding * 2
+        viewModel.windowIconSize + (viewModel.menuBarVerticalPadding * 2)
+    }
+
     // MARK: - Body
 
     /// The body of the space view.
@@ -66,6 +72,7 @@ struct SpaceView: View {
 
             Spacer().frame(width: widgetSpacing)
         }
+        .frame(minHeight: minimumHeight)
         .spaceFocusState(
             isFocused,
             configuration: SpaceFocusState.Configuration(

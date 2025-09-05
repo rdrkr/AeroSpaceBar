@@ -19,6 +19,9 @@ enum UserDefaultsKeys: String, CaseIterable {
     /// Whether to focus a window immediately when clicking on it.
     case focusWindowOnClick = "com.aerospacebar.preferences.focusWindowOnClick"
 
+    /// Whether to show empty spaces in the interface.
+    case showEmptySpaces = "com.aerospacebar.preferences.showEmptySpaces"
+
     /// Whether to launch the application at login.
     case launchAtLogin = "com.aerospacebar.preferences.launchAtLogin"
 

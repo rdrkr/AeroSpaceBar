@@ -34,11 +34,17 @@ final class AeroSpaceRepository: SpacesGateway {
     /// Use case for getting the optimized performance enabled setting.
     private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
 
+    /// Use case for getting the show empty spaces setting.
+    private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
+
     /// Cached AeroSpace executable path.
     private var aeroSpaceExecutable: String
 
     /// Whether optimized performance is enabled.
     private var optimizedPerformanceEnabled: Bool
+
+    /// Whether to show empty spaces in the interface.
+    private var showEmptySpaces: Bool
 
     /// Task for window focus monitoring.
     private var windowFocusMonitoringTask: Task<Void, Never>?
@@ -70,19 +76,23 @@ final class AeroSpaceRepository: SpacesGateway {
     ///   - getAeroSpacePathUseCase: Use case to resolve AeroSpace binary path dynamically
     ///   - getAeroSpaceConfigPathUseCase: Use case to get the AeroSpace configuration file path
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get the optimized performance enabled setting
+    ///   - getShowEmptySpacesUseCase: Use case to get the show empty spaces setting
     init(
         iconCache: IconCache,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase,
-        getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
+        getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
+        getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
     ) {
         self.iconCache = iconCache
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
         self.getAeroSpaceConfigPathUseCase = getAeroSpaceConfigPathUseCase
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
+        self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
 
         aeroSpaceExecutable = getAeroSpacePathUseCase.execute().blockingFirst()
         optimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
+        showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
 
         setupUseCaseObservers()
         configureWindowFocusMonitoring()
@@ -153,6 +163,28 @@ final class AeroSpaceRepository: SpacesGateway {
                 andEventID: AEEventID(0x7073_6272) // 'psbr'
             )
 
+            windowFocusMonitoringTask = Task.detached(priority: .utility) { [weak self] in
+                guard let self else { return }
+
+                // Continuously monitor AeroSpace running state
+                repeat {
+                    let isRunning = isAeroSpaceRunning()
+
+                    Task { @MainActor in
+                        let wasRunning = self.aeroSpaceRunningSubject.value
+
+                        if isRunning != wasRunning {
+                            if isRunning {
+                                await self.updateSpacesData()
+                            } else {
+                                self.aeroSpaceRunningSubject.send(false)
+                            }
+                        }
+                    }
+                    try? await Task.sleep(for: .seconds(5))
+                } while !Task.isCancelled
+            }
+
             Logger.info("Event handlers set up", category: Logger.spaces)
         } else {
             windowFocusMonitoringTask = Task.detached(priority: .utility) { [weak self] in
@@ -215,16 +247,29 @@ final class AeroSpaceRepository: SpacesGateway {
                 self?.configureWindowFocusMonitoring()
             }
             .store(in: &cancellables)
+
+        getShowEmptySpacesUseCase.execute()
+            .sink { [weak self] showEmpty in
+                self?.showEmptySpaces = showEmpty
+                Task { @MainActor in
+                    await self?.updateSpacesData()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Updates spaces data and emits via publisher.
     private func updateSpacesData() async {
         do {
             let executablePath = aeroSpaceExecutable
+            let showEmptySpacesValue = showEmptySpaces
             let spaces = try await withCheckedThrowingContinuation { continuation in
                 queue.async {
                     do {
-                        let spaces = try self.fetchSpacesWithWindows(executablePath: executablePath)
+                        let spaces = try self.fetchSpacesWithWindows(
+                            executablePath: executablePath,
+                            showEmptySpaces: showEmptySpacesValue
+                        )
                         continuation.resume(returning: spaces)
                     } catch {
                         continuation.resume(throwing: error)
@@ -319,19 +364,51 @@ final class AeroSpaceRepository: SpacesGateway {
         }
     }
 
+    /// Starts AeroSpace if it's not currently running.
+    /// - Throws: AppError if starting AeroSpace fails
+    func startAeroSpace() async throws {
+        Logger.info("Starting AeroSpace launch sequence", category: Logger.spaces)
+
+        // Check if AeroSpace is already running
+        if isAeroSpaceRunning() {
+            Logger.info("AeroSpace is already running, no need to start", category: Logger.spaces)
+            return
+        }
+
+        Logger.info("Attempting to start AeroSpace", category: Logger.spaces)
+
+        // Use 'open' command to launch AeroSpace app bundle
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        process.arguments = ["/Applications/AeroSpace.app"]
+
+        do {
+            try process.run()
+            Logger.info("AeroSpace launched successfully using open command", category: Logger.spaces)
+        } catch {
+            Logger.error("Failed to launch AeroSpace", error: error, category: Logger.spaces)
+            throw AppError.commandExecutionError("Failed to start AeroSpace: \(error.localizedDescription)")
+        }
+
+        // Give AeroSpace a moment to start up before returning
+        try await Task.sleep(for: .seconds(1))
+
+        Logger.info("AeroSpace launch sequence completed", category: Logger.spaces)
+    }
+
     /// Checks whether AeroSpace is currently running.
     ///
     /// This method queries the running applications to determine if AeroSpace
     /// is currently active on the system.
     /// - Returns: True if AeroSpace is running, false otherwise
-    nonisolated func isAeroSpaceRunning() -> Bool {
-        let runningApps = NSWorkspace.shared.runningApplications.compactMap {
-            $0.localizedName?.lowercased()
-        }
-        Logger.debug("Running apps: \(runningApps)", category: Logger.spaces)
-
+    private nonisolated func isAeroSpaceRunning() -> Bool {
         // Check for various possible AeroSpace process names
-        let isRunning = runningApps.contains("aerospace")
+        let isRunning = NSWorkspace.shared
+            .runningApplications
+            .compactMap {
+                $0.localizedName?.lowercased()
+            }
+            .contains("aerospace")
 
         Logger.debug("AeroSpace running: \(isRunning)", category: Logger.spaces)
         return isRunning
@@ -345,7 +422,7 @@ final class AeroSpaceRepository: SpacesGateway {
     /// and builds the complete spaces data structure.
     /// - Returns: An array of spaces with their associated windows
     /// - Throws: AppError if any operation fails
-    private nonisolated func fetchSpacesWithWindows(executablePath: String) throws -> [Space] {
+    private nonisolated func fetchSpacesWithWindows(executablePath: String, showEmptySpaces: Bool) throws -> [Space] {
         guard isAeroSpaceRunning() else {
             throw AppError.aeroSpaceNotRunning
         }
@@ -359,7 +436,8 @@ final class AeroSpaceRepository: SpacesGateway {
             spaces: spaces,
             windows: windows,
             focusedSpace: focusedSpace,
-            focusedWindow: focusedWindow
+            focusedWindow: focusedWindow,
+            showEmptySpaces: showEmptySpaces
         )
     }
 
@@ -378,7 +456,8 @@ final class AeroSpaceRepository: SpacesGateway {
         spaces: [Space],
         windows: [Window],
         focusedSpace: Space?,
-        focusedWindow: Window?
+        focusedWindow: Window?,
+        showEmptySpaces: Bool
     ) throws -> [Space] {
         // Update focused state for spaces
         var updatedSpaces = spaces
@@ -419,7 +498,7 @@ final class AeroSpaceRepository: SpacesGateway {
             resultSpaces[index].windows.sort { $0.id < $1.id }
         }
 
-        return resultSpaces.filter { !$0.windows.isEmpty }
+        return showEmptySpaces ? resultSpaces : resultSpaces.filter { !$0.windows.isEmpty }
     }
 
     /// Fetches all spaces from AeroSpace.

@@ -85,6 +85,15 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
+    /// Whether to show empty spaces in the interface.
+    @Published var showEmptySpaces: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowEmptySpacesUseCase.execute(value: showEmptySpaces)
+            }
+        }
+    }
+
     /// Whether to show window titles in the interface.
     @Published var showWindowTitles: Bool {
         didSet {
@@ -199,6 +208,8 @@ class SettingsViewModel: ObservableObject {
     private let setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
+    private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
+    private let setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase
     private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
     private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
     private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
@@ -241,6 +252,8 @@ class SettingsViewModel: ObservableObject {
         setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
+        getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase,
+        setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase,
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
         setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
         getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase,
@@ -274,6 +287,8 @@ class SettingsViewModel: ObservableObject {
         self.setSpaceBorderWidthUseCase = setSpaceBorderWidthUseCase
         self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
         self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
+        self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
+        self.setShowEmptySpacesUseCase = setShowEmptySpacesUseCase
         self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
         self.setShowWindowTitlesUseCase = setShowWindowTitlesUseCase
         self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
@@ -301,6 +316,7 @@ class SettingsViewModel: ObservableObject {
         spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
         spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
+        showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
@@ -384,6 +400,10 @@ class SettingsViewModel: ObservableObject {
 
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
+            .store(in: &cancellables)
+
+        getShowEmptySpacesUseCase.execute()
+            .assign(to: \.showEmptySpaces, on: self)
             .store(in: &cancellables)
 
         getShowWindowTitlesUseCase.execute()

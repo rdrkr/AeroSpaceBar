@@ -61,9 +61,10 @@ struct SpacesView: View {
         viewModel.showWindowTitles
     }
 
-    /// Whether the view should be hidden based on globe key + mouse hover combination or menu bar visibility
+    /// Whether the view should be hidden based on globe key + mouse hover combination, menu bar visibility, or
+    /// AeroSpace status
     private var shouldHideView: Bool {
-        (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel.isMenuBarVisible
+        (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel.isMenuBarVisible || !viewModel.isAeroSpaceRunning
     }
 
     /// The body of the spaces view.

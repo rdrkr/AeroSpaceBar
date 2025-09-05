@@ -23,6 +23,13 @@ struct AppearanceSettingsView: View {
                             .secondaryText()
                     }
                 }.toggleStyle(.switch)
+
+                Toggle(isOn: $viewModel.showEmptySpaces) {
+                    Text(LocalizedStringResource("Show Empty Spaces"))
+                    Text(LocalizedStringResource("Display spaces that contain no windows in the interface"))
+                }
+                .toggleStyle(.switch)
+                .tag("advanced-show-empty-spaces-toggle")
             }
 
             Section(LocalizedStringResource("Space Background")) {
@@ -45,43 +52,25 @@ struct AppearanceSettingsView: View {
                     }
                 }
 
-                VStack(alignment: .leading) {
-                    HStack {
-                        StickySlider(
-                            value: $viewModel.spaceBackgroundOpacity,
-                            in: 0.0 ... 1.0,
-                            defaultValue: ConfigurationDefaults.spaceBackgroundOpacity,
-                            stickiness: 0.05
-                        ) {
-                            Text(LocalizedStringResource("Opacity"))
-                        }
+                SettingsSlider(
+                    value: $viewModel.spaceBackgroundOpacity,
+                    in: 0.0 ... 1.0,
+                    defaultValue: ConfigurationDefaults.spaceBackgroundOpacity,
+                    stickiness: 0.05,
+                    label: LocalizedStringResource("Opacity"),
+                    helpText: LocalizedStringResource("Adjust the background opacity of the space elements"),
+                    displayAsPercentage: true
+                )
 
-                        Text("\(Int(viewModel.spaceBackgroundOpacity * 100))%")
-                            .valueDisplayText()
-                    }
-
-                    Text(LocalizedStringResource("Adjust the background opacity of the space elements"))
-                        .secondaryText()
-                }
-
-                VStack(alignment: .leading) {
-                    HStack {
-                        StickySlider(
-                            value: $viewModel.spaceBackgroundBlurRadius,
-                            in: 0.0 ... 10.0,
-                            defaultValue: ConfigurationDefaults.spaceBackgroundBlurRadius,
-                            stickiness: 0.5
-                        ) {
-                            Text(LocalizedStringResource("Blur"))
-                        }
-
-                        Text("\(Int(viewModel.spaceBackgroundBlurRadius)) pts")
-                            .valueDisplayText()
-                    }
-
-                    Text(LocalizedStringResource("Adjust the background blur radius of the space elements"))
-                        .secondaryText()
-                }
+                SettingsSlider(
+                    value: $viewModel.spaceBackgroundBlurRadius,
+                    in: 0.0 ... 10.0,
+                    defaultValue: ConfigurationDefaults.spaceBackgroundBlurRadius,
+                    stickiness: 0.5,
+                    label: LocalizedStringResource("Blur"),
+                    helpText: LocalizedStringResource("Adjust the background blur radius of the space elements"),
+                    displayAsPoints: true
+                )
             }
 
             Section(LocalizedStringResource("Space Border")) {
@@ -104,51 +93,25 @@ struct AppearanceSettingsView: View {
                     }
                 }
 
-                VStack(alignment: .leading) {
-                    HStack {
-                        StickySlider(
-                            value: $viewModel.spaceBorderOpacity,
-                            in: 0.0 ... 1.0,
-                            defaultValue: ConfigurationDefaults.spaceBorderOpacity,
-                            stickiness: 0.05
-                        ) {
-                            Text(LocalizedStringResource("Opacity"))
-                        }
+                SettingsSlider(
+                    value: $viewModel.spaceBorderOpacity,
+                    in: 0.0 ... 1.0,
+                    defaultValue: ConfigurationDefaults.spaceBorderOpacity,
+                    stickiness: 0.05,
+                    label: LocalizedStringResource("Opacity"),
+                    helpText: LocalizedStringResource("Adjust the border opacity of the space elements"),
+                    displayAsPercentage: true
+                )
 
-                        Text("\(Int(viewModel.spaceBorderOpacity * 100))%")
-                            .secondaryText()
-                            .frame(
-                                width: 34,
-                                alignment: .trailing
-                            )
-                    }
-
-                    Text(LocalizedStringResource("Adjust the border opacity of the space elements"))
-                        .secondaryText()
-                }
-
-                VStack(alignment: .leading) {
-                    HStack {
-                        StickySlider(
-                            value: $viewModel.spaceBorderWidth,
-                            in: 0.0 ... 5.0,
-                            defaultValue: ConfigurationDefaults.spaceBorderWidth,
-                            stickiness: 0.25
-                        ) {
-                            Text(LocalizedStringResource("Width"))
-                        }
-
-                        Text("\(Int(viewModel.spaceBorderWidth)) pts")
-                            .secondaryText()
-                            .frame(
-                                width: 34,
-                                alignment: .trailing
-                            )
-                    }
-
-                    Text(LocalizedStringResource("Adjust the border width of the space elements"))
-                        .secondaryText()
-                }
+                SettingsSlider(
+                    value: $viewModel.spaceBorderWidth,
+                    in: 0.0 ... 5.0,
+                    defaultValue: ConfigurationDefaults.spaceBorderWidth,
+                    stickiness: 0.25,
+                    label: LocalizedStringResource("Width"),
+                    helpText: LocalizedStringResource("Adjust the border width of the space elements"),
+                    displayAsPoints: true
+                )
             }
 
             Section(LocalizedStringResource("Space Foreground")) {
@@ -173,28 +136,17 @@ struct AppearanceSettingsView: View {
             }
 
             Section(LocalizedStringResource("Space Geometry")) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        StickySlider(
-                            value: $viewModel.spaceCornerRadius,
-                            in: 0.0 ... ConfigurationDefaults.spaceCornerRadius,
-                            defaultValue: ConfigurationDefaults.spaceCornerRadius,
-                            stickiness: 1.0
-                        ) {
-                            Text(LocalizedStringResource("Corner Radius"))
-                        }
-
-                        Text("\(Int(viewModel.spaceCornerRadius * 100 / ConfigurationDefaults.spaceCornerRadius))%")
-                            .secondaryText()
-                            .frame(
-                                width: 34,
-                                alignment: .trailing
-                            )
+                SettingsSlider(
+                    value: $viewModel.spaceCornerRadius,
+                    in: 0.0 ... ConfigurationDefaults.spaceCornerRadius,
+                    defaultValue: ConfigurationDefaults.spaceCornerRadius,
+                    stickiness: 1.0,
+                    label: LocalizedStringResource("Corner Radius"),
+                    helpText: LocalizedStringResource("Adjust the corner radius of space indicators"),
+                    valueFormatter: { value in
+                        "\(Int(value * 100 / ConfigurationDefaults.spaceCornerRadius))%"
                     }
-
-                    Text(LocalizedStringResource("Adjust the corner radius of space indicators"))
-                        .secondaryText()
-                }
+                )
             }
         }
     }

@@ -60,6 +60,7 @@ final class SpacesViewModel: ObservableObject {
     private let setFocusSpaceUseCase: SetFocusSpaceUseCase
     private let setFocusWindowUseCase: SetFocusWindowUseCase
     private let getAeroSpaceStatusUseCase: GetAeroSpaceStatusUseCase
+    private let startAeroSpaceUseCase: StartAeroSpaceUseCase
 
     /// Use case for getting desktop wallpaper image.
     private let getWallpaperUseCase: GetWallpaperUseCase
@@ -110,6 +111,7 @@ final class SpacesViewModel: ObservableObject {
         setFocusSpaceUseCase: SetFocusSpaceUseCase,
         setFocusWindowUseCase: SetFocusWindowUseCase,
         getAeroSpaceStatusUseCase: GetAeroSpaceStatusUseCase,
+        startAeroSpaceUseCase: StartAeroSpaceUseCase,
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         getWallpaperUseCase: GetWallpaperUseCase,
@@ -134,6 +136,7 @@ final class SpacesViewModel: ObservableObject {
         self.setFocusSpaceUseCase = setFocusSpaceUseCase
         self.setFocusWindowUseCase = setFocusWindowUseCase
         self.getAeroSpaceStatusUseCase = getAeroSpaceStatusUseCase
+        self.startAeroSpaceUseCase = startAeroSpaceUseCase
 
         // Initialize wallpaper use case
         self.getWallpaperUseCase = getWallpaperUseCase
@@ -183,6 +186,11 @@ final class SpacesViewModel: ObservableObject {
 
         setupReactiveSubscriptions()
         setupGlobeKeyMonitors()
+
+        // Auto-start AeroSpace if not running
+        Task {
+            await checkAndStartAeroSpace()
+        }
     }
 
     // MARK: - Public Methods
@@ -211,6 +219,28 @@ final class SpacesViewModel: ObservableObject {
     }
 
     // MARK: - Private Methods
+
+    /// Checks if AeroSpace is running and starts it if not.
+    ///
+    /// This method is called during initialization to ensure AeroSpace is available
+    /// when the app starts up. It will only attempt to start AeroSpace if it's not already running.
+    private func checkAndStartAeroSpace() async {
+        // Check if AeroSpace is already running
+        if isAeroSpaceRunning {
+            Logger.info("AeroSpace is already running, no need to start", category: Logger.spaces)
+            return
+        }
+
+        Logger.info("AeroSpace not running, attempting to start", category: Logger.spaces)
+
+        do {
+            try await startAeroSpaceUseCase.execute()
+            Logger.info("Successfully started AeroSpace", category: Logger.spaces)
+        } catch {
+            Logger.error("Failed to start AeroSpace", error: error, category: Logger.spaces)
+            // Don't throw - we want the app to continue working even if AeroSpace can't be started
+        }
+    }
 
     /// Sets up reactive bindings for state changes.
     ///

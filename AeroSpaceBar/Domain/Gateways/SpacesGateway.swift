@@ -32,4 +32,8 @@ protocol SpacesGateway {
     /// - Parameter windowId: The identifier of the window to focus
     /// - Throws: AppError if the operation fails
     func focusWindow(windowId: String) async throws
+
+    /// Starts AeroSpace if it's not currently running.
+    /// - Throws: AppError if starting AeroSpace fails
+    func startAeroSpace() async throws
 }

@@ -28,7 +28,8 @@ final class DependencyContainer {
         iconCache: iconCache,
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         getAeroSpaceConfigPathUseCase: makeGetAeroSpaceConfigPathUseCase(),
-        getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase()
+        getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
+        getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase()
     )
 
     /// The configuration gateway for managing application settings.
@@ -76,6 +77,8 @@ final class DependencyContainer {
         setSpaceBorderWidthUseCase: makeSetSpaceBorderWidthUseCase(),
         getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
         setFocusWindowOnClickUseCase: makeSetFocusWindowOnClickUseCase(),
+        getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase(),
+        setShowEmptySpacesUseCase: makeSetShowEmptySpacesUseCase(),
         getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
         setShowWindowTitlesUseCase: makeSetShowWindowTitlesUseCase(),
         getSpaceCornerRadiusUseCase: makeGetSpaceCornerRadiusUseCase(),
@@ -106,6 +109,7 @@ final class DependencyContainer {
         setFocusSpaceUseCase: makeSetFocusSpaceUseCase(),
         setFocusWindowUseCase: makeSetFocusWindowUseCase(),
         getAeroSpaceStatusUseCase: makeGetAeroSpaceStatusUseCase(),
+        startAeroSpaceUseCase: makeStartAeroSpaceUseCase(),
         getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
         getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
         getWallpaperUseCase: makeGetWallpaperUseCase(),
@@ -161,6 +165,13 @@ final class DependencyContainer {
 
     func makeGetAeroSpaceStatusUseCase() -> GetAeroSpaceStatusUseCase {
         GetAeroSpaceStatusUseCase(spacesGateway: spacesGateway)
+    }
+
+    /// Creates a new StartAeroSpaceUseCase instance.
+    /// - Returns: A new StartAeroSpaceUseCase instance
+
+    func makeStartAeroSpaceUseCase() -> StartAeroSpaceUseCase {
+        StartAeroSpaceUseCase(spacesGateway: spacesGateway)
     }
 
     /// Creates a new GetAeroSpaceVersionUseCase instance.
@@ -221,6 +232,20 @@ final class DependencyContainer {
 
     func makeSetFocusWindowOnClickUseCase() -> SetFocusWindowOnClickUseCase {
         SetFocusWindowOnClickUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetShowEmptySpacesUseCase instance.
+    /// - Returns: A new GetShowEmptySpacesUseCase instance
+
+    func makeGetShowEmptySpacesUseCase() -> GetShowEmptySpacesUseCase {
+        GetShowEmptySpacesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetShowEmptySpacesUseCase instance.
+    /// - Returns: A new SetShowEmptySpacesUseCase instance
+
+    func makeSetShowEmptySpacesUseCase() -> SetShowEmptySpacesUseCase {
+        SetShowEmptySpacesUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - AeroSpace Use Cases

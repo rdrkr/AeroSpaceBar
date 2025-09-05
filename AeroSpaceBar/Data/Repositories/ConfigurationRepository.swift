@@ -36,6 +36,11 @@ final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.focusWindowOnClick
     )
 
+    /// Subject for show empty spaces.
+    private let showEmptySpacesSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showEmptySpaces
+    )
+
     /// Subject for enable performance metrics.
     private let enablePerformanceMetricsSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.enablePerformanceMetrics
@@ -121,6 +126,10 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     var focusWindowOnClickPublisher: AnyPublisher<Bool, Never> {
         focusWindowOnClickSubject.eraseToAnyPublisher()
+    }
+
+    var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
+        showEmptySpacesSubject.eraseToAnyPublisher()
     }
 
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> {
@@ -261,6 +270,11 @@ final class ConfigurationRepository: ConfigurationGateway {
             ?? focusWindowOnClickSubject.value
         focusWindowOnClickSubject.send(focusWindowOnClick)
 
+        let showEmptySpaces = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.showEmptySpaces.rawValue) as? Bool
+            ?? showEmptySpacesSubject.value
+        showEmptySpacesSubject.send(showEmptySpaces)
+
         let enablePerformanceMetrics = UserDefaults.standard
             .object(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) as? Bool
             ?? enablePerformanceMetricsSubject.value
@@ -359,6 +373,14 @@ final class ConfigurationRepository: ConfigurationGateway {
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.focusWindowOnClick.rawValue)
         focusWindowOnClickSubject.send(value)
+    }
+
+    /// Sets whether to show empty spaces and emits update.
+    func setShowEmptySpaces(_ value: Bool) async {
+        if value == showEmptySpacesSubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showEmptySpaces.rawValue)
+        showEmptySpacesSubject.send(value)
     }
 
     /// Sets whether performance metrics are enabled and emits update.
@@ -606,6 +628,7 @@ final class ConfigurationRepository: ConfigurationGateway {
         await setSpaceBorderTintColor(ConfigurationDefaults.spaceBorderTintColor)
         await setSpaceBorderOpacity(ConfigurationDefaults.spaceBorderOpacity)
         await setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
+        await setShowEmptySpaces(ConfigurationDefaults.showEmptySpaces)
         await setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
         await setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
         await setLogLevel(ConfigurationDefaults.logLevel)

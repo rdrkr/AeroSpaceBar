@@ -43,10 +43,13 @@ struct ConfigurationDefaults {
     static let spaceBorderOpacity = 0.0
 
     /// Default border width for the space elements in points.
-    static let spaceBorderWidth: CGFloat = 1.0
+    static let spaceBorderWidth: CGFloat = 0.0
 
     /// Whether to focus a window when clicking on it by default.
     static let focusWindowOnClick = true
+
+    /// Whether to show empty spaces in the interface by default.
+    static let showEmptySpaces = false
 
     /// Whether to enable performance metrics collection by default.
     static let enablePerformanceMetrics = debugMode

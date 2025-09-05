@@ -23,6 +23,9 @@ protocol ConfigurationGateway {
     /// Publisher that emits focus window on click updates.
     var focusWindowOnClickPublisher: AnyPublisher<Bool, Never> { get }
 
+    /// Publisher that emits show empty spaces updates.
+    var showEmptySpacesPublisher: AnyPublisher<Bool, Never> { get }
+
     /// Publisher that emits enable performance metrics updates.
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> { get }
 
@@ -89,6 +92,10 @@ protocol ConfigurationGateway {
     /// Sets whether to focus a window when clicking on it.
     /// - Parameter value: Whether to focus window on click
     func setFocusWindowOnClick(_ value: Bool) async
+
+    /// Sets whether to show empty spaces in the interface.
+    /// - Parameter value: Whether to show empty spaces
+    func setShowEmptySpaces(_ value: Bool) async
 
     /// Sets whether to enable performance metrics collection.
     /// - Parameter value: Whether to enable performance metrics
