@@ -8,6 +8,7 @@ import SwiftUI
 /// including application behavior controls and debugging options.
 struct AdvancedSettingsView: View {
     @EnvironmentObject var viewModel: SettingsViewModel
+    @State private var showingResetConfirmation = false
     let navigationOption: SettingsNavigationOptions = .advanced
 
     var body: some View {
@@ -63,9 +64,7 @@ struct AdvancedSettingsView: View {
             Section(LocalizedStringResource("Reset")) {
                 VStack(alignment: .leading) {
                     Button(LocalizedStringResource("Reset All Settings")) {
-                        Task {
-                            await viewModel.resetAllSettings()
-                        }
+                        showingResetConfirmation = true
                     }
                     .foregroundColor(.red)
                     .tag("advanced-reset-settings-button")
@@ -79,6 +78,16 @@ struct AdvancedSettingsView: View {
             .tag("advanced-reset-section")
         }
         .tag("advanced-settings-view")
+        .alert("Reset All Settings", isPresented: $showingResetConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Reset", role: .destructive) {
+                Task {
+                    await viewModel.resetAllSettings()
+                }
+            }
+        } message: {
+            Text("Are you sure you want to reset all settings to their default values? This action cannot be undone.")
+        }
     }
 }
 
