@@ -51,6 +51,9 @@ struct ConfigurationDefaults {
     /// Whether to show empty spaces in the interface by default.
     static let showEmptySpaces = false
 
+    /// Whether to show groups in the interface by default.
+    static let showGroups = false
+
     /// Whether to enable performance metrics collection by default.
     static let enablePerformanceMetrics = debugMode
 
@@ -82,4 +85,7 @@ struct ConfigurationDefaults {
 
     /// Default corner radius for space elements in points.
     static let spaceCornerRadius: CGFloat = 14
+
+    /// Default group configuration for menu bar applications.
+    static let groupsConfiguration: [GroupConfiguration] = GroupConfiguration.singleGroup
 }

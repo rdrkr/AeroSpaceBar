@@ -110,7 +110,7 @@ extension SettingsSlider {
             label: label,
             helpText: helpText,
             valueFormatter: { value in
-                asPercentage ? "\(Int(value * 100))%" : "\(Int(value))"
+                asPercentage ? "\(Int(value * 100 / bounds.upperBound))%" : "\(Int(value))"
             },
             onEditingChanged: onEditingChanged
         )

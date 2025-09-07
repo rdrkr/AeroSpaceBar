@@ -8,13 +8,13 @@ final class ConfigurationRepositoryTests: XCTestCase {
     var repository: ConfigurationRepository?
     var cancellables: Set<AnyCancellable>?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with proper actor context
         // repository = ConfigurationRepository()
         cancellables = Set<AnyCancellable>()
     }
 
-    func tearDown() {
+    override func tearDown() {
         cancellables?.removeAll()
         repository = nil
     }

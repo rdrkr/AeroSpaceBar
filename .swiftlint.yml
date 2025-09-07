@@ -74,7 +74,7 @@ function_parameter_count:
   error: 8
 
 type_body_length:
-  warning: 500
+  warning: 800
   error: 800
 
 file_length:

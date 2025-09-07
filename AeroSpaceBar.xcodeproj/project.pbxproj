@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0D92972E6806BC0097C410 /* RswiftLibrary */; };
+		1A31BED12E6F24A60038E13F /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A31BED02E6F24A60038E13F /* TOMLKit */; };
+		1A31BED32E6F24A60038E13F /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 1A31BED22E6F24A60038E13F /* RswiftLibrary */; };
+		1A31BF852E7071540038E13F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A31BF842E7071540038E13F /* AppIntents.framework */; };
 		1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4525C02E66D944003156C3 /* TOMLKit */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +31,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1A4CFF3B2E73142600B93D4B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1A31BF842E7071540038E13F /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
 		1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroSpaceBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A31BED12E6F24A60038E13F /* TOMLKit in Frameworks */,
+				1A31BED32E6F24A60038E13F /* RswiftLibrary in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,12 +105,21 @@
 			files = (
 				1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */,
 				1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */,
+				1A31BF852E7071540038E13F /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A31BECF2E6F24A60038E13F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1A31BF842E7071540038E13F /* AppIntents.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C10E2F812D41235900AC957C = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +127,7 @@
 				1AFC288A2E609BDA00258BEE /* AeroSpaceBarTests */,
 				C10E2F8B2D41235900AC957C /* Products */,
 				C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */,
+				1A31BECF2E6F24A60038E13F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +155,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				1A31BEC92E6F249C0038E13F /* PBXTargetDependency */,
+				1A31BECB2E6F249C0038E13F /* PBXTargetDependency */,
+				1A31BECD2E6F249C0038E13F /* PBXTargetDependency */,
 				1AFC28812E609B9E00258BEE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
@@ -133,6 +165,8 @@
 			);
 			name = AeroSpaceBarUITests;
 			packageProductDependencies = (
+				1A31BED02E6F24A60038E13F /* TOMLKit */,
+				1A31BED22E6F24A60038E13F /* RswiftLibrary */,
 			);
 			productName = AeroSpaceBarUITests;
 			productReference = 1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */;
@@ -168,6 +202,7 @@
 				C10E2F862D41235900AC957C /* Sources */,
 				C10E2F872D41235900AC957C /* Frameworks */,
 				C10E2F882D41235900AC957C /* Resources */,
+				1A4CFF3B2E73142600B93D4B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -285,6 +320,18 @@
 		1A0D929A2E6806D40097C410 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 1A0D92992E6806D40097C410 /* RswiftGenerateInternalResources */;
+		};
+		1A31BEC92E6F249C0038E13F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A31BEC82E6F249C0038E13F /* TOMLKit */;
+		};
+		1A31BECB2E6F249C0038E13F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A31BECA2E6F249C0038E13F /* RswiftLibrary */;
+		};
+		1A31BECD2E6F249C0038E13F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A31BECC2E6F249C0038E13F /* rswift */;
 		};
 		1AFC28812E609B9E00258BEE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -689,6 +736,31 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
 			productName = "plugin:RswiftGenerateInternalResources";
+		};
+		1A31BEC82E6F249C0038E13F /* TOMLKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
+			productName = TOMLKit;
+		};
+		1A31BECA2E6F249C0038E13F /* RswiftLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
+			productName = RswiftLibrary;
+		};
+		1A31BECC2E6F249C0038E13F /* rswift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
+			productName = rswift;
+		};
+		1A31BED02E6F24A60038E13F /* TOMLKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
+			productName = TOMLKit;
+		};
+		1A31BED22E6F24A60038E13F /* RswiftLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
+			productName = RswiftLibrary;
 		};
 		1A4525C02E66D944003156C3 /* TOMLKit */ = {
 			isa = XCSwiftPackageProductDependency;

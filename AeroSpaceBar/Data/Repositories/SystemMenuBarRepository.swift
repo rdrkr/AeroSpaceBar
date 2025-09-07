@@ -17,8 +17,14 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Publisher that emits menu bar visibility updates.
     private let menuBarVisibilitySubject = CurrentValueSubject<Bool, Never>(true)
 
+    /// Publisher that emits menu bar applications updates.
+    private let menuBarAppsSubject = CurrentValueSubject<[MenuBarApp], Never>([])
+
     /// The last captured wallpaper image data for comparison.
     private var lastWallpaperData: Data?
+
+    /// The last known menu bar frame for comparison.
+    private var lastMenuBarFrame: CGRect?
 
     /// The observer for the screens did sleep notification.
     private var screenSleepNotificationObserver: NSObjectProtocol?
@@ -32,10 +38,31 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// The task for capturing wallpaper images.
     private var wallpaperCaptureTask: Task<Void, Never>?
 
+    /// Use case for accessing show groups setting.
+    private let getShowGroupsUseCase: GetShowGroupsUseCase
+
+    /// Current show groups setting value.
+    private var showGroupsEnabled: Bool = false
+
+    /// Cancellable for the show groups publisher subscription.
+    private var showGroupsCancellable: AnyCancellable?
+
     /// Initializes the system menu bar repository.
-    init() {
+    /// - Parameter getShowGroupsUseCase: The use case for accessing show groups setting
+    init(getShowGroupsUseCase: GetShowGroupsUseCase) {
+        self.getShowGroupsUseCase = getShowGroupsUseCase
+        setupShowGroupsSubscription()
         setupScreenStateObservers()
         startPeriodicTasks()
+    }
+
+    /// Sets up the show groups publisher subscription.
+    private func setupShowGroupsSubscription() {
+        showGroupsCancellable = getShowGroupsUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
+                self?.showGroupsEnabled = value
+            }
     }
 
     /// Publisher that emits wallpaper image updates.
@@ -56,26 +83,46 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
         menuBarVisibilitySubject.eraseToAnyPublisher()
     }
 
+    /// Publisher that emits menu bar applications updates.
+    /// - Returns: A publisher that emits arrays of MenuBarApp instances.
+    var menuBarAppsPublisher: AnyPublisher<[MenuBarApp], Never> {
+        menuBarAppsSubject.eraseToAnyPublisher()
+    }
+
     /// Starts periodic tasks for window recognition and wallpaper capture.
     private func startPeriodicTasks() {
         stopPeriodicTasks()
-        startWindowRecognition()
-        startWallpaperCapture()
+        startRecognitionTask()
+        startWallpaperCaptureTask()
     }
 
-    /// Starts the periodic window recognition task (menu bar detection and height tracking).
-    private func startWindowRecognition() {
+    /// Starts the periodic recognition task.
+    private func startRecognitionTask() {
         windowRecognitionTask = Task.detached(priority: .utility) { [weak self] in
             repeat {
-                await self?.recognizeWindows()
+                await self?.recognizeAction()
                 try? await Task.sleep(for: .seconds(0.4))
             } while !Task.isCancelled
         }
     }
 
+    /// The action performed periodically to recognize windows and menu bar apps.
+    private func recognizeAction() async {
+        let screenWindows = WindowInfo.getOnScreenWindows(excludeDesktopWindows: true)
+
+        await recognizeSystemMenuBar(windows: screenWindows)
+
+        // Only recognize menu bar apps if show groups is enabled
+        if showGroupsEnabled {
+            await recognizeSystemMenuBarApps(windows: screenWindows)
+        }
+    }
+
     /// Starts the periodic wallpaper capture task.
-    private func startWallpaperCapture() {
+    private func startWallpaperCaptureTask() {
         wallpaperCaptureTask = Task.detached(priority: .background) { [weak self] in
+            await self?.recognizeAction()
+
             repeat {
                 await self?.captureWallpaperImage()
                 try? await Task.sleep(for: .seconds(5.0))
@@ -120,9 +167,10 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
     ///
     /// This lightweight method runs frequently to detect menu bar state changes without
     /// performing expensive wallpaper capture operations.
-    private func recognizeWindows() async {
+    /// - Parameter windows: The current list of on-screen windows.
+    private func recognizeSystemMenuBar(windows: [WindowInfo]) async {
         // Find the menu bar window
-        let menuBarWindow = findSystemMenuBarWindow()
+        let menuBarWindow = findSystemMenuBarWindow(windows: windows)
         let isMenuBarVisible = menuBarWindow != nil
 
         // Update menu bar visibility if it has changed
@@ -132,8 +180,12 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
         }
 
         // Update the menu bar height if it has changed and is visible
-        if let menuBarFrame = menuBarWindow?.frame, menuBarFrame.height != menuBarHeightSubject.value {
-            menuBarHeightSubject.send(menuBarFrame.height)
+        if let menuBarFrame = menuBarWindow?.frame {
+            lastMenuBarFrame = menuBarFrame
+
+            if menuBarFrame.height != menuBarHeightSubject.value {
+                menuBarHeightSubject.send(menuBarFrame.height)
+            }
         }
     }
 
@@ -149,7 +201,7 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
         }
 
         // Find the menu bar window to get its frame for clipping
-        guard let menuBarWindow = findSystemMenuBarWindow() else {
+        guard let menuBarFrame = lastMenuBarFrame else {
             Logger.warning("Menu bar is hidden, skipping wallpaper capture", category: Logger.userInterface)
             return
         }
@@ -157,7 +209,7 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
         // Capture the wallpaper window clipped to menu bar area
         let capturedImage = ScreenCapture.captureWindow(
             wallpaperWindow.windowID,
-            screenBounds: menuBarWindow.frame,
+            screenBounds: menuBarFrame,
             option: [.nominalResolution]
         )
 
@@ -173,6 +225,26 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
             }
         } else {
             Logger.warning("Failed to capture wallpaper image", category: Logger.config)
+        }
+    }
+
+    /// Recognizes menu bar applications and updates the publisher.
+    ///
+    /// This method scans for menu bar items and extracts application information
+    /// from processes that have menu bar icons.
+    /// - Parameter windows: The current list of on-screen windows.
+    private func recognizeSystemMenuBarApps(windows: [WindowInfo]) async {
+        let foundApps: [MenuBarApp] = findMenuBarApplications(windows: windows)
+        let currentApps: [MenuBarApp] = Array(menuBarAppsSubject.value.dropFirst())
+
+        // Only update if the apps have changed
+        if foundApps != currentApps {
+            Logger.debug("Menu bar apps updated: \(foundApps.count) apps found", category: Logger.userInterface)
+
+            let newMenuBarApps = foundApps
+                .insertClockApp()
+
+            menuBarAppsSubject.send(newMenuBarApps)
         }
     }
 
@@ -192,10 +264,10 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
     }
 
     /// Finds the system menu bar window for the main display.
+    /// - Parameter windows: The current list of on-screen windows.
     /// - Returns: The menu bar window info, or nil if not found
-    private func findSystemMenuBarWindow() -> WindowInfo? {
-        let windows = WindowInfo.getOnScreenWindows(excludeDesktopWindows: true)
-        return windows.first { window in
+    private func findSystemMenuBarWindow(windows: [WindowInfo]) -> WindowInfo? {
+        windows.first { window in
             // Menu bar window criteria:
             // - Belongs to the WindowServer process
             // - Is on screen
@@ -208,6 +280,30 @@ final class SystemMenuBarRepository: SystemMenuBarGateway {
                 window.title == "Menubar" &&
                 CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
         }
+    }
+
+    /// Finds menu bar applications by scanning for processes with menu bar items.
+    /// - Parameter windows: The current list of on-screen windows.
+    /// - Returns: An array of MenuBarApp instances representing menu bar applications from right to left.
+    private func findMenuBarApplications(windows: [WindowInfo]) -> [MenuBarApp] {
+        let menuBarIconWindows = windows
+            .filter { window in
+                window.isControlCenterWindow &&
+                    window.isOnScreen &&
+                    window.layer >= kCGMainMenuWindowLevel &&
+                    CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
+            }
+
+        let menuBarApps = menuBarIconWindows
+            .map { window in
+                MenuBarApp(
+                    id: window.windowID.formatted(),
+                    frame: window.frame
+                )
+            }
+
+        // Sort apps from right to left based on their x position
+        return menuBarApps.sorted { $0.frame.origin.x > $1.frame.origin.x }
     }
 }
 
@@ -244,6 +340,13 @@ private struct WindowInfo {
     /// - Returns: True if the window belongs to the Window Server process, false otherwise.
     var isWindowServerWindow: Bool {
         ownerName == "Window Server"
+    }
+
+    /// A Boolean value that indicates whether the window belongs to the Control Center.
+    /// The Control Center owns all system menu bar app icons (e.g., WiFi, battery, etc.).
+    /// - Returns: True if the window belongs to the Control Center process, false otherwise.
+    var isControlCenterWindow: Bool {
+        ownerName == "Control Center"
     }
 
     /// Creates a window with the given window identifier.
@@ -386,5 +489,40 @@ private extension NSImage {
         }
 
         return bitmapImage.representation(using: .png, properties: [:])
+    }
+}
+
+private extension [MenuBarApp] {
+    /// Adds a synthetic clock app to the menu bar apps collection.
+    ///
+    /// This method creates a clock app that spans from the end of the rightmost
+    /// menu bar app to the end of the screen width, using the same height as
+    /// the existing menu bar apps.
+    ///
+    /// - Returns: A new array of menu bar apps including the synthetic clock app
+    func insertClockApp() -> [MenuBarApp] {
+        var apps = self
+
+        // Add synthetic clock app if we have menu bar apps
+        if let rightmostApp = apps.first {
+            let screenBounds = CGDisplayBounds(CGMainDisplayID())
+            let clockStartX = rightmostApp.frame.origin.x + rightmostApp.frame.width
+            let clockWidth = screenBounds.width - clockStartX - 6
+
+            // Only add clock if there's space for it
+            let clockApp = MenuBarApp(
+                id: "system.clock",
+                frame: CGRect(
+                    x: clockStartX,
+                    y: rightmostApp.frame.origin.y,
+                    width: clockWidth,
+                    height: rightmostApp.frame.height
+                )
+            )
+
+            apps.insert(clockApp, at: 0)
+        }
+
+        return apps
     }
 }

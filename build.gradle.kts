@@ -2,6 +2,8 @@
  * Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
  */
 
+import java.io.ByteArrayOutputStream
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
@@ -67,20 +69,23 @@ tasks.register("showHelp") {
 tasks.register<Exec>("buildDebug") {
     group = buildGroup
     description = "Build the project in Debug configuration"
-    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "build")
-    doLast {
-        println("✅ Debug build completed")
+    dependsOn("check")
+    doFirst {
+        println("⚒️ Running Debug build...")
     }
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "build")
+    parseOutputForErrors()
 }
 
 // Release build task
 tasks.register<Exec>("buildRelease") {
     group = buildGroup
     description = "Build the project in Release configuration"
-    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "build")
-    doLast {
-        println("✅ Release build completed")
+    doFirst {
+        println("⚒️ Running Release build...")
     }
+    commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "build")
+    parseOutputForErrors()
 }
 
 // Main build task - builds all variants (Debug and Release)
@@ -110,6 +115,9 @@ val cleanBuild = tasks.register<Exec>("cleanBuild") {
 tasks.register("clean") {
     group = buildGroup
     description = "Clean build artifacts, DerivedData, and Gradle build directory"
+    doFirst {
+        println("🗑️ Cleaning...")
+    }
     dependsOn(cleanXcode, cleanDerivedData, cleanBuild)
     doLast {
         println("✅ Clean completed (Xcode + DerivedData + Gradle build)")
@@ -121,7 +129,7 @@ tasks.register("clean") {
 tasks.register("all") {
     group = buildGroup
     description = "Run all checks and tests"
-    dependsOn("clean", "check", "build") //, "test")
+    dependsOn("clean", "build") //, "test")
 }
 
 // Format task
@@ -173,6 +181,9 @@ tasks.register<Exec>("formatRules") {
 tasks.register("check") {
     group = codeQualityGroup
     description = "Run format and lint checks"
+    doFirst {
+        println("🩺 Checking...")
+    }
     dependsOn("format", "lint")
     doLast {
         println("✅ Code formatting and linting completed")
@@ -324,7 +335,48 @@ tasks.configureEach {
     when (name) {
         "lint" -> mustRunAfter("format")
         "check" -> mustRunAfter("clean")
+        "buildDebug" -> mustRunAfter("check")
         "build" -> mustRunAfter("check")
         "test" -> mustRunAfter("build")
+    }
+}
+
+// Extension function to parse Exec output for errors and warnings
+fun Exec.parseOutputForErrors() {
+    val stdout = ByteArrayOutputStream()
+    val stderr = ByteArrayOutputStream()
+
+    standardOutput = stdout
+    errorOutput = stderr
+    isIgnoreExitValue = true
+
+    doLast {
+        val allOutput = stdout.toString("UTF-8") + stderr.toString("UTF-8")
+
+        // Xcode-specific patterns for warnings and errors
+        val importantLines = allOutput
+            .lines()
+            .filter { line ->
+                // Look for lines containing "warning:", "error:", "Build Failed", or "Build Succeeded"
+                (line.matches(Regex(".*warning:.*", RegexOption.IGNORE_CASE)) ||
+                        line.matches(Regex(".*error:.*", RegexOption.IGNORE_CASE)) ||
+                        line.contains("Build Failed") ||
+                        line.contains("Build Succeeded") ||
+                        line.contains("** BUILD FAILED **")
+                        ) && (
+                        // XCode26 known issues to ignore
+                        !line.contains("LLVM Profile Error: Failed to write file \"default.profraw\": Operation not permitted") &&
+                                !line.contains("WARNING: Using the first of multiple matching destinations")
+                        )
+            }
+
+        if (importantLines.isNotEmpty()) {
+            println("📋 Build Summary:")
+            importantLines.forEach { println("❌ $it") }
+
+            throw GradleException("$name failed")
+        }
+
+        println("✅ $name completed successfully")
     }
 }

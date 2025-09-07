@@ -26,7 +26,8 @@ let package = Package(
         .executableTarget(
             name: "AeroSpaceBar",
             dependencies: [
-                "TOMLKit", .product(name: "RswiftLibrary", package: "R.swift")
+                "TOMLKit",
+                .product(name: "RswiftLibrary", package: "R.swift")
             ],
             path: "AeroSpaceBar",
             plugins: [.plugin(name: "RswiftGeneratePublicResources", package: "R.swift")]

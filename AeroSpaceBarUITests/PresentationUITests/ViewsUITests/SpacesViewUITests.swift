@@ -5,13 +5,13 @@ import XCTest
 final class SpacesViewUITests: XCTestCase {
     var app: XCUIApplication?
 
-    func setUp() {
+    override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
         app?.launch()
     }
 
-    func tearDown() {
+    override func tearDown() {
         app = nil
     }
 

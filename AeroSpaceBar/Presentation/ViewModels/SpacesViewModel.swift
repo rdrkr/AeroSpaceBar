@@ -48,7 +48,10 @@ final class SpacesViewModel: ObservableObject {
     @Published var isGlobeKeyPressed: Bool = false
 
     /// Whether the system menu bar is currently visible.
-    @Published var isMenuBarVisible: Bool = true
+    @Published var isMenuBarVisible: Bool
+
+    /// Whether spaces functionality is enabled via feature flags.
+    @Published var isSpacesEnabled: Bool
 
     /// Monitor for global key events.
     private nonisolated(unsafe) var keyMonitors: [Any] = []
@@ -85,6 +88,7 @@ final class SpacesViewModel: ObservableObject {
     private let getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase
     private let getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase
     private let getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
+    private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -129,7 +133,8 @@ final class SpacesViewModel: ObservableObject {
         getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase,
         getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase,
         getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase,
-        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
+        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase,
+        getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -159,6 +164,7 @@ final class SpacesViewModel: ObservableObject {
         self.getSpaceBorderWidthUseCase = getSpaceBorderWidthUseCase
         self.getSpaceBackgroundTintColorUseCase = getSpaceBackgroundTintColorUseCase
         self.getSpaceForegroundColorUseCase = getSpaceForegroundColorUseCase
+        self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
@@ -181,6 +187,8 @@ final class SpacesViewModel: ObservableObject {
         spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
         spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
         spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
+        isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
+        isSpacesEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableSpaces
         spaceBackgroundTintColor = getSpaceBackgroundTintColorUseCase.execute().blockingFirst()
         spaceForegroundColor = getSpaceForegroundColorUseCase.execute().blockingFirst()
 
@@ -203,6 +211,8 @@ final class SpacesViewModel: ObservableObject {
     ///   - space: The space to switch to
     ///   - needWindowFocus: Whether to also focus a window in the space
     func switchToSpace(_ space: Space, needWindowFocus: Bool = false) {
+        guard isSpacesEnabled else { return }
+
         Task {
             await focusSpace(space, needWindowFocus: needWindowFocus)
         }
@@ -213,6 +223,8 @@ final class SpacesViewModel: ObservableObject {
     /// This method sends a command to focus the specified window.
     /// - Parameter window: The window to switch to
     func switchToWindow(_ window: Window) {
+        guard isSpacesEnabled else { return }
+
         Task {
             await focusWindow(window)
         }
@@ -330,6 +342,14 @@ final class SpacesViewModel: ObservableObject {
         // Monitor system menu bar visibility changes
         getMenuBarVisibilityUseCase.execute()
             .assign(to: \SpacesViewModel.isMenuBarVisible, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to feature flags changes
+        getFeatureFlagsUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] featureFlags in
+                self?.isSpacesEnabled = featureFlags.enableSpaces
+            }
             .store(in: &cancellables)
     }
 

@@ -13,7 +13,7 @@ struct GeneralSettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
     @State private var launchAtLoginUpdateTask: Task<Void, Never>?
 
-    let navigationOption: SettingsNavigationOptions = .general
+    let navigationOption: RootNavigationPage = .general
 
     var body: some View {
         IntroForm(
@@ -21,15 +21,21 @@ struct GeneralSettingsView: View {
             style: .intro,
             image: Image(nsImage: NSApplication.shared.applicationIconImage),
             title: String(localized: navigationOption.name),
-            subtitle: "Manage your overall setup and preferences for " +
-                "AeroSpaceBar, such as AeroSpace path and Appearance settings."
+            subtitle: String(
+                localized: LocalizedStringResource(
+                    """
+                    Manage your overall setup and preferences for AeroSpaceBar, \
+                    such as AeroSpace path and Appearance settings.
+                    """
+                )
+            )
         ) {
             Section {
-                Toggle(isOn: $viewModel.launchAtLogin) {
-                    Text(LocalizedStringResource("Launch at Login"))
-                    Text(LocalizedStringResource("Automatically start AeroSpaceBar when you log in"))
-                }
-                .toggleStyle(.switch)
+                SettingsToggle(
+                    title: LocalizedStringResource("Launch at Login"),
+                    description: LocalizedStringResource("Automatically start AeroSpaceBar when you log in"),
+                    isOn: $viewModel.launchAtLogin
+                )
                 .tag("general-launch-at-login-toggle")
                 .onAppear {
                     // Update launch at login status every second until the view disappears

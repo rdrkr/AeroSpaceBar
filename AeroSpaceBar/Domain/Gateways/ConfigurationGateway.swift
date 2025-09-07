@@ -11,7 +11,7 @@ import SwiftUI
 /// and defines the business requirements for configuration operations.
 /// Following reactive patterns similar to Kotlin Flow/StateFlow.
 @MainActor
-protocol ConfigurationGateway {
+protocol ConfigurationGateway: Sendable {
     // MARK: - Publishers for Reactive Data Flow
 
     /// Publisher that emits show window titles updates.
@@ -25,6 +25,9 @@ protocol ConfigurationGateway {
 
     /// Publisher that emits show empty spaces updates.
     var showEmptySpacesPublisher: AnyPublisher<Bool, Never> { get }
+
+    /// Publisher that emits show groups updates.
+    var showGroupsPublisher: AnyPublisher<Bool, Never> { get }
 
     /// Publisher that emits enable performance metrics updates.
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> { get }
@@ -79,6 +82,9 @@ protocol ConfigurationGateway {
     /// Publisher that emits space corner radius updates.
     var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
 
+    /// Publisher that emits group configuration updates.
+    var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> { get }
+
     // MARK: - Async Setters (trigger updates via publishers)
 
     /// Sets whether to show window titles in the interface.
@@ -96,6 +102,10 @@ protocol ConfigurationGateway {
     /// Sets whether to show empty spaces in the interface.
     /// - Parameter value: Whether to show empty spaces
     func setShowEmptySpaces(_ value: Bool) async
+
+    /// Sets whether to show groups in the interface.
+    /// - Parameter value: Whether to show groups
+    func setShowGroups(_ value: Bool) async
 
     /// Sets whether to enable performance metrics collection.
     /// - Parameter value: Whether to enable performance metrics
@@ -162,6 +172,10 @@ protocol ConfigurationGateway {
     /// Sets the corner radius for space elements in points.
     /// - Parameter value: The space corner radius
     func setSpaceCornerRadius(_ value: CGFloat) async
+
+    /// Sets the group configuration for organizing menu bar applications.
+    /// - Parameter value: The group configuration
+    func setGroupsConfiguration(_ value: [GroupConfiguration]) async
 
     // MARK: - AeroSpace Configuration Management
 

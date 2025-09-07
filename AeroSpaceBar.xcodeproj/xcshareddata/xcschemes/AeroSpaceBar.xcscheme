@@ -52,6 +52,17 @@
                ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1A4CFF2A2E73142600B93D4B"
+               BuildableName = "DataTests.xctest"
+               BlueprintName = "DataTests"
+               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

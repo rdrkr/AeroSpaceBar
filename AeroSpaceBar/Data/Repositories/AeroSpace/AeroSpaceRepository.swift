@@ -214,7 +214,8 @@ final class AeroSpaceRepository: SpacesGateway {
     }
 
     /// Handles Apple Events from osascript calls.
-    @objc private func handleAppleEvent(_ event: NSAppleEventDescriptor, withReplyEvent _: NSAppleEventDescriptor) {
+    @objc
+    private func handleAppleEvent(_ event: NSAppleEventDescriptor, withReplyEvent _: NSAppleEventDescriptor) {
         // Extract the command from the Apple Event
         if let command = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue {
             switch command {
@@ -509,8 +510,8 @@ final class AeroSpaceRepository: SpacesGateway {
         let data = try cli.execute(arguments: ["list-workspaces", "--all", "--json"])
 
         do {
-            let spaces = try JSONDecoder().decode([SpaceData].self, from: data)
-            return spaces.map { $0.toDomain() }
+            let spaces = try JSONDecoder().decode([Space].self, from: data)
+            return spaces
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }
@@ -527,8 +528,8 @@ final class AeroSpaceRepository: SpacesGateway {
         ])
 
         do {
-            let windows = try JSONDecoder().decode([WindowData].self, from: data)
-            return windows.map { $0.toDomain() }
+            let windows = try JSONDecoder().decode([Window].self, from: data)
+            return windows
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }
@@ -542,8 +543,8 @@ final class AeroSpaceRepository: SpacesGateway {
         let data = try cli.execute(arguments: ["list-workspaces", "--focused", "--json"])
 
         do {
-            let spaces = try JSONDecoder().decode([SpaceData].self, from: data)
-            return spaces.first?.toDomain()
+            let spaces = try JSONDecoder().decode([Space].self, from: data)
+            return spaces.first
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }
@@ -557,8 +558,8 @@ final class AeroSpaceRepository: SpacesGateway {
         let data = try cli.execute(arguments: ["list-windows", "--focused", "--json"])
 
         do {
-            let windows = try JSONDecoder().decode([WindowData].self, from: data)
-            return windows.first?.toDomain()
+            let windows = try JSONDecoder().decode([Window].self, from: data)
+            return windows.first
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }

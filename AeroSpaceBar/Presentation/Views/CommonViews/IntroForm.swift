@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// This component provides a consistent layout for form sections across the settings views,
 /// with a centered icon, title, and descriptive subtitle.
-struct IntroForm<Content>: View where Content: View {
+struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderContent: View {
     /// The style of the form intro section.
     ///
     /// - intro: The intro section is displayed with a centered icon, title, and subtitle.
@@ -34,6 +34,9 @@ struct IntroForm<Content>: View where Content: View {
     /// The content of the form.
     let content: () -> Content
 
+    /// Additional content to append to the header section.
+    let appendToHeader: (() -> HeaderContent)?
+
     init(
         navigationTitle: String,
         style: Style = .intro,
@@ -41,6 +44,24 @@ struct IntroForm<Content>: View where Content: View {
         title: String,
         subtitle: String,
         @ViewBuilder content: @escaping () -> Content
+    ) where HeaderContent == EmptyView {
+        self.navigationTitle = navigationTitle
+        self.style = style
+        self.image = image
+        self.title = title
+        self.subtitle = subtitle
+        self.content = content
+        appendToHeader = nil
+    }
+
+    init(
+        navigationTitle: String,
+        style: Style = .intro,
+        image: Image,
+        title: String,
+        subtitle: String,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder appendToHeader: @escaping () -> HeaderContent
     ) {
         self.navigationTitle = navigationTitle
         self.style = style
@@ -48,6 +69,7 @@ struct IntroForm<Content>: View where Content: View {
         self.title = title
         self.subtitle = subtitle
         self.content = content
+        self.appendToHeader = appendToHeader
     }
 
     var body: some View {
@@ -91,6 +113,7 @@ struct IntroForm<Content>: View where Content: View {
                             .resizable()
                             .frame(width: 18, height: 18)
                             .padding(4)
+                            .background(.white.opacity(0.1), in: .rect)
                             .tag("intro-form-compact-icon")
 
                         if #available(macOS 26.0, *) {
@@ -99,7 +122,6 @@ struct IntroForm<Content>: View where Content: View {
                                 .cornerRadius(8)
                         } else {
                             displayImage
-                                .background(.black, in: .rect)
                                 .cornerRadius(8)
                         }
 
@@ -116,6 +138,8 @@ struct IntroForm<Content>: View where Content: View {
                     }
                     .tag("intro-form-compact-section")
                 }
+
+                appendToHeader?()
             }
 
             content()
@@ -147,4 +171,19 @@ struct IntroForm<Content>: View where Content: View {
         subtitle: "Manage your overall setup and preferences for AeroSpaceBar, " +
             "such as AeroSpace path and Appearance settings."
     ) { }
+
+    IntroForm(
+        navigationTitle: "Some More Settings",
+        style: .compact,
+        image: Image(systemName: "hammer"),
+        title: "Non General Settings",
+        subtitle: "Manage your overall setup and preferences for AeroSpaceBar, " +
+            "such as AeroSpace path and Appearance settings."
+    ) {
+        Button("hello") {
+            print("world")
+        }
+    } appendToHeader: {
+        Text("again")
+    }
 }

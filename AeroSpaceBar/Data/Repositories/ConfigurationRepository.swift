@@ -3,6 +3,7 @@
 import AppKit
 import Combine
 import SwiftUI
+import TOMLKit
 
 /// Repository for managing application configuration and settings.
 ///
@@ -12,7 +13,7 @@ import SwiftUI
 /// to emit updates when configuration values change.
 /// This is the data layer implementation of the ConfigurationGateway.
 @MainActor
-final class ConfigurationRepository: ConfigurationGateway {
+final class ConfigurationRepository: ConfigurationGateway, @unchecked Sendable {
     /// Cancellables for publisher subscriptions.
     private var cancellables = Set<AnyCancellable>()
 
@@ -39,6 +40,11 @@ final class ConfigurationRepository: ConfigurationGateway {
     /// Subject for show empty spaces.
     private let showEmptySpacesSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showEmptySpaces
+    )
+
+    /// Subject for show groups.
+    private let showGroupsSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showGroups
     )
 
     /// Subject for enable performance metrics.
@@ -110,6 +116,10 @@ final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.spaceCornerRadius
     )
 
+    private let groupsConfigurationSubject = CurrentValueSubject<[GroupConfiguration], Never>(
+        ConfigurationDefaults.groupsConfiguration
+    )
+
     // MARK: - Publishers
 
     var showWindowTitlesPublisher: AnyPublisher<Bool, Never> {
@@ -130,6 +140,10 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
         showEmptySpacesSubject.eraseToAnyPublisher()
+    }
+
+    var showGroupsPublisher: AnyPublisher<Bool, Never> {
+        showGroupsSubject.eraseToAnyPublisher()
     }
 
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> {
@@ -196,6 +210,10 @@ final class ConfigurationRepository: ConfigurationGateway {
 
     var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> {
         spaceCornerRadiusSubject.eraseToAnyPublisher()
+    }
+
+    var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> {
+        groupsConfigurationSubject.eraseToAnyPublisher()
     }
 
     /// Initializer for the configuration gateway.
@@ -275,6 +293,11 @@ final class ConfigurationRepository: ConfigurationGateway {
             ?? showEmptySpacesSubject.value
         showEmptySpacesSubject.send(showEmptySpaces)
 
+        let showGroups = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.showGroups.rawValue) as? Bool
+            ?? showGroupsSubject.value
+        showGroupsSubject.send(showGroups)
+
         let enablePerformanceMetrics = UserDefaults.standard
             .object(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) as? Bool
             ?? enablePerformanceMetricsSubject.value
@@ -319,6 +342,9 @@ final class ConfigurationRepository: ConfigurationGateway {
             .object(forKey: UserDefaultsKeys.spaceCornerRadius.rawValue) as? CGFloat
             ?? spaceCornerRadiusSubject.value
         spaceCornerRadiusSubject.send(spaceCornerRadius)
+
+        let groupsConfiguration = loadGroupsConfiguration() ?? groupsConfigurationSubject.value
+        groupsConfigurationSubject.send(groupsConfiguration)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
@@ -381,6 +407,14 @@ final class ConfigurationRepository: ConfigurationGateway {
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showEmptySpaces.rawValue)
         showEmptySpacesSubject.send(value)
+    }
+
+    /// Sets whether to show groups and emits update.
+    func setShowGroups(_ value: Bool) async {
+        if value == showGroupsSubject.value { return }
+
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showGroups.rawValue)
+        showGroupsSubject.send(value)
     }
 
     /// Sets whether performance metrics are enabled and emits update.
@@ -513,6 +547,14 @@ final class ConfigurationRepository: ConfigurationGateway {
         spaceCornerRadiusSubject.send(value)
     }
 
+    /// Sets the group configuration for menu bar applications and emits update.
+    func setGroupsConfiguration(_ value: [GroupConfiguration]) async {
+        if value == groupsConfigurationSubject.value { return }
+
+        saveGroupsConfiguration(value)
+        groupsConfigurationSubject.send(value)
+    }
+
     // MARK: - AeroSpace Integration
 
     /// Sets up observers for the configuration repository.
@@ -640,6 +682,8 @@ final class ConfigurationRepository: ConfigurationGateway {
         await setAnimationDuration(ConfigurationDefaults.animationDuration)
         await setWindowIconSize(ConfigurationDefaults.windowIconSize)
         await setSpaceCornerRadius(ConfigurationDefaults.spaceCornerRadius)
+        await setShowGroups(ConfigurationDefaults.showGroups)
+        await setGroupsConfiguration(ConfigurationDefaults.groupsConfiguration)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }
@@ -693,6 +737,58 @@ final class ConfigurationRepository: ConfigurationGateway {
             Logger.error("Failed to encode color to UserDefaults for key \(key): \(error)", category: Logger.config)
         }
     }
+
+    /// Loads a GroupConfiguration from UserDefaults using TOML format.
+    /// - Returns: The GroupConfiguration if found, nil otherwise
+    private func loadGroupsConfiguration() -> [GroupConfiguration]? {
+        guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.groupsConfiguration.rawValue) else {
+            return nil
+        }
+
+        do {
+            // Convert Data to String for TOML parsing
+            guard let tomlString = String(data: data, encoding: .utf8) else {
+                Logger.warning("Failed to convert Data to String for TOML parsing", category: Logger.config)
+                return nil
+            }
+
+            let decoder = TOMLDecoder()
+            let wrapper = try decoder.decode(GroupsConfigurationWrapper.self, from: tomlString)
+            return wrapper.groups
+        } catch {
+            Logger.warning(
+                "Failed to decode GroupConfiguration from UserDefaults using TOML: \(error)",
+                category: Logger.config
+            )
+            return nil
+        }
+    }
+
+    /// Saves a GroupConfiguration to UserDefaults using TOML format.
+    /// - Parameter configuration: The GroupConfiguration to save
+    private func saveGroupsConfiguration(_ configuration: [GroupConfiguration]) {
+        do {
+            let encoder = TOMLEncoder()
+            let wrapper = GroupsConfigurationWrapper(groups: configuration)
+            let tomlString = try encoder.encode(wrapper)
+            guard let data = tomlString.data(using: String.Encoding.utf8) else {
+                Logger.error("Failed to convert TOML string to Data", category: Logger.config)
+                return
+            }
+
+            UserDefaults.standard.set(data, forKey: UserDefaultsKeys.groupsConfiguration.rawValue)
+        } catch {
+            Logger.error(
+                "Failed to encode GroupConfiguration to UserDefaults using TOML: \(error)",
+                category: Logger.config
+            )
+        }
+    }
+}
+
+/// Wrapper struct for TOML encoding of groups configuration array.
+private struct GroupsConfigurationWrapper: Codable {
+    let groups: [GroupConfiguration]
 }
 
 /// Helper struct for Color serialization to UserDefaults.

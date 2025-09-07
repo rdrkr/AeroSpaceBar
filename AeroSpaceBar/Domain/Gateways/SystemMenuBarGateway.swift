@@ -23,4 +23,8 @@ protocol SystemMenuBarGateway {
     /// Publisher that emits system menu bar visibility changes.
     /// Emits `true` when the menu bar is visible, `false` when hidden.
     var menuBarVisibilityPublisher: AnyPublisher<Bool, Never> { get }
+
+    /// Publisher that emits menu bar applications updates.
+    /// Emits an array of MenuBarApp instances representing applications with menu bar icons.
+    var menuBarAppsPublisher: AnyPublisher<[MenuBarApp], Never> { get }
 }

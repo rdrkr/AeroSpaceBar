@@ -6,11 +6,11 @@ import XCTest
 final class AeroSpaceCLIClientTests: XCTestCase {
     var client: AeroSpaceCLIClient?
 
-    func setUp() {
+    override func setUp() {
         client = AeroSpaceCLIClient(executablePath: "/test/path/aerospace")
     }
 
-    func tearDown() {
+    override func tearDown() {
         client = nil
     }
 

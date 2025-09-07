@@ -22,11 +22,10 @@ struct AeroSpaceBarApp: App {
             Image(R.image.appGlyph)
         }
 
-        #if os(macOS)
-            Settings {
-                SettingsView()
-                    .environmentObject(DependencyContainer.shared.getSettingsViewModel())
-            }
-        #endif
+        Settings {
+            SettingsView()
+                .environmentObject(DependencyContainer.shared.getSettingsViewModel())
+                .environmentObject(DependencyContainer.shared.getGroupsViewModel())
+        }
     }
 }

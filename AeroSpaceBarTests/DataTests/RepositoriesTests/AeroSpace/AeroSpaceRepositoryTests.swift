@@ -8,12 +8,12 @@ final class AeroSpaceRepositoryTests: XCTestCase {
     var repository: AeroSpaceRepository?
     var cancellables: Set<AnyCancellable>?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with mock dependencies
         cancellables = Set<AnyCancellable>()
     }
 
-    func tearDown() {
+    override func tearDown() {
         cancellables?.removeAll()
         repository = nil
     }

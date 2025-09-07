@@ -22,6 +22,9 @@ enum UserDefaultsKeys: String, CaseIterable {
     /// Whether to show empty spaces in the interface.
     case showEmptySpaces = "com.aerospacebar.preferences.showEmptySpaces"
 
+    /// Whether to show groups in the interface.
+    case showGroups = "com.aerospacebar.preferences.showGroups"
+
     /// Whether to launch the application at login.
     case launchAtLogin = "com.aerospacebar.preferences.launchAtLogin"
 
@@ -86,4 +89,7 @@ enum UserDefaultsKeys: String, CaseIterable {
 
     /// The corner radius for space elements in points.
     case spaceCornerRadius = "com.aerospacebar.preferences.ui.spaceCornerRadius"
+
+    /// The group configuration for organizing menu bar applications.
+    case groupsConfiguration = "com.aerospacebar.preferences.ui.groupsConfiguration"
 }

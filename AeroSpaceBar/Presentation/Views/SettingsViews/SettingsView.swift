@@ -13,23 +13,7 @@ struct SettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
 
     @FocusState private var sidebarFocused: Bool
-
-    @State private var selectedPage: SettingsNavigationOptions = .general
     @State private var isWindowConfigured = false
-    @State private var navigationHistory: [SettingsNavigationOptions] = [.general]
-    @State private var forwardHistory: [SettingsNavigationOptions] = []
-
-    // MARK: - Computed Properties
-
-    /// Computed property for backward navigation availability
-    private var canNavigateBackward: Bool {
-        navigationHistory.count >= 2
-    }
-
-    /// Computed property for forward navigation availability
-    private var canNavigateForward: Bool {
-        !forwardHistory.isEmpty
-    }
 
     // MARK: - Body
 
@@ -37,10 +21,40 @@ struct SettingsView: View {
         Group {
             if isWindowConfigured {
                 NavigationSplitView {
-                    List(selection: $selectedPage) {
-                        ForEach(SettingsNavigationOptions.allCases) { page in
+                    List(selection: Binding(
+                        get: { viewModel.sidebarSelectedPage },
+                        set: { newPage in
+                            // Only navigate if the selected page is different and is a root page
+                            if
+                                newPage.id != viewModel.sidebarSelectedPage.id,
+                                viewModel.rootPages.contains(where: { AnyNavigationPage($0).id == newPage.id })
+                            {
+                                Task {
+                                    viewModel.navigateTo(newPage)
+                                }
+                            }
+                        }
+                    )) {
+                        ForEach(viewModel.sidebarPages, id: \.id) { page in
                             NavigationLink(value: page) {
-                                Label(page.name, systemImage: page.symbolName)
+                                HStack {
+                                    let symbolImage = Image(systemName: page.symbolName)
+                                        .resizable()
+                                        .frame(width: 18, height: 18)
+                                        .padding(4)
+                                        .background(.white.opacity(0.1), in: .rect)
+
+                                    if #available(macOS 26.0, *) {
+                                        symbolImage
+                                            .glassEffect(.clear, in: .rect)
+                                            .cornerRadius(8)
+                                    } else {
+                                        symbolImage
+                                            .cornerRadius(8)
+                                    }
+
+                                    Text(page.name)
+                                }
                             }
                             .tag("settings-nav-\(page.id)")
                         }
@@ -51,28 +65,26 @@ struct SettingsView: View {
                     .tag("settings-sidebar")
                 }
                 detail: {
-                    selectedPage.viewForPage()
+                    viewModel.selectedPage
+                        .viewForPage
                         .tag("settings-detail-content")
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .navigation) {
-                        Button(action: navigateBackward) {
+                        Button(action: viewModel.navigateBackward) {
                             Image(systemName: "chevron.backward")
                         }
-                        .disabled(!canNavigateBackward)
+                        .disabled(!viewModel.canNavigateBackward)
                         .tag("settings-back-button")
 
-                        Button(action: navigateForward) {
+                        Button(action: viewModel.navigateForward) {
                             Image(systemName: "chevron.forward")
                         }
-                        .disabled(!canNavigateForward)
+                        .disabled(!viewModel.canNavigateForward)
                         .tag("settings-forward-button")
                     }
                 }
                 .environmentObject(viewModel)
-                .onChange(of: selectedPage) { _, newPage in
-                    handlePageSelection(newPage)
-                }
                 .tag("settings-navigation-split")
             }
         }
@@ -80,20 +92,13 @@ struct SettingsView: View {
         .task {
             await configureWindow()
         }
+        .onDisappear {
+            viewModel.resetNavigationOnWindowClose()
+        }
         .tag("settings-view")
     }
 
     // MARK: - Private Methods
-
-    /// Handles page selection changes and updates navigation history
-    private func handlePageSelection(_ newPage: SettingsNavigationOptions) {
-        // Add to navigation history when sidebar selection changes
-        if navigationHistory.last != newPage {
-            navigationHistory.append(newPage)
-            // Clear forward history when navigating to a new page
-            forwardHistory.removeAll()
-        }
-    }
 
     /// Configures the window for proper display and behavior
     private func configureWindow() async {
@@ -122,42 +127,6 @@ struct SettingsView: View {
 
         // Set focus to the sidebar
         sidebarFocused = true
-    }
-
-    // MARK: - Navigation Methods
-
-    /// Determines if backward navigation is available.
-    ///
-    /// Returns true if there are at least 2 pages in the navigation history,
-    /// indicating that the user can navigate back to a previous page.
-    private func navigateBackward() {
-        guard canNavigateBackward else { return }
-
-        // Remove current page from history
-        let currentPage = navigationHistory.removeLast()
-
-        // Add current page to forward history
-        forwardHistory.append(currentPage)
-
-        // Navigate to the previous page
-        selectedPage = navigationHistory.last ?? .general
-    }
-
-    /// Determines if forward navigation is available.
-    ///
-    /// Returns true if there are pages in the forward history,
-    /// indicating that the user can navigate forward to a previously visited page.
-    private func navigateForward() {
-        guard canNavigateForward else { return }
-
-        // Get the next page from forward history
-        let nextPage = forwardHistory.removeLast()
-
-        // Add current page to navigation history
-        navigationHistory.append(selectedPage)
-
-        // Navigate to the next page
-        selectedPage = nextPage
     }
 }
 

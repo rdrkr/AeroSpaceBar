@@ -6,12 +6,12 @@ import XCTest
 final class AppDelegateTests: XCTestCase {
     var appDelegate: AppDelegate?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with proper actor context
         // appDelegate = AppDelegate()
     }
 
-    func tearDown() {
+    override func tearDown() {
         appDelegate = nil
     }
 

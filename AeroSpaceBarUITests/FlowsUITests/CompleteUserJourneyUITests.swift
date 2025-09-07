@@ -6,13 +6,13 @@ import XCTest
 final class CompleteUserJourneyUITests: XCTestCase {
     var app: XCUIApplication?
 
-    func setUp() {
+    override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
         app?.launch()
     }
 
-    func tearDown() {
+    override func tearDown() {
         app = nil
     }
 

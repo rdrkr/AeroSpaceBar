@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="--config .swiftformat $FilePathRelativeToProjectRoot$" />
-      <option name="checkSyntaxErrors" value="true" />
+      <option name="arguments" value="--config .swiftformat $FilePath$" />
+      <option name="checkSyntaxErrors" value="false" />
       <option name="description" />
       <option name="exitCodeBehavior" value="ERROR" />
       <option name="fileExtension" value="swift" />
@@ -15,7 +15,7 @@
       </option>
       <option name="outputFromStdout" value="false" />
       <option name="program" value="/opt/homebrew/bin/swiftformat" />
-      <option name="runOnExternalChanges" value="true" />
+      <option name="runOnExternalChanges" value="false" />
       <option name="scopeName" value="Project Files" />
       <option name="trackOnlyRoot" value="false" />
       <option name="workingDir" value="$ProjectFileDir$" />

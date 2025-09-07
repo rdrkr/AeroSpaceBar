@@ -64,7 +64,8 @@ struct SpacesView: View {
     /// Whether the view should be hidden based on globe key + mouse hover combination, menu bar visibility, or
     /// AeroSpace status
     private var shouldHideView: Bool {
-        (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel.isMenuBarVisible || !viewModel.isAeroSpaceRunning
+        !viewModel.isSpacesEnabled || (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel
+            .isMenuBarVisible || !viewModel.isAeroSpaceRunning
     }
 
     /// The body of the spaces view.
@@ -72,7 +73,6 @@ struct SpacesView: View {
     /// This view creates a horizontal layout of spaces with their associated windows,
     /// using the captured desktop wallpaper as background.
     var body: some View {
-        // Main menu bar content
         HStack(spacing: widgetSpacing) {
             ZStack(alignment: .leading) {
                 // Use captured desktop wallpaper as background

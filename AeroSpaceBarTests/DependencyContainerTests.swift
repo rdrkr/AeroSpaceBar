@@ -6,12 +6,12 @@ import XCTest
 final class DependencyContainerTests: XCTestCase {
     var container: DependencyContainer?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with proper actor context
         // container = DependencyContainer.shared
     }
 
-    func tearDown() {
+    override func tearDown() {
         container = nil
     }
 

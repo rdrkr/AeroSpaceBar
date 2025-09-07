@@ -15,7 +15,12 @@
 --wrapcollections before-first
 --wrapconditions before-first
 --wraptypealiases before-first
+--func-attributes prev-line
 --type-attributes prev-line
+--stored-var-attributes same-line
+--computed-var-attributes prev-line
+--complex-attributes prev-line
+--non-complex-attributes prev-line
 
 # Spacing
 --trimwhitespace always

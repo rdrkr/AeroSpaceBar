@@ -6,12 +6,12 @@ import XCTest
 final class IconCacheTests: XCTestCase {
     var iconCache: IconCache?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with proper actor context
         // iconCache = IconCache()
     }
 
-    func tearDown() {
+    override func tearDown() {
         iconCache = nil
     }
 

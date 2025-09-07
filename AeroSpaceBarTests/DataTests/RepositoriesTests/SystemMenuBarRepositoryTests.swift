@@ -8,13 +8,13 @@ final class SystemMenuBarRepositoryTests: XCTestCase {
     var repository: SystemMenuBarRepository?
     var cancellables: Set<AnyCancellable>?
 
-    func setUp() {
+    override func setUp() {
         // TODO: Initialize with proper actor context
         // repository = SystemMenuBarRepository()
         cancellables = Set<AnyCancellable>()
     }
 
-    func tearDown() {
+    override func tearDown() {
         cancellables?.removeAll()
         repository = nil
     }
