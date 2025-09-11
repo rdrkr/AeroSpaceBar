@@ -43,7 +43,7 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 │   ├── Entities/     # Core business models, configuration, logging
 │   ├── Gateways/     # Repository contracts/protocols
 │   └── UseCases/     # Application business logic operations
-├── Data/             # Data Access Layer
+├── Service/          # Data Access Layer
 │   ├── Models/       # External data models (from AeroSpace CLI)
 │   ├── Network/      # AeroSpaceCLIClient, IconCache
 │   └── Repositories/ # Gateway implementations
@@ -81,7 +81,7 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 
 1. Create domain entities and use cases first (no dependencies)
 2. Add gateway protocols to Domain/Gateways/
-3. Implement repositories in Data/ layer
+3. Implement repositories in Service/ (Data) layer
 4. Create ViewModels in Presentation/ViewModels/
 5. Add Views in Presentation/Views/
 6. Wire dependencies in DependencyContainer
@@ -90,7 +90,7 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 ### Testing Strategy
 
 - For every change you make, verify your changes by running "./gradlew buildDebug"
-- **Unit Tests** (`AeroSpaceBarTests/`): Domain and Data layer testing
+- **Unit Tests** (`AeroSpaceBarTests/`): Domain and Service layer testing
 - **UI Tests** (`AeroSpaceBarUITests/`): End-to-end user flow testing
 - Test files mirror source structure for easy navigation
 

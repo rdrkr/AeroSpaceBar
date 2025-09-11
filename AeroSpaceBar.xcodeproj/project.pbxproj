@@ -7,14 +7,60 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0D92972E6806BC0097C410 /* RswiftLibrary */; };
-		1A31BED12E6F24A60038E13F /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A31BED02E6F24A60038E13F /* TOMLKit */; };
-		1A31BED32E6F24A60038E13F /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 1A31BED22E6F24A60038E13F /* RswiftLibrary */; };
-		1A31BF852E7071540038E13F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A31BF842E7071540038E13F /* AppIntents.framework */; };
-		1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4525C02E66D944003156C3 /* TOMLKit */; };
+		1A493D052E73D9CF00187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
+		1A493DED2E73D9F100187B3E /* Service.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; };
+		1A4941722E73DC5600187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
+		1A4941732E73DC5600187B3E /* Domain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1A49417A2E73DC6500187B3E /* Service.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; };
+		1A49417B2E73DC6500187B3E /* Service.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1A4941802E73DC7000187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
+		1A4941812E73DC7000187B3E /* Domain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1A4941842E73DC7500187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BD32E73E4DB00187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BD52E73E4F200187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BD92E73E5B700187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BDB2E73E5BD00187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BDD2E73E5C200187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1AAFCE8A2E7404D6001948FD /* TOMLKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1A493D062E73D9CF00187B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
+			remoteInfo = Domain;
+		};
+		1A493DEE2E73D9F100187B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A493DE32E73D9F000187B3E;
+			remoteInfo = Service;
+		};
+		1A4941742E73DC5600187B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
+			remoteInfo = Domain;
+		};
+		1A49417C2E73DC6500187B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A493DE32E73D9F000187B3E;
+			remoteInfo = Service;
+		};
+		1A4941822E73DC7000187B3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
+			remoteInfo = Domain;
+		};
 		1AFC28802E609B9E00258BEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C10E2F822D41235900AC957C /* Project object */;
@@ -32,12 +78,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1A4CFF3B2E73142600B93D4B /* Embed Frameworks */ = {
+		1A4941762E73DC5600187B3E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1A4941732E73DC5600187B3E /* Domain.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A49417E2E73DC6500187B3E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1A49417B2E73DC6500187B3E /* Service.framework in Embed Frameworks */,
+				1A4941812E73DC7000187B3E /* Domain.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -45,50 +104,295 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A31BF842E7071540038E13F /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
+		1A493CFC2E73D9CF00187B3E /* Domain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Domain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A493D042E73D9CF00187B3E /* DomainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DomainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A493DE42E73D9F000187B3E /* Service.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Service.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A494BD22E73E4DB00187B3E /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
 		1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroSpaceBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1AD7453E2E677C2900FA1445 /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */ = {
+		1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Presentation/AeroSpaceBarApp.swift,
+				Presentation/AppDelegate.swift,
+				Presentation/AppIcon.icon,
+				Presentation/DependencyContainer.swift,
+				Presentation/Resources/Assets.xcassets,
+				Presentation/Resources/Localizable.xcstrings,
+				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
+				Presentation/ViewModels/GroupsViewModel.swift,
+				Presentation/ViewModels/SettingsViewModel.swift,
+				Presentation/ViewModels/SpacesViewModel.swift,
+				Presentation/Views/AboutView.swift,
+				Presentation/Views/AppMenuView.swift,
+				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
+				Presentation/Views/CommonViews/IntroForm.swift,
+				Presentation/Views/CommonViews/NavigationPage.swift,
+				Presentation/Views/CommonViews/SettingsColorPicker.swift,
+				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
+				Presentation/Views/CommonViews/SettingsSlider.swift,
+				Presentation/Views/CommonViews/SettingsToggle.swift,
+				Presentation/Views/CommonViews/StickySlider.swift,
+				Presentation/Views/CommonViews/Theme.swift,
+				Presentation/Views/CommonViews/ViewModifiers.swift,
+				Presentation/Views/GroupsViews/GroupsView.swift,
+				Presentation/Views/GroupsViews/GroupView.swift,
+				Presentation/Views/MenuViews/MenuItemView.swift,
+				Presentation/Views/SettingsViews/Advanced/AdvancedSettingsView.swift,
+				Presentation/Views/SettingsViews/Developer/DeveloperSettingsView.swift,
+				Presentation/Views/SettingsViews/General/GeneralSettingsView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupAppRangePicker.swift,
+				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupSettingsListRowView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
+				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
+				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
+				Presentation/Views/SettingsViews/SettingsView.swift,
+				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
+				Presentation/Views/SpacesViews/SpacesContainerView.swift,
+				Presentation/Views/SpacesViews/SpacesView.swift,
+				Presentation/Views/SpacesViews/SpaceView.swift,
+				Presentation/Views/SpacesViews/WallpaperBackgroundView.swift,
+				Presentation/Views/SpacesViews/WindowView.swift,
 			);
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
+		};
+		1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Presentation/AeroSpaceBarApp.swift,
+				Presentation/AppDelegate.swift,
+				Presentation/AppIcon.icon,
+				Presentation/DependencyContainer.swift,
+				Presentation/Info.plist,
+				Presentation/Resources/Assets.xcassets,
+				Presentation/Resources/Localizable.xcstrings,
+				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
+				Presentation/ViewModels/GroupsViewModel.swift,
+				Presentation/ViewModels/SettingsViewModel.swift,
+				Presentation/ViewModels/SpacesViewModel.swift,
+				Presentation/Views/AboutView.swift,
+				Presentation/Views/AppMenuView.swift,
+				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
+				Presentation/Views/CommonViews/IntroForm.swift,
+				Presentation/Views/CommonViews/NavigationPage.swift,
+				Presentation/Views/CommonViews/SettingsColorPicker.swift,
+				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
+				Presentation/Views/CommonViews/SettingsSlider.swift,
+				Presentation/Views/CommonViews/SettingsToggle.swift,
+				Presentation/Views/CommonViews/StickySlider.swift,
+				Presentation/Views/CommonViews/Theme.swift,
+				Presentation/Views/CommonViews/ViewModifiers.swift,
+				Presentation/Views/GroupsViews/GroupsView.swift,
+				Presentation/Views/GroupsViews/GroupView.swift,
+				Presentation/Views/MenuViews/MenuItemView.swift,
+				Presentation/Views/SettingsViews/Advanced/AdvancedSettingsView.swift,
+				Presentation/Views/SettingsViews/Developer/DeveloperSettingsView.swift,
+				Presentation/Views/SettingsViews/General/GeneralSettingsView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupAppRangePicker.swift,
+				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupSettingsListRowView.swift,
+				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
+				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
+				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
+				Presentation/Views/SettingsViews/SettingsView.swift,
+				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
+				Presentation/Views/SpacesViews/SpacesContainerView.swift,
+				Presentation/Views/SpacesViews/SpacesView.swift,
+				Presentation/Views/SpacesViews/SpaceView.swift,
+				Presentation/Views/SpacesViews/WallpaperBackgroundView.swift,
+				Presentation/Views/SpacesViews/WindowView.swift,
+				Service/Network/AeroSpaceCLIClient.swift,
+				Service/Network/IconCache.swift,
+				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
+				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
+				Service/Repositories/ConfigurationRepository.swift,
+				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/SystemMenuBarRepository.swift,
+			);
+			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
+		};
+		1A4941192E73DC1200187B3E /* Exceptions for "Sources" folder in "Service" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Service/Network/AeroSpaceCLIClient.swift,
+				Service/Network/IconCache.swift,
+				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
+				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
+				Service/Repositories/ConfigurationRepository.swift,
+				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/SystemMenuBarRepository.swift,
+			);
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+		};
+		1A49416B2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PresentationUITests/AeroSpaceBarAppUITests.swift,
+				PresentationUITests/AppDelegateUITests.swift,
+				PresentationUITests/DependencyContainerUITests.swift,
+				PresentationUITests/FlowsUITests/CompleteUserJourneyUITests.swift,
+				PresentationUITests/PresentationUITests/ViewModelsUITests/SettingsViewModelUITests.swift,
+				PresentationUITests/PresentationUITests/ViewModelsUITests/SpacesViewModelUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/AboutViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/AppMenuViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/CommonUITests/IntroFormUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/AdvancedSettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/GeneralSettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/SettingsNavigationOptionsUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SpacesViewUITests.swift,
+			);
+			target = 1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */;
+		};
+		1A49416C2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PresentationTests/AeroSpaceBarAppTests.swift,
+				PresentationTests/AppDelegateTests.swift,
+				PresentationTests/DependencyContainerTests.swift,
+			);
+			target = 1AFC28882E609BDA00258BEE /* AeroSpaceBarTests */;
+		};
+		1A49416D2E73DC3C00187B3E /* Exceptions for "Tests" folder in "Domain" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DomainTests/EntitiesTests/AppErrorTests.swift,
+				DomainTests/EntitiesTests/AppModelsTests.swift,
+				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
+				DomainTests/EntitiesTests/LoggerTests.swift,
+				DomainTests/EntitiesTests/UserDefaultsKeysTests.swift,
+				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
+				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
+				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
+				DomainTests/UseCasesTests/GetAeroSpacePathUseCaseTests.swift,
+				DomainTests/UseCasesTests/GetSpacesUseCaseTests.swift,
+				PresentationTests/AeroSpaceBarAppTests.swift,
+				PresentationTests/AppDelegateTests.swift,
+				PresentationTests/DependencyContainerTests.swift,
+				PresentationUITests/AeroSpaceBarAppUITests.swift,
+				PresentationUITests/AppDelegateUITests.swift,
+				PresentationUITests/DependencyContainerUITests.swift,
+				PresentationUITests/FlowsUITests/CompleteUserJourneyUITests.swift,
+				PresentationUITests/PresentationUITests/ViewModelsUITests/SettingsViewModelUITests.swift,
+				PresentationUITests/PresentationUITests/ViewModelsUITests/SpacesViewModelUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/AboutViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/AppMenuViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/CommonUITests/IntroFormUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/AdvancedSettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/GeneralSettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/SettingsNavigationOptionsUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewUITests.swift,
+				PresentationUITests/PresentationUITests/ViewsUITests/SpacesViewUITests.swift,
+				ServiceTests/NetworkTests/AeroSpaceCLIClientTests.swift,
+				ServiceTests/NetworkTests/IconCacheTests.swift,
+				ServiceTests/RepositoriesTests/AeroSpace/AeroSpaceRepositoryTests.swift,
+				ServiceTests/RepositoriesTests/ConfigurationRepositoryTests.swift,
+				ServiceTests/RepositoriesTests/SystemMenuBarRepositoryTests.swift,
+			);
+			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
+		};
+		1A49416E2E73DC3C00187B3E /* Exceptions for "Tests" folder in "DomainTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DomainTests/EntitiesTests/AppErrorTests.swift,
+				DomainTests/EntitiesTests/AppModelsTests.swift,
+				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
+				DomainTests/EntitiesTests/LoggerTests.swift,
+				DomainTests/EntitiesTests/UserDefaultsKeysTests.swift,
+				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
+				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
+				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
+				DomainTests/UseCasesTests/GetAeroSpacePathUseCaseTests.swift,
+				DomainTests/UseCasesTests/GetSpacesUseCaseTests.swift,
+			);
+			target = 1A493D032E73D9CF00187B3E /* DomainTests */;
+		};
+		1A49416F2E73DC3C00187B3E /* Exceptions for "Tests" folder in "ServiceTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ServiceTests/NetworkTests/AeroSpaceCLIClientTests.swift,
+				ServiceTests/NetworkTests/IconCacheTests.swift,
+				ServiceTests/RepositoriesTests/AeroSpace/AeroSpaceRepositoryTests.swift,
+				ServiceTests/RepositoriesTests/ConfigurationRepositoryTests.swift,
+				ServiceTests/RepositoriesTests/SystemMenuBarRepositoryTests.swift,
+			);
+			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1AFC287B2E609B9E00258BEE /* AeroSpaceBarUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AeroSpaceBarUITests;
-			sourceTree = "<group>";
-		};
-		1AFC288A2E609BDA00258BEE /* AeroSpaceBarTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AeroSpaceBarTests;
-			sourceTree = "<group>";
-		};
-		C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */ = {
+		1A493FFF2E73DBFD00187B3E /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1AD7453E2E677C2900FA1445 /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */,
+				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
+				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
+				1A4941192E73DC1200187B3E /* Exceptions for "Sources" folder in "Service" target */,
 			);
-			path = AeroSpaceBar;
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		1A4940022E73DC0600187B3E /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1A49416B2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarUITests" target */,
+				1A49416C2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarTests" target */,
+				1A49416D2E73DC3C00187B3E /* Exceptions for "Tests" folder in "Domain" target */,
+				1A49416E2E73DC3C00187B3E /* Exceptions for "Tests" folder in "DomainTests" target */,
+				1A49416F2E73DC3C00187B3E /* Exceptions for "Tests" folder in "ServiceTests" target */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1A493CF92E73D9CF00187B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A494BD52E73E4F200187B3E /* AppIntents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493D012E73D9CF00187B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A494BDD2E73E5C200187B3E /* AppIntents.framework in Frameworks */,
+				1A493D052E73D9CF00187B3E /* Domain.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DE12E73D9F000187B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */,
+				1A4941722E73DC5600187B3E /* Domain.framework in Frameworks */,
+				1A494BD32E73E4DB00187B3E /* AppIntents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DE92E73D9F100187B3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */,
+				1A493DED2E73D9F100187B3E /* Service.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AFC28772E609B9E00258BEE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A31BED12E6F24A60038E13F /* TOMLKit in Frameworks */,
-				1A31BED32E6F24A60038E13F /* RswiftLibrary in Frameworks */,
+				1A494BD92E73E5B700187B3E /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +400,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A494BDB2E73E5BD00187B3E /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,19 +408,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A4525C12E66D944003156C3 /* TOMLKit in Frameworks */,
-				1A0D92982E6806BC0097C410 /* RswiftLibrary in Frameworks */,
-				1A31BF852E7071540038E13F /* AppIntents.framework in Frameworks */,
+				1A49417A2E73DC6500187B3E /* Service.framework in Frameworks */,
+				1A4941802E73DC7000187B3E /* Domain.framework in Frameworks */,
+				1A4941842E73DC7500187B3E /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A31BECF2E6F24A60038E13F /* Frameworks */ = {
+		1A493B982E7335CB00187B3E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1A31BF842E7071540038E13F /* AppIntents.framework */,
+				1A494BD22E73E4DB00187B3E /* AppIntents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -123,11 +428,10 @@
 		C10E2F812D41235900AC957C = {
 			isa = PBXGroup;
 			children = (
-				1AFC287B2E609B9E00258BEE /* AeroSpaceBarUITests */,
-				1AFC288A2E609BDA00258BEE /* AeroSpaceBarTests */,
+				1A493B982E7335CB00187B3E /* Frameworks */,
 				C10E2F8B2D41235900AC957C /* Products */,
-				C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */,
-				1A31BECF2E6F24A60038E13F /* Frameworks */,
+				1A493FFF2E73DBFD00187B3E /* Sources */,
+				1A4940022E73DC0600187B3E /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -137,13 +441,121 @@
 				C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */,
 				1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */,
 				1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */,
+				1A493CFC2E73D9CF00187B3E /* Domain.framework */,
+				1A493D042E73D9CF00187B3E /* DomainTests.xctest */,
+				1A493DE42E73D9F000187B3E /* Service.framework */,
+				1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		1A493CF72E73D9CF00187B3E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DDF2E73D9F000187B3E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		1A493CFB2E73D9CF00187B3E /* Domain */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A493D152E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "Domain" */;
+			buildPhases = (
+				1A493CF72E73D9CF00187B3E /* Headers */,
+				1A493CF82E73D9CF00187B3E /* Sources */,
+				1A493CF92E73D9CF00187B3E /* Frameworks */,
+				1A493CFA2E73D9CF00187B3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1A493FFF2E73DBFD00187B3E /* Sources */,
+				1A4940022E73DC0600187B3E /* Tests */,
+			);
+			name = Domain;
+			packageProductDependencies = (
+			);
+			productName = Domain;
+			productReference = 1A493CFC2E73D9CF00187B3E /* Domain.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1A493D032E73D9CF00187B3E /* DomainTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A493D202E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "DomainTests" */;
+			buildPhases = (
+				1A493D002E73D9CF00187B3E /* Sources */,
+				1A493D012E73D9CF00187B3E /* Frameworks */,
+				1A493D022E73D9CF00187B3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A493D072E73D9CF00187B3E /* PBXTargetDependency */,
+			);
+			name = DomainTests;
+			packageProductDependencies = (
+			);
+			productName = DomainTests;
+			productReference = 1A493D042E73D9CF00187B3E /* DomainTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1A493DE32E73D9F000187B3E /* Service */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A493DF92E73D9F100187B3E /* Build configuration list for PBXNativeTarget "Service" */;
+			buildPhases = (
+				1A493DDF2E73D9F000187B3E /* Headers */,
+				1A493DE02E73D9F000187B3E /* Sources */,
+				1A493DE12E73D9F000187B3E /* Frameworks */,
+				1A493DE22E73D9F000187B3E /* Resources */,
+				1A4941762E73DC5600187B3E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A4941752E73DC5600187B3E /* PBXTargetDependency */,
+			);
+			name = Service;
+			packageProductDependencies = (
+				1AAFCE8A2E7404D6001948FD /* TOMLKit */,
+			);
+			productName = Service;
+			productReference = 1A493DE42E73D9F000187B3E /* Service.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1A493DEB2E73D9F100187B3E /* ServiceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A493DFC2E73D9F100187B3E /* Build configuration list for PBXNativeTarget "ServiceTests" */;
+			buildPhases = (
+				1A493DE82E73D9F100187B3E /* Sources */,
+				1A493DE92E73D9F100187B3E /* Frameworks */,
+				1A493DEA2E73D9F100187B3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A493DEF2E73D9F100187B3E /* PBXTargetDependency */,
+			);
+			name = ServiceTests;
+			packageProductDependencies = (
+			);
+			productName = ServiceTests;
+			productReference = 1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1AFC28842E609B9E00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */;
@@ -155,18 +567,10 @@
 			buildRules = (
 			);
 			dependencies = (
-				1A31BEC92E6F249C0038E13F /* PBXTargetDependency */,
-				1A31BECB2E6F249C0038E13F /* PBXTargetDependency */,
-				1A31BECD2E6F249C0038E13F /* PBXTargetDependency */,
 				1AFC28812E609B9E00258BEE /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				1AFC287B2E609B9E00258BEE /* AeroSpaceBarUITests */,
 			);
 			name = AeroSpaceBarUITests;
 			packageProductDependencies = (
-				1A31BED02E6F24A60038E13F /* TOMLKit */,
-				1A31BED22E6F24A60038E13F /* RswiftLibrary */,
 			);
 			productName = AeroSpaceBarUITests;
 			productReference = 1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */;
@@ -185,9 +589,6 @@
 			dependencies = (
 				1AFC288E2E609BDA00258BEE /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				1AFC288A2E609BDA00258BEE /* AeroSpaceBarTests */,
-			);
 			name = AeroSpaceBarTests;
 			packageProductDependencies = (
 			);
@@ -202,20 +603,16 @@
 				C10E2F862D41235900AC957C /* Sources */,
 				C10E2F872D41235900AC957C /* Frameworks */,
 				C10E2F882D41235900AC957C /* Resources */,
-				1A4CFF3B2E73142600B93D4B /* Embed Frameworks */,
+				1A49417E2E73DC6500187B3E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1A0D929A2E6806D40097C410 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				C1BB4B332D526B5C00A1F46E /* AeroSpaceBar */,
+				1A49417D2E73DC6500187B3E /* PBXTargetDependency */,
+				1A4941832E73DC7000187B3E /* PBXTargetDependency */,
 			);
 			name = AeroSpaceBar;
 			packageProductDependencies = (
-				1A4525C02E66D944003156C3 /* TOMLKit */,
-				1A0D92972E6806BC0097C410 /* RswiftLibrary */,
 			);
 			productName = AeroSpaceBar;
 			productReference = C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */;
@@ -231,6 +628,20 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					1A493CFB2E73D9CF00187B3E = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					1A493D032E73D9CF00187B3E = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = C10E2F892D41235900AC957C;
+					};
+					1A493DE32E73D9F000187B3E = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					1A493DEB2E73D9F100187B3E = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = C10E2F892D41235900AC957C;
+					};
 					1AFC28792E609B9E00258BEE = {
 						CreatedOnToolsVersion = 26.0;
 						TestTargetID = C10E2F892D41235900AC957C;
@@ -241,6 +652,7 @@
 					};
 					C10E2F892D41235900AC957C = {
 						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 2600;
 					};
 				};
 			};
@@ -253,8 +665,7 @@
 			mainGroup = C10E2F812D41235900AC957C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */,
-				1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */,
+				1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -264,11 +675,43 @@
 				C10E2F892D41235900AC957C /* AeroSpaceBar */,
 				1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */,
 				1AFC28882E609BDA00258BEE /* AeroSpaceBarTests */,
+				1A493CFB2E73D9CF00187B3E /* Domain */,
+				1A493D032E73D9CF00187B3E /* DomainTests */,
+				1A493DE32E73D9F000187B3E /* Service */,
+				1A493DEB2E73D9F100187B3E /* ServiceTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1A493CFA2E73D9CF00187B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493D022E73D9CF00187B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DE22E73D9F000187B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DEA2E73D9F100187B3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AFC28782E609B9E00258BEE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -293,6 +736,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1A493CF82E73D9CF00187B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493D002E73D9CF00187B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DE02E73D9F000187B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A493DE82E73D9F100187B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AFC28762E609B9E00258BEE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -317,21 +788,30 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1A0D929A2E6806D40097C410 /* PBXTargetDependency */ = {
+		1A493D072E73D9CF00187B3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 1A0D92992E6806D40097C410 /* RswiftGenerateInternalResources */;
+			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
+			targetProxy = 1A493D062E73D9CF00187B3E /* PBXContainerItemProxy */;
 		};
-		1A31BEC92E6F249C0038E13F /* PBXTargetDependency */ = {
+		1A493DEF2E73D9F100187B3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 1A31BEC82E6F249C0038E13F /* TOMLKit */;
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+			targetProxy = 1A493DEE2E73D9F100187B3E /* PBXContainerItemProxy */;
 		};
-		1A31BECB2E6F249C0038E13F /* PBXTargetDependency */ = {
+		1A4941752E73DC5600187B3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 1A31BECA2E6F249C0038E13F /* RswiftLibrary */;
+			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
+			targetProxy = 1A4941742E73DC5600187B3E /* PBXContainerItemProxy */;
 		};
-		1A31BECD2E6F249C0038E13F /* PBXTargetDependency */ = {
+		1A49417D2E73DC6500187B3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 1A31BECC2E6F249C0038E13F /* rswift */;
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+			targetProxy = 1A49417C2E73DC6500187B3E /* PBXContainerItemProxy */;
+		};
+		1A4941832E73DC7000187B3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
+			targetProxy = 1A4941822E73DC7000187B3E /* PBXContainerItemProxy */;
 		};
 		1AFC28812E609B9E00258BEE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -346,6 +826,258 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1A493D112E73D9CF00187B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Domain;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1A493D122E73D9CF00187B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Domain;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		1A493D132E73D9CF00187B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DomainTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
+			};
+			name = Debug;
+		};
+		1A493D142E73D9CF00187B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DomainTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
+			};
+			name = Release;
+		};
+		1A493DFA2E73D9F100187B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Service;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1A493DFB2E73D9F100187B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Service;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		1A493DFD2E73D9F100187B3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.ServiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
+			};
+			name = Debug;
+		};
+		1A493DFE2E73D9F100187B3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.ServiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
+			};
+			name = Release;
+		};
 		1AFC28822E609B9E00258BEE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -354,7 +1086,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -376,7 +1108,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -399,7 +1131,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarTests.AeroSpaceBarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -422,7 +1154,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarTests.AeroSpaceBarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -491,7 +1223,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_FILE = Sources/Presentation/Info.plist;
 				INFOPLIST_PREPROCESS = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
@@ -504,6 +1236,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -556,7 +1289,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_FILE = Sources/Presentation/Info.plist;
 				INFOPLIST_PREPROCESS = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
@@ -567,6 +1300,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
@@ -576,11 +1310,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = AeroSpaceBar/AeroSpaceBar.entitlements;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Sources/Presentation/AeroSpaceBar.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = Sources/Presentation/Resources;
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -592,7 +1328,7 @@
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_FILE = Sources/Presentation/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
@@ -602,7 +1338,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -613,6 +1349,7 @@
 				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
 				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.2;
 			};
@@ -624,13 +1361,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = AeroSpaceBar/AeroSpaceBar.entitlements;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Sources/Presentation/AeroSpaceBar.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = Sources/Presentation/Resources;
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
@@ -640,7 +1379,7 @@
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
+				INFOPLIST_FILE = Sources/Presentation/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
@@ -650,7 +1389,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -669,6 +1408,42 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1A493D152E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "Domain" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A493D112E73D9CF00187B3E /* Debug */,
+				1A493D122E73D9CF00187B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A493D202E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "DomainTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A493D132E73D9CF00187B3E /* Debug */,
+				1A493D142E73D9CF00187B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A493DF92E73D9F100187B3E /* Build configuration list for PBXNativeTarget "Service" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A493DFA2E73D9F100187B3E /* Debug */,
+				1A493DFB2E73D9F100187B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A493DFC2E73D9F100187B3E /* Build configuration list for PBXNativeTarget "ServiceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A493DFD2E73D9F100187B3E /* Debug */,
+				1A493DFE2E73D9F100187B3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1AFC28842E609B9E00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -708,15 +1483,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mac-cain13/R.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.8.0;
-			};
-		};
-		1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
+		1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LebJe/TOMLKit";
 			requirement = {
@@ -727,44 +1494,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1A0D92972E6806BC0097C410 /* RswiftLibrary */ = {
+		1AAFCE8A2E7404D6001948FD /* TOMLKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
-			productName = RswiftLibrary;
-		};
-		1A0D92992E6806D40097C410 /* RswiftGenerateInternalResources */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
-			productName = "plugin:RswiftGenerateInternalResources";
-		};
-		1A31BEC82E6F249C0038E13F /* TOMLKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
-			productName = TOMLKit;
-		};
-		1A31BECA2E6F249C0038E13F /* RswiftLibrary */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
-			productName = RswiftLibrary;
-		};
-		1A31BECC2E6F249C0038E13F /* rswift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
-			productName = rswift;
-		};
-		1A31BED02E6F24A60038E13F /* TOMLKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
-			productName = TOMLKit;
-		};
-		1A31BED22E6F24A60038E13F /* RswiftLibrary */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A0D92962E6806BC0097C410 /* XCRemoteSwiftPackageReference "R" */;
-			productName = RswiftLibrary;
-		};
-		1A4525C02E66D944003156C3 /* TOMLKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A4525BF2E66D944003156C3 /* XCRemoteSwiftPackageReference "TOMLKit" */;
+			package = 1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */;
 			productName = TOMLKit;
 		};
 /* End XCSwiftPackageProductDependency section */

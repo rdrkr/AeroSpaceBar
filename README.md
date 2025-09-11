@@ -4,7 +4,8 @@
   <img src="Docs/Assets/AeroSpaceBar-macOS-Default-512x512@1x.png" alt="AeroSpaceBar App Icon" width="128" height="128">
 </div>
 
-> **A modern macOS menu bar application for managing AeroSpace window manager spaces and windows with a beautiful SwiftUI interface**
+> **A modern macOS menu bar application for managing AeroSpace window manager spaces and windows with a beautiful
+SwiftUI interface**
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
 [![Swift](https://img.shields.io/badge/Swift-6.2+-orange.svg)](https://swift.org)
@@ -17,57 +18,70 @@
 
 ## 📖 Overview
 
-AeroSpaceBar is a sophisticated macOS menu bar application that provides seamless integration with the [AeroSpace window manager](https://github.com/nikitabobko/aerospace). Built with modern SwiftUI and following Clean Architecture principles, it offers an intuitive interface for managing your workspace spaces and windows directly from the menu bar.
+AeroSpaceBar is a sophisticated macOS menu bar application that provides seamless integration with
+the [AeroSpace window manager](https://github.com/nikitabobko/aerospace). Built with modern SwiftUI and following Clean
+Architecture principles, it offers an intuitive interface for managing your workspace spaces and windows directly from
+the menu bar.
 
 ### ✨ Key Features
 
 - 🎨 **Beautiful UI**: Modern SwiftUI interface with smooth animations and hover effects
-- ⚡ **Lightning Fast**: Optimized performance with efficient data refresh
+- ⚡ **Lightning Fast**: Optimized performance with efficient data refresh and icon caching
 - 🏗️ **Clean Architecture**: Built with MVVM Clean Architecture for maintainability
 - 🔒 **Privacy Focused**: Runs entirely locally, no data sent to external servers
+- 🔧 **Space Groups**: Organize and manage workspace groups with custom ranges and settings
+- 🎛️ **Advanced Settings**: Comprehensive customization including themes, performance, and developer options
+- 🚀 **Feature Flags**: Dynamic feature management system for controlled feature rollout
+- 📊 **Performance Metrics**: Optional performance monitoring and optimization controls
+- 🌐 **System Integration**: Automatic menu bar visibility matching and wallpaper detection
+- 🎯 **Empty Space Management**: Option to show or hide empty workspace spaces
 
 ## 🏗️ Architecture
 
-AeroSpaceBar follows the **MVVM Clean Architecture** pattern, ensuring code maintainability, testability, and scalability:
+AeroSpaceBar follows the **MVVM Clean Architecture** pattern, ensuring code maintainability, testability, and
+scalability:
 
 ### Project Structure
 
 ```
 AeroSpaceBar/
-├── 📁 AeroSpaceBar/                    # Main Application
-│   ├── 📁 Data/                        # Data Layer
-│   │   ├── 📁 Models/                  # External data models
-│   │   ├── 📁 Network/                 # AeroSpace CLI client
-│   │   └── 📁 Repositories/            # Repository implementations
-│   ├── 📁 Domain/                      # Business Layer
-│   │   ├── 📁 Entities/                # Business models, configuration & logging
-│   │   ├── 📁 Gateways/                # Repository contracts
-│   │   └── 📁 UseCases/                # Application business logic
-│   ├── 📁 Presentation/                # Presentation Layer
-│   │   ├── 📁 ViewModels/              # MVVM ViewModels
-│   │   └── 📁 Views/                   # SwiftUI Views
-│   │       ├── 📁 SettingsViews/       # Settings-related views
-│   │       └── 📁 Common/              # Shared UI components
-│   ├── 📁 Resources/                   # App resources (localization, assets)
-│   ├── 📄 DependencyContainer.swift    # Application DI
-│   ├── 📄 AppDelegate.swift            # Application Entry Point
-│   └── 📄 AeroSpaceBarApp.swift        # SwiftUI App Entry Point
-├── 📁 AeroSpaceBarTests/               # Unit Tests
-│   ├── 📁 DataTests/                   # Data layer tests
-│   │   ├── 📁 ModelsTests/             # Model tests
-│   │   ├── 📁 NetworkTests/            # Network client tests
-│   │   └── 📁 RepositoriesTests/       # Repository tests
-│   └── 📁 DomainTests/                 # Domain layer tests
-│       ├── 📁 EntitiesTests/           # Entity tests
-│       ├── 📁 GatewaysTests/           # Gateway tests
-│       └── 📁 UseCasesTests/           # Use case tests
-├── 📁 AeroSpaceBarUITests/             # UI Tests
-│   ├── 📁 FlowsUITests/                # End-to-end test scenarios
-│   └── 📁 PresentationUITests/         # Presentation layer UI tests
-│       ├── 📁 ViewModelsTests/         # ViewModel tests
-│       └── 📁 ViewsTests/              # View tests
-│           ├── 📁 SettingsViewsTests/  # Settings view tests
-│           └── 📁 CommonTests/         # Common component tests
+├── 📁 Sources/                         # Source Code
+│   ├── 📁 Domain/                      # Business Logic Layer
+│   │   ├── 📁 Entities/                # Core business models, configuration & logging
+│   │   ├── 📁 Gateways/                # Repository contracts/protocols
+│   │   └── 📁 UseCases/                # Application business logic operations
+│   │       ├── 📁 Configuration/       # App settings and preferences
+│   │       ├── 📁 FeatureFlags/        # Feature flag management
+│   │       ├── 📁 Spaces/             # AeroSpace window manager integration
+│   │       └── 📁 SystemMenuBar/      # macOS menu bar interaction
+│   ├── 📁 Service/                     # Data Access Layer
+│   │   ├── 📁 Network/                 # AeroSpace CLI client & icon cache
+│   │   └── 📁 Repositories/            # Gateway implementations
+│   │       └── 📁 AeroSpace/          # AeroSpace-specific data access
+│   └── 📁 Presentation/                # UI Layer
+│       ├── 📁 ViewModels/              # MVVM ViewModels using Combine
+│       ├── 📁 Views/                   # SwiftUI Views
+│       │   ├── 📁 CommonViews/         # Shared UI components
+│       │   ├── 📁 GroupsViews/         # Space group management
+│       │   ├── 📁 MenuViews/           # Menu bar interface
+│       │   ├── 📁 SettingsViews/       # Settings and configuration
+│       │   └── 📁 SpacesViews/         # Space and window management
+│       ├── 📁 Resources/               # App resources (localization, assets)
+│       ├── 📄 DependencyContainer.swift # Application dependency injection
+│       ├── 📄 AppDelegate.swift        # Application entry point
+│       └── 📄 AeroSpaceBarApp.swift    # SwiftUI app entry point
+├── 📁 Tests/                           # Test Suite
+│   ├── 📁 DomainTests/                 # Domain layer tests
+│   │   ├── 📁 EntitiesTests/           # Entity and model tests
+│   │   ├── 📁 GatewaysTests/           # Gateway contract tests
+│   │   └── 📁 UseCasesTests/           # Business logic tests
+│   ├── 📁 ServiceTests/                # Service layer tests
+│   ├── 📁 PresentationTests/           # Presentation layer unit tests
+│   └── 📁 PresentationUITests/         # UI integration tests
+│       └── 📁 PresentationUITests/     # End-to-end test scenarios
+│           ├── 📁 ViewModelsUITests/   # ViewModel UI tests
+│           └── 📁 ViewsUITests/        # View UI tests
+├── 📁 AeroSpaceBar.xcodeproj/          # Xcode Project
 ├── 📁 Common/                          # Kotlin Multiplatform target for IntelliJ IDEA Support
 ├── 📁 Docs/                            # Documentation
 │   └── 📁 Assets/                      # Documentation assets
@@ -85,6 +99,7 @@ AeroSpaceBar/
 ├── 📄 gradlew.bat                      # Gradle wrapper script (Windows)
 ├── 📄 Package.swift                    # Swift Package Manager configuration
 ├── 📄 Package.resolved                 # Swift Package Manager lock file
+├── 📄 CLAUDE.md                        # Claude Code development instructions
 └── 📄 README.md                        # Project documentation
 ```
 
@@ -106,6 +121,7 @@ AeroSpaceBar/
 - **AeroSpace window manager** installed and running
 - **Xcode 15.0+** (for development)
 - **Swift 6.2+** (latest Swift toolchain)
+- **Gradle 8.0+** (for build automation) - included via wrapper
 
 ### Installation
 
@@ -113,16 +129,19 @@ AeroSpaceBar/
 
 By using AeroSpaceBar, you acknowledge that it's not notarized.
 
-Notarization is a "security" feature by Apple. You send binaries to Apple, and they either approve them or not. In reality, notarization is about building binaries the way Apple likes it.
+Notarization is a "security" feature by Apple. You send binaries to Apple, and they either approve them or not. In
+reality, notarization is about building binaries the way Apple likes it.
 
-I don't have anything against notarization as a concept. I specifically don't like the way Apple does notarization. I don't have time to deal with Apple.
+I don't have anything against notarization as a concept. I specifically don't like the way Apple does notarization. I
+don't have time to deal with Apple.
 
 #### Troubleshooting: Launching Non‑Notarized Apps
 
 If macOS blocks the app from launching:
 
 - Right‑click the app in Finder and choose "Open", then click "Open" again in the dialog.
-- Or go to System Settings → Privacy & Security → under Security, click "Allow Anyway" for AeroSpaceBar, then try opening the app again.
+- Or go to System Settings → Privacy & Security → under Security, click "Allow Anyway" for AeroSpaceBar, then try
+  opening the app again.
 - Optional (advanced): remove the quarantine attribute via Terminal:
   ```bash
   xattr -dr com.apple.quarantine "/Applications/AeroSpaceBar.app"
@@ -138,20 +157,25 @@ If macOS blocks the app from launching:
 
 2. **Choose your build method:**
 
-   **Option A: Xcode (Traditional)**
+   **Option A: Gradle (Recommended)**
+   ```bash
+   # Build and run in one command
+   ./gradlew run
+   
+   # Or build first, then run
+   ./gradlew build
+   ./gradlew runDebug
+   ```
+
+   **Option B: Xcode (Traditional)**
    ```bash
    open AeroSpaceBar.xcodeproj
    ```
-   
-   **Option B: Gradle (Modern)**
-   ```bash
-   ./gradlew build
-   ```
 
 3. **Build and Run**
-   - **Xcode**: Select your target device (Mac), press `Cmd + R` or click the Run button
-   - **Gradle**: Use `./gradlew run` to build and launch the app
-   - The app will appear in your menu bar
+    - **Gradle**: Use `./gradlew run` to build and launch the app automatically
+    - **Xcode**: Select your target device (Mac), press `Cmd + R` or click the Run button
+    - The app will appear in your menu bar
 
 #### Option 2: Download Release
 
@@ -172,9 +196,9 @@ If macOS blocks the app from launching:
    ```
 
 2. **Customize Settings** (Optional)
-   - Click the menu bar icon and select "Settings..." (or press `Cmd + ,`)
-   - Configure wallpaper, transparency, and other options
-   - Access advanced settings for logging, performance, and behavior controls
+    - Click the menu bar icon and select "Settings..." (or press `Cmd + ,`)
+    - Configure wallpaper, transparency, and other options
+    - Access advanced settings for logging, performance, and behavior controls
 
 ## 🎮 Usage
 
@@ -184,19 +208,28 @@ If macOS blocks the app from launching:
 - **Switch Spaces**: Click on any space to focus it
 - **View Windows**: Hover over a space to see its windows
 - **Focus Windows**: Click on any window to bring it to focus
+- **Manage Groups**: Organize spaces into custom groups with configurable ranges
+- **Toggle Features**: Enable/disable empty spaces, window titles, and performance metrics
 
 ### Menu Bar Interface
 
 The menu bar displays:
+
 - 🎯 **Current Space**: Shows the currently focused space
-- 📊 **Space Count**: Number of total spaces
+- 📊 **Space Count**: Number of total spaces (with empty space toggle)
 - ⚡ **Status Indicator**: Shows if AeroSpace is running
+- 👥 **Groups Display**: Shows configured space groups (when enabled)
+- 🎨 **Dynamic Theming**: Adapts to system wallpaper and menu bar visibility
 
 ### App Control Menu
 
 The menubar icon provides:
-- ⚙️ **Settings...** (`Cmd + ,`): Open settings window
-- ℹ️ **About AeroSpace Bar**: Show app information
+
+- ⚙️ **Settings...** (`Cmd + ,`): Open comprehensive settings window
+  - **General**: Basic appearance and behavior settings
+  - **Groups**: Configure space group organization
+  - **Developer**: Advanced logging, performance metrics, and feature flags
+- ℹ️ **About AeroSpace Bar**: Show app information and version details
 - 🚪 **Quit AeroSpaceBar** (`Cmd + Q`): Exit the application
 
 ### Keyboard Shortcuts
@@ -206,7 +239,8 @@ The menubar icon provides:
 
 ### Pro Tip: Enhanced Menu Bar Access with Raycast
 
-For an even more powerful menu bar experience, we recommend installing [Raycast](https://www.raycast.com) - a powerful productivity launcher for macOS. Raycast's "Search Menu Items" feature allows you to:
+For an even more powerful menu bar experience, we recommend installing [Raycast](https://www.raycast.com) - a powerful
+productivity launcher for macOS. Raycast's "Search Menu Items" feature allows you to:
 
 - 🔍 **Search Menu Bar Apps**: Quickly find and access any menu bar application
 - ⚡ **Keyboard-First Navigation**: Access AeroSpaceBar and other menu bar apps without using your mouse
@@ -214,6 +248,7 @@ For an even more powerful menu bar experience, we recommend installing [Raycast]
 - 🔧 **Custom Workflows**: Create shortcuts and workflows for your menu bar apps
 
 **How to use with AeroSpaceBar:**
+
 1. Install [Raycast](https://www.raycast.com) (free for personal use)
 2. Use `Cmd + Space` to open Raycast
 3. Type "Search Menu Items" or use the built-in menu bar search
@@ -227,21 +262,21 @@ This combination provides a seamless, keyboard-driven workflow for managing your
 
 The project is organized following Clean Architecture principles with comprehensive testing:
 
-#### Main Application (`AeroSpaceBar/`)
-- **Domain Layer**: Core business logic, entities, use cases, and gateway contracts
-- **Data Layer**: Repository implementations, data models, and network clients
-- **Presentation Layer**: MVVM ViewModels and SwiftUI Views
-- **Resources**: Localization files, assets, and app configuration
+#### Source Code (`Sources/`)
 
-#### Unit Tests (`AeroSpaceBarTests/`)
-- **DataTests**: Repository, model, and network client tests
-- **DomainTests**: Entity, gateway, and use case tests  
+- **Domain Layer**: Core business logic, entities, use cases, and gateway contracts with no external dependencies
+- **Service Layer**: Repository implementations, data models, network clients, and AeroSpace CLI integration
+- **Presentation Layer**: MVVM ViewModels using Combine, SwiftUI Views, and app resources
 
-#### UI Tests (`AeroSpaceBarUITests/`)
-- **FlowsUITests**: End-to-end user journey scenarios
-- **PresentationUITests**: User interface interaction tests
+#### Test Suite (`Tests/`)
+
+- **DomainTests**: Entity, gateway, and use case tests for business logic validation
+- **ServiceTests**: Repository, network client, and data layer integration tests
+- **PresentationTests**: ViewModel and presentation layer unit tests
+- **PresentationUITests**: End-to-end user interface and interaction tests
 
 #### Development Tools
+
 - **VS Code**: Development environment configuration
 - **Gradle**: Build system and task automation
 - **Swift Package Manager**: Dependency management for Swift packages
@@ -259,18 +294,37 @@ The project is organized following Clean Architecture principles with comprehens
 
 AeroSpaceBar supports **dual build systems** for maximum flexibility:
 
-#### Gradle Commands
+#### Gradle Commands (Recommended)
 
-Use the provided Gradle build system for common developer tasks:
+Use the provided Gradle build system for all development tasks:
 
 ```bash
-# Show available tasks
+# Show all available tasks
 ./gradlew showHelp
+
+# Build commands
+./gradlew build        # Build all variants (Debug and Release)
+./gradlew buildDebug   # Build Debug configuration only
+./gradlew buildRelease # Build Release configuration only
+./gradlew run          # Build and run the application
+./gradlew clean        # Clean build artifacts
+
+# Code quality
+./gradlew check        # Run format + lint checks
+./gradlew lintFix      # Auto-fix linting issues
+./gradlew format       # Format code with SwiftFormat
+./gradlew lint         # Lint code with SwiftLint
+
+# Testing
+./gradlew test         # Run all tests
+
+# All-in-one
+./gradlew all          # Run clean + check + build
 ```
 
-#### Xcode Commands
+#### Xcode Commands (Alternative)
 
-Traditional Xcode build commands still work:
+Traditional Xcode build commands are also supported:
 
 ```bash
 # Build project
@@ -287,18 +341,19 @@ xcodebuild -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -configuration D
 
 The project uses modern Swift Package Manager dependencies:
 
-- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML configuration file parsing
-- **[R.swift](https://github.com/mac-cain13/R.swift)**: Type-safe resource management for images, fonts, and other assets
+- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML configuration file parsing for AeroSpace configuration files
+- **AppIntents.framework**: Native macOS framework for app integration and metadata extraction
+- **Standard macOS Frameworks**: SwiftUI, Combine, AppKit for native system integration
 
 ### Linting & Formatting
 
-- SwiftFormat configuration: `.swiftformat`
-- SwiftLint configuration: `.swiftlint.yml`
+- SwiftFormat configuration: `.swiftformat` (120 char line limit, 4-space indentation)
+- SwiftLint configuration: `.swiftlint.yml` (extensive opt-in rules, analyzer rules)
 - Run locally:
-  - `./gradlew format` to format the codebase
-  - `./gradlew lint` to report style issues
-  - `./gradlew lintFix` to auto-fix fixable issues
-  - `./gradlew check` to run both format and lint
+    - `./gradlew format` to format the codebase
+    - `./gradlew lint` to report style issues
+    - `./gradlew lintFix` to auto-fix fixable issues
+    - `./gradlew check` to run both format and lint
 - **Note**: SwiftFormat and SwiftLint configurations are aligned to prevent conflicts
 
 ## 🧪 Testing
@@ -306,21 +361,29 @@ The project uses modern Swift Package Manager dependencies:
 ### Running Tests
 
 #### Using Gradle (Recommended)
+
 ```bash
 # Run all tests
 ./gradlew test
 
-# Run specific test target
-./gradlew test -PtestTarget=AeroSpaceBarTests
+# Run specific test targets
+./gradlew test -PtestTarget=DomainTests
+./gradlew test -PtestTarget=ServiceTests
+./gradlew test -PtestTarget=PresentationTests
+./gradlew test -PtestTarget=PresentationUITests
 ```
 
 #### Using Xcode
+
 ```bash
 # Run all tests
 xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar
 
-# Run specific test target
-xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -only-testing:AeroSpaceBarTests
+# Run specific test targets
+xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -only-testing:DomainTests
+xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -only-testing:ServiceTests
+xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -only-testing:PresentationTests
+xcodebuild test -project AeroSpaceBar.xcodeproj -scheme AeroSpaceBar -only-testing:PresentationUITests
 ```
 
 ### Test Structure
@@ -343,7 +406,7 @@ We welcome contributions! Please follow these guidelines:
 3. **Add tests** for new functionality
 4. **Ensure all tests pass**
    ```bash
-   ./gradlew check test
+   ./gradlew all
    ```
 5. **Submit a pull request**
 
@@ -364,9 +427,11 @@ We welcome contributions! Please follow these guidelines:
 
 ## 📝 License
 
-This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE](LICENSE) file for
+details.
 
 The AGPL-3.0 license ensures that:
+
 - All derivative works must remain open source
 - Network use triggers source code distribution requirements
 - Patent protection is included
@@ -375,12 +440,13 @@ The AGPL-3.0 license ensures that:
 ## 🙏 Acknowledgments
 
 - **[AeroSpace](https://github.com/nikitabobko/aerospace)**: The amazing window manager that makes this possible
-- **[barik](https://github.com/mocki-toki/barik)**: A lightweight macOS menu bar replacement with yabai and AeroSpace support
-- **[Clean Architecture MVVM](https://github.com/kudoleh/iOS-Clean-Architecture-MVVM)**: Architecture inspiration and guidelines
+- **[barik](https://github.com/mocki-toki/barik)**: A lightweight macOS menu bar replacement with yabai and AeroSpace
+  support
+- **[Clean Architecture MVVM](https://github.com/kudoleh/iOS-Clean-Architecture-MVVM)**: Architecture inspiration and
+  guidelines
 - **[SwiftUI](https://developer.apple.com/xcode/swiftui/)**: Modern UI framework from Apple
 - **[Combine](https://developer.apple.com/documentation/combine)**: Reactive programming framework
-- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML parsing library
-- **[R.swift](https://github.com/mac-cain13/R.swift)**: Type-safe resource management
+- **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML parsing library for AeroSpace configuration files
 
 ## 📞 Support
 

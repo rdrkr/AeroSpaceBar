@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
@@ -14,37 +14,105 @@ let package = Package(
         .executable(
             name: "AeroSpaceBar",
             targets: ["AeroSpaceBar"]
+        ),
+        .library(
+            name: "Domain",
+            targets: ["Domain"]
+        ),
+        .library(
+            name: "Service",
+            targets: ["Service"]
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.6.0"),
-        .package(url: "https://github.com/mac-cain13/R.swift.git", from: "7.0.0")
+        .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.6.0")
     ],
     targets: [
-        // MARK: - Main App
-
         .executableTarget(
             name: "AeroSpaceBar",
             dependencies: [
-                "TOMLKit",
-                .product(name: "RswiftLibrary", package: "R.swift")
+                .target(name: "Service")
             ],
-            path: "AeroSpaceBar",
-            plugins: [.plugin(name: "RswiftGeneratePublicResources", package: "R.swift")]
+            path: "Sources/Presentation",
+            exclude: [
+                "AeroSpaceBar.entitlements",
+                "AppIcon.icon",
+                "Info.plist"
+            ],
+            resources: [
+                .process("Resources/Assets.xcassets"),
+                .process("Resources/Localizable.xcstrings")
+            ],
+            swiftSettings: [
+                .treatAllWarnings(as: .error)
+                // .strictMemorySafety()
+            ]
         ),
-
-        // MARK: - Test Targets
-
+        .target(
+            name: "Domain",
+            dependencies: [
+            ],
+            path: "Sources/Domain",
+            swiftSettings: [
+                .treatAllWarnings(as: .error)
+                // .strictMemorySafety()
+            ]
+        ),
+        .target(
+            name: "Service",
+            dependencies: [
+                .target(name: "Domain"),
+                .product(name: "TOMLKit", package: "TOMLKit")
+            ],
+            path: "Sources/Service",
+            swiftSettings: [
+                .treatAllWarnings(as: .error)
+                // .strictMemorySafety()
+            ]
+        ),
         .testTarget(
             name: "AeroSpaceBarUITests",
-            dependencies: ["AeroSpaceBar"],
-            path: "AeroSpaceBarUITests"
+            dependencies: [
+                .target(name: "AeroSpaceBar")
+            ],
+            path: "Tests/PresentationUITests",
+            swiftSettings: [
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ]
         ),
-
         .testTarget(
             name: "AeroSpaceBarTests",
-            dependencies: ["AeroSpaceBar"],
-            path: "AeroSpaceBarTests"
+            dependencies: [
+                .target(name: "AeroSpaceBar")
+            ],
+            path: "Tests/PresentationTests",
+            swiftSettings: [
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ]
+        ),
+        .testTarget(
+            name: "DomainTests",
+            dependencies: [
+                .target(name: "Domain")
+            ],
+            path: "Tests/DomainTests",
+            swiftSettings: [
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ]
+        ),
+        .testTarget(
+            name: "ServiceTests",
+            dependencies: [
+                .target(name: "Service")
+            ],
+            path: "Tests/ServiceTests",
+            swiftSettings: [
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ]
         )
     ]
 )
