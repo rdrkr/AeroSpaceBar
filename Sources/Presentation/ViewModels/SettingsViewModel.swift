@@ -507,19 +507,17 @@ class SettingsViewModel: ObservableObject {
     /// Navigates to a specific page and updates history.
     /// - Parameter page: The page to navigate to
     func navigateTo(_ page: AnyNavigationPage) {
-        if selectedPage != page {
-            // Add current page to history before navigating
-            if navigationHistory.last?.id != selectedPage.id {
-                navigationHistory.append(selectedPage)
-            }
-            // Clear forward history when navigating to a new page
-            forwardHistory.removeAll()
-
-            // Set flag to prevent adding to history during programmatic change
-            isNavigatingProgrammatically = true
-            selectedPage = page
-            isNavigatingProgrammatically = false
+        // Add current page to history before navigating
+        if navigationHistory.last?.id != selectedPage.id {
+            navigationHistory.append(selectedPage)
         }
+        // Clear forward history when navigating to a new page
+        forwardHistory.removeAll()
+
+        // Set flag to prevent adding to history during programmatic change
+        isNavigatingProgrammatically = true
+        selectedPage = page
+        isNavigatingProgrammatically = false
     }
 
     /// Navigates backward to the previous page in history.

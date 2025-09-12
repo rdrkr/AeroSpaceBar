@@ -7,15 +7,18 @@ struct GroupSettingsListRowView: View {
     let groupId: Int
     let onRegisterDynamicSubPage: (AnyNavigationPage) -> Void
     let onNavigateTo: (AnyNavigationPage) -> Void
-    let onDelete: () -> Void
+    let onDelete: (AnyNavigationPage) -> Void
+
+    @State var groupPage: AnyNavigationPage?
 
     var body: some View {
         Button(
             action: {
                 // Register and navigate to the group page
-                let groupPage = AnyNavigationPage(GroupNavigationPage(index: groupId))
-                onRegisterDynamicSubPage(groupPage)
-                onNavigateTo(groupPage)
+                if let page = groupPage {
+                    onRegisterDynamicSubPage(page)
+                    onNavigateTo(page)
+                }
             },
             label: {
                 HStack {
@@ -30,11 +33,18 @@ struct GroupSettingsListRowView: View {
         .deleteDisabled(true)
         .buttonStyle(GroupSettingsListRowButtonStyle())
         .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
-                onDelete()
-            } label: {
-                Label(LocalizedStringResource("Delete"), systemImage: "trash")
+            if groupId > 0 {
+                Button(role: .destructive) {
+                    if let page = groupPage {
+                        onDelete(page)
+                    }
+                } label: {
+                    Label(LocalizedStringResource("Delete"), systemImage: "trash")
+                }
             }
+        }
+        .onAppear {
+            groupPage = AnyNavigationPage(GroupNavigationPage(index: groupId))
         }
     }
 }

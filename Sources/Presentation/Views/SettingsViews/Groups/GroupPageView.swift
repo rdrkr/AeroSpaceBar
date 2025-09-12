@@ -4,12 +4,25 @@ import Domain
 import SwiftUI
 
 /// A detailed view for configuring a specific group.
+///
+/// This view provides a comprehensive interface for customizing group settings including:
+/// - Application range selection with constraints
+/// - Background appearance (color, opacity, blur)
+/// - Border styling (color, opacity, width)
+/// - Geometry configuration (corner radius)
+/// - Group deletion (for non-primary groups)
 struct GroupPageView: View {
+    /// The settings view model for navigation management.
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
+
+    /// The groups view model for group configuration management.
     @EnvironmentObject private var groupsViewModel: GroupsViewModel
 
+    /// The unique identifier of the group being configured.
     let id: Int
 
+    /// The current group configuration for this group ID.
+    /// Returns a default instance if the ID is out of bounds.
     private var group: GroupConfiguration {
         guard id >= 0, id < groupsViewModel.groupsConfiguration.count else {
             // Return a default group if index is out of bounds
@@ -20,30 +33,29 @@ struct GroupPageView: View {
     }
 
     /// Creates a binding to a specific property of the group configuration.
-    /// This generic helper eliminates the need for verbose GroupConfiguration recreations.
+    /// This is a convenience wrapper around the view model's binding method.
     /// - Parameter keyPath: The writable key path to the property
     /// - Returns: A binding to the property that automatically updates the view model
     private func binding<T>(for keyPath: WritableKeyPath<GroupConfiguration, T>) -> Binding<T> {
-        Binding(
-            get: {
-                guard id >= 0, id < groupsViewModel.groupsConfiguration.count else {
-                    return GroupConfiguration.defaultInstance[keyPath: keyPath]
-                }
-
-                return groupsViewModel.groupsConfiguration[id][keyPath: keyPath]
-            },
-            set: { newValue in
-                guard id >= 0, id < groupsViewModel.groupsConfiguration.count else { return }
-
-                groupsViewModel.groupsConfiguration[id][keyPath: keyPath] = newValue
-            }
-        )
+        groupsViewModel.binding(for: id, keyPath: keyPath)
     }
 
+    /// The total number of menu bar applications currently available.
     private var totalApps: Int {
         groupsViewModel.menuBarApps.count
     }
 
+    /// The minimum start index for this group based on the previous group's constraints.
+    private var minimumStartIndex: Int {
+        groupsViewModel.minimumStartIndex(for: id)
+    }
+
+    /// The maximum end index for this group based on the next group's constraints.
+    private var maximumEndIndex: Int {
+        groupsViewModel.maximumEndIndex(for: id)
+    }
+
+    /// A binding to the group's end index, handling special cases like "all apps" indicator.
     private var endIndex: Binding<Int> {
         Binding(
             get: {
@@ -55,13 +67,16 @@ struct GroupPageView: View {
         )
     }
 
+    /// The main body of the group configuration view.
     var body: some View {
         Form {
             Section {
                 GroupAppRangePicker(
                     startIndex: binding(for: \.startIndex),
                     endIndex: endIndex,
-                    totalApps: totalApps
+                    totalApps: totalApps,
+                    minimumStartIndex: minimumStartIndex,
+                    maximumEndIndex: maximumEndIndex
                 )
             } header: {
                 Text(LocalizedStringResource("Application Range"))
@@ -164,7 +179,7 @@ struct GroupPageView: View {
         .navigationTitle("Group \(id + 1)")
     }
 
-    /// Delete this group and navigate back to the groups list
+    /// Deletes this group and navigates back to the groups list.
     private func deleteGroup() {
         // First navigate away to avoid state issues
         settingsViewModel.unregisterDynamicSubPage(withId: id)

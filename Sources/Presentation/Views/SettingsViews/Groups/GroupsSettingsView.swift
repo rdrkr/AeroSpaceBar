@@ -40,17 +40,17 @@ struct GroupsSettingsView: View {
             if groupsViewModel.showGroups {
                 Section {
                     List {
-                        ForEach(Array(groups.enumerated()), id: \.element.id) { index, _ in
+                        ForEach(Array(groups.enumerated()), id: \.element.id) { _, group in
                             GroupSettingsListRowView(
-                                groupId: index,
+                                groupId: group.id,
                                 onRegisterDynamicSubPage: { groupPage in
                                     settingsViewModel.registerDynamicSubPage(groupPage)
                                 },
                                 onNavigateTo: { groupPage in
                                     settingsViewModel.navigateTo(groupPage)
                                 },
-                                onDelete: {
-                                    deleteGroup(at: index)
+                                onDelete: { groupPage in
+                                    deleteGroup(at: groupPage.id)
                                 }
                             )
                         }

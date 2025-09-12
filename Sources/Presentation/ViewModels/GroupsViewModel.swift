@@ -100,6 +100,58 @@ final class GroupsViewModel: ObservableObject {
 
     // MARK: - Public Methods
 
+    /// Finds ranges of apps that are not assigned to any group.
+    /// - Parameter totalApps: The total number of menu bar apps
+    /// - Returns: Array of ranges representing unassigned app positions
+    private func findUnassignedAppRanges(totalApps: Int) -> [Range<Int>] {
+        guard totalApps > 0, !groupsConfiguration.isEmpty else { return [] }
+
+        // Create a boolean array to track which apps are assigned (1-based indexing)
+        var assigned = Array(repeating: false, count: totalApps + 1)
+
+        // Mark assigned apps for each group
+        for group in groupsConfiguration {
+            let startIdx = group.startIndex
+            let endIdx = group.getEndIndex(menuBarAppsCount: totalApps)
+
+            for appIndex in startIdx ... endIdx {
+                if appIndex >= 1, appIndex <= totalApps {
+                    assigned[appIndex] = true
+                }
+            }
+        }
+
+        // Find unassigned ranges
+        var ranges: [Range<Int>] = []
+        var rangeStart: Int?
+
+        for appIndex in 1 ... totalApps {
+            if !assigned[appIndex] {
+                if rangeStart == nil {
+                    rangeStart = appIndex
+                }
+            } else if let start = rangeStart {
+                ranges.append(start ..< appIndex)
+                rangeStart = nil
+            }
+        }
+
+        // Handle case where unassigned range extends to the end
+        if let start = rangeStart {
+            ranges.append(start ..< (totalApps + 1))
+        }
+
+        return ranges
+    }
+
+    /// Ensures groups are sorted by startIndex and have correct sequential IDs
+    private func normalizeGroupsConfiguration() {
+        groupsConfiguration.sort { $0.startIndex < $1.startIndex }
+        for index in 0 ..< groupsConfiguration.count {
+            groupsConfiguration[index].id = index
+        }
+    }
+
     /// Adds a new group by splitting existing groups to make room.
     /// Group 1 always gives up its last app, other groups shift left, new group takes the max position.
     /// - Returns: True if a group was added, false if no space is available
@@ -108,51 +160,47 @@ final class GroupsViewModel: ObservableObject {
         let totalApps = menuBarApps.count
         guard totalApps > 0, groupsConfiguration.count < totalApps else { return false }
 
-        // If no groups exist, create the first group covering all apps
-        if groupsConfiguration.isEmpty {
+        // Find first unassigned app
+        let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
+
+        if let firstUnassignedRange = unassignedRanges.first {
+            // Priority 1: Fill gaps with unassigned apps
+            let targetAppIndex = firstUnassignedRange.lowerBound
+
+            // Create new group
             var newGroup = GroupConfiguration.defaultInstance
-            newGroup.id = 0
-            newGroup.startIndex = 1
-            newGroup.endIndex = totalApps
+            newGroup.startIndex = targetAppIndex
+            newGroup.endIndex = targetAppIndex
+
+            // Add to array and normalize
             groupsConfiguration.append(newGroup)
+            normalizeGroupsConfiguration()
+
+            return true
+        } else {
+            // Priority 2: Fallback - take app from first group (original behavior)
+            guard !groupsConfiguration.isEmpty else { return false }
+
+            // Sort to ensure we get the rightmost group (lowest startIndex)
+            normalizeGroupsConfiguration()
+            let rightmostGroup = groupsConfiguration[0]
+            let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
+            guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return false }
+
+            // Reduce rightmost group by 1 app
+            groupsConfiguration[0].endIndex = rightmostGroupEndIndex - 1
+
+            // Create new group with the taken app
+            var newGroup = GroupConfiguration.defaultInstance
+            newGroup.startIndex = rightmostGroupEndIndex
+            newGroup.endIndex = rightmostGroupEndIndex
+
+            // Add to array and normalize
+            groupsConfiguration.append(newGroup)
+            normalizeGroupsConfiguration()
+
             return true
         }
-
-        // Ensure Group 1 has at least 2 apps to give up one
-        let firstGroup = groupsConfiguration[0]
-        let firstGroupEndIndex = firstGroup.getEndIndex(menuBarAppsCount: totalApps)
-        guard firstGroupEndIndex > firstGroup.startIndex else { return false }
-
-        // Create a new configuration array
-        var newGroups: [GroupConfiguration] = []
-
-        // Step 1: Update Group 1 - reduce its end index by 1
-        var updatedFirstGroup = firstGroup
-        updatedFirstGroup.endIndex = firstGroupEndIndex - 1
-        newGroups.append(updatedFirstGroup)
-
-        // Step 2: Shift all other existing groups left by 1 position
-        for groupIndex in 1 ..< groupsConfiguration.count {
-            var existingGroup = groupsConfiguration[groupIndex]
-
-            existingGroup.startIndex -= 1
-            if existingGroup.endIndex != -1 {
-                existingGroup.endIndex -= 1
-            }
-
-            newGroups.append(existingGroup)
-        }
-
-        // Step 3: Add the new group at the max position
-        var newGroup = GroupConfiguration.defaultInstance
-        newGroup.id = groupsConfiguration.count
-        newGroup.startIndex = totalApps
-        newGroup.endIndex = totalApps
-        newGroups.append(newGroup)
-
-        // Replace the entire configuration
-        groupsConfiguration = newGroups
-        return true
     }
 
     /// Removes a group at the specified id.
@@ -161,6 +209,9 @@ final class GroupsViewModel: ObservableObject {
         groupsConfiguration.removeAll { group in
             group.id == id
         }
+
+        // Normalize after removal
+        normalizeGroupsConfiguration()
     }
 
     /// Resets the group configuration to default values from ConfigurationDefaults.
@@ -177,6 +228,63 @@ final class GroupsViewModel: ObservableObject {
     /// - Returns: True if more groups can be added, false otherwise
     func canAddMoreGroups() -> Bool {
         groupsConfiguration.count < menuBarApps.count && !menuBarApps.isEmpty
+    }
+
+    /// Calculates the minimum start index for a group based on the previous group's end index.
+    /// - Parameter groupId: The ID of the group to calculate the minimum start index for
+    /// - Returns: The minimum allowed start index for the specified group
+    func minimumStartIndex(for groupId: Int) -> Int {
+        // For the first group (id = 0), minimum start index is always 1
+        guard groupId > 0 else { return 1 }
+
+        // Find the previous group's end index
+        let previousGroupId = groupId - 1
+        guard previousGroupId < groupsConfiguration.count else { return 1 }
+
+        let previousGroup = groupsConfiguration[previousGroupId]
+        let previousEndIndex = previousGroup.getEndIndex(menuBarAppsCount: menuBarApps.count)
+
+        // This group must start at least one position after the previous group ends
+        return previousEndIndex + 1
+    }
+
+    /// Calculates the maximum end index for a group based on the next group's start index.
+    /// - Parameter groupId: The ID of the group to calculate the maximum end index for
+    /// - Returns: The maximum allowed end index for the specified group
+    func maximumEndIndex(for groupId: Int) -> Int {
+        // Find the next group's start index
+        let nextGroupId = groupId + 1
+        guard nextGroupId < groupsConfiguration.count else {
+            // No next group exists, so this group can extend to all apps
+            return menuBarApps.count
+        }
+
+        let nextGroup = groupsConfiguration[nextGroupId]
+
+        // This group must end at least one position before the next group starts
+        return nextGroup.startIndex - 1
+    }
+
+    /// Creates a binding to a specific property of a group configuration.
+    /// - Parameters:
+    ///   - groupId: The ID of the group to create a binding for
+    ///   - keyPath: The writable key path to the property
+    /// - Returns: A binding to the property that automatically updates the configuration
+    func binding<T>(for groupId: Int, keyPath: WritableKeyPath<GroupConfiguration, T>) -> Binding<T> {
+        Binding(
+            get: {
+                guard groupId >= 0, groupId < self.groupsConfiguration.count else {
+                    return GroupConfiguration.defaultInstance[keyPath: keyPath]
+                }
+
+                return self.groupsConfiguration[groupId][keyPath: keyPath]
+            },
+            set: { newValue in
+                guard groupId >= 0, groupId < self.groupsConfiguration.count else { return }
+
+                self.groupsConfiguration[groupId][keyPath: keyPath] = newValue
+            }
+        )
     }
 
     // MARK: - Private Helper Methods
