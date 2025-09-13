@@ -13,7 +13,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     private let wallpaperSubject = CurrentValueSubject<NSImage?, Never>(nil)
 
     /// Publisher that emits menu bar height updates.
-    private let menuBarHeightSubject = CurrentValueSubject<CGFloat, Never>(ConfigurationDefaults.menuBarHeight)
+    private let menuBarHeightSubject = CurrentValueSubject<Double, Never>(ConfigurationDefaults.menuBarHeight)
 
     /// Publisher that emits menu bar visibility updates.
     private let menuBarVisibilitySubject = CurrentValueSubject<Bool, Never>(true)
@@ -73,8 +73,8 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     }
 
     /// Publisher that emits menu bar height updates.
-    /// - Returns: A publisher that emits CGFloat values representing menu bar height changes.
-    public var menuBarHeightPublisher: AnyPublisher<CGFloat, Never> {
+    /// - Returns: A publisher that emits Double values representing menu bar height changes.
+    public var menuBarHeightPublisher: AnyPublisher<Double, Never> {
         menuBarHeightSubject.eraseToAnyPublisher()
     }
 

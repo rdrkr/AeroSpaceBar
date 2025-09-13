@@ -30,16 +30,26 @@
                             title: String(localized: LocalizedStringResource("Enable Spaces")),
                             description: String(
                                 localized: LocalizedStringResource(
-                                    "Show/hide the Spaces feature in the menu bar and settings"
+                                    "Show/hide the Spaces feature in the menu bar and settings."
                                 )
                             ),
                             isEnabled: $viewModel.enableSpaces
                         )
 
                         FeatureFlagToggle(
+                            title: String(localized: LocalizedStringResource("Enable Groups")),
+                            description: String(
+                                localized: LocalizedStringResource(
+                                    "Show/hide the Groups feature in the menu bar and settings."
+                                )
+                            ),
+                            isEnabled: $viewModel.enableGroups
+                        )
+
+                        FeatureFlagToggle(
                             title: String(localized: LocalizedStringResource("Enable Advanced Settings")),
                             description: String(
-                                localized: LocalizedStringResource("Show/hide the Advanced Settings section")
+                                localized: LocalizedStringResource("Show/hide the Advanced Settings section.")
                             ),
                             isEnabled: $viewModel.enableAdvancedSettings
                         )
@@ -47,25 +57,10 @@
                 }
                 .tag("developer-core-features-section")
 
-                Section(LocalizedStringResource("Experimental Features")) {
-                    VStack(alignment: .leading) {
-                        FeatureFlagToggle(
-                            title: String(localized: LocalizedStringResource("Enable Groups")),
-                            description: String(
-                                localized: LocalizedStringResource(
-                                    "Show/hide the Groups feature in the menu bar and settings"
-                                )
-                            ),
-                            isEnabled: $viewModel.enableGroups
-                        )
-                    }
-                }
-                .tag("developer-experimental-features-section")
-
                 Section(LocalizedStringResource("Actions")) {
                     SettingsDestructiveButton(
                         title: LocalizedStringResource("Reset to Defaults"),
-                        description: LocalizedStringResource("Reset all feature flags to their default values"),
+                        description: LocalizedStringResource("Reset all feature flags to their default values."),
                         action: {
                             Task {
                                 await viewModel.resetToDefaults()

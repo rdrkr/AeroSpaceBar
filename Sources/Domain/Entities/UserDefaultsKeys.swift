@@ -92,4 +92,28 @@ public enum UserDefaultsKeys: String, CaseIterable {
 
     /// The group configuration for organizing menu bar applications.
     case groupsConfiguration = "com.aerospacebar.preferences.ui.groupsConfiguration"
+
+    /// The groups appearance mode (per app, all groups, same as spaces).
+    case groupsAppearanceMode = "com.aerospacebar.preferences.ui.groupsAppearanceMode"
+
+    /// The global background tint color for all groups.
+    case groupsGlobalBackgroundTintColor = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundTintColor"
+
+    /// The global background opacity for all groups.
+    case groupsGlobalBackgroundOpacity = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundOpacity"
+
+    /// The global background blur radius for all groups.
+    case groupsGlobalBackgroundBlurRadius = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundBlurRadius"
+
+    /// The global border color for all groups.
+    case groupsGlobalBorderColor = "com.aerospacebar.preferences.ui.groupsGlobalBorderColor"
+
+    /// The global border opacity for all groups.
+    case groupsGlobalBorderOpacity = "com.aerospacebar.preferences.ui.groupsGlobalBorderOpacity"
+
+    /// The global border width for all groups.
+    case groupsGlobalBorderWidth = "com.aerospacebar.preferences.ui.groupsGlobalBorderWidth"
+
+    /// The global corner radius for all groups.
+    case groupsGlobalCornerRadius = "com.aerospacebar.preferences.ui.groupsGlobalCornerRadius"
 }

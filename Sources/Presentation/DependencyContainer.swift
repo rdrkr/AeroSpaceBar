@@ -78,6 +78,20 @@ final class DependencyContainer {
         setShowWindowTitlesUseCase: makeSetShowWindowTitlesUseCase(),
         getSpaceCornerRadiusUseCase: makeGetSpaceCornerRadiusUseCase(),
         setSpaceCornerRadiusUseCase: makeSetSpaceCornerRadiusUseCase(),
+        getGroupsGlobalBackgroundTintColorUseCase: makeGetGroupsGlobalBgTintColorUseCase(),
+        setGroupsGlobalBackgroundTintColorUseCase: makeSetGroupsGlobalBgTintColorUseCase(),
+        getGroupsGlobalBackgroundOpacityUseCase: makeGetGroupsGlobalBackgroundOpacityUseCase(),
+        setGroupsGlobalBackgroundOpacityUseCase: makeSetGroupsGlobalBackgroundOpacityUseCase(),
+        getGroupsGlobalBackgroundBlurRadiusUseCase: makeGetGroupsGlobalBgBlurRadiusUseCase(),
+        setGroupsGlobalBackgroundBlurRadiusUseCase: makeSetGroupsGlobalBgBlurRadiusUseCase(),
+        getGroupsGlobalBorderColorUseCase: makeGetGroupsGlobalBorderColorUseCase(),
+        setGroupsGlobalBorderColorUseCase: makeSetGroupsGlobalBorderColorUseCase(),
+        getGroupsGlobalBorderOpacityUseCase: makeGetGroupsGlobalBorderOpacityUseCase(),
+        setGroupsGlobalBorderOpacityUseCase: makeSetGroupsGlobalBorderOpacityUseCase(),
+        getGroupsGlobalBorderWidthUseCase: makeGetGroupsGlobalBorderWidthUseCase(),
+        setGroupsGlobalBorderWidthUseCase: makeSetGroupsGlobalBorderWidthUseCase(),
+        getGroupsGlobalCornerRadiusUseCase: makeGetGroupsGlobalCornerRadiusUseCase(),
+        setGroupsGlobalCornerRadiusUseCase: makeSetGroupsGlobalCornerRadiusUseCase(),
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         setAeroSpacePathUseCase: makeSetAeroSpaceCustomPathUseCase(),
@@ -131,7 +145,23 @@ final class DependencyContainer {
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getAnimationDurationUseCase: makeGetAnimationDurationUseCase(),
-        getWidgetSpacingUseCase: makeGetWidgetSpacingUseCase()
+        getWidgetSpacingUseCase: makeGetWidgetSpacingUseCase(),
+        getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
+        setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
+        getGroupsGlobalBackgroundTintColorUseCase: makeGetGroupsGlobalBgTintColorUseCase(),
+        getGroupsGlobalBackgroundOpacityUseCase: makeGetGroupsGlobalBackgroundOpacityUseCase(),
+        getGroupsGlobalBackgroundBlurRadiusUseCase: makeGetGroupsGlobalBgBlurRadiusUseCase(),
+        getGroupsGlobalBorderColorUseCase: makeGetGroupsGlobalBorderColorUseCase(),
+        getGroupsGlobalBorderOpacityUseCase: makeGetGroupsGlobalBorderOpacityUseCase(),
+        getGroupsGlobalBorderWidthUseCase: makeGetGroupsGlobalBorderWidthUseCase(),
+        getGroupsGlobalCornerRadiusUseCase: makeGetGroupsGlobalCornerRadiusUseCase(),
+        getSpaceBackgroundOpacityUseCase: makeGetSpaceBackgroundOpacityUseCase(),
+        getSpaceBackgroundBlurRadiusUseCase: makeGetSpaceBackgroundBlurRadiusUseCase(),
+        getSpaceBackgroundTintColorUseCase: makeGetSpaceBackgroundTintColorUseCase(),
+        getSpaceBorderTintColorUseCase: makeGetSpaceBorderTintColorUseCase(),
+        getSpaceBorderOpacityUseCase: makeGetSpaceBorderOpacityUseCase(),
+        getSpaceBorderWidthUseCase: makeGetSpaceBorderWidthUseCase(),
+        getSpaceCornerRadiusUseCase: makeGetSpaceCornerRadiusUseCase()
     )
 
     /// The feature flags gateway for managing development feature toggles.
@@ -298,6 +328,102 @@ final class DependencyContainer {
     /// - Returns: A new SetGroupsConfigurationUseCase instance
     func makeSetGroupsConfigurationUseCase() -> SetGroupsConfigurationUseCase {
         SetGroupsConfigurationUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsAppearanceModeUseCase instance.
+    /// - Returns: A new GetGroupsAppearanceModeUseCase instance
+    func makeGetGroupsAppearanceModeUseCase() -> GetGroupsAppearanceModeUseCase {
+        GetGroupsAppearanceModeUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsAppearanceModeUseCase instance.
+    /// - Returns: A new SetGroupsAppearanceModeUseCase instance
+    func makeSetGroupsAppearanceModeUseCase() -> SetGroupsAppearanceModeUseCase {
+        SetGroupsAppearanceModeUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBgTintColorUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBgTintColorUseCase instance
+    func makeGetGroupsGlobalBgTintColorUseCase() -> GetGroupsGlobalBgTintColorUseCase {
+        GetGroupsGlobalBgTintColorUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBgTintColorUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBgTintColorUseCase instance
+    func makeSetGroupsGlobalBgTintColorUseCase() -> SetGroupsGlobalBgTintColorUseCase {
+        SetGroupsGlobalBgTintColorUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBackgroundOpacityUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBackgroundOpacityUseCase instance
+    func makeGetGroupsGlobalBackgroundOpacityUseCase() -> GetGroupsGlobalBackgroundOpacityUseCase {
+        GetGroupsGlobalBackgroundOpacityUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBackgroundOpacityUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBackgroundOpacityUseCase instance
+    func makeSetGroupsGlobalBackgroundOpacityUseCase() -> SetGroupsGlobalBackgroundOpacityUseCase {
+        SetGroupsGlobalBackgroundOpacityUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBgBlurRadiusUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBgBlurRadiusUseCase instance
+    func makeGetGroupsGlobalBgBlurRadiusUseCase() -> GetGroupsGlobalBgBlurRadiusUseCase {
+        GetGroupsGlobalBgBlurRadiusUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBgBlurRadiusUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBgBlurRadiusUseCase instance
+    func makeSetGroupsGlobalBgBlurRadiusUseCase() -> SetGroupsGlobalBgBlurRadiusUseCase {
+        SetGroupsGlobalBgBlurRadiusUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBorderColorUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBorderColorUseCase instance
+    func makeGetGroupsGlobalBorderColorUseCase() -> GetGroupsGlobalBorderColorUseCase {
+        GetGroupsGlobalBorderColorUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBorderColorUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBorderColorUseCase instance
+    func makeSetGroupsGlobalBorderColorUseCase() -> SetGroupsGlobalBorderColorUseCase {
+        SetGroupsGlobalBorderColorUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBorderOpacityUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBorderOpacityUseCase instance
+    func makeGetGroupsGlobalBorderOpacityUseCase() -> GetGroupsGlobalBorderOpacityUseCase {
+        GetGroupsGlobalBorderOpacityUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBorderOpacityUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBorderOpacityUseCase instance
+    func makeSetGroupsGlobalBorderOpacityUseCase() -> SetGroupsGlobalBorderOpacityUseCase {
+        SetGroupsGlobalBorderOpacityUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalBorderWidthUseCase instance.
+    /// - Returns: A new GetGroupsGlobalBorderWidthUseCase instance
+    func makeGetGroupsGlobalBorderWidthUseCase() -> GetGroupsGlobalBorderWidthUseCase {
+        GetGroupsGlobalBorderWidthUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalBorderWidthUseCase instance.
+    /// - Returns: A new SetGroupsGlobalBorderWidthUseCase instance
+    func makeSetGroupsGlobalBorderWidthUseCase() -> SetGroupsGlobalBorderWidthUseCase {
+        SetGroupsGlobalBorderWidthUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGroupsGlobalCornerRadiusUseCase instance.
+    /// - Returns: A new GetGroupsGlobalCornerRadiusUseCase instance
+    func makeGetGroupsGlobalCornerRadiusUseCase() -> GetGroupsGlobalCornerRadiusUseCase {
+        GetGroupsGlobalCornerRadiusUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGroupsGlobalCornerRadiusUseCase instance.
+    /// - Returns: A new SetGroupsGlobalCornerRadiusUseCase instance
+    func makeSetGroupsGlobalCornerRadiusUseCase() -> SetGroupsGlobalCornerRadiusUseCase {
+        SetGroupsGlobalCornerRadiusUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - AeroSpace Use Cases

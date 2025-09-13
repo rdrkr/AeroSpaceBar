@@ -132,37 +132,37 @@ extension Color {
 // MARK: - Spacing System
 
 /// Spacing system providing consistent layout values.
-extension CGFloat {
+extension Double {
     // MARK: - Standard Spacing
 
     /// Extra small spacing (4pt) for tight layouts.
-    static let themeSpacingXS: CGFloat = 4
+    static let themeSpacingXS: Double = 4
 
     /// Small spacing (8pt) for compact layouts.
-    static let themeSpacingS: CGFloat = 8
+    static let themeSpacingS: Double = 8
 
     /// Medium spacing (16pt) for standard layouts.
-    static let themeSpacingM: CGFloat = 16
+    static let themeSpacingM: Double = 16
 
     /// Large spacing (24pt) for generous layouts.
-    static let themeSpacingL: CGFloat = 24
+    static let themeSpacingL: Double = 24
 
     /// Extra large spacing (32pt) for section separation.
-    static let themeSpacingXL: CGFloat = 32
+    static let themeSpacingXL: Double = 32
 
     // MARK: - Component Spacing
 
     /// Corner radius for space elements.
-    static let themeSpaceCornerRadius: CGFloat = 8.0
+    static let themeSpaceCornerRadius: Double = 8.0
 
     /// Corner radius for window elements.
-    static let themeWindowCornerRadius: CGFloat = 4.0
+    static let themeWindowCornerRadius: Double = 4.0
 
     /// Corner radius for card elements.
-    static let themeCardCornerRadius: CGFloat = 12.0
+    static let themeCardCornerRadius: Double = 12.0
 
     /// Fixed width for value display elements.
-    static let themeValueDisplayWidth: CGFloat = 34
+    static let themeValueDisplayWidth: Double = 34
 }
 
 // MARK: - Animation System

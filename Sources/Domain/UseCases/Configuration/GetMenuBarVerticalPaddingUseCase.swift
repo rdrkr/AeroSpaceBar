@@ -22,7 +22,7 @@ public final class GetMenuBarVerticalPaddingUseCase {
 
     /// Executes the use case to get the menu bar vertical padding setting as a publisher.
     /// - Returns: A publisher that emits menu bar vertical padding values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.menuBarVerticalPaddingPublisher
     }
 }

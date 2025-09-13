@@ -28,22 +28,22 @@ final class SpacesViewModel: ObservableObject {
     @Published var widgetState: WidgetState
 
     /// UI configuration properties.
-    @Published var menuBarHeight: CGFloat
-    @Published var menuBarVerticalPadding: CGFloat
-    @Published var menuBarHorizontalPadding: CGFloat
-    @Published var widgetSpacing: CGFloat
+    @Published var menuBarHeight: Double
+    @Published var menuBarVerticalPadding: Double
+    @Published var menuBarHorizontalPadding: Double
+    @Published var widgetSpacing: Double
     @Published var animationDuration: Double
-    @Published var windowIconSize: CGFloat
-    @Published var spaceCornerRadius: CGFloat
+    @Published var windowIconSize: Double
+    @Published var spaceCornerRadius: Double
     @Published var showWindowTitles: Bool
     @Published var focusWindowOnClick: Bool
     @Published var spaceBackgroundOpacity: Double
-    @Published var spaceBackgroundBlurRadius: CGFloat
+    @Published var spaceBackgroundBlurRadius: Double
     @Published var spaceBackgroundTintColor: Color
     @Published var spaceForegroundColor: Color
     @Published var spaceBorderTintColor: Color
     @Published var spaceBorderOpacity: Double
-    @Published var spaceBorderWidth: CGFloat
+    @Published var spaceBorderWidth: Double
 
     /// Whether the globe key is currently being held.
     @Published var isGlobeKeyPressed: Bool = false

@@ -21,7 +21,7 @@ public final class SetSpaceCornerRadiusUseCase {
 
     /// Executes the use case to set the space corner radius.
     /// - Parameter value: The space corner radius in points
-    public func execute(_ value: CGFloat) async {
+    public func execute(_ value: Double) async {
         await configurationGateway.setSpaceCornerRadius(value)
     }
 }

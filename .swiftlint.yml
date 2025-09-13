@@ -11,6 +11,7 @@ disabled_rules:
   - vertical_whitespace  # We'll let SwiftFormat handle this
   - opening_brace  # We'll let SwiftFormat handle brace spacing
   - todo
+  - identifier_name
 
 # Enable specific rules
 opt_in_rules:

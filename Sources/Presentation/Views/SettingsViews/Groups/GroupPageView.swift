@@ -82,92 +82,94 @@ struct GroupPageView: View {
                 Text(LocalizedStringResource("Application Range"))
             } footer: {
                 Text(LocalizedStringResource(
-                    "The group range of applications included in this group, from right to left"
+                    "The group range of applications included in this group, from right to left."
                 ))
             }
 
-            Section(LocalizedStringResource("Group Background")) {
-                // Background Tint Color
-                SettingsColorPicker(
-                    title: LocalizedStringResource("Tint Color"),
-                    description: LocalizedStringResource("Choose the background tint color for this group"),
-                    selectedColor: binding(for: \.backgroundTintColor),
-                    supportsOpacity: false
-                )
+            if groupsViewModel.groupsAppearanceMode == .perApp {
+                Section(LocalizedStringResource("Group Background")) {
+                    // Background Tint Color
+                    SettingsColorPicker(
+                        title: LocalizedStringResource("Tint Color"),
+                        description: LocalizedStringResource("Choose the background tint color for this group"),
+                        selectedColor: binding(for: \.backgroundTintColor),
+                        supportsOpacity: false
+                    )
 
-                // Background Opacity
-                SettingsSlider(
-                    value: binding(for: \.backgroundOpacity),
-                    in: 0.0 ... 1.0,
-                    defaultValue: GroupConfiguration.defaultInstance.backgroundOpacity,
-                    stickiness: 0.05,
-                    label: LocalizedStringResource("Opacity"),
-                    helpText: LocalizedStringResource("Adjust the background opacity of this group"),
-                    displayAsPercentage: true
-                )
+                    // Background Opacity
+                    SettingsSlider(
+                        value: binding(for: \.backgroundOpacity),
+                        in: 0.0 ... 1.0,
+                        defaultValue: GroupConfiguration.defaultInstance.backgroundOpacity,
+                        stickiness: 0.05,
+                        label: LocalizedStringResource("Opacity"),
+                        helpText: LocalizedStringResource("Adjust the background opacity of this group"),
+                        displayAsPercentage: true
+                    )
 
-                // Background Blur Radius
-                SettingsSlider(
-                    value: binding(for: \.backgroundBlurRadius),
-                    in: 0.0 ... 10.0,
-                    defaultValue: GroupConfiguration.defaultInstance.backgroundBlurRadius,
-                    stickiness: 0.5,
-                    label: LocalizedStringResource("Blur"),
-                    helpText: LocalizedStringResource("Adjust the background blur radius of this group"),
-                    displayAsPoints: true
-                )
-            }
+                    // Background Blur Radius
+                    SettingsSlider(
+                        value: binding(for: \.backgroundBlurRadius),
+                        in: 0.0 ... 10.0,
+                        defaultValue: GroupConfiguration.defaultInstance.backgroundBlurRadius,
+                        stickiness: 0.5,
+                        label: LocalizedStringResource("Blur"),
+                        helpText: LocalizedStringResource("Adjust the background blur radius of this group"),
+                        displayAsPoints: true
+                    )
+                }
 
-            Section(LocalizedStringResource("Group Border")) {
-                // Border Color
-                SettingsColorPicker(
-                    title: LocalizedStringResource("Tint Color"),
-                    description: LocalizedStringResource("Choose the border tint color for this group"),
-                    selectedColor: binding(for: \.borderColor),
-                    supportsOpacity: false
-                )
+                Section(LocalizedStringResource("Group Border")) {
+                    // Border Color
+                    SettingsColorPicker(
+                        title: LocalizedStringResource("Tint Color"),
+                        description: LocalizedStringResource("Choose the border tint color for this group"),
+                        selectedColor: binding(for: \.borderColor),
+                        supportsOpacity: false
+                    )
 
-                // Border Opacity
-                SettingsSlider(
-                    value: binding(for: \.borderOpacity),
-                    in: 0.0 ... 1.0,
-                    defaultValue: GroupConfiguration.defaultInstance.borderOpacity,
-                    stickiness: 0.05,
-                    label: LocalizedStringResource("Opacity"),
-                    helpText: LocalizedStringResource("Adjust the border opacity of this group"),
-                    displayAsPercentage: true
-                )
+                    // Border Opacity
+                    SettingsSlider(
+                        value: binding(for: \.borderOpacity),
+                        in: 0.0 ... 1.0,
+                        defaultValue: GroupConfiguration.defaultInstance.borderOpacity,
+                        stickiness: 0.05,
+                        label: LocalizedStringResource("Opacity"),
+                        helpText: LocalizedStringResource("Adjust the border opacity of this group"),
+                        displayAsPercentage: true
+                    )
 
-                // Border Width
-                SettingsSlider(
-                    value: binding(for: \.borderWidth),
-                    in: 0.0 ... 5.0,
-                    defaultValue: GroupConfiguration.defaultInstance.borderWidth,
-                    stickiness: 0.25,
-                    label: LocalizedStringResource("Width"),
-                    helpText: LocalizedStringResource("Adjust the border width of this group"),
-                    displayAsPoints: true
-                )
-            }
+                    // Border Width
+                    SettingsSlider(
+                        value: binding(for: \.borderWidth),
+                        in: 0.0 ... 5.0,
+                        defaultValue: GroupConfiguration.defaultInstance.borderWidth,
+                        stickiness: 0.25,
+                        label: LocalizedStringResource("Width"),
+                        helpText: LocalizedStringResource("Adjust the border width of this group"),
+                        displayAsPoints: true
+                    )
+                }
 
-            Section(LocalizedStringResource("Group Geometry")) {
-                // Corner Radius
-                SettingsSlider(
-                    value: binding(for: \.cornerRadius),
-                    in: 0.0 ... GroupConfiguration.defaultInstance.cornerRadius,
-                    defaultValue: GroupConfiguration.defaultInstance.cornerRadius,
-                    stickiness: 1.0,
-                    label: LocalizedStringResource("Corner Radius"),
-                    helpText: LocalizedStringResource("Adjust the corner radius of this group"),
-                    displayAsPercentage: true
-                )
+                Section(LocalizedStringResource("Group Geometry")) {
+                    // Corner Radius
+                    SettingsSlider(
+                        value: binding(for: \.cornerRadius),
+                        in: 0.0 ... GroupConfiguration.defaultInstance.cornerRadius,
+                        defaultValue: GroupConfiguration.defaultInstance.cornerRadius,
+                        stickiness: 1.0,
+                        label: LocalizedStringResource("Corner Radius"),
+                        helpText: LocalizedStringResource("Adjust the corner radius of this group"),
+                        displayAsPercentage: true
+                    )
+                }
             }
 
             if id != 0 {
                 Section(LocalizedStringResource("Delete")) {
                     SettingsDestructiveButton(
                         title: LocalizedStringResource("Delete Group"),
-                        description: LocalizedStringResource("Delete this group and its configuration"),
+                        description: LocalizedStringResource("Delete this group and its configuration."),
                         action: deleteGroup
                     )
                     .tag("group-page-delete-group-button")

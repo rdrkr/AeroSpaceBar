@@ -23,7 +23,7 @@ struct GroupAppRangePicker: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(LocalizedStringResource("Range"))
-                Text("Select which menu bar applications to include (right to left)")
+                Text("Select which menu bar applications to include (right to left).")
                     .secondaryText()
             }
 

@@ -38,22 +38,22 @@ struct SpacesView: View {
     }
 
     /// Computed property for widget spacing
-    private var widgetSpacing: CGFloat {
+    private var widgetSpacing: Double {
         viewModel.widgetSpacing
     }
 
     /// Computed property for menu bar horizontal padding
-    private var menuBarHorizontalPadding: CGFloat {
+    private var menuBarHorizontalPadding: Double {
         viewModel.menuBarHorizontalPadding
     }
 
     /// Computed property for menu bar height
-    private var menuBarHeight: CGFloat {
+    private var menuBarHeight: Double {
         viewModel.menuBarHeight
     }
 
     /// Computed property for window corner radius
-    private var cornerRadius: CGFloat {
+    private var cornerRadius: Double {
         viewModel.spaceCornerRadius
     }
 

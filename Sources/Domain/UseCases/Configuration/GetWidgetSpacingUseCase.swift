@@ -22,7 +22,7 @@ public final class GetWidgetSpacingUseCase {
 
     /// Executes the use case to get the widget spacing setting as a publisher.
     /// - Returns: A publisher that emits widget spacing values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.widgetSpacingPublisher
     }
 }

@@ -11,15 +11,15 @@ struct WallpaperBackgroundView: View {
     let wallpaper: NSImage
 
     /// The horizontal padding for the menu bar
-    let menuBarHorizontalPadding: CGFloat
+    let menuBarHorizontalPadding: Double
 
     // MARK: - Computed Properties
 
-    private var screenWidth: CGFloat {
+    private var screenWidth: Double {
         wallpaper.size.width
     }
 
-    private var screenHeight: CGFloat {
+    private var screenHeight: Double {
         wallpaper.size.height
     }
 

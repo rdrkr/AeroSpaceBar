@@ -21,7 +21,7 @@ public final class SetWindowIconSizeUseCase {
 
     /// Executes the use case to set the window icon size.
     /// - Parameter value: The window icon size in points
-    public func execute(_ value: CGFloat) async {
+    public func execute(_ value: Double) async {
         await configurationGateway.setWindowIconSize(value)
     }
 }

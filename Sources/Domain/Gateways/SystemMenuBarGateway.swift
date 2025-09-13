@@ -18,7 +18,7 @@ public protocol SystemMenuBarGateway {
     var wallpaperPublisher: AnyPublisher<NSImage?, Never> { get }
 
     /// Publisher that emits menu bar height updates.
-    var menuBarHeightPublisher: AnyPublisher<CGFloat, Never> { get }
+    var menuBarHeightPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits system menu bar visibility changes.
     /// Emits `true` when the menu bar is visible, `false` when hidden.

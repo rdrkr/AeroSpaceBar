@@ -22,7 +22,7 @@ public final class GetSpaceCornerRadiusUseCase {
 
     /// Executes the use case to get the space corner radius setting as a publisher.
     /// - Returns: A publisher that emits space corner radius values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.spaceCornerRadiusPublisher
     }
 }

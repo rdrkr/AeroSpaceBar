@@ -21,7 +21,7 @@ public final class SetWidgetSpacingUseCase {
 
     /// Executes the use case to set the widget spacing.
     /// - Parameter value: The widget spacing in points
-    public func execute(_ value: CGFloat) async {
+    public func execute(_ value: Double) async {
         await configurationGateway.setWidgetSpacing(value)
     }
 }

@@ -69,7 +69,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         ConfigurationDefaults.spaceBackgroundOpacity
     )
 
-    private let spaceBackgroundBlurRadiusSubject = CurrentValueSubject<CGFloat, Never>(
+    private let spaceBackgroundBlurRadiusSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.spaceBackgroundBlurRadius
     )
 
@@ -89,19 +89,19 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         ConfigurationDefaults.spaceBorderOpacity
     )
 
-    private let spaceBorderWidthSubject = CurrentValueSubject<CGFloat, Never>(
+    private let spaceBorderWidthSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.spaceBorderWidth
     )
 
-    private let menuBarVerticalPaddingSubject = CurrentValueSubject<CGFloat, Never>(
+    private let menuBarVerticalPaddingSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.menuBarVerticalPadding
     )
 
-    private let menuBarHorizontalPaddingSubject = CurrentValueSubject<CGFloat, Never>(
+    private let menuBarHorizontalPaddingSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.menuBarHorizontalPadding
     )
 
-    private let widgetSpacingSubject = CurrentValueSubject<CGFloat, Never>(
+    private let widgetSpacingSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.widgetSpacing
     )
 
@@ -109,16 +109,48 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         ConfigurationDefaults.animationDuration
     )
 
-    private let windowIconSizeSubject = CurrentValueSubject<CGFloat, Never>(
+    private let windowIconSizeSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.windowIconSize
     )
 
-    private let spaceCornerRadiusSubject = CurrentValueSubject<CGFloat, Never>(
+    private let spaceCornerRadiusSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.spaceCornerRadius
     )
 
     private let groupsConfigurationSubject = CurrentValueSubject<[GroupConfiguration], Never>(
         ConfigurationDefaults.groupsConfiguration
+    )
+
+    private let groupsAppearanceModeSubject = CurrentValueSubject<GroupsAppearanceMode, Never>(
+        ConfigurationDefaults.groupsAppearanceMode
+    )
+
+    private let groupsGlobalBackgroundTintColorSubject = CurrentValueSubject<Color, Never>(
+        ConfigurationDefaults.groupsGlobalBackgroundTintColor
+    )
+
+    private let groupsGlobalBackgroundOpacitySubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.groupsGlobalBackgroundOpacity
+    )
+
+    private let groupsGlobalBgBlurRadiusSubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.groupsGlobalBackgroundBlurRadius
+    )
+
+    private let groupsGlobalBorderColorSubject = CurrentValueSubject<Color, Never>(
+        ConfigurationDefaults.groupsGlobalBorderColor
+    )
+
+    private let groupsGlobalBorderOpacitySubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.groupsGlobalBorderOpacity
+    )
+
+    private let groupsGlobalBorderWidthSubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.groupsGlobalBorderWidth
+    )
+
+    private let groupsGlobalCornerRadiusSubject = CurrentValueSubject<Double, Never>(
+        ConfigurationDefaults.groupsGlobalCornerRadius
     )
 
     // MARK: - Publishers
@@ -165,7 +197,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         spaceBackgroundOpacitySubject.eraseToAnyPublisher()
     }
 
-    public var spaceBackgroundBlurRadiusPublisher: AnyPublisher<CGFloat, Never> {
+    public var spaceBackgroundBlurRadiusPublisher: AnyPublisher<Double, Never> {
         spaceBackgroundBlurRadiusSubject.eraseToAnyPublisher()
     }
 
@@ -185,19 +217,19 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         spaceBorderOpacitySubject.eraseToAnyPublisher()
     }
 
-    public var spaceBorderWidthPublisher: AnyPublisher<CGFloat, Never> {
+    public var spaceBorderWidthPublisher: AnyPublisher<Double, Never> {
         spaceBorderWidthSubject.eraseToAnyPublisher()
     }
 
-    public var menuBarVerticalPaddingPublisher: AnyPublisher<CGFloat, Never> {
+    public var menuBarVerticalPaddingPublisher: AnyPublisher<Double, Never> {
         menuBarVerticalPaddingSubject.eraseToAnyPublisher()
     }
 
-    public var menuBarHorizontalPaddingPublisher: AnyPublisher<CGFloat, Never> {
+    public var menuBarHorizontalPaddingPublisher: AnyPublisher<Double, Never> {
         menuBarHorizontalPaddingSubject.eraseToAnyPublisher()
     }
 
-    public var widgetSpacingPublisher: AnyPublisher<CGFloat, Never> {
+    public var widgetSpacingPublisher: AnyPublisher<Double, Never> {
         widgetSpacingSubject.eraseToAnyPublisher()
     }
 
@@ -205,16 +237,48 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         animationDurationSubject.eraseToAnyPublisher()
     }
 
-    public var windowIconSizePublisher: AnyPublisher<CGFloat, Never> {
+    public var windowIconSizePublisher: AnyPublisher<Double, Never> {
         windowIconSizeSubject.eraseToAnyPublisher()
     }
 
-    public var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> {
+    public var spaceCornerRadiusPublisher: AnyPublisher<Double, Never> {
         spaceCornerRadiusSubject.eraseToAnyPublisher()
     }
 
     public var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> {
         groupsConfigurationSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> {
+        groupsAppearanceModeSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBackgroundTintColorPublisher: AnyPublisher<Color, Never> {
+        groupsGlobalBackgroundTintColorSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBackgroundOpacityPublisher: AnyPublisher<Double, Never> {
+        groupsGlobalBackgroundOpacitySubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBgBlurRadiusPublisher: AnyPublisher<Double, Never> {
+        groupsGlobalBgBlurRadiusSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBorderColorPublisher: AnyPublisher<Color, Never> {
+        groupsGlobalBorderColorSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBorderOpacityPublisher: AnyPublisher<Double, Never> {
+        groupsGlobalBorderOpacitySubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalBorderWidthPublisher: AnyPublisher<Double, Never> {
+        groupsGlobalBorderWidthSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsGlobalCornerRadiusPublisher: AnyPublisher<Double, Never> {
+        groupsGlobalCornerRadiusSubject.eraseToAnyPublisher()
     }
 
     /// Initializer for the configuration gateway.
@@ -252,7 +316,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         spaceBackgroundOpacitySubject.send(spaceBackgroundOpacity)
 
         let spaceBackgroundBlurRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue) as? CGFloat
+            .object(forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue) as? Double
             ?? spaceBackgroundBlurRadiusSubject.value
         spaceBackgroundBlurRadiusSubject.send(spaceBackgroundBlurRadius)
 
@@ -280,7 +344,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         spaceBorderOpacitySubject.send(spaceBorderOpacity)
 
         let spaceBorderWidth = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBorderWidth.rawValue) as? CGFloat
+            .object(forKey: UserDefaultsKeys.spaceBorderWidth.rawValue) as? Double
             ?? spaceBorderWidthSubject.value
         spaceBorderWidthSubject.send(spaceBorderWidth)
 
@@ -317,16 +381,16 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     /// Load UI configuration settings from UserDefaults.
     private func loadUIConfigurationSettings() {
         let menuBarVerticalPadding = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.menuBarVerticalPadding.rawValue) as? CGFloat
+            .object(forKey: UserDefaultsKeys.menuBarVerticalPadding.rawValue) as? Double
             ?? menuBarVerticalPaddingSubject.value
         menuBarVerticalPaddingSubject.send(menuBarVerticalPadding)
 
         let menuBarHorizontalPadding = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.menuBarHorizontalPadding.rawValue) as? CGFloat
+            .object(forKey: UserDefaultsKeys.menuBarHorizontalPadding.rawValue) as? Double
             ?? menuBarHorizontalPaddingSubject.value
         menuBarHorizontalPaddingSubject.send(menuBarHorizontalPadding)
 
-        let widgetSpacing = UserDefaults.standard.object(forKey: UserDefaultsKeys.widgetSpacing.rawValue) as? CGFloat
+        let widgetSpacing = UserDefaults.standard.object(forKey: UserDefaultsKeys.widgetSpacing.rawValue) as? Double
             ?? widgetSpacingSubject.value
         widgetSpacingSubject.send(widgetSpacing)
 
@@ -335,17 +399,57 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
             ?? animationDurationSubject.value
         animationDurationSubject.send(animationDuration)
 
-        let windowIconSize = UserDefaults.standard.object(forKey: UserDefaultsKeys.windowIconSize.rawValue) as? CGFloat
+        let windowIconSize = UserDefaults.standard.object(forKey: UserDefaultsKeys.windowIconSize.rawValue) as? Double
             ?? windowIconSizeSubject.value
         windowIconSizeSubject.send(windowIconSize)
 
         let spaceCornerRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceCornerRadius.rawValue) as? CGFloat
+            .object(forKey: UserDefaultsKeys.spaceCornerRadius.rawValue) as? Double
             ?? spaceCornerRadiusSubject.value
         spaceCornerRadiusSubject.send(spaceCornerRadius)
 
         let groupsConfiguration = loadGroupsConfiguration() ?? groupsConfigurationSubject.value
         groupsConfigurationSubject.send(groupsConfiguration)
+
+        let groupsAppearanceMode = loadGroupsAppearanceMode() ?? groupsAppearanceModeSubject.value
+        groupsAppearanceModeSubject.send(groupsAppearanceMode)
+
+        let groupsGlobalBackgroundTintColor = loadColorFromUserDefaults(
+            key: UserDefaultsKeys.groupsGlobalBackgroundTintColor.rawValue,
+            defaultValue: groupsGlobalBackgroundTintColorSubject.value
+        )
+        groupsGlobalBackgroundTintColorSubject.send(groupsGlobalBackgroundTintColor)
+
+        let groupsGlobalBackgroundOpacity = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.groupsGlobalBackgroundOpacity.rawValue) as? Double
+            ?? groupsGlobalBackgroundOpacitySubject.value
+        groupsGlobalBackgroundOpacitySubject.send(groupsGlobalBackgroundOpacity)
+
+        let groupsGlobalBackgroundBlurRadius = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.groupsGlobalBackgroundBlurRadius.rawValue) as? Double
+            ?? groupsGlobalBgBlurRadiusSubject.value
+        groupsGlobalBgBlurRadiusSubject.send(groupsGlobalBackgroundBlurRadius)
+
+        let groupsGlobalBorderColor = loadColorFromUserDefaults(
+            key: UserDefaultsKeys.groupsGlobalBorderColor.rawValue,
+            defaultValue: groupsGlobalBorderColorSubject.value
+        )
+        groupsGlobalBorderColorSubject.send(groupsGlobalBorderColor)
+
+        let groupsGlobalBorderOpacity = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.groupsGlobalBorderOpacity.rawValue) as? Double
+            ?? groupsGlobalBorderOpacitySubject.value
+        groupsGlobalBorderOpacitySubject.send(groupsGlobalBorderOpacity)
+
+        let groupsGlobalBorderWidth = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.groupsGlobalBorderWidth.rawValue) as? Double
+            ?? groupsGlobalBorderWidthSubject.value
+        groupsGlobalBorderWidthSubject.send(groupsGlobalBorderWidth)
+
+        let groupsGlobalCornerRadius = UserDefaults.standard
+            .object(forKey: UserDefaultsKeys.groupsGlobalCornerRadius.rawValue) as? Double
+            ?? groupsGlobalCornerRadiusSubject.value
+        groupsGlobalCornerRadiusSubject.send(groupsGlobalCornerRadius)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
@@ -453,7 +557,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the space background blur radius and emits update.
-    public func setSpaceBackgroundBlurRadius(_ value: CGFloat) async {
+    public func setSpaceBackgroundBlurRadius(_ value: Double) async {
         if value == spaceBackgroundBlurRadiusSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue)
@@ -493,7 +597,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the space border width and emits update.
-    public func setSpaceBorderWidth(_ value: CGFloat) async {
+    public func setSpaceBorderWidth(_ value: Double) async {
         if value == spaceBorderWidthSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBorderWidth.rawValue)
@@ -501,7 +605,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the vertical padding for the menu bar interface in points.
-    public func setMenuBarVerticalPadding(_ value: CGFloat) async {
+    public func setMenuBarVerticalPadding(_ value: Double) async {
         if value == menuBarVerticalPaddingSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.menuBarVerticalPadding.rawValue)
@@ -509,7 +613,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the horizontal padding for the menu bar interface in points.
-    public func setMenuBarHorizontalPadding(_ value: CGFloat) async {
+    public func setMenuBarHorizontalPadding(_ value: Double) async {
         if value == menuBarHorizontalPaddingSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.menuBarHorizontalPadding.rawValue)
@@ -517,7 +621,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the spacing between widgets in the menu bar in points.
-    public func setWidgetSpacing(_ value: CGFloat) async {
+    public func setWidgetSpacing(_ value: Double) async {
         if value == widgetSpacingSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.widgetSpacing.rawValue)
@@ -533,7 +637,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the size of window icons in points.
-    public func setWindowIconSize(_ value: CGFloat) async {
+    public func setWindowIconSize(_ value: Double) async {
         if value == windowIconSizeSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.windowIconSize.rawValue)
@@ -541,7 +645,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the corner radius for space elements in points.
-    public func setSpaceCornerRadius(_ value: CGFloat) async {
+    public func setSpaceCornerRadius(_ value: Double) async {
         if value == spaceCornerRadiusSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceCornerRadius.rawValue)
@@ -554,6 +658,63 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
         saveGroupsConfiguration(value)
         groupsConfigurationSubject.send(value)
+    }
+
+    /// Sets the groups appearance mode and emits update.
+    public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async {
+        if value == groupsAppearanceModeSubject.value { return }
+
+        saveGroupsAppearanceMode(value)
+        groupsAppearanceModeSubject.send(value)
+    }
+
+    /// Sets the groups global background tint color and emits update.
+    public func setGroupsGlobalBackgroundTintColor(_ value: Color) async {
+        if value == groupsGlobalBackgroundTintColorSubject.value { return }
+        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.groupsGlobalBackgroundTintColor.rawValue)
+        groupsGlobalBackgroundTintColorSubject.send(value)
+    }
+
+    /// Sets the groups global background opacity and emits update.
+    public func setGroupsGlobalBackgroundOpacity(_ value: Double) async {
+        if value == groupsGlobalBackgroundOpacitySubject.value { return }
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBackgroundOpacity.rawValue)
+        groupsGlobalBackgroundOpacitySubject.send(value)
+    }
+
+    /// Sets the groups global background blur radius and emits update.
+    public func setGroupsGlobalBackgroundBlurRadius(_ value: Double) async {
+        if value == groupsGlobalBgBlurRadiusSubject.value { return }
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBackgroundBlurRadius.rawValue)
+        groupsGlobalBgBlurRadiusSubject.send(value)
+    }
+
+    /// Sets the groups global border color and emits update.
+    public func setGroupsGlobalBorderColor(_ value: Color) async {
+        if value == groupsGlobalBorderColorSubject.value { return }
+        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.groupsGlobalBorderColor.rawValue)
+        groupsGlobalBorderColorSubject.send(value)
+    }
+
+    /// Sets the groups global border opacity and emits update.
+    public func setGroupsGlobalBorderOpacity(_ value: Double) async {
+        if value == groupsGlobalBorderOpacitySubject.value { return }
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBorderOpacity.rawValue)
+        groupsGlobalBorderOpacitySubject.send(value)
+    }
+
+    /// Sets the groups global border width and emits update.
+    public func setGroupsGlobalBorderWidth(_ value: Double) async {
+        if value == groupsGlobalBorderWidthSubject.value { return }
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBorderWidth.rawValue)
+        groupsGlobalBorderWidthSubject.send(value)
+    }
+
+    /// Sets the groups global corner radius and emits update.
+    public func setGroupsGlobalCornerRadius(_ value: Double) async {
+        if value == groupsGlobalCornerRadiusSubject.value { return }
+        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalCornerRadius.rawValue)
+        groupsGlobalCornerRadiusSubject.send(value)
     }
 
     // MARK: - AeroSpace Integration
@@ -685,6 +846,14 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         await setSpaceCornerRadius(ConfigurationDefaults.spaceCornerRadius)
         await setShowGroups(ConfigurationDefaults.showGroups)
         await setGroupsConfiguration(ConfigurationDefaults.groupsConfiguration)
+        await setGroupsAppearanceMode(ConfigurationDefaults.groupsAppearanceMode)
+        await setGroupsGlobalBackgroundTintColor(ConfigurationDefaults.groupsGlobalBackgroundTintColor)
+        await setGroupsGlobalBackgroundOpacity(ConfigurationDefaults.groupsGlobalBackgroundOpacity)
+        await setGroupsGlobalBackgroundBlurRadius(ConfigurationDefaults.groupsGlobalBackgroundBlurRadius)
+        await setGroupsGlobalBorderColor(ConfigurationDefaults.groupsGlobalBorderColor)
+        await setGroupsGlobalBorderOpacity(ConfigurationDefaults.groupsGlobalBorderOpacity)
+        await setGroupsGlobalBorderWidth(ConfigurationDefaults.groupsGlobalBorderWidth)
+        await setGroupsGlobalCornerRadius(ConfigurationDefaults.groupsGlobalCornerRadius)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }
@@ -784,6 +953,22 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
                 category: Logger.config
             )
         }
+    }
+
+    /// Loads the groups appearance mode from UserDefaults.
+    /// - Returns: The groups appearance mode if found, nil otherwise
+    private func loadGroupsAppearanceMode() -> GroupsAppearanceMode? {
+        guard let rawValue = UserDefaults.standard.string(forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue) else {
+            return nil
+        }
+
+        return GroupsAppearanceMode(rawValue: rawValue)
+    }
+
+    /// Saves the groups appearance mode to UserDefaults.
+    /// - Parameter mode: The groups appearance mode to save
+    private func saveGroupsAppearanceMode(_ mode: GroupsAppearanceMode) {
+        UserDefaults.standard.set(mode.rawValue, forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue)
     }
 }
 

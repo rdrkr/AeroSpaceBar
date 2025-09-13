@@ -16,7 +16,7 @@ public final class SetSpaceBorderWidthUseCase {
 
     /// Executes the use case to set the space border width setting.
     /// - Parameter spaceBorderWidth: The new border width value to set
-    public func execute(spaceBorderWidth: CGFloat) async {
+    public func execute(spaceBorderWidth: Double) async {
         await configurationGateway.setSpaceBorderWidth(spaceBorderWidth)
     }
 }

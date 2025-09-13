@@ -25,10 +25,10 @@ public struct ConfigurationDefaults {
     public static let aeroSpacePath = ""
 
     /// Default background opacity level for the space elements.
-    public static let spaceBackgroundOpacity = 0.4
+    public static let spaceBackgroundOpacity = 0.2
 
     /// Default background blur radius for space elements in points.
-    public static let spaceBackgroundBlurRadius: CGFloat = 0.0
+    public static let spaceBackgroundBlurRadius: Double = 0.0
 
     /// Default background tint color for space elements.
     public static let spaceBackgroundTintColor = Color.white
@@ -43,7 +43,7 @@ public struct ConfigurationDefaults {
     public static let spaceBorderOpacity = 0.0
 
     /// Default border width for the space elements in points.
-    public static let spaceBorderWidth: CGFloat = 0.0
+    public static let spaceBorderWidth: Double = 0.0
 
     /// Whether to focus a window when clicking on it by default.
     public static let focusWindowOnClick = true
@@ -52,7 +52,7 @@ public struct ConfigurationDefaults {
     public static let showEmptySpaces = false
 
     /// Whether to show groups in the interface by default.
-    public static let showGroups = false
+    public static let showGroups = true
 
     /// Whether to enable performance metrics collection by default.
     public static let enablePerformanceMetrics = debugMode
@@ -66,26 +66,50 @@ public struct ConfigurationDefaults {
     // MARK: - UI Configuration
 
     /// Default height of the menu bar interface in points.
-    public static let menuBarHeight: CGFloat = 39
+    public static let menuBarHeight: Double = 39
 
     /// Default vertical padding for the menu bar interface in points.
-    public static let menuBarVerticalPadding: CGFloat = 1
+    public static let menuBarVerticalPadding: Double = 1
 
     /// Default horizontal padding for the menu bar interface in points.
-    public static let menuBarHorizontalPadding: CGFloat = 53
+    public static let menuBarHorizontalPadding: Double = 53
 
     /// Default spacing between widgets in the menu bar in points.
-    public static let widgetSpacing: CGFloat = 6
+    public static let widgetSpacing: Double = 6
 
     /// Default animation duration in seconds.
-    public static let animationDuration = 0.2
+    public static let animationDuration: Double = 0.2
 
     /// Default size of window icons in points.
-    public static let windowIconSize: CGFloat = 22.5
+    public static let windowIconSize: Double = 22.5
 
     /// Default corner radius for space elements in points.
-    public static let spaceCornerRadius: CGFloat = 14
+    public static let spaceCornerRadius: Double = 14
 
     /// Default group configuration for menu bar applications.
     public static let groupsConfiguration: [GroupConfiguration] = GroupConfiguration.singleGroup
+
+    /// Default groups appearance mode.
+    public static let groupsAppearanceMode: GroupsAppearanceMode = .matchSpaces
+
+    /// Default global background tint color for all groups.
+    public static let groupsGlobalBackgroundTintColor: Color = spaceBackgroundTintColor
+
+    /// Default global background opacity for all groups.
+    public static let groupsGlobalBackgroundOpacity: Double = spaceBackgroundOpacity
+
+    /// Default global background blur radius for all groups.
+    public static let groupsGlobalBackgroundBlurRadius: Double = spaceBackgroundBlurRadius
+
+    /// Default global border color for all groups.
+    public static let groupsGlobalBorderColor: Color = spaceBorderTintColor
+
+    /// Default global border opacity for all groups.
+    public static let groupsGlobalBorderOpacity: Double = spaceBorderOpacity
+
+    /// Default global border width for all groups.
+    public static let groupsGlobalBorderWidth: Double = spaceBorderWidth
+
+    /// Default global corner radius for all groups.
+    public static let groupsGlobalCornerRadius: Double = spaceCornerRadius
 }

@@ -51,9 +51,9 @@ struct BlurReplaceTransition: ViewModifier {
 
 /// Space corner radius modifier
 struct SpaceCornerRadius: ViewModifier {
-    let cornerRadius: CGFloat
+    let cornerRadius: Double
 
-    init(cornerRadius: CGFloat = .themeSpaceCornerRadius) {
+    init(cornerRadius: Double = .themeSpaceCornerRadius) {
         self.cornerRadius = cornerRadius
     }
 
@@ -66,9 +66,9 @@ struct SpaceCornerRadius: ViewModifier {
 
 /// Window corner radius modifier
 struct WindowCornerRadius: ViewModifier {
-    let cornerRadius: CGFloat
+    let cornerRadius: Double
 
-    init(cornerRadius: CGFloat = .themeWindowCornerRadius) {
+    init(cornerRadius: Double = .themeWindowCornerRadius) {
         self.cornerRadius = cornerRadius
     }
 
@@ -100,13 +100,13 @@ struct HoverState: ViewModifier {
 struct SpaceFocusState: ViewModifier {
     struct Configuration {
         let backgroundOpacity: Double
-        let backgroundBlurRadius: CGFloat
+        let backgroundBlurRadius: Double
         let backgroundTintColor: Color
         let foregroundColor: Color
         let borderTintColor: Color
         let borderOpacity: Double
-        let borderCornerRadius: CGFloat
-        let borderWidth: CGFloat
+        let borderCornerRadius: Double
+        let borderWidth: Double
     }
 
     let isFocused: Bool
@@ -116,8 +116,11 @@ struct SpaceFocusState: ViewModifier {
         content
             .background(
                 configuration.backgroundTintColor
-                    .opacity(isFocused ? configuration
-                        .backgroundOpacity : (configuration.backgroundOpacity == 0 ? 0 : 0.2)
+                    .opacity(
+                        isFocused ? (
+                            configuration.backgroundOpacity == 0 ? 0 :
+                                min(configuration.backgroundOpacity + 0.2, 1)
+                        ) : configuration.backgroundOpacity
                     )
                     .blur(radius: configuration.backgroundBlurRadius)
             )
@@ -125,10 +128,7 @@ struct SpaceFocusState: ViewModifier {
                 RoundedRectangle(cornerRadius: configuration.borderCornerRadius, style: .continuous)
                     .stroke(
                         configuration.borderTintColor
-                            .opacity(isFocused ? configuration
-                                .borderOpacity :
-                                (configuration.borderOpacity == 0 ? 0 : configuration.borderOpacity * 0.3)
-                            ),
+                            .opacity(configuration.borderOpacity),
                         lineWidth: configuration.borderWidth
                     )
             )
@@ -325,12 +325,12 @@ extension View {
     }
 
     /// Apply space corner radius modifier
-    func spaceCornerRadius(_ cornerRadius: CGFloat = .themeSpaceCornerRadius) -> some View {
+    func spaceCornerRadius(_ cornerRadius: Double = .themeSpaceCornerRadius) -> some View {
         modifier(SpaceCornerRadius(cornerRadius: cornerRadius))
     }
 
     /// Apply window corner radius modifier
-    func windowCornerRadius(_ cornerRadius: CGFloat = .themeWindowCornerRadius) -> some View {
+    func windowCornerRadius(_ cornerRadius: Double = .themeWindowCornerRadius) -> some View {
         modifier(WindowCornerRadius(cornerRadius: cornerRadius))
     }
 

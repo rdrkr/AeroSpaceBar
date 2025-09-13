@@ -22,7 +22,7 @@ public final class GetWindowIconSizeUseCase {
 
     /// Executes the use case to get the window icon size setting as a publisher.
     /// - Returns: A publisher that emits window icon size values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.windowIconSizePublisher
     }
 }

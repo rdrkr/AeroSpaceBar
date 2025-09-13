@@ -41,7 +41,58 @@ final class GroupsViewModel: ObservableObject {
     @Published var animationDuration: Double
 
     /// The widget spacing for UI layout.
-    @Published var widgetSpacing: CGFloat
+    @Published var widgetSpacing: Double
+
+    /// The current groups appearance mode.
+    @Published var groupsAppearanceMode: GroupsAppearanceMode {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsAppearanceModeUseCase.execute(groupsAppearanceMode)
+            }
+        }
+    }
+
+    /// The global background tint color for all groups.
+    @Published var groupsGlobalBackgroundTintColor: Color
+
+    /// The global background opacity for all groups.
+    @Published var groupsGlobalBackgroundOpacity: Double
+
+    /// The global background blur radius for all groups.
+    @Published var groupsGlobalBackgroundBlurRadius: Double
+
+    /// The global border color for all groups.
+    @Published var groupsGlobalBorderColor: Color
+
+    /// The global border opacity for all groups.
+    @Published var groupsGlobalBorderOpacity: Double
+
+    /// The global border width for all groups.
+    @Published var groupsGlobalBorderWidth: Double
+
+    /// The global corner radius for all groups.
+    @Published var groupsGlobalCornerRadius: Double
+
+    /// The background opacity level of the space elements (0.1 to 1.0).
+    @Published var spaceBackgroundOpacity: Double
+
+    /// The background blur radius for space elements in points.
+    @Published var spaceBackgroundBlurRadius: Double
+
+    /// The background tint color for space elements.
+    @Published var spaceBackgroundTintColor: Color
+
+    /// The border tint color for space elements.
+    @Published var spaceBorderTintColor: Color
+
+    /// The border opacity level of the space elements (0.0 to 1.0).
+    @Published var spaceBorderOpacity: Double
+
+    /// The border width of the space elements in points.
+    @Published var spaceBorderWidth: Double
+
+    /// The corner radius for spaces in points.
+    @Published var spaceCornerRadius: Double
 
     // MARK: - Dependencies
 
@@ -53,6 +104,22 @@ final class GroupsViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getAnimationDurationUseCase: GetAnimationDurationUseCase
     private let getWidgetSpacingUseCase: GetWidgetSpacingUseCase
+    private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
+    private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
+    private let getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase
+    private let getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase
+    private let getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase
+    private let getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase
+    private let getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase
+    private let getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase
+    private let getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase
+    private let getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase
+    private let getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase
+    private let getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase
+    private let getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase
+    private let getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase
+    private let getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
+    private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -66,7 +133,25 @@ final class GroupsViewModel: ObservableObject {
     ///   - getGroupsConfigurationUseCase: The use case for getting group configuration
     ///   - setGroupsConfigurationUseCase: The use case for setting group configuration
     ///   - getMenuBarAppsUseCase: The use case for getting menu bar apps
+    ///   - getFeatureFlagsUseCase: The use case for getting feature flags
+    ///   - getAnimationDurationUseCase: The use case for getting animation duration
     ///   - getWidgetSpacingUseCase: The use case for getting widget spacing
+    ///   - getGroupsAppearanceModeUseCase: The use case for getting groups appearance mode
+    ///   - setGroupsAppearanceModeUseCase: The use case for setting groups appearance mode
+    ///   - getGroupsGlobalBackgroundTintColorUseCase: The use case for getting global background tint color
+    ///   - setGroupsGlobalBackgroundTintColorUseCase: The use case for setting global background tint color
+    ///   - getGroupsGlobalBackgroundOpacityUseCase: The use case for getting global background opacity
+    ///   - setGroupsGlobalBackgroundOpacityUseCase: The use case for setting global background opacity
+    ///   - getGroupsGlobalBackgroundBlurRadiusUseCase: The use case for getting global background blur radius
+    ///   - setGroupsGlobalBackgroundBlurRadiusUseCase: The use case for setting global background blur radius
+    ///   - getGroupsGlobalBorderColorUseCase: The use case for getting global border color
+    ///   - setGroupsGlobalBorderColorUseCase: The use case for setting global border color
+    ///   - getGroupsGlobalBorderOpacityUseCase: The use case for getting global border opacity
+    ///   - setGroupsGlobalBorderOpacityUseCase: The use case for setting global border opacity
+    ///   - getGroupsGlobalBorderWidthUseCase: The use case for getting global border width
+    ///   - setGroupsGlobalBorderWidthUseCase: The use case for setting global border width
+    ///   - getGroupsGlobalCornerRadiusUseCase: The use case for getting global corner radius
+    ///   - setGroupsGlobalCornerRadiusUseCase: The use case for setting global corner radius
     init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         setShowGroupsUseCase: SetShowGroupsUseCase,
@@ -75,7 +160,23 @@ final class GroupsViewModel: ObservableObject {
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getAnimationDurationUseCase: GetAnimationDurationUseCase,
-        getWidgetSpacingUseCase: GetWidgetSpacingUseCase
+        getWidgetSpacingUseCase: GetWidgetSpacingUseCase,
+        getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
+        setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
+        getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase,
+        getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase,
+        getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase,
+        getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase,
+        getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase,
+        getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase,
+        getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase,
+        getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase,
+        getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase,
+        getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase,
+        getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase,
+        getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase,
+        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase,
+        getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.setShowGroupsUseCase = setShowGroupsUseCase
@@ -85,6 +186,22 @@ final class GroupsViewModel: ObservableObject {
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getAnimationDurationUseCase = getAnimationDurationUseCase
         self.getWidgetSpacingUseCase = getWidgetSpacingUseCase
+        self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
+        self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
+        self.getGroupsGlobalBackgroundTintColorUseCase = getGroupsGlobalBackgroundTintColorUseCase
+        self.getGroupsGlobalBackgroundOpacityUseCase = getGroupsGlobalBackgroundOpacityUseCase
+        self.getGroupsGlobalBackgroundBlurRadiusUseCase = getGroupsGlobalBackgroundBlurRadiusUseCase
+        self.getGroupsGlobalBorderColorUseCase = getGroupsGlobalBorderColorUseCase
+        self.getGroupsGlobalBorderOpacityUseCase = getGroupsGlobalBorderOpacityUseCase
+        self.getGroupsGlobalBorderWidthUseCase = getGroupsGlobalBorderWidthUseCase
+        self.getGroupsGlobalCornerRadiusUseCase = getGroupsGlobalCornerRadiusUseCase
+        self.getSpaceBackgroundOpacityUseCase = getSpaceBackgroundOpacityUseCase
+        self.getSpaceBackgroundBlurRadiusUseCase = getSpaceBackgroundBlurRadiusUseCase
+        self.getSpaceBackgroundTintColorUseCase = getSpaceBackgroundTintColorUseCase
+        self.getSpaceBorderTintColorUseCase = getSpaceBorderTintColorUseCase
+        self.getSpaceBorderOpacityUseCase = getSpaceBorderOpacityUseCase
+        self.getSpaceBorderWidthUseCase = getSpaceBorderWidthUseCase
+        self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
@@ -92,7 +209,22 @@ final class GroupsViewModel: ObservableObject {
         menuBarApps = getMenuBarAppsUseCase.execute().blockingFirst()
         isGroupsFeatureEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableGroups
         animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
-        widgetSpacing = CGFloat(getWidgetSpacingUseCase.execute().blockingFirst())
+        widgetSpacing = Double(getWidgetSpacingUseCase.execute().blockingFirst())
+        groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundTintColor = getGroupsGlobalBackgroundTintColorUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundOpacity = getGroupsGlobalBackgroundOpacityUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundBlurRadius = getGroupsGlobalBackgroundBlurRadiusUseCase.execute().blockingFirst()
+        groupsGlobalBorderColor = getGroupsGlobalBorderColorUseCase.execute().blockingFirst()
+        groupsGlobalBorderOpacity = getGroupsGlobalBorderOpacityUseCase.execute().blockingFirst()
+        groupsGlobalBorderWidth = getGroupsGlobalBorderWidthUseCase.execute().blockingFirst()
+        groupsGlobalCornerRadius = getGroupsGlobalCornerRadiusUseCase.execute().blockingFirst()
+        spaceBackgroundOpacity = getSpaceBackgroundOpacityUseCase.execute().blockingFirst()
+        spaceBackgroundBlurRadius = getSpaceBackgroundBlurRadiusUseCase.execute().blockingFirst()
+        spaceBackgroundTintColor = getSpaceBackgroundTintColorUseCase.execute().blockingFirst()
+        spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
+        spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
+        spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
+        spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         setupReactiveSubscriptions()
@@ -227,7 +359,23 @@ final class GroupsViewModel: ObservableObject {
     /// Determines if more groups can be added.
     /// - Returns: True if more groups can be added, false otherwise
     func canAddMoreGroups() -> Bool {
-        groupsConfiguration.count < menuBarApps.count && !menuBarApps.isEmpty
+        let totalApps = menuBarApps.count
+        guard totalApps > 0, groupsConfiguration.count < totalApps else { return false }
+
+        // Check if there are unassigned apps (Priority 1)
+        let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
+        if !unassignedRanges.isEmpty {
+            return true
+        }
+
+        // Check if we can take from rightmost group (Priority 2)
+        guard !groupsConfiguration.isEmpty else { return false }
+
+        let sortedGroups = groupsConfiguration.sorted { $0.startIndex < $1.startIndex }
+        let rightmostGroup = sortedGroups[0]
+        let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
+
+        return rightmostGroupEndIndex > rightmostGroup.startIndex
     }
 
     /// Calculates the minimum start index for a group based on the previous group's end index.
@@ -323,6 +471,14 @@ final class GroupsViewModel: ObservableObject {
 
     /// Setup reactive subscriptions to configuration and menu bar apps.
     private func setupReactiveSubscriptions() {
+        setupBasicSubscriptions()
+        setupGroupsAppearanceSubscriptions()
+        setupSpaceAppearanceSubscriptions()
+        setupMenuBarAppsSubscriptions()
+    }
+
+    /// Setup subscriptions for basic configuration changes
+    private func setupBasicSubscriptions() {
         // Subscribe to configuration changes
         getShowGroupsUseCase.execute()
             .receive(on: DispatchQueue.main)
@@ -359,11 +515,95 @@ final class GroupsViewModel: ObservableObject {
         // Subscribe to widget spacing changes
         getWidgetSpacingUseCase.execute()
             .receive(on: DispatchQueue.main)
-            .map { CGFloat($0) }
+            .map { Double($0) }
             .assign(to: \.widgetSpacing, on: self)
             .store(in: &cancellables)
 
-        // Handle menu bar apps changes and update group configurations accordingly
+        // Subscribe to groups appearance mode changes
+        getGroupsAppearanceModeUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsAppearanceMode, on: self)
+            .store(in: &cancellables)
+    }
+
+    /// Setup subscriptions for groups global appearance configuration changes
+    private func setupGroupsAppearanceSubscriptions() {
+        getGroupsGlobalBackgroundTintColorUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBackgroundTintColor, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBackgroundOpacityUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBackgroundOpacity, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBackgroundBlurRadiusUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBackgroundBlurRadius, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderColorUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBorderColor, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderOpacityUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBorderOpacity, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderWidthUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalBorderWidth, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalCornerRadiusUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.groupsGlobalCornerRadius, on: self)
+            .store(in: &cancellables)
+    }
+
+    /// Setup subscriptions for space appearance configuration changes
+    private func setupSpaceAppearanceSubscriptions() {
+        getSpaceBackgroundOpacityUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBackgroundOpacity, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBackgroundBlurRadiusUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBackgroundBlurRadius, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBackgroundTintColorUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBackgroundTintColor, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderTintColorUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBorderTintColor, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderOpacityUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBorderOpacity, on: self)
+            .store(in: &cancellables)
+
+        getSpaceBorderWidthUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceBorderWidth, on: self)
+            .store(in: &cancellables)
+
+        getSpaceCornerRadiusUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.spaceCornerRadius, on: self)
+            .store(in: &cancellables)
+    }
+
+    /// Setup menu bar apps subscription with change handling
+    private func setupMenuBarAppsSubscriptions() {
         getMenuBarAppsUseCase.execute()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newMenuBarApps in

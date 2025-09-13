@@ -22,7 +22,7 @@ public final class GetMenuBarHorizontalPaddingUseCase {
 
     /// Executes the use case to get the menu bar horizontal padding setting as a publisher.
     /// - Returns: A publisher that emits menu bar horizontal padding values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.menuBarHorizontalPaddingPublisher
     }
 }

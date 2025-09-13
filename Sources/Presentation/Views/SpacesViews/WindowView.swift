@@ -24,12 +24,12 @@ struct WindowView: View {
     // MARK: - Computed Properties
 
     /// Computed property for window icon size
-    private var iconSize: CGFloat {
+    private var iconSize: Double {
         viewModel.windowIconSize
     }
 
     /// Computed property for menu bar vertical padding
-    private var verticalPadding: CGFloat {
+    private var verticalPadding: Double {
         viewModel.menuBarVerticalPadding
     }
 
@@ -98,7 +98,7 @@ struct WindowView: View {
 /// A reusable view for displaying window icons
 private struct WindowIconView: View {
     let window: Domain.Window
-    let iconSize: CGFloat
+    let iconSize: Double
 
     var body: some View {
         ZStack {

@@ -17,7 +17,7 @@ public final class GetSpaceBorderWidthUseCase {
 
     /// Executes the use case to get the space border width setting.
     /// - Returns: A publisher that emits the current border width value
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.spaceBorderWidthPublisher
     }
 }

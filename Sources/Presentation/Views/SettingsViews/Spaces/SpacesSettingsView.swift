@@ -29,7 +29,7 @@ struct SpacesSettingsView: View {
 
                 SettingsToggle(
                     title: LocalizedStringResource("Show Empty Spaces"),
-                    description: LocalizedStringResource("Display spaces that contain no windows in the interface"),
+                    description: LocalizedStringResource("Display spaces that contain no windows in the interface."),
                     isOn: $viewModel.showEmptySpaces
                 )
                 .tag("advanced-show-empty-spaces-toggle")
@@ -38,7 +38,7 @@ struct SpacesSettingsView: View {
             Section(LocalizedStringResource("Space Background")) {
                 SettingsColorPicker(
                     title: LocalizedStringResource("Tint Color"),
-                    description: LocalizedStringResource("Choose the background tint color for space elements"),
+                    description: LocalizedStringResource("Choose the background tint color for space elements."),
                     selectedColor: $viewModel.spaceBackgroundTintColor,
                     supportsOpacity: false
                 )
@@ -49,7 +49,7 @@ struct SpacesSettingsView: View {
                     defaultValue: ConfigurationDefaults.spaceBackgroundOpacity,
                     stickiness: 0.05,
                     label: LocalizedStringResource("Opacity"),
-                    helpText: LocalizedStringResource("Adjust the background opacity of the space elements"),
+                    helpText: LocalizedStringResource("Adjust the background opacity of the space elements."),
                     displayAsPercentage: true
                 )
 
@@ -59,7 +59,7 @@ struct SpacesSettingsView: View {
                     defaultValue: ConfigurationDefaults.spaceBackgroundBlurRadius,
                     stickiness: 0.5,
                     label: LocalizedStringResource("Blur"),
-                    helpText: LocalizedStringResource("Adjust the background blur radius of the space elements"),
+                    helpText: LocalizedStringResource("Adjust the background blur radius of the space elements."),
                     displayAsPoints: true
                 )
             }
@@ -67,7 +67,7 @@ struct SpacesSettingsView: View {
             Section(LocalizedStringResource("Space Border")) {
                 SettingsColorPicker(
                     title: LocalizedStringResource("Tint Color"),
-                    description: LocalizedStringResource("Choose the border tint color for space elements"),
+                    description: LocalizedStringResource("Choose the border tint color for space elements."),
                     selectedColor: $viewModel.spaceBorderTintColor,
                     supportsOpacity: false
                 )
@@ -78,7 +78,7 @@ struct SpacesSettingsView: View {
                     defaultValue: ConfigurationDefaults.spaceBorderOpacity,
                     stickiness: 0.05,
                     label: LocalizedStringResource("Opacity"),
-                    helpText: LocalizedStringResource("Adjust the border opacity of the space elements"),
+                    helpText: LocalizedStringResource("Adjust the border opacity of the space elements."),
                     displayAsPercentage: true
                 )
 
@@ -88,7 +88,7 @@ struct SpacesSettingsView: View {
                     defaultValue: ConfigurationDefaults.spaceBorderWidth,
                     stickiness: 0.25,
                     label: LocalizedStringResource("Width"),
-                    helpText: LocalizedStringResource("Adjust the border width of the space elements"),
+                    helpText: LocalizedStringResource("Adjust the border width of the space elements."),
                     displayAsPoints: true
                 )
             }
@@ -96,7 +96,7 @@ struct SpacesSettingsView: View {
             Section(LocalizedStringResource("Space Foreground")) {
                 SettingsColorPicker(
                     title: LocalizedStringResource("Color"),
-                    description: LocalizedStringResource("Choose the foreground color for space text and icons"),
+                    description: LocalizedStringResource("Choose the foreground color for space text and icons."),
                     selectedColor: $viewModel.spaceForegroundColor,
                     supportsOpacity: false
                 )
@@ -109,7 +109,7 @@ struct SpacesSettingsView: View {
                     defaultValue: ConfigurationDefaults.spaceCornerRadius,
                     stickiness: 1.0,
                     label: LocalizedStringResource("Corner Radius"),
-                    helpText: LocalizedStringResource("Adjust the corner radius of space indicators"),
+                    helpText: LocalizedStringResource("Adjust the corner radius of space indicators."),
                     displayAsPercentage: true
                 )
             }

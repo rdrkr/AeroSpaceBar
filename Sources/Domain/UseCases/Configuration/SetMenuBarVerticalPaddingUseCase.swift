@@ -21,7 +21,7 @@ public final class SetMenuBarVerticalPaddingUseCase {
 
     /// Executes the use case to set the menu bar vertical padding.
     /// - Parameter value: The menu bar vertical padding in points
-    public func execute(_ value: CGFloat) async {
+    public func execute(_ value: Double) async {
         await configurationGateway.setMenuBarVerticalPadding(value)
     }
 }

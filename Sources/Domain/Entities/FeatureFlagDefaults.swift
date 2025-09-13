@@ -19,11 +19,7 @@ public enum FeatureFlagDefaults {
 
     /// Default state for groups functionality.
     /// Set to true since groups are a stable core feature.
-    #if DEBUG
-        public static let enableGroups: Bool = true
-    #else
-        public static let enableGroups: Bool = false
-    #endif
+    public static let enableGroups: Bool = true
 
     // MARK: - Convenience
 

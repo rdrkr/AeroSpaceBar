@@ -20,7 +20,7 @@ public final class SetSpaceBackgroundBlurRadiusUseCase {
     /// Executes the use case to set the space background blur radius setting.
     ///
     /// - Parameter spaceBackgroundBlurRadius: The new space background blur radius value in points.
-    public func execute(spaceBackgroundBlurRadius: CGFloat) async {
+    public func execute(spaceBackgroundBlurRadius: Double) async {
         await configurationGateway.setSpaceBackgroundBlurRadius(spaceBackgroundBlurRadius)
     }
 }

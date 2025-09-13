@@ -47,7 +47,7 @@ public protocol ConfigurationGateway: Sendable {
     var spaceBackgroundOpacityPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits space background blur radius updates.
-    var spaceBackgroundBlurRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
+    var spaceBackgroundBlurRadiusPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits space background tint color updates.
     var spaceBackgroundTintColorPublisher: AnyPublisher<Color, Never> { get }
@@ -62,28 +62,52 @@ public protocol ConfigurationGateway: Sendable {
     var spaceBorderOpacityPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits space border width updates.
-    var spaceBorderWidthPublisher: AnyPublisher<CGFloat, Never> { get }
+    var spaceBorderWidthPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits menu bar vertical padding updates.
-    var menuBarVerticalPaddingPublisher: AnyPublisher<CGFloat, Never> { get }
+    var menuBarVerticalPaddingPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits menu bar horizontal padding updates.
-    var menuBarHorizontalPaddingPublisher: AnyPublisher<CGFloat, Never> { get }
+    var menuBarHorizontalPaddingPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits widget spacing updates.
-    var widgetSpacingPublisher: AnyPublisher<CGFloat, Never> { get }
+    var widgetSpacingPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits animation duration updates.
     var animationDurationPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits window icon size updates.
-    var windowIconSizePublisher: AnyPublisher<CGFloat, Never> { get }
+    var windowIconSizePublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits space corner radius updates.
-    var spaceCornerRadiusPublisher: AnyPublisher<CGFloat, Never> { get }
+    var spaceCornerRadiusPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits group configuration updates.
     var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> { get }
+
+    /// Publisher that emits groups appearance mode updates.
+    var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> { get }
+
+    /// Publisher that emits groups global background tint color updates.
+    var groupsGlobalBackgroundTintColorPublisher: AnyPublisher<Color, Never> { get }
+
+    /// Publisher that emits groups global background opacity updates.
+    var groupsGlobalBackgroundOpacityPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits groups global background blur radius updates.
+    var groupsGlobalBgBlurRadiusPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits groups global border color updates.
+    var groupsGlobalBorderColorPublisher: AnyPublisher<Color, Never> { get }
+
+    /// Publisher that emits groups global border opacity updates.
+    var groupsGlobalBorderOpacityPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits groups global border width updates.
+    var groupsGlobalBorderWidthPublisher: AnyPublisher<Double, Never> { get }
+
+    /// Publisher that emits groups global corner radius updates.
+    var groupsGlobalCornerRadiusPublisher: AnyPublisher<Double, Never> { get }
 
     // MARK: - Async Setters (trigger updates via publishers)
 
@@ -127,7 +151,7 @@ public protocol ConfigurationGateway: Sendable {
 
     /// Sets the background blur radius for space elements in points.
     /// - Parameter value: The space background blur radius
-    func setSpaceBackgroundBlurRadius(_ value: CGFloat) async
+    func setSpaceBackgroundBlurRadius(_ value: Double) async
 
     /// Sets the background tint color for space elements.
     /// - Parameter value: The space background tint color
@@ -147,19 +171,19 @@ public protocol ConfigurationGateway: Sendable {
 
     /// Sets the border width for space elements in points.
     /// - Parameter value: The space border width
-    func setSpaceBorderWidth(_ value: CGFloat) async
+    func setSpaceBorderWidth(_ value: Double) async
 
     /// Sets the vertical padding for the menu bar interface in points.
     /// - Parameter value: The vertical padding
-    func setMenuBarVerticalPadding(_ value: CGFloat) async
+    func setMenuBarVerticalPadding(_ value: Double) async
 
     /// Sets the horizontal padding for the menu bar interface in points.
     /// - Parameter value: The horizontal padding
-    func setMenuBarHorizontalPadding(_ value: CGFloat) async
+    func setMenuBarHorizontalPadding(_ value: Double) async
 
     /// Sets the spacing between widgets in the menu bar in points.
     /// - Parameter value: The widget spacing
-    func setWidgetSpacing(_ value: CGFloat) async
+    func setWidgetSpacing(_ value: Double) async
 
     /// Sets the animation duration in seconds.
     /// - Parameter value: The animation duration
@@ -167,15 +191,47 @@ public protocol ConfigurationGateway: Sendable {
 
     /// Sets the size of window icons in points.
     /// - Parameter value: The window icon size
-    func setWindowIconSize(_ value: CGFloat) async
+    func setWindowIconSize(_ value: Double) async
 
     /// Sets the corner radius for space elements in points.
     /// - Parameter value: The space corner radius
-    func setSpaceCornerRadius(_ value: CGFloat) async
+    func setSpaceCornerRadius(_ value: Double) async
 
     /// Sets the group configuration for organizing menu bar applications.
     /// - Parameter value: The group configuration
     func setGroupsConfiguration(_ value: [GroupConfiguration]) async
+
+    /// Sets the groups appearance mode.
+    /// - Parameter value: The groups appearance mode
+    func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async
+
+    /// Sets the groups global background tint color.
+    /// - Parameter value: The groups global background tint color
+    func setGroupsGlobalBackgroundTintColor(_ value: Color) async
+
+    /// Sets the groups global background opacity.
+    /// - Parameter value: The groups global background opacity
+    func setGroupsGlobalBackgroundOpacity(_ value: Double) async
+
+    /// Sets the groups global background blur radius.
+    /// - Parameter value: The groups global background blur radius
+    func setGroupsGlobalBackgroundBlurRadius(_ value: Double) async
+
+    /// Sets the groups global border color.
+    /// - Parameter value: The groups global border color
+    func setGroupsGlobalBorderColor(_ value: Color) async
+
+    /// Sets the groups global border opacity.
+    /// - Parameter value: The groups global border opacity
+    func setGroupsGlobalBorderOpacity(_ value: Double) async
+
+    /// Sets the groups global border width.
+    /// - Parameter value: The groups global border width
+    func setGroupsGlobalBorderWidth(_ value: Double) async
+
+    /// Sets the groups global corner radius.
+    /// - Parameter value: The groups global corner radius
+    func setGroupsGlobalCornerRadius(_ value: Double) async
 
     // MARK: - AeroSpace Configuration Management
 

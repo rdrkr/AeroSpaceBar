@@ -24,7 +24,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     /// The background blur radius for space elements in points.
-    @Published var spaceBackgroundBlurRadius: CGFloat {
+    @Published var spaceBackgroundBlurRadius: Double {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setSpaceBackgroundBlurRadiusUseCase.execute(spaceBackgroundBlurRadius: spaceBackgroundBlurRadius)
@@ -69,7 +69,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     /// The border width of the space elements in points.
-    @Published var spaceBorderWidth: CGFloat {
+    @Published var spaceBorderWidth: Double {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setSpaceBorderWidthUseCase.execute(spaceBorderWidth: spaceBorderWidth)
@@ -105,10 +105,75 @@ class SettingsViewModel: ObservableObject {
     }
 
     /// The corner radius for spaces in points.
-    @Published var spaceCornerRadius: CGFloat {
+    @Published var spaceCornerRadius: Double {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setSpaceCornerRadiusUseCase.execute(spaceCornerRadius)
+            }
+        }
+    }
+
+    // MARK: - Groups Global Appearance Properties
+
+    /// The global background tint color for all groups.
+    @Published var groupsGlobalBackgroundTintColor: Color {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBackgroundTintColorUseCase.execute(groupsGlobalBackgroundTintColor)
+            }
+        }
+    }
+
+    /// The global background opacity for all groups.
+    @Published var groupsGlobalBackgroundOpacity: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBackgroundOpacityUseCase.execute(groupsGlobalBackgroundOpacity)
+            }
+        }
+    }
+
+    /// The global background blur radius for all groups.
+    @Published var groupsGlobalBackgroundBlurRadius: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBackgroundBlurRadiusUseCase.execute(groupsGlobalBackgroundBlurRadius)
+            }
+        }
+    }
+
+    /// The global border color for all groups.
+    @Published var groupsGlobalBorderColor: Color {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBorderColorUseCase.execute(groupsGlobalBorderColor)
+            }
+        }
+    }
+
+    /// The global border opacity for all groups.
+    @Published var groupsGlobalBorderOpacity: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBorderOpacityUseCase.execute(groupsGlobalBorderOpacity)
+            }
+        }
+    }
+
+    /// The global border width for all groups.
+    @Published var groupsGlobalBorderWidth: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalBorderWidthUseCase.execute(groupsGlobalBorderWidth)
+            }
+        }
+    }
+
+    /// The global corner radius for all groups.
+    @Published var groupsGlobalCornerRadius: Double {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsGlobalCornerRadiusUseCase.execute(groupsGlobalCornerRadius)
             }
         }
     }
@@ -260,6 +325,23 @@ class SettingsViewModel: ObservableObject {
     private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
     private let setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase
 
+    // MARK: - Groups Global Appearance Use Cases
+
+    private let getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase
+    private let setGroupsGlobalBackgroundTintColorUseCase: SetGroupsGlobalBgTintColorUseCase
+    private let getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase
+    private let setGroupsGlobalBackgroundOpacityUseCase: SetGroupsGlobalBackgroundOpacityUseCase
+    private let getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase
+    private let setGroupsGlobalBackgroundBlurRadiusUseCase: SetGroupsGlobalBgBlurRadiusUseCase
+    private let getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase
+    private let setGroupsGlobalBorderColorUseCase: SetGroupsGlobalBorderColorUseCase
+    private let getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase
+    private let setGroupsGlobalBorderOpacityUseCase: SetGroupsGlobalBorderOpacityUseCase
+    private let getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase
+    private let setGroupsGlobalBorderWidthUseCase: SetGroupsGlobalBorderWidthUseCase
+    private let getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase
+    private let setGroupsGlobalCornerRadiusUseCase: SetGroupsGlobalCornerRadiusUseCase
+
     // MARK: - System Menu Bar Use Cases
 
     private let getMenuBarAppsUseCase: GetMenuBarAppsUseCase
@@ -346,6 +428,20 @@ class SettingsViewModel: ObservableObject {
         setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
         getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase,
         setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase,
+        getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase,
+        setGroupsGlobalBackgroundTintColorUseCase: SetGroupsGlobalBgTintColorUseCase,
+        getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase,
+        setGroupsGlobalBackgroundOpacityUseCase: SetGroupsGlobalBackgroundOpacityUseCase,
+        getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase,
+        setGroupsGlobalBackgroundBlurRadiusUseCase: SetGroupsGlobalBgBlurRadiusUseCase,
+        getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase,
+        setGroupsGlobalBorderColorUseCase: SetGroupsGlobalBorderColorUseCase,
+        getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase,
+        setGroupsGlobalBorderOpacityUseCase: SetGroupsGlobalBorderOpacityUseCase,
+        getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase,
+        setGroupsGlobalBorderWidthUseCase: SetGroupsGlobalBorderWidthUseCase,
+        getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase,
+        setGroupsGlobalCornerRadiusUseCase: SetGroupsGlobalCornerRadiusUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         setAeroSpacePathUseCase: SetAeroSpacePathUseCase,
@@ -385,6 +481,22 @@ class SettingsViewModel: ObservableObject {
         self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
         self.setSpaceCornerRadiusUseCase = setSpaceCornerRadiusUseCase
 
+        // Initialize Groups Global Appearance Use Cases
+        self.getGroupsGlobalBackgroundTintColorUseCase = getGroupsGlobalBackgroundTintColorUseCase
+        self.setGroupsGlobalBackgroundTintColorUseCase = setGroupsGlobalBackgroundTintColorUseCase
+        self.getGroupsGlobalBackgroundOpacityUseCase = getGroupsGlobalBackgroundOpacityUseCase
+        self.setGroupsGlobalBackgroundOpacityUseCase = setGroupsGlobalBackgroundOpacityUseCase
+        self.getGroupsGlobalBackgroundBlurRadiusUseCase = getGroupsGlobalBackgroundBlurRadiusUseCase
+        self.setGroupsGlobalBackgroundBlurRadiusUseCase = setGroupsGlobalBackgroundBlurRadiusUseCase
+        self.getGroupsGlobalBorderColorUseCase = getGroupsGlobalBorderColorUseCase
+        self.setGroupsGlobalBorderColorUseCase = setGroupsGlobalBorderColorUseCase
+        self.getGroupsGlobalBorderOpacityUseCase = getGroupsGlobalBorderOpacityUseCase
+        self.setGroupsGlobalBorderOpacityUseCase = setGroupsGlobalBorderOpacityUseCase
+        self.getGroupsGlobalBorderWidthUseCase = getGroupsGlobalBorderWidthUseCase
+        self.setGroupsGlobalBorderWidthUseCase = setGroupsGlobalBorderWidthUseCase
+        self.getGroupsGlobalCornerRadiusUseCase = getGroupsGlobalCornerRadiusUseCase
+        self.setGroupsGlobalCornerRadiusUseCase = setGroupsGlobalCornerRadiusUseCase
+
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
 
@@ -415,6 +527,13 @@ class SettingsViewModel: ObservableObject {
         showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundTintColor = getGroupsGlobalBackgroundTintColorUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundOpacity = getGroupsGlobalBackgroundOpacityUseCase.execute().blockingFirst()
+        groupsGlobalBackgroundBlurRadius = getGroupsGlobalBackgroundBlurRadiusUseCase.execute().blockingFirst()
+        groupsGlobalBorderColor = getGroupsGlobalBorderColorUseCase.execute().blockingFirst()
+        groupsGlobalBorderOpacity = getGroupsGlobalBorderOpacityUseCase.execute().blockingFirst()
+        groupsGlobalBorderWidth = getGroupsGlobalBorderWidthUseCase.execute().blockingFirst()
+        groupsGlobalCornerRadius = getGroupsGlobalCornerRadiusUseCase.execute().blockingFirst()
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
         aeroSpaceVersion = getAeroSpaceVersionUseCase.execute().blockingFirst()
         logLevel = getLogLevelUseCase.execute().blockingFirst()
@@ -642,6 +761,35 @@ class SettingsViewModel: ObservableObject {
 
         getSpaceCornerRadiusUseCase.execute()
             .assign(to: \.spaceCornerRadius, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to groups global appearance configuration changes
+        getGroupsGlobalBackgroundTintColorUseCase.execute()
+            .assign(to: \.groupsGlobalBackgroundTintColor, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBackgroundOpacityUseCase.execute()
+            .assign(to: \.groupsGlobalBackgroundOpacity, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBackgroundBlurRadiusUseCase.execute()
+            .assign(to: \.groupsGlobalBackgroundBlurRadius, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderColorUseCase.execute()
+            .assign(to: \.groupsGlobalBorderColor, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderOpacityUseCase.execute()
+            .assign(to: \.groupsGlobalBorderOpacity, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalBorderWidthUseCase.execute()
+            .assign(to: \.groupsGlobalBorderWidth, on: self)
+            .store(in: &cancellables)
+
+        getGroupsGlobalCornerRadiusUseCase.execute()
+            .assign(to: \.groupsGlobalCornerRadius, on: self)
             .store(in: &cancellables)
 
         getAeroSpacePathUseCase.execute()

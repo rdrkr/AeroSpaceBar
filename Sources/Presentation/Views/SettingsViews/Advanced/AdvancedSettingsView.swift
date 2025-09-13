@@ -46,7 +46,7 @@ struct AdvancedSettingsView: View {
             Section {
                 SettingsToggle(
                     title: LocalizedStringResource("Focus Window on Click"),
-                    description: LocalizedStringResource("Immediately focus a window when clicking on it"),
+                    description: LocalizedStringResource("Immediately focus a window when clicking on it."),
                     isOn: $viewModel.focusWindowOnClick
                 )
                 .tag("advanced-focus-window-toggle")
@@ -63,14 +63,14 @@ struct AdvancedSettingsView: View {
                     .pickerStyle(.menu)
                     .tag("advanced-log-level-picker")
 
-                    Text(LocalizedStringResource("Set the verbosity of logging output"))
+                    Text(LocalizedStringResource("Set the verbosity of logging output."))
                         .secondaryText()
                         .tag("advanced-log-level-help")
                 }
 
                 SettingsToggle(
                     title: LocalizedStringResource("Enable Performance Metrics"),
-                    description: LocalizedStringResource("Track and log performance data for debugging"),
+                    description: LocalizedStringResource("Track and log performance data for debugging."),
                     isOn: $viewModel.enablePerformanceMetrics
                 )
                 .tag("advanced-performance-metrics-toggle")
@@ -78,7 +78,7 @@ struct AdvancedSettingsView: View {
                 SettingsToggle(
                     title: LocalizedStringResource("Enable Optimized Performance"),
                     description: LocalizedStringResource(
-                        "Utilize AeroSpace's event system for CPU consumption optimization"
+                        "Utilize AeroSpace's event system for CPU consumption optimization."
                     ),
                     isOn: $viewModel.isOptimizedPerformanceEnabled
                 )
@@ -89,7 +89,7 @@ struct AdvancedSettingsView: View {
             Section(LocalizedStringResource("Reset")) {
                 SettingsDestructiveButton(
                     title: LocalizedStringResource("Reset All Settings"),
-                    description: LocalizedStringResource("Reset all settings to their default values"),
+                    description: LocalizedStringResource("Reset all settings to their default values."),
                     action: { showingResetConfirmation = true }
                 )
                 .tag("advanced-reset-settings-button")

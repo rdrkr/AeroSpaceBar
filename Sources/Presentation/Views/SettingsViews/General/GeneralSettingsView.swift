@@ -34,7 +34,7 @@ struct GeneralSettingsView: View {
             Section {
                 SettingsToggle(
                     title: LocalizedStringResource("Launch at Login"),
-                    description: LocalizedStringResource("Automatically start AeroSpaceBar when you log in"),
+                    description: LocalizedStringResource("Automatically start AeroSpaceBar when you log in."),
                     isOn: $viewModel.launchAtLogin
                 )
                 .tag("general-launch-at-login-toggle")

@@ -21,7 +21,7 @@ public final class GetSpaceBackgroundBlurRadiusUseCase {
 
     /// Executes the use case to get the space background blur radius setting as a publisher.
     /// - Returns: A publisher that emits space background blur radius values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         configurationGateway.spaceBackgroundBlurRadiusPublisher
     }
 }

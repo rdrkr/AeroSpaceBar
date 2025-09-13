@@ -12,7 +12,7 @@ struct SpacesContainerView: View {
     let spaces: [Space]
 
     /// The spacing between spaces
-    let widgetSpacing: CGFloat
+    let widgetSpacing: Double
 
     // MARK: - Body
 

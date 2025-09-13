@@ -33,13 +33,13 @@ public enum Logger {
             }
         }
 
-        var emoji: String {
+        var name: String {
             switch self {
-            case .debug: "🔍"
-            case .info: "ℹ️"
-            case .warning: "⚠️"
-            case .error: "❌"
-            case .fault: "💥"
+            case .debug: "DEBUG"
+            case .info: "INFO"
+            case .warning: "️WARNING"
+            case .error: "ERROR"
+            case .fault: "FAULT"
             }
         }
     }
@@ -148,7 +148,7 @@ public enum Logger {
         guard level.osLogType.rawValue >= logLevel.osLogType.rawValue else { return }
 
         let fileName = URL(fileURLWithPath: file).lastPathComponent
-        var logMessage = "[\(fileName):\(line)] \(function): \(message)"
+        var logMessage = "[\(level.name)] [\(fileName):\(line) \(function)]: \(message)"
 
         // Add metadata if provided
         if let metadata, !metadata.isEmpty {
@@ -160,9 +160,6 @@ public enum Logger {
         #if !DEBUG
             logMessage = redactSensitiveData(logMessage)
         #endif
-
-        // Add emoji prefix
-        logMessage = "\(level.emoji) \(logMessage)"
 
         #if DEBUG
             print(logMessage)

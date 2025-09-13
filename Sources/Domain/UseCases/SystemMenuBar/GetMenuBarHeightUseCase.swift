@@ -22,7 +22,7 @@ public final class GetMenuBarHeightUseCase {
 
     /// Executes the use case to get the menu bar height setting as a publisher.
     /// - Returns: A publisher that emits menu bar height values
-    public func execute() -> AnyPublisher<CGFloat, Never> {
+    public func execute() -> AnyPublisher<Double, Never> {
         systemMenuBarGateway.menuBarHeightPublisher
     }
 }

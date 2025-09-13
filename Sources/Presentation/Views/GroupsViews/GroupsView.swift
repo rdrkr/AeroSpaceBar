@@ -38,7 +38,7 @@ struct GroupsView: View {
     }
 
     /// Widget spacing for UI layout
-    private var widgetSpacing: CGFloat {
+    private var widgetSpacing: Double {
         viewModel.widgetSpacing
     }
 
@@ -54,7 +54,22 @@ struct GroupsView: View {
                     group: group,
                     menuBarApps: menuBarApps,
                     animationDuration: animationDuration,
-                    widgetSpacing: widgetSpacing
+                    widgetSpacing: widgetSpacing,
+                    appearanceMode: viewModel.groupsAppearanceMode,
+                    globalBackgroundTintColor: viewModel.groupsGlobalBackgroundTintColor,
+                    globalBackgroundOpacity: viewModel.groupsGlobalBackgroundOpacity,
+                    globalBackgroundBlurRadius: viewModel.groupsGlobalBackgroundBlurRadius,
+                    globalBorderColor: viewModel.groupsGlobalBorderColor,
+                    globalBorderOpacity: viewModel.groupsGlobalBorderOpacity,
+                    globalBorderWidth: viewModel.groupsGlobalBorderWidth,
+                    globalCornerRadius: viewModel.groupsGlobalCornerRadius,
+                    spaceBackgroundTintColor: viewModel.spaceBackgroundTintColor,
+                    spaceBackgroundOpacity: viewModel.spaceBackgroundOpacity,
+                    spaceBackgroundBlurRadius: viewModel.spaceBackgroundBlurRadius,
+                    spaceBorderTintColor: viewModel.spaceBorderTintColor,
+                    spaceBorderOpacity: viewModel.spaceBorderOpacity,
+                    spaceBorderWidth: viewModel.spaceBorderWidth,
+                    spaceCornerRadius: viewModel.spaceCornerRadius
                 )
             }
         }

@@ -28,17 +28,17 @@ struct SpaceView: View {
     }
 
     /// Computed property for space corner radius
-    private var cornerRadius: CGFloat {
+    private var cornerRadius: Double {
         viewModel.spaceCornerRadius
     }
 
     /// Computed property for widget spacing
-    private var widgetSpacing: CGFloat {
+    private var widgetSpacing: Double {
         viewModel.widgetSpacing
     }
 
     /// Computed property for minimum height to match spaces with windows
-    private var minimumHeight: CGFloat {
+    private var minimumHeight: Double {
         // Match the height of windows: icon size + vertical padding * 2
         viewModel.windowIconSize + (viewModel.menuBarVerticalPadding * 2)
     }
