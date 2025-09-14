@@ -77,6 +77,5 @@ struct SettingsColorPicker: View {
             )
         }
     }
-    .formStyle(.grouped)
-    .padding(.top, -20)
+    .settingsFormStyle()
 }

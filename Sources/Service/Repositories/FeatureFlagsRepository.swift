@@ -25,6 +25,10 @@ import Foundation
             featureFlagsSubject.eraseToAnyPublisher()
         }
 
+        public var currentFeatureFlags: FeatureFlags {
+            featureFlagsSubject.value
+        }
+
         public func setFeatureFlags(_ flags: FeatureFlags) async {
             await MainActor.run {
                 featureFlagsSubject.send(flags)
@@ -42,6 +46,10 @@ import Foundation
 
         public var featureFlags: AnyPublisher<FeatureFlags, Never> {
             Just(FeatureFlagDefaults.createDefault()).eraseToAnyPublisher()
+        }
+
+        public var currentFeatureFlags: FeatureFlags {
+            FeatureFlagDefaults.createDefault()
         }
 
         public func setFeatureFlags(_: FeatureFlags) async {

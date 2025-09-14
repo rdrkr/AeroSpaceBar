@@ -5,25 +5,32 @@ import SwiftUI
 
 /// A view that represents the group background for a set of menu bar applications.
 struct GroupView: View {
-    let group: GroupConfiguration
+    /// The group configuration containing styling and range information.
+    let group: Domain.Group
+
+    /// The complete list of menu bar applications from which to select group members.
     let menuBarApps: [MenuBarApp]
+
+    /// The duration for view animations in seconds.
     let animationDuration: Double
+
+    /// The spacing between widget elements in the menu bar.
     let widgetSpacing: Double
+
+    /// The vertical padding applied to menu bar elements.
+    let menuBarVerticalPadding: Double
+
+    /// The size of window icons displayed in the menu bar.
+    let windowIconSize: Double
+
+    /// The appearance mode determining which styling properties to use.
     let appearanceMode: GroupsAppearanceMode
-    let globalBackgroundTintColor: Color
-    let globalBackgroundOpacity: Double
-    let globalBackgroundBlurRadius: Double
-    let globalBorderColor: Color
-    let globalBorderOpacity: Double
-    let globalBorderWidth: Double
-    let globalCornerRadius: Double
-    let spaceBackgroundTintColor: Color
-    let spaceBackgroundOpacity: Double
-    let spaceBackgroundBlurRadius: Double
-    let spaceBorderTintColor: Color
-    let spaceBorderOpacity: Double
-    let spaceBorderWidth: Double
-    let spaceCornerRadius: Double
+
+    /// The visual configuration for global groups appearance mode.
+    let globalVisualConfiguration: VisualContainer
+
+    /// The visual configuration for match spaces appearance mode.
+    let spaceVisualConfiguration: VisualContainer
 
     /// The apps in this group that are currently visible (based on group range)
     private var groupApps: [MenuBarApp] {
@@ -38,102 +45,58 @@ struct GroupView: View {
 
     // MARK: - Appearance Properties
 
-    /// The background tint color based on the current appearance mode
-    private var backgroundTintColor: Color {
+    /// The visual configuration based on the current appearance mode
+    private var currentVisualConfiguration: VisualContainer {
         switch appearanceMode {
         case .perApp:
-            group.backgroundTintColor
+            // For per-app mode, use the group's visual configuration
+            group.visualConfig
+
         case .allGroups:
-            globalBackgroundTintColor
+            globalVisualConfiguration
+
         case .matchSpaces:
-            spaceBackgroundTintColor
+            spaceVisualConfiguration
+
         @unknown default:
-            group.backgroundTintColor
+            // For unknown cases, use the group's visual configuration as fallback
+            group.visualConfig
         }
+    }
+
+    /// The background tint color based on the current appearance mode
+    private var backgroundTintColor: Color {
+        currentVisualConfiguration.backgroundTintColor
     }
 
     /// The background opacity based on the current appearance mode
     private var backgroundOpacity: Double {
-        switch appearanceMode {
-        case .perApp:
-            group.backgroundOpacity
-        case .allGroups:
-            globalBackgroundOpacity
-        case .matchSpaces:
-            spaceBackgroundOpacity
-        @unknown default:
-            group.backgroundOpacity
-        }
+        currentVisualConfiguration.backgroundOpacity
     }
 
     /// The background blur radius based on the current appearance mode
     private var backgroundBlurRadius: Double {
-        switch appearanceMode {
-        case .perApp:
-            group.backgroundBlurRadius
-        case .allGroups:
-            globalBackgroundBlurRadius
-        case .matchSpaces:
-            spaceBackgroundBlurRadius
-        @unknown default:
-            group.backgroundBlurRadius
-        }
+        currentVisualConfiguration.backgroundBlurRadius
     }
 
     /// The border color based on the current appearance mode
     private var borderColor: Color {
-        switch appearanceMode {
-        case .perApp:
-            group.borderColor
-        case .allGroups:
-            globalBorderColor
-        case .matchSpaces:
-            spaceBorderTintColor
-        @unknown default:
-            group.borderColor
-        }
+        currentVisualConfiguration.borderTintColor
     }
 
     /// The border opacity based on the current appearance mode
     private var borderOpacity: Double {
-        switch appearanceMode {
-        case .perApp:
-            group.borderOpacity
-        case .allGroups:
-            globalBorderOpacity
-        case .matchSpaces:
-            spaceBorderOpacity
-        @unknown default:
-            group.borderOpacity
-        }
+        currentVisualConfiguration.borderOpacity
     }
 
     /// The border width based on the current appearance mode
     private var borderWidth: Double {
-        switch appearanceMode {
-        case .perApp:
-            Double(group.borderWidth)
-        case .allGroups:
-            Double(globalBorderWidth)
-        case .matchSpaces:
-            spaceBorderWidth
-        @unknown default:
-            Double(group.borderWidth)
-        }
+        currentVisualConfiguration.borderWidth
     }
 
     /// The corner radius based on the current appearance mode
     private var cornerRadius: Double {
-        switch appearanceMode {
-        case .perApp:
-            group.cornerRadius
-        case .allGroups:
-            globalCornerRadius
-        case .matchSpaces:
-            spaceCornerRadius
-        @unknown default:
-            group.cornerRadius
-        }
+        currentVisualConfiguration.cornerRadius
     }
 
     /// The combined frame that encompasses all apps in this group
@@ -149,7 +112,7 @@ struct GroupView: View {
         let fullWidth = maxX - minX
         let fullHeight = maxY - minY
         let reduceWidth = fullWidth - widgetSpacing
-        let reducedHeight = fullHeight * 0.62 // 62% of original height
+        let reducedHeight = windowIconSize + (menuBarVerticalPadding * 2)
         let horizontalMargin = (fullWidth - reduceWidth) / 2
         let verticalMargin = (fullHeight - reducedHeight) / 2
 
@@ -163,27 +126,32 @@ struct GroupView: View {
 
     var body: some View {
         if !groupApps.isEmpty {
-            ZStack {
-                // Background with blur
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(
-                        backgroundTintColor.opacity(backgroundOpacity)
-                    )
-                    .blur(radius: backgroundBlurRadius)
-
-                // Border
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(borderColor.opacity(borderOpacity), lineWidth: borderWidth)
-            }
-            .frame(width: groupFrame.width, height: groupFrame.height)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .position(
-                x: groupFrame.midX,
-                y: groupFrame.midY
-            )
-            .standardShadow()
-            .blurReplaceTransition()
-            .smoothAnimation(duration: animationDuration)
+            Color.clear
+                .background(
+                    backgroundTintColor
+                        .opacity(backgroundOpacity)
+                        .blur(radius: backgroundBlurRadius)
+                )
+                .spaceCornerRadius(cornerRadius)
+                .frame(width: groupFrame.width, height: groupFrame.height)
+                .background(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(
+                            borderColor.opacity(borderOpacity),
+                            lineWidth: borderWidth
+                        )
+                        .frame(
+                            width: groupFrame.width + borderWidth,
+                            height: groupFrame.height + borderWidth
+                        )
+                )
+                .position(
+                    x: groupFrame.midX,
+                    y: groupFrame.midY
+                )
+                .standardShadow()
+                .blurReplaceTransition()
+                .smoothAnimation(duration: animationDuration)
         }
     }
 }

@@ -20,11 +20,12 @@ public final class SetEnablePerformanceMetricsUseCase {
     /// Executes the use case to set the enable performance metrics setting.
     /// - Parameter value: Whether to enable performance metrics
     public func execute(value: Bool?) async {
-        if let value {
-            await configurationGateway.setEnablePerformanceMetrics(value)
-        } else {
-            // For nil, set to default value (true)
-            await configurationGateway.setEnablePerformanceMetrics(true)
-        }
+        let finalValue = value ?? true // Default to true for nil
+
+        // Update the configuration through the gateway
+        await configurationGateway.setEnablePerformanceMetrics(finalValue)
+
+        // Synchronize with Logger's performance metrics setting
+        Logger.enablePerformanceMetrics = finalValue
     }
 }

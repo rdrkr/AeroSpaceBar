@@ -56,6 +56,5 @@ struct SettingsToggle: View {
             )
         }
     }
-    .formStyle(.grouped)
-    .padding(.top, -20)
+    .settingsFormStyle()
 }

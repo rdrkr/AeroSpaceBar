@@ -6,6 +6,8 @@ import SwiftUI
 /// Displays spaces-related settings: space opacity, space blur radius, window titles, and more.
 struct SpacesSettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
+
+    /// The associated navigation page
     private let navigationOption: RootNavigationPage = .spaces
 
     var body: some View {

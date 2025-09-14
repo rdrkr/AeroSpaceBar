@@ -30,20 +30,20 @@ struct AboutView: View {
 
             // App Name
             Text(LocalizedStringResource("AeroSpaceBar"))
-                .font(.largeTitle.weight(.bold))
+                .font(.largeTitle)
                 .foregroundColor(.primary)
                 .tag("about-app-name")
 
             // Version
             HStack(spacing: 4) {
                 Text(LocalizedStringResource("Version \(appVersion) (\(appBuild))"))
-                    .font(.themeTitle)
+                    .font(.title3)
                     .foregroundColor(.themeSecondary)
                     .tag("about-version")
 
                 #if DEBUG
                     Text(LocalizedStringResource("Debug"))
-                        .font(.themeSmallBody.weight(.medium))
+                        .font(.headline)
                         .foregroundColor(.themeWarning)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
@@ -59,7 +59,7 @@ struct AboutView: View {
                     "A modern macOS menu bar application for managing AeroSpace window manager " +
                         "spaces and windows with a beautiful interface."
                 )
-                .font(.themeTitle)
+                .font(.title3)
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -72,7 +72,7 @@ struct AboutView: View {
             // Acknowledgements
             VStack(spacing: 8) {
                 Text(LocalizedStringResource("Acknowledgements"))
-                    .font(.themeSmallBody.weight(.semibold))
+                    .font(.headline)
                     .foregroundColor(.primary)
                     .tag("about-acknowledgements-title")
 
@@ -121,7 +121,7 @@ struct AboutView: View {
                     },
                     label: {
                         Text(LocalizedStringResource("Ronen Druker"))
-                            .font(.themeCaption)
+                            .font(.subheadline)
                     }
                 )
                 .settingsButton()

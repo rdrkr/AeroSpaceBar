@@ -36,7 +36,7 @@
             VStack(alignment: .leading) {
                 Toggle(isOn: $isEnabled) {
                     Text(LocalizedStringResource(stringLiteral: title))
-                        .font(.themeBody)
+                        .font(.body)
                         .tag("feature-flag-toggle-title")
                 }
                 .toggleStyle(.switch)
@@ -61,7 +61,6 @@
                 )
             }
         }
-        .formStyle(.grouped)
-        .padding(.top, -20)
+        .settingsFormStyle()
     }
 #endif

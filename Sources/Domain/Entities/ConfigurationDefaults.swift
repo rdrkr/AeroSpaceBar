@@ -61,7 +61,7 @@ public struct ConfigurationDefaults {
     public static let isOptimizedPerformanceEnabled = true
 
     /// Default log level for application logging.
-    public static let logLevel = Logger.Level.info
+    public static let logLevel = debugMode ? Logger.Level.debug : Logger.Level.info
 
     // MARK: - UI Configuration
 
@@ -75,7 +75,7 @@ public struct ConfigurationDefaults {
     public static let menuBarHorizontalPadding: Double = 53
 
     /// Default spacing between widgets in the menu bar in points.
-    public static let widgetSpacing: Double = 6
+    public static let widgetSpacing: Double = 4
 
     /// Default animation duration in seconds.
     public static let animationDuration: Double = 0.2
@@ -87,7 +87,7 @@ public struct ConfigurationDefaults {
     public static let spaceCornerRadius: Double = 14
 
     /// Default group configuration for menu bar applications.
-    public static let groupsConfiguration: [GroupConfiguration] = GroupConfiguration.singleGroup
+    public static let groupsConfiguration: [Domain.Group] = Group.singleGroup
 
     /// Default groups appearance mode.
     public static let groupsAppearanceMode: GroupsAppearanceMode = .matchSpaces

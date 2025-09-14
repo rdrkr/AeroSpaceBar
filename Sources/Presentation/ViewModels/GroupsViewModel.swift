@@ -23,10 +23,10 @@ final class GroupsViewModel: ObservableObject {
     }
 
     /// The current group configuration.
-    @Published var groupsConfiguration: [GroupConfiguration] {
+    @Published var groups: [Domain.Group] {
         didSet {
             Task.detached(priority: .utility) { [self] in
-                await setGroupsConfigurationUseCase.execute(groupsConfiguration)
+                await setGroupsConfigurationUseCase.execute(groups)
             }
         }
     }
@@ -42,6 +42,12 @@ final class GroupsViewModel: ObservableObject {
 
     /// The widget spacing for UI layout.
     @Published var widgetSpacing: Double
+
+    /// The vertical padding for menu bar UI layout.
+    @Published var menuBarVerticalPadding: Double
+
+    /// The size of window icons in the interface.
+    @Published var windowIconSize: Double
 
     /// The current groups appearance mode.
     @Published var groupsAppearanceMode: GroupsAppearanceMode {
@@ -104,6 +110,8 @@ final class GroupsViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getAnimationDurationUseCase: GetAnimationDurationUseCase
     private let getWidgetSpacingUseCase: GetWidgetSpacingUseCase
+    private let getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase
+    private let getWindowIconSizeUseCase: GetWindowIconSizeUseCase
     private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
     private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
     private let getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase
@@ -161,6 +169,8 @@ final class GroupsViewModel: ObservableObject {
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getAnimationDurationUseCase: GetAnimationDurationUseCase,
         getWidgetSpacingUseCase: GetWidgetSpacingUseCase,
+        getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase,
+        getWindowIconSizeUseCase: GetWindowIconSizeUseCase,
         getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
         setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
         getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase,
@@ -186,6 +196,8 @@ final class GroupsViewModel: ObservableObject {
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getAnimationDurationUseCase = getAnimationDurationUseCase
         self.getWidgetSpacingUseCase = getWidgetSpacingUseCase
+        self.getMenuBarVerticalPaddingUseCase = getMenuBarVerticalPaddingUseCase
+        self.getWindowIconSizeUseCase = getWindowIconSizeUseCase
         self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
         self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
         self.getGroupsGlobalBackgroundTintColorUseCase = getGroupsGlobalBackgroundTintColorUseCase
@@ -205,11 +217,13 @@ final class GroupsViewModel: ObservableObject {
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
-        groupsConfiguration = getGroupsConfigurationUseCase.execute().blockingFirst()
+        groups = getGroupsConfigurationUseCase.execute().blockingFirst()
         menuBarApps = getMenuBarAppsUseCase.execute().blockingFirst()
         isGroupsFeatureEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableGroups
         animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
         widgetSpacing = Double(getWidgetSpacingUseCase.execute().blockingFirst())
+        menuBarVerticalPadding = Double(getMenuBarVerticalPaddingUseCase.execute().blockingFirst())
+        windowIconSize = Double(getWindowIconSizeUseCase.execute().blockingFirst())
         groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
         groupsGlobalBackgroundTintColor = getGroupsGlobalBackgroundTintColorUseCase.execute().blockingFirst()
         groupsGlobalBackgroundOpacity = getGroupsGlobalBackgroundOpacityUseCase.execute().blockingFirst()
@@ -236,13 +250,13 @@ final class GroupsViewModel: ObservableObject {
     /// - Parameter totalApps: The total number of menu bar apps
     /// - Returns: Array of ranges representing unassigned app positions
     private func findUnassignedAppRanges(totalApps: Int) -> [Range<Int>] {
-        guard totalApps > 0, !groupsConfiguration.isEmpty else { return [] }
+        guard totalApps > 0, !groups.isEmpty else { return [] }
 
         // Create a boolean array to track which apps are assigned (1-based indexing)
         var assigned = Array(repeating: false, count: totalApps + 1)
 
         // Mark assigned apps for each group
-        for group in groupsConfiguration {
+        for group in groups {
             let startIdx = group.startIndex
             let endIdx = group.getEndIndex(menuBarAppsCount: totalApps)
 
@@ -278,9 +292,9 @@ final class GroupsViewModel: ObservableObject {
 
     /// Ensures groups are sorted by startIndex and have correct sequential IDs
     private func normalizeGroupsConfiguration() {
-        groupsConfiguration.sort { $0.startIndex < $1.startIndex }
-        for index in 0 ..< groupsConfiguration.count {
-            groupsConfiguration[index].id = index
+        groups.sort { $0.startIndex < $1.startIndex }
+        for index in 0 ..< groups.count {
+            groups[index].id = index
         }
     }
 
@@ -290,7 +304,7 @@ final class GroupsViewModel: ObservableObject {
     @discardableResult
     func addNewGroup() -> Bool {
         let totalApps = menuBarApps.count
-        guard totalApps > 0, groupsConfiguration.count < totalApps else { return false }
+        guard totalApps > 0, groups.count < totalApps else { return false }
 
         // Find first unassigned app
         let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
@@ -300,35 +314,35 @@ final class GroupsViewModel: ObservableObject {
             let targetAppIndex = firstUnassignedRange.lowerBound
 
             // Create new group
-            var newGroup = GroupConfiguration.defaultInstance
+            var newGroup = Group.defaultInstance
             newGroup.startIndex = targetAppIndex
             newGroup.endIndex = targetAppIndex
 
             // Add to array and normalize
-            groupsConfiguration.append(newGroup)
+            groups.append(newGroup)
             normalizeGroupsConfiguration()
 
             return true
         } else {
             // Priority 2: Fallback - take app from first group (original behavior)
-            guard !groupsConfiguration.isEmpty else { return false }
+            guard !groups.isEmpty else { return false }
 
             // Sort to ensure we get the rightmost group (lowest startIndex)
             normalizeGroupsConfiguration()
-            let rightmostGroup = groupsConfiguration[0]
+            let rightmostGroup = groups[0]
             let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
             guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return false }
 
             // Reduce rightmost group by 1 app
-            groupsConfiguration[0].endIndex = rightmostGroupEndIndex - 1
+            groups[0].endIndex = rightmostGroupEndIndex - 1
 
             // Create new group with the taken app
-            var newGroup = GroupConfiguration.defaultInstance
+            var newGroup = Group.defaultInstance
             newGroup.startIndex = rightmostGroupEndIndex
             newGroup.endIndex = rightmostGroupEndIndex
 
             // Add to array and normalize
-            groupsConfiguration.append(newGroup)
+            groups.append(newGroup)
             normalizeGroupsConfiguration()
 
             return true
@@ -338,7 +352,7 @@ final class GroupsViewModel: ObservableObject {
     /// Removes a group at the specified id.
     /// - Parameter index: The id of the group to remove
     func removeGroup(at id: Int) {
-        groupsConfiguration.removeAll { group in
+        groups.removeAll { group in
             group.id == id
         }
 
@@ -350,7 +364,7 @@ final class GroupsViewModel: ObservableObject {
     func resetGroupsToDefaults() {
         Task { @MainActor in
             // Update local state first to ensure immediate UI update
-            groupsConfiguration = ConfigurationDefaults.groupsConfiguration
+            groups = ConfigurationDefaults.groupsConfiguration
             // Then persist the change
             await setGroupsConfigurationUseCase.execute(ConfigurationDefaults.groupsConfiguration)
         }
@@ -360,7 +374,7 @@ final class GroupsViewModel: ObservableObject {
     /// - Returns: True if more groups can be added, false otherwise
     func canAddMoreGroups() -> Bool {
         let totalApps = menuBarApps.count
-        guard totalApps > 0, groupsConfiguration.count < totalApps else { return false }
+        guard totalApps > 0, groups.count < totalApps else { return false }
 
         // Check if there are unassigned apps (Priority 1)
         let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
@@ -369,9 +383,9 @@ final class GroupsViewModel: ObservableObject {
         }
 
         // Check if we can take from rightmost group (Priority 2)
-        guard !groupsConfiguration.isEmpty else { return false }
+        guard !groups.isEmpty else { return false }
 
-        let sortedGroups = groupsConfiguration.sorted { $0.startIndex < $1.startIndex }
+        let sortedGroups = groups.sorted { $0.startIndex < $1.startIndex }
         let rightmostGroup = sortedGroups[0]
         let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
 
@@ -387,9 +401,9 @@ final class GroupsViewModel: ObservableObject {
 
         // Find the previous group's end index
         let previousGroupId = groupId - 1
-        guard previousGroupId < groupsConfiguration.count else { return 1 }
+        guard previousGroupId < groups.count else { return 1 }
 
-        let previousGroup = groupsConfiguration[previousGroupId]
+        let previousGroup = groups[previousGroupId]
         let previousEndIndex = previousGroup.getEndIndex(menuBarAppsCount: menuBarApps.count)
 
         // This group must start at least one position after the previous group ends
@@ -402,12 +416,12 @@ final class GroupsViewModel: ObservableObject {
     func maximumEndIndex(for groupId: Int) -> Int {
         // Find the next group's start index
         let nextGroupId = groupId + 1
-        guard nextGroupId < groupsConfiguration.count else {
+        guard nextGroupId < groups.count else {
             // No next group exists, so this group can extend to all apps
             return menuBarApps.count
         }
 
-        let nextGroup = groupsConfiguration[nextGroupId]
+        let nextGroup = groups[nextGroupId]
 
         // This group must end at least one position before the next group starts
         return nextGroup.startIndex - 1
@@ -418,21 +432,31 @@ final class GroupsViewModel: ObservableObject {
     ///   - groupId: The ID of the group to create a binding for
     ///   - keyPath: The writable key path to the property
     /// - Returns: A binding to the property that automatically updates the configuration
-    func binding<T>(for groupId: Int, keyPath: WritableKeyPath<GroupConfiguration, T>) -> Binding<T> {
+    func binding<T>(for groupId: Int, keyPath: WritableKeyPath<Domain.Group, T>) -> Binding<T> {
         Binding(
             get: {
-                guard groupId >= 0, groupId < self.groupsConfiguration.count else {
-                    return GroupConfiguration.defaultInstance[keyPath: keyPath]
+                guard groupId >= 0, groupId < self.groups.count else {
+                    return Group.defaultInstance[keyPath: keyPath]
                 }
 
-                return self.groupsConfiguration[groupId][keyPath: keyPath]
+                return self.groups[groupId][keyPath: keyPath]
             },
             set: { newValue in
-                guard groupId >= 0, groupId < self.groupsConfiguration.count else { return }
+                guard groupId >= 0, groupId < self.groups.count else { return }
 
-                self.groupsConfiguration[groupId][keyPath: keyPath] = newValue
+                self.groups[groupId][keyPath: keyPath] = newValue
             }
         )
+    }
+
+    /// Updates the visual configuration for a specific group.
+    /// - Parameters:
+    ///   - groupId: The ID of the group to update
+    ///   - visualConfig: The new visual configuration
+    func updateGroupVisualConfig(for groupId: Int, visualConfig: VisualContainer) {
+        guard groupId >= 0, groupId < groups.count else { return }
+
+        groups[groupId].visualConfig = visualConfig
     }
 
     // MARK: - Private Helper Methods
@@ -442,9 +466,9 @@ final class GroupsViewModel: ObservableObject {
     ///   - oldCount: The previous number of menu bar apps
     ///   - newCount: The new number of menu bar apps
     private func updateGroupConfigurationsForMenuBarAppsChange(oldCount: Int, newCount: Int) {
-        guard !groupsConfiguration.isEmpty else { return }
+        guard !groups.isEmpty else { return }
 
-        var updatedGroups = groupsConfiguration
+        var updatedGroups = groups
 
         for groupIndex in 0 ..< updatedGroups.count {
             let group = updatedGroups[groupIndex]
@@ -464,7 +488,7 @@ final class GroupsViewModel: ObservableObject {
             group.startIndex > newCount
         }
 
-        groupsConfiguration = updatedGroups
+        groups = updatedGroups
     }
 
     // MARK: - Private Methods
@@ -487,7 +511,7 @@ final class GroupsViewModel: ObservableObject {
 
         getGroupsConfigurationUseCase.execute()
             .receive(on: DispatchQueue.main)
-            .assign(to: \.groupsConfiguration, on: self)
+            .assign(to: \.groups, on: self)
             .store(in: &cancellables)
 
         // Subscribe to menu bar apps changes
@@ -517,6 +541,20 @@ final class GroupsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .map { Double($0) }
             .assign(to: \.widgetSpacing, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to menu bar vertical padding changes
+        getMenuBarVerticalPaddingUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .map { Double($0) }
+            .assign(to: \.menuBarVerticalPadding, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to window icon size changes
+        getWindowIconSizeUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .map { Double($0) }
+            .assign(to: \.windowIconSize, on: self)
             .store(in: &cancellables)
 
         // Subscribe to groups appearance mode changes

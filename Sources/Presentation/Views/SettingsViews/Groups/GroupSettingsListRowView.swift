@@ -9,7 +9,7 @@ struct GroupSettingsListRowView: View {
     let onNavigateTo: (AnyNavigationPage) -> Void
     let onDelete: (AnyNavigationPage) -> Void
 
-    @State var groupPage: AnyNavigationPage?
+    @State private var groupPage: AnyNavigationPage?
 
     var body: some View {
         Button(

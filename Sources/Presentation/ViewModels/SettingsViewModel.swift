@@ -836,6 +836,8 @@ class SettingsViewModel: ObservableObject {
 
         rootPages = RootNavigationPage.allCases.filter { option in
             switch option {
+            case .license:
+                featureFlags.enableLicensing
             case .general:
                 true // General is always available
             case .spaces:

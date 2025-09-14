@@ -20,11 +20,12 @@ public final class SetLogLevelUseCase {
     /// Executes the use case to set the log level setting.
     /// - Parameter level: The log level
     public func execute(value: Logger.Level?) async {
-        if let level = value {
-            await configurationGateway.setLogLevel(level)
-        } else {
-            // For nil, set to default value (.info)
-            await configurationGateway.setLogLevel(.info)
-        }
+        let finalValue = value ?? Logger.Level.info
+
+        // Update the configuration through the gateway
+        await configurationGateway.setLogLevel(finalValue)
+
+        // Synchronize with Logger's performance metrics setting
+        Logger.logLevel = finalValue
     }
 }

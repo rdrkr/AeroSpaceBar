@@ -98,7 +98,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
 
                         Text(subtitle)
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 12))
+                            .font(.callout)
                             .foregroundStyle(.secondary)
                             .tag("intro-form-subtitle")
 
@@ -144,8 +144,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
 
             content()
         }
-        .formStyle(.grouped)
-        .padding(.top, -20)
+        .settingsFormStyle()
         .navigationTitle(
             style == .intro ? "" : navigationTitle
         )

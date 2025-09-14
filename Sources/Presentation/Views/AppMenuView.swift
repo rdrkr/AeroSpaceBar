@@ -4,9 +4,10 @@ import SwiftUI
 
 /// A SwiftUI view that provides the menu bar extra content for AeroSpaceBar.
 ///
-/// This view contains menu items for Settings, About, and Quit functionality,
+/// This view contains menu items for Settings, About, Licensing, and Quit functionality,
 /// replacing the previous NSMenu implementation with a SwiftUI-native approach.
 struct AppMenuView: View {
+    @EnvironmentObject private var viewModel: LicensingViewModel
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -16,7 +17,17 @@ struct AppMenuView: View {
                 .keyboardShortcut(",")
                 .tag("app-menu-settings-link")
 
+            // License
             MenuDivider(identifier: "1")
+
+            if viewModel.enableLicensing {
+                // License Status
+                LicenseMenuItemView()
+                    .environmentObject(viewModel)
+                    .tag("app-menu-license-item")
+
+                MenuDivider(identifier: "2")
+            }
 
             // About
             MenuItemView(
@@ -27,7 +38,7 @@ struct AppMenuView: View {
                 dismiss()
             }
 
-            MenuDivider(identifier: "2")
+            MenuDivider(identifier: "3")
 
             // Quit
             MenuItemView(

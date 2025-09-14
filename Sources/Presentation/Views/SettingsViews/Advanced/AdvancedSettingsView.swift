@@ -10,6 +10,8 @@ import SwiftUI
 struct AdvancedSettingsView: View {
     @EnvironmentObject var viewModel: SettingsViewModel
     @State private var showingResetConfirmation = false
+
+    /// The associated navigation page
     let navigationOption: RootNavigationPage = .advanced
 
     // MARK: - Computed Properties

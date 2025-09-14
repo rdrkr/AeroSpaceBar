@@ -116,4 +116,12 @@ public enum UserDefaultsKeys: String, CaseIterable {
 
     /// The global corner radius for all groups.
     case groupsGlobalCornerRadius = "com.aerospacebar.preferences.ui.groupsGlobalCornerRadius"
+
+    // MARK: - Profile Preferences
+
+    /// The user's display name for their profile.
+    case profileUserName = "com.aerospacebar.profile.userName"
+
+    /// The user's profile image data.
+    case profileImageData = "com.aerospacebar.profile.imageData"
 }

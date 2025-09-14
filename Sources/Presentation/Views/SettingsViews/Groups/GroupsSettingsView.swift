@@ -11,18 +11,8 @@ struct GroupsSettingsView: View {
     /// Whether to show the reset groups confirmation
     @State private var showingResetGroupsConfirmation = false
 
-    /// The current navigation option
+    /// The associated navigation page
     private let navigationOption: RootNavigationPage = .groups
-
-    /// The current group configuration
-    private var groups: [GroupConfiguration] {
-        groupsViewModel.groupsConfiguration
-    }
-
-    /// Whether we can add more groups (not every app has its own group)
-    private var canAddMoreGroups: Bool {
-        groupsViewModel.canAddMoreGroups()
-    }
 
     /// Background appearance configuration section
     private var backgroundSection: some View {
@@ -147,13 +137,16 @@ struct GroupsSettingsView: View {
                 // Global Appearance Configuration Sections (for All Groups and Same as Spaces modes)
                 if groupsViewModel.groupsAppearanceMode == .allGroups {
                     backgroundSection
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     borderSection
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     shapeSection
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
                 Section {
                     List {
-                        ForEach(Array(groups.enumerated()), id: \.element.id) { _, group in
+                        ForEach(Array(groupsViewModel.groups.enumerated()), id: \.element.id) { _, group in
                             GroupSettingsListRowView(
                                 groupId: group.id,
                                 onRegisterDynamicSubPage: { groupPage in
@@ -180,7 +173,7 @@ struct GroupsSettingsView: View {
                             Image(systemName: "plus.circle")
                         }
                         .buttonStyle(.plain)
-                        .disabled(!canAddMoreGroups)
+                        .disabled(!groupsViewModel.canAddMoreGroups())
                     }
                 } footer: {
                     Text(LocalizedStringResource(
@@ -192,7 +185,7 @@ struct GroupsSettingsView: View {
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
 
-                if !groups.isEmpty {
+                if !groupsViewModel.groups.isEmpty {
                     Section(LocalizedStringResource("Reset")) {
                         SettingsDestructiveButton(
                             title: LocalizedStringResource("Reset Groups"),
@@ -215,7 +208,8 @@ struct GroupsSettingsView: View {
             .tag("groups-show-groups-toggle")
         }
         .animation(.themeSmoothFast, value: groupsViewModel.showGroups)
-        .animation(.themeSmoothFast, value: groups.isEmpty)
+        .animation(.themeSmoothFast, value: groupsViewModel.groups.isEmpty)
+        .animation(.themeSmoothFast, value: groupsViewModel.groupsAppearanceMode)
         .onChange(of: groupsViewModel.showGroups) { _, isEnabled in
             if !isEnabled {
                 // When groups feature is disabled, remove all group pages from navigation history

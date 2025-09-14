@@ -23,21 +23,37 @@ struct GroupPageView: View {
 
     /// The current group configuration for this group ID.
     /// Returns a default instance if the ID is out of bounds.
-    private var group: GroupConfiguration {
-        guard id >= 0, id < groupsViewModel.groupsConfiguration.count else {
+    private var group: Domain.Group {
+        guard id >= 0, id < groupsViewModel.groups.count else {
             // Return a default group if index is out of bounds
-            return GroupConfiguration.defaultInstance
+            return Domain.Group.defaultInstance
         }
 
-        return groupsViewModel.groupsConfiguration[id]
+        return groupsViewModel.groups[id]
     }
 
     /// Creates a binding to a specific property of the group configuration.
     /// This is a convenience wrapper around the view model's binding method.
     /// - Parameter keyPath: The writable key path to the property
     /// - Returns: A binding to the property that automatically updates the view model
-    private func binding<T>(for keyPath: WritableKeyPath<GroupConfiguration, T>) -> Binding<T> {
+    private func binding<T>(for keyPath: WritableKeyPath<Domain.Group, T>) -> Binding<T> {
         groupsViewModel.binding(for: id, keyPath: keyPath)
+    }
+
+    /// Creates a binding to a specific property of the visual configuration.
+    /// - Parameter keyPath: The writable key path to the visual config property
+    /// - Returns: A binding to the property that automatically updates the view model
+    private func visualBinding<T>(for keyPath: WritableKeyPath<VisualContainer, T>) -> Binding<T> {
+        Binding(
+            get: {
+                group.visualConfig[keyPath: keyPath]
+            },
+            set: { newValue in
+                var updatedConfig = group.visualConfig
+                updatedConfig[keyPath: keyPath] = newValue
+                groupsViewModel.updateGroupVisualConfig(for: id, visualConfig: updatedConfig)
+            }
+        )
     }
 
     /// The total number of menu bar applications currently available.
@@ -59,10 +75,10 @@ struct GroupPageView: View {
     private var endIndex: Binding<Int> {
         Binding(
             get: {
-                groupsViewModel.groupsConfiguration[id].getEndIndex(menuBarAppsCount: totalApps)
+                groupsViewModel.groups[id].getEndIndex(menuBarAppsCount: totalApps)
             },
             set: { newEndIndex in
-                groupsViewModel.groupsConfiguration[id].setEndIndex(newEndIndex, menuBarAppsCount: totalApps)
+                groupsViewModel.groups[id].setEndIndex(newEndIndex, menuBarAppsCount: totalApps)
             }
         )
     }
@@ -92,15 +108,15 @@ struct GroupPageView: View {
                     SettingsColorPicker(
                         title: LocalizedStringResource("Tint Color"),
                         description: LocalizedStringResource("Choose the background tint color for this group"),
-                        selectedColor: binding(for: \.backgroundTintColor),
+                        selectedColor: visualBinding(for: \.backgroundTintColor),
                         supportsOpacity: false
                     )
 
                     // Background Opacity
                     SettingsSlider(
-                        value: binding(for: \.backgroundOpacity),
+                        value: visualBinding(for: \.backgroundOpacity),
                         in: 0.0 ... 1.0,
-                        defaultValue: GroupConfiguration.defaultInstance.backgroundOpacity,
+                        defaultValue: Group.defaultInstance.visualConfig.backgroundOpacity,
                         stickiness: 0.05,
                         label: LocalizedStringResource("Opacity"),
                         helpText: LocalizedStringResource("Adjust the background opacity of this group"),
@@ -109,9 +125,9 @@ struct GroupPageView: View {
 
                     // Background Blur Radius
                     SettingsSlider(
-                        value: binding(for: \.backgroundBlurRadius),
+                        value: visualBinding(for: \.backgroundBlurRadius),
                         in: 0.0 ... 10.0,
-                        defaultValue: GroupConfiguration.defaultInstance.backgroundBlurRadius,
+                        defaultValue: Group.defaultInstance.visualConfig.backgroundBlurRadius,
                         stickiness: 0.5,
                         label: LocalizedStringResource("Blur"),
                         helpText: LocalizedStringResource("Adjust the background blur radius of this group"),
@@ -124,15 +140,15 @@ struct GroupPageView: View {
                     SettingsColorPicker(
                         title: LocalizedStringResource("Tint Color"),
                         description: LocalizedStringResource("Choose the border tint color for this group"),
-                        selectedColor: binding(for: \.borderColor),
+                        selectedColor: visualBinding(for: \.borderTintColor),
                         supportsOpacity: false
                     )
 
                     // Border Opacity
                     SettingsSlider(
-                        value: binding(for: \.borderOpacity),
+                        value: visualBinding(for: \.borderOpacity),
                         in: 0.0 ... 1.0,
-                        defaultValue: GroupConfiguration.defaultInstance.borderOpacity,
+                        defaultValue: Group.defaultInstance.visualConfig.borderOpacity,
                         stickiness: 0.05,
                         label: LocalizedStringResource("Opacity"),
                         helpText: LocalizedStringResource("Adjust the border opacity of this group"),
@@ -141,9 +157,9 @@ struct GroupPageView: View {
 
                     // Border Width
                     SettingsSlider(
-                        value: binding(for: \.borderWidth),
+                        value: visualBinding(for: \.borderWidth),
                         in: 0.0 ... 5.0,
-                        defaultValue: GroupConfiguration.defaultInstance.borderWidth,
+                        defaultValue: Group.defaultInstance.visualConfig.borderWidth,
                         stickiness: 0.25,
                         label: LocalizedStringResource("Width"),
                         helpText: LocalizedStringResource("Adjust the border width of this group"),
@@ -154,9 +170,9 @@ struct GroupPageView: View {
                 Section(LocalizedStringResource("Group Geometry")) {
                     // Corner Radius
                     SettingsSlider(
-                        value: binding(for: \.cornerRadius),
-                        in: 0.0 ... GroupConfiguration.defaultInstance.cornerRadius,
-                        defaultValue: GroupConfiguration.defaultInstance.cornerRadius,
+                        value: visualBinding(for: \.cornerRadius),
+                        in: 0.0 ... Group.defaultInstance.visualConfig.cornerRadius,
+                        defaultValue: Group.defaultInstance.visualConfig.cornerRadius,
                         stickiness: 1.0,
                         label: LocalizedStringResource("Corner Radius"),
                         helpText: LocalizedStringResource("Adjust the corner radius of this group"),
@@ -176,8 +192,7 @@ struct GroupPageView: View {
                 }
             }
         }
-        .formStyle(.grouped)
-        .padding(.top, -20)
+        .settingsFormStyle()
         .navigationTitle("Group \(id + 1)")
     }
 

@@ -14,17 +14,22 @@
         @Published var enableGroups: Bool = false
         @Published var enableSpaces: Bool = false
         @Published var enableAdvancedSettings: Bool = false
+        @Published var enableLicensing: Bool = false
+        @Published var mockActiveLicense: Bool = false
 
         private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
         private let setFeatureFlagsUseCase: SetFeatureFlagsUseCase
+        private let deactivateLicenseUseCase: DeactivateLicenseUseCase
         private var cancellables = Set<AnyCancellable>()
 
         init(
             getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-            setFeatureFlagsUseCase: SetFeatureFlagsUseCase
+            setFeatureFlagsUseCase: SetFeatureFlagsUseCase,
+            deactivateLicenseUseCase: DeactivateLicenseUseCase
         ) {
             self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
             self.setFeatureFlagsUseCase = setFeatureFlagsUseCase
+            self.deactivateLicenseUseCase = deactivateLicenseUseCase
 
             bindFeatureFlags()
             loadInitialState()
@@ -40,16 +45,20 @@
                 .store(in: &cancellables)
 
             // Bind property changes to use case updates
-            Publishers.CombineLatest3($enableSpaces, $enableGroups, $enableAdvancedSettings)
+            Publishers.CombineLatest($enableSpaces, $enableGroups)
+                .combineLatest(Publishers.CombineLatest($enableAdvancedSettings, $enableLicensing))
+                .combineLatest($mockActiveLicense)
                 .dropFirst() // Skip initial values
                 .debounce(for: DispatchQueue.SchedulerTimeType.Stride.milliseconds(300), scheduler: DispatchQueue.main)
-                .sink { [weak self] spaces, groups, advanced in
+                .sink { [weak self] _, mockLicense in
                     guard let self else { return }
 
                     let flags = FeatureFlags(
-                        enableGroups: groups,
-                        enableSpaces: spaces,
-                        enableAdvancedSettings: advanced
+                        enableGroups: enableGroups,
+                        enableSpaces: enableSpaces,
+                        enableAdvancedSettings: enableAdvancedSettings,
+                        enableLicensing: enableLicensing,
+                        mockActiveLicense: mockLicense
                     )
 
                     Task {
@@ -68,10 +77,13 @@
             enableGroups = flags.enableGroups
             enableSpaces = flags.enableSpaces
             enableAdvancedSettings = flags.enableAdvancedSettings
+            enableLicensing = flags.enableLicensing
+            mockActiveLicense = flags.mockActiveLicense
         }
 
         func resetToDefaults() async {
             await setFeatureFlagsUseCase.resetToDefaults()
+            await deactivateLicenseUseCase.execute()
         }
     }
 #endif

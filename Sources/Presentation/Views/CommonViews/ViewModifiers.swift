@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 // MARK: - Shadow Modifiers
@@ -98,40 +99,44 @@ struct HoverState: ViewModifier {
 
 /// Focus state modifier for spaces
 struct SpaceFocusState: ViewModifier {
-    struct Configuration {
-        let backgroundOpacity: Double
-        let backgroundBlurRadius: Double
-        let backgroundTintColor: Color
-        let foregroundColor: Color
-        let borderTintColor: Color
-        let borderOpacity: Double
-        let borderCornerRadius: Double
-        let borderWidth: Double
-    }
-
     let isFocused: Bool
-    let configuration: Configuration
+    let visualConfig: VisualContainer
+    let widgetSpacing: Double
 
     func body(content: Content) -> some View {
         content
             .background(
-                configuration.backgroundTintColor
-                    .opacity(
-                        isFocused ? (
-                            configuration.backgroundOpacity == 0 ? 0 :
-                                min(configuration.backgroundOpacity + 0.2, 1)
-                        ) : configuration.backgroundOpacity
-                    )
-                    .blur(radius: configuration.backgroundBlurRadius)
+                GeometryReader { geometry in
+                    visualConfig.backgroundTintColor
+                        .opacity(
+                            isFocused ? (
+                                visualConfig.backgroundOpacity == 0 ? 0 :
+                                    min(visualConfig.backgroundOpacity + 0.2, 1)
+                            ) : visualConfig.backgroundOpacity
+                        )
+                        .blur(radius: visualConfig.backgroundBlurRadius)
+                        .spaceCornerRadius(visualConfig.cornerRadius)
+                        .frame(
+                            width: geometry.size.width,
+                            height: geometry.size.height - (visualConfig.borderWidth * 2)
+                        )
+                        .offset(y: visualConfig.borderWidth)
+                        .background(
+                            RoundedRectangle(cornerRadius: visualConfig.cornerRadius, style: .continuous)
+                                .stroke(
+                                    visualConfig.borderTintColor
+                                        .opacity(visualConfig.borderOpacity),
+                                    lineWidth: visualConfig.borderWidth
+                                )
+                                .frame(
+                                    width: geometry.size.width + visualConfig.borderWidth,
+                                    height: geometry.size.height - visualConfig.borderWidth
+                                )
+                                .offset(y: visualConfig.borderWidth)
+                        )
+                }
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: configuration.borderCornerRadius, style: .continuous)
-                    .stroke(
-                        configuration.borderTintColor
-                            .opacity(configuration.borderOpacity),
-                        lineWidth: configuration.borderWidth
-                    )
-            )
+            .padding(.horizontal, widgetSpacing + visualConfig.borderWidth)
     }
 }
 
@@ -198,7 +203,7 @@ struct SecondaryText: ViewModifier {
     /// - Returns: Content styled with small secondary text appearance.
     func body(content: Content) -> some View {
         content
-            .font(.themeCaption)
+            .font(.subheadline)
             .foregroundColor(.themeSecondary)
     }
 }
@@ -221,12 +226,12 @@ struct SuccessText: ViewModifier {
     func body(content: Content) -> some View {
         if isSelectable {
             content
-                .font(.themeCaption)
+                .font(.subheadline)
                 .foregroundColor(.themeSuccess)
                 .textSelection(.enabled)
         } else {
             content
-                .font(.themeCaption)
+                .font(.subheadline)
                 .foregroundColor(.themeSuccess)
         }
     }
@@ -250,12 +255,12 @@ struct ErrorText: ViewModifier {
     func body(content: Content) -> some View {
         if isSelectable {
             content
-                .font(.themeCaption)
+                .font(.subheadline)
                 .foregroundColor(.themeError)
                 .textSelection(.enabled)
         } else {
             content
-                .font(.themeCaption)
+                .font(.subheadline)
                 .foregroundColor(.themeError)
         }
     }
@@ -293,6 +298,85 @@ struct AccessibleImage: ViewModifier {
         content
             .accessibilityLabel(isDecorative ? "" : String(localized: label))
             .accessibilityHidden(isDecorative)
+    }
+}
+
+/// Settings form modifier for consistent styling
+struct SettingsFormStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .formStyle(.grouped)
+            .padding(.top, -20)
+    }
+}
+
+// MARK: - Visual Container Configuration Modifiers
+
+/// Visual container configuration modifier for applying consolidated visual styling
+struct VisualContainerConfigurationModifier: ViewModifier {
+    let configuration: VisualContainer
+    let applyBackground: Bool
+    let applyBorder: Bool
+    let applyForeground: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .modifier(ConditionalBackground(configuration: configuration, applyBackground: applyBackground))
+            .modifier(ConditionalBorder(configuration: configuration, applyBorder: applyBorder))
+            .modifier(ConditionalForeground(configuration: configuration, applyForeground: applyForeground))
+            .clipShape(RoundedRectangle(cornerRadius: configuration.cornerRadius))
+    }
+}
+
+/// Conditional background modifier
+private struct ConditionalBackground: ViewModifier {
+    let configuration: VisualContainer
+    let applyBackground: Bool
+
+    func body(content: Content) -> some View {
+        if applyBackground {
+            content.background(
+                configuration.backgroundTintColor
+                    .opacity(configuration.backgroundOpacity)
+                    .blur(radius: configuration.backgroundBlurRadius)
+            )
+        } else {
+            content
+        }
+    }
+}
+
+/// Conditional border modifier
+private struct ConditionalBorder: ViewModifier {
+    let configuration: VisualContainer
+    let applyBorder: Bool
+
+    func body(content: Content) -> some View {
+        if applyBorder {
+            content.overlay(
+                RoundedRectangle(cornerRadius: configuration.cornerRadius)
+                    .stroke(
+                        configuration.borderTintColor.opacity(configuration.borderOpacity),
+                        lineWidth: configuration.borderWidth
+                    )
+            )
+        } else {
+            content
+        }
+    }
+}
+
+/// Conditional foreground modifier
+private struct ConditionalForeground: ViewModifier {
+    let configuration: VisualContainer
+    let applyForeground: Bool
+
+    func body(content: Content) -> some View {
+        if applyForeground {
+            content.foregroundStyle(configuration.foregroundColor)
+        } else {
+            content
+        }
     }
 }
 
@@ -337,9 +421,16 @@ extension View {
     /// Apply space focus state modifier
     func spaceFocusState(
         _ isFocused: Bool,
-        configuration: SpaceFocusState.Configuration
+        visualConfig: VisualContainer,
+        widgetSpacing: Double
     ) -> some View {
-        modifier(SpaceFocusState(isFocused: isFocused, configuration: configuration))
+        modifier(
+            SpaceFocusState(
+                isFocused: isFocused,
+                visualConfig: visualConfig,
+                widgetSpacing: widgetSpacing
+            )
+        )
     }
 
     /// Apply window focus state modifier
@@ -355,6 +446,11 @@ extension View {
     /// Apply accessible image modifier
     func accessibleImage(_ label: LocalizedStringResource, isDecorative: Bool = false) -> some View {
         modifier(AccessibleImage(label: label, isDecorative: isDecorative))
+    }
+
+    /// Apply settings form style modifier
+    func settingsFormStyle() -> some View {
+        modifier(SettingsFormStyle())
     }
 
     /// Apply conditional interaction modifier
@@ -381,5 +477,22 @@ extension View {
     /// Apply error text styling
     func errorText(isSelectable: Bool = false) -> some View {
         modifier(ErrorText(isSelectable: isSelectable))
+    }
+
+    /// Apply visual container configuration styling
+    func visualContainerConfiguration(
+        _ configuration: VisualContainer,
+        applyBackground: Bool = true,
+        applyBorder: Bool = true,
+        applyForeground: Bool = true
+    ) -> some View {
+        modifier(
+            VisualContainerConfigurationModifier(
+                configuration: configuration,
+                applyBackground: applyBackground,
+                applyBorder: applyBorder,
+                applyForeground: applyForeground
+            )
+        )
     }
 }

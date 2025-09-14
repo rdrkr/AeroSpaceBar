@@ -22,5 +22,10 @@ public final class GetLogLevelUseCase {
     /// - Returns: A publisher that emits log level values
     public func execute() -> AnyPublisher<Logger.Level, Never> {
         configurationGateway.logLevelPublisher
+            .handleEvents(receiveOutput: { value in
+                // Ensure Logger is synchronized with configuration changes
+                Logger.logLevel = value
+            })
+            .eraseToAnyPublisher()
     }
 }

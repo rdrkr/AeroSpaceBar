@@ -17,25 +17,56 @@ public struct FeatureFlags: Codable, Equatable, Sendable {
 
     /// Whether to show advanced settings in the preferences.
     public let enableAdvancedSettings: Bool
+    /// Whether to enable licensing features and restrictions.
+    public let enableLicensing: Bool
+
+    #if DEBUG
+        /// Whether to mock an active license for development testing.
+        public let mockActiveLicense: Bool
+    #endif
 
     // MARK: - Initialization
 
-    /// Creates feature flags with the specified values.
-    /// - Parameters:
-    ///   - enableGroups: Enable groups functionality
-    ///   - enableSpaces: Enable spaces visualization
-    ///   - enableAdvancedSettings: Show advanced settings
-    ///   - enableBetaUI: Enable beta UI components
-    ///   - enableWindowPreview: Enable window preview functionality
-    public init(
-        enableGroups: Bool = FeatureFlagDefaults.enableGroups,
-        enableSpaces: Bool = FeatureFlagDefaults.enableSpaces,
-        enableAdvancedSettings: Bool = FeatureFlagDefaults.enableAdvancedSettings
-    ) {
-        self.enableGroups = enableGroups
-        self.enableSpaces = enableSpaces
-        self.enableAdvancedSettings = enableAdvancedSettings
-    }
+    #if DEBUG
+        /// Creates feature flags with the specified values (DEBUG build).
+        /// - Parameters:
+        ///   - enableGroups: Enable groups functionality
+        ///   - enableSpaces: Enable spaces visualization
+        ///   - enableAdvancedSettings: Show advanced settings
+        ///   - enableLicensing: Enable licensing features
+        ///   - mockActiveLicense: Mock active license for development
+        public init(
+            enableGroups: Bool = FeatureFlagDefaults.enableGroups,
+            enableSpaces: Bool = FeatureFlagDefaults.enableSpaces,
+            enableAdvancedSettings: Bool = FeatureFlagDefaults.enableAdvancedSettings,
+            enableLicensing: Bool = FeatureFlagDefaults.enableLicensing,
+            mockActiveLicense: Bool = FeatureFlagDefaults.mockActiveLicense
+        ) {
+            self.enableGroups = enableGroups
+            self.enableSpaces = enableSpaces
+            self.enableAdvancedSettings = enableAdvancedSettings
+            self.enableLicensing = enableLicensing
+            self.mockActiveLicense = mockActiveLicense
+        }
+    #else
+        /// Creates feature flags with the specified values (RELEASE build).
+        /// - Parameters:
+        ///   - enableGroups: Enable groups functionality
+        ///   - enableSpaces: Enable spaces visualization
+        ///   - enableAdvancedSettings: Show advanced settings
+        ///   - enableLicensing: Enable licensing features
+        public init(
+            enableGroups: Bool = FeatureFlagDefaults.enableGroups,
+            enableSpaces: Bool = FeatureFlagDefaults.enableSpaces,
+            enableAdvancedSettings: Bool = FeatureFlagDefaults.enableAdvancedSettings,
+            enableLicensing: Bool = FeatureFlagDefaults.enableLicensing
+        ) {
+            self.enableGroups = enableGroups
+            self.enableSpaces = enableSpaces
+            self.enableAdvancedSettings = enableAdvancedSettings
+            self.enableLicensing = enableLicensing
+        }
+    #endif
 
     // MARK: - Convenience Methods
 
@@ -45,25 +76,52 @@ public struct FeatureFlags: Codable, Equatable, Sendable {
         FeatureFlags()
     }
 
-    /// Creates a copy of the feature flags with updated values.
-    /// - Parameters:
-    ///   - enableGroups: New value for groups feature (optional)
-    ///   - enableSpaces: New value for spaces feature (optional)
-    ///   - enableAdvancedSettings: New value for advanced settings (optional)
-    ///   - enableBetaUI: New value for beta UI (optional)
-    ///   - enableWindowPreview: New value for window preview (optional)
-    /// - Returns: New FeatureFlags instance with updated values
-    public func updating(
-        enableGroups: Bool? = nil,
-        enableSpaces: Bool? = nil,
-        enableAdvancedSettings: Bool? = nil
-    ) -> FeatureFlags {
-        FeatureFlags(
-            enableGroups: enableGroups ?? self.enableGroups,
-            enableSpaces: enableSpaces ?? self.enableSpaces,
-            enableAdvancedSettings: enableAdvancedSettings ?? self.enableAdvancedSettings
-        )
-    }
+    #if DEBUG
+        /// Creates a copy of the feature flags with updated values (DEBUG build).
+        /// - Parameters:
+        ///   - enableGroups: New value for groups feature (optional)
+        ///   - enableSpaces: New value for spaces feature (optional)
+        ///   - enableAdvancedSettings: New value for advanced settings (optional)
+        ///   - enableLicensing: New value for licensing feature (optional)
+        ///   - mockActiveLicense: New value for mock license feature (optional)
+        /// - Returns: New FeatureFlags instance with updated values
+        public func updating(
+            enableGroups: Bool? = nil,
+            enableSpaces: Bool? = nil,
+            enableAdvancedSettings: Bool? = nil,
+            enableLicensing: Bool? = nil,
+            mockActiveLicense: Bool? = nil
+        ) -> FeatureFlags {
+            FeatureFlags(
+                enableGroups: enableGroups ?? self.enableGroups,
+                enableSpaces: enableSpaces ?? self.enableSpaces,
+                enableAdvancedSettings: enableAdvancedSettings ?? self.enableAdvancedSettings,
+                enableLicensing: enableLicensing ?? self.enableLicensing,
+                mockActiveLicense: mockActiveLicense ?? self.mockActiveLicense
+            )
+        }
+    #else
+        /// Creates a copy of the feature flags with updated values (RELEASE build).
+        /// - Parameters:
+        ///   - enableGroups: New value for groups feature (optional)
+        ///   - enableSpaces: New value for spaces feature (optional)
+        ///   - enableAdvancedSettings: New value for advanced settings (optional)
+        ///   - enableLicensing: New value for licensing feature (optional)
+        /// - Returns: New FeatureFlags instance with updated values
+        public func updating(
+            enableGroups: Bool? = nil,
+            enableSpaces: Bool? = nil,
+            enableAdvancedSettings: Bool? = nil,
+            enableLicensing: Bool? = nil
+        ) -> FeatureFlags {
+            FeatureFlags(
+                enableGroups: enableGroups ?? self.enableGroups,
+                enableSpaces: enableSpaces ?? self.enableSpaces,
+                enableAdvancedSettings: enableAdvancedSettings ?? self.enableAdvancedSettings,
+                enableLicensing: enableLicensing ?? self.enableLicensing
+            )
+        }
+    #endif
 }
 
 #if DEBUG
@@ -73,12 +131,39 @@ public struct FeatureFlags: Codable, Equatable, Sendable {
 
         /// Gets a human-readable description of all feature flags and their states.
         var debugDescription: String {
-            """
-            Feature Flags:
-            - Groups: \(enableGroups ? "✅" : "❌")
-            - Spaces: \(enableSpaces ? "✅" : "❌")
-            - Advanced Settings: \(enableAdvancedSettings ? "✅" : "❌")
-            """
+            var result = "Feature Flags:\n"
+
+            if enableGroups {
+                result += "- Groups ✅\n"
+            } else {
+                result += "- Groups ❌\n"
+            }
+
+            if enableSpaces {
+                result += "- Spaces ✅\n"
+            } else {
+                result += "- Spaces ❌\n"
+            }
+
+            if enableAdvancedSettings {
+                result += "- Advanced Settings ✅\n"
+            } else {
+                result += "- Advanced Settings ❌\n"
+            }
+
+            if enableLicensing {
+                result += "- Licensing ✅\n"
+            } else {
+                result += "- Licensing ❌\n"
+            }
+
+            if mockActiveLicense {
+                result += "- Mock Active License ✅"
+            } else {
+                result += "- Mock Active License ❌"
+            }
+
+            return result
         }
     }
 #else

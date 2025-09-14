@@ -18,7 +18,7 @@ public final class SetGroupsConfigurationUseCase {
 
     /// Executes the use case to set the group configuration.
     /// - Parameter value: The group configuration defining how apps should be grouped
-    public func execute(_ value: [GroupConfiguration]) async {
+    public func execute(_ value: [Domain.Group]) async {
         await configurationGateway.setGroupsConfiguration(value)
     }
 }

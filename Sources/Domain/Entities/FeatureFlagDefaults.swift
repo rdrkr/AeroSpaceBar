@@ -21,15 +21,40 @@ public enum FeatureFlagDefaults {
     /// Set to true since groups are a stable core feature.
     public static let enableGroups: Bool = true
 
+    /// Default state for licensing functionality.
+    /// Set to true for debug builds to test licensing features, false for release builds.
+    #if DEBUG
+        public static let enableLicensing: Bool = true
+    #else
+        public static let enableLicensing: Bool = false
+    #endif
+
+    #if DEBUG
+        /// Default state for mocking an active license.
+        /// Set to false by default, can be enabled for testing licensed features.
+        public static let mockActiveLicense: Bool = false
+    #endif
+
     // MARK: - Convenience
 
     /// Creates a FeatureFlags instance with all default values.
     /// - Returns: FeatureFlags configured with default values
     public static func createDefault() -> FeatureFlags {
-        FeatureFlags(
-            enableGroups: enableGroups,
-            enableSpaces: enableSpaces,
-            enableAdvancedSettings: enableAdvancedSettings
-        )
+        #if DEBUG
+            return FeatureFlags(
+                enableGroups: enableGroups,
+                enableSpaces: enableSpaces,
+                enableAdvancedSettings: enableAdvancedSettings,
+                enableLicensing: enableLicensing,
+                mockActiveLicense: mockActiveLicense
+            )
+        #else
+            return FeatureFlags(
+                enableGroups: enableGroups,
+                enableSpaces: enableSpaces,
+                enableAdvancedSettings: enableAdvancedSettings,
+                enableLicensing: enableLicensing
+            )
+        #endif
     }
 }

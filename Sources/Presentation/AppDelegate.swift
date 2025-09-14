@@ -160,7 +160,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         setupPanel(
             &groupsPanel,
             frame: groupsFrame,
-            level: Int(CGWindowLevelForKey(.desktopWindow)),
+            level: Int(CGWindowLevelForKey(.utilityWindow)),
             hostingRootView: AnyView(groupsView)
         )
     }

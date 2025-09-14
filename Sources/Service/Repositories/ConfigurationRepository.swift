@@ -117,7 +117,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         ConfigurationDefaults.spaceCornerRadius
     )
 
-    private let groupsConfigurationSubject = CurrentValueSubject<[GroupConfiguration], Never>(
+    private let groupsConfigurationSubject = CurrentValueSubject<[Domain.Group], Never>(
         ConfigurationDefaults.groupsConfiguration
     )
 
@@ -245,7 +245,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         spaceCornerRadiusSubject.eraseToAnyPublisher()
     }
 
-    public var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> {
+    public var groupsConfigurationPublisher: AnyPublisher<[Domain.Group], Never> {
         groupsConfigurationSubject.eraseToAnyPublisher()
     }
 
@@ -653,7 +653,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
     }
 
     /// Sets the group configuration for menu bar applications and emits update.
-    public func setGroupsConfiguration(_ value: [GroupConfiguration]) async {
+    public func setGroupsConfiguration(_ value: [Domain.Group]) async {
         if value == groupsConfigurationSubject.value { return }
 
         saveGroupsConfiguration(value)
@@ -910,7 +910,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
     /// Loads a GroupConfiguration from UserDefaults using TOML format.
     /// - Returns: The GroupConfiguration if found, nil otherwise
-    private func loadGroupsConfiguration() -> [GroupConfiguration]? {
+    private func loadGroupsConfiguration() -> [Domain.Group]? {
         guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.groupsConfiguration.rawValue) else {
             return nil
         }
@@ -936,7 +936,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
     /// Saves a GroupConfiguration to UserDefaults using TOML format.
     /// - Parameter configuration: The GroupConfiguration to save
-    private func saveGroupsConfiguration(_ configuration: [GroupConfiguration]) {
+    private func saveGroupsConfiguration(_ configuration: [Domain.Group]) {
         do {
             let encoder = TOMLEncoder()
             let wrapper = GroupsConfigurationWrapper(groups: configuration)
@@ -974,7 +974,7 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
 /// Wrapper struct for TOML encoding of groups configuration array.
 private struct GroupsConfigurationWrapper: Codable {
-    let groups: [GroupConfiguration]
+    let groups: [Domain.Group]
 }
 
 /// Helper struct for Color serialization to UserDefaults.

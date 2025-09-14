@@ -9,38 +9,57 @@ import SwiftUI
 /// along with the windows that belong to it. It provides interactive
 /// functionality for switching to the space.
 struct SpaceView: View {
-    /// The spaces ViewModel for managing spaces data and interactions.
-    @EnvironmentObject var viewModel: SpacesViewModel
-
     /// The space to display.
     let space: Space
 
+    /// The duration for view animations in seconds.
+    let animationDuration: Double
+
+    /// The spacing between widget elements in the menu bar.
+    let widgetSpacing: Double
+
+    /// The vertical padding applied to menu bar elements.
+    let menuBarVerticalPadding: Double
+
+    /// The size of window icons displayed in the menu bar.
+    let windowIconSize: Double
+
+    /// Whether window titles should be displayed.
+    let showWindowTitles: Bool
+
+    /// Whether window clicking functionality is enabled.
+    let focusWindowOnClick: Bool
+
+    /// The visual configuration for the space container.
+    let visualConfiguration: VisualContainer
+
+    /// Callback invoked when the user wants to switch to a space.
+    /// - Parameters:
+    ///   - space: The space to switch to
+    ///   - needWindowFocus: Whether to focus a window after switching
+    let onSwitchToSpace: (Space, Bool) -> Void
+
+    /// Callback invoked when the user wants to switch to a window.
+    /// - Parameter window: The window to switch to
+    let onSwitchToWindow: (Domain.Window) -> Void
+
     /// Whether the space view is currently being hovered.
-    @State var isHovered = false
+    @State private var isHovered = false
 
     // MARK: - Computed Properties
 
-    /// Computed property for focus state to avoid repeated calculations
+    /// Computed property for focus state to avoid repeated calculations.
+    /// - Returns: True if any window in the space is focused or the space itself is focused
     private var isFocused: Bool {
         space.windows.contains {
             $0.isFocused
         } || space.isFocused
     }
 
-    /// Computed property for space corner radius
-    private var cornerRadius: Double {
-        viewModel.spaceCornerRadius
-    }
-
-    /// Computed property for widget spacing
-    private var widgetSpacing: Double {
-        viewModel.widgetSpacing
-    }
-
-    /// Computed property for minimum height to match spaces with windows
-    private var minimumHeight: Double {
-        // Match the height of windows: icon size + vertical padding * 2
-        viewModel.windowIconSize + (viewModel.menuBarVerticalPadding * 2)
+    /// Computed property for minimum height to match spaces with windows.
+    /// - Returns: The calculated height based on icon size and padding
+    private var spaceHeight: Double {
+        windowIconSize + (menuBarVerticalPadding * 2) + (visualConfiguration.borderWidth * 2)
     }
 
     // MARK: - Body
@@ -51,53 +70,55 @@ struct SpaceView: View {
     /// and its associated windows with proper styling and interactions.
     var body: some View {
         HStack(spacing: 0) {
-            Spacer().frame(width: 10)
+            Spacer().frame(width: 8)
 
             Text(space.id)
                 .font(.headline)
-                .foregroundColor(viewModel.spaceForegroundColor)
+                .foregroundColor(visualConfiguration.foregroundColor)
                 .frame(minWidth: 15)
                 .fixedSize(horizontal: true, vertical: false)
                 .textShadow()
                 .tag("space-\(space.id)-identifier")
 
-            Spacer().frame(width: 5)
+            Spacer().frame(width: 4)
 
             HStack(spacing: 2) {
                 ForEach(space.windows) { window in
-                    WindowView(window: window, space: space)
-                        .tag("window-\(window.id)")
+                    WindowView(
+                        window: window,
+                        space: space,
+                        menuBarVerticalPadding: menuBarVerticalPadding,
+                        windowIconSize: windowIconSize,
+                        showWindowTitles: showWindowTitles,
+                        focusWindowOnClick: focusWindowOnClick,
+                        spaceForegroundColor: visualConfiguration.foregroundColor,
+                        spaceBackgroundTintColor: visualConfiguration.backgroundTintColor,
+                        animationDuration: animationDuration,
+                        onSwitchToSpace: onSwitchToSpace,
+                        onSwitchToWindow: onSwitchToWindow
+                    )
+                    .tag("window-\(window.id)")
                 }
             }
             .tag("space-\(space.id)-windows-container")
 
-            Spacer().frame(width: widgetSpacing)
+            Spacer().frame(width: 8)
         }
-        .frame(minHeight: minimumHeight)
+        .frame(height: spaceHeight)
         .spaceFocusState(
             isFocused,
-            configuration: SpaceFocusState.Configuration(
-                backgroundOpacity: viewModel.spaceBackgroundOpacity,
-                backgroundBlurRadius: viewModel.spaceBackgroundBlurRadius,
-                backgroundTintColor: viewModel.spaceBackgroundTintColor,
-                foregroundColor: viewModel.spaceForegroundColor,
-                borderTintColor: viewModel.spaceBorderTintColor,
-                borderOpacity: viewModel.spaceBorderOpacity,
-                borderCornerRadius: viewModel.spaceCornerRadius,
-                borderWidth: viewModel.spaceBorderWidth
-            )
+            visualConfig: visualConfiguration,
+            widgetSpacing: widgetSpacing
         )
-        .spaceCornerRadius(cornerRadius)
+        .spaceCornerRadius(visualConfiguration.cornerRadius)
         .standardShadow()
         .blurReplaceTransition()
-        .smoothAnimation(duration: viewModel.animationDuration)
+        .smoothAnimation(duration: animationDuration)
         .conditionalInteraction(
-            isEnabled: viewModel.focusWindowOnClick,
+            isEnabled: focusWindowOnClick,
             isHovered: $isHovered,
             onTap: {
-                DispatchQueue.main.async {
-                    viewModel.switchToSpace(space, needWindowFocus: true)
-                }
+                onSwitchToSpace(space, true)
             }
         )
         .tag("space-\(space.id)-view")
@@ -105,11 +126,34 @@ struct SpaceView: View {
 }
 
 #Preview {
-    SpaceView(space: Space(
-        id: "1",
-        isFocused: true,
-        windows: []
-    ))
-    .environmentObject(DependencyContainer.shared.getSpacesViewModel())
+    SpaceView(
+        space: Space(
+            id: "1",
+            isFocused: true,
+            windows: []
+        ),
+        animationDuration: 0.3,
+        widgetSpacing: 8.0,
+        menuBarVerticalPadding: 4.0,
+        windowIconSize: 16.0,
+        showWindowTitles: true,
+        focusWindowOnClick: true,
+        visualConfiguration: VisualContainer.space(
+            background: BackgroundProperties(
+                tintColor: .blue,
+                opacity: 0.2,
+                blurRadius: 8.0
+            ),
+            border: BorderProperties(
+                tintColor: .white,
+                opacity: 0.8,
+                width: 2.0
+            ),
+            cornerRadius: 8.0,
+            foregroundColor: .primary
+        ),
+        onSwitchToSpace: { _, _ in },
+        onSwitchToWindow: { _ in }
+    )
     .padding()
 }

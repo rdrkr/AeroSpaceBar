@@ -42,13 +42,24 @@ public enum Logger {
             case .fault: "FAULT"
             }
         }
+
+        /// Numeric priority for level comparison (higher = more important)
+        var priority: Int {
+            switch self {
+            case .debug: 0
+            case .info: 1
+            case .warning: 2
+            case .error: 3
+            case .fault: 4
+            }
+        }
     }
 
     // MARK: - Configuration
 
     /// Global log level configuration (persisted in UserDefaults)
     /// Current log level. Can be changed at runtime.
-    static var logLevel: Level {
+    public static var logLevel: Level {
         get {
             if
                 let savedLevel = UserDefaults.standard.string(forKey: UserDefaultsKeys.logLevel.rawValue),
@@ -145,7 +156,7 @@ public enum Logger {
         line: Int = #line
     ) {
         // Check if we should log at this level
-        guard level.osLogType.rawValue >= logLevel.osLogType.rawValue else { return }
+        guard level.priority >= logLevel.priority else { return }
 
         let fileName = URL(fileURLWithPath: file).lastPathComponent
         var logMessage = "[\(level.name)] [\(fileName):\(line) \(function)]: \(message)"

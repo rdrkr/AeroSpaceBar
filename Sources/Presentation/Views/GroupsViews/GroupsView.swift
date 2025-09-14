@@ -23,8 +23,8 @@ struct GroupsView: View {
     }
 
     /// Computed property for group configuration to avoid repeated access
-    private var groupsConfiguration: [GroupConfiguration] {
-        viewModel.groupsConfiguration
+    private var groupsConfiguration: [Domain.Group] {
+        viewModel.groups
     }
 
     /// Whether the view should be shown
@@ -55,21 +55,36 @@ struct GroupsView: View {
                     menuBarApps: menuBarApps,
                     animationDuration: animationDuration,
                     widgetSpacing: widgetSpacing,
+                    menuBarVerticalPadding: viewModel.menuBarVerticalPadding,
+                    windowIconSize: viewModel.windowIconSize,
                     appearanceMode: viewModel.groupsAppearanceMode,
-                    globalBackgroundTintColor: viewModel.groupsGlobalBackgroundTintColor,
-                    globalBackgroundOpacity: viewModel.groupsGlobalBackgroundOpacity,
-                    globalBackgroundBlurRadius: viewModel.groupsGlobalBackgroundBlurRadius,
-                    globalBorderColor: viewModel.groupsGlobalBorderColor,
-                    globalBorderOpacity: viewModel.groupsGlobalBorderOpacity,
-                    globalBorderWidth: viewModel.groupsGlobalBorderWidth,
-                    globalCornerRadius: viewModel.groupsGlobalCornerRadius,
-                    spaceBackgroundTintColor: viewModel.spaceBackgroundTintColor,
-                    spaceBackgroundOpacity: viewModel.spaceBackgroundOpacity,
-                    spaceBackgroundBlurRadius: viewModel.spaceBackgroundBlurRadius,
-                    spaceBorderTintColor: viewModel.spaceBorderTintColor,
-                    spaceBorderOpacity: viewModel.spaceBorderOpacity,
-                    spaceBorderWidth: viewModel.spaceBorderWidth,
-                    spaceCornerRadius: viewModel.spaceCornerRadius
+                    globalVisualConfiguration: VisualContainer.group(
+                        background: BackgroundProperties(
+                            tintColor: viewModel.groupsGlobalBackgroundTintColor,
+                            opacity: viewModel.groupsGlobalBackgroundOpacity,
+                            blurRadius: viewModel.groupsGlobalBackgroundBlurRadius
+                        ),
+                        border: BorderProperties(
+                            tintColor: viewModel.groupsGlobalBorderColor,
+                            opacity: viewModel.groupsGlobalBorderOpacity,
+                            width: viewModel.groupsGlobalBorderWidth
+                        ),
+                        cornerRadius: viewModel.groupsGlobalCornerRadius
+                    ),
+                    spaceVisualConfiguration: VisualContainer.space(
+                        background: BackgroundProperties(
+                            tintColor: viewModel.spaceBackgroundTintColor,
+                            opacity: viewModel.spaceBackgroundOpacity,
+                            blurRadius: viewModel.spaceBackgroundBlurRadius
+                        ),
+                        border: BorderProperties(
+                            tintColor: viewModel.spaceBorderTintColor,
+                            opacity: viewModel.spaceBorderOpacity,
+                            width: viewModel.spaceBorderWidth
+                        ),
+                        cornerRadius: viewModel.spaceCornerRadius,
+                        foregroundColor: .primary
+                    )
                 )
             }
         }

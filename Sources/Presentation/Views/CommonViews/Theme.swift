@@ -9,44 +9,6 @@ import SwiftUI
 // This system provides consistent typography, colors, and spacing values
 // used throughout the application to ensure visual cohesion and maintainability.
 
-// MARK: - Typography
-
-/// Typography system providing consistent font styles across the application.
-extension Font {
-    /// Caption text font (11pt) used for secondary text, descriptions, and help text.
-    ///
-    /// Commonly used for:
-    /// - Settings descriptions
-    /// - Error messages and status text
-    /// - Value displays next to sliders
-    /// - Help text and tooltips
-    static let themeCaption: Font = .system(size: 11)
-
-    /// Body text font (13pt) used for primary interface text.
-    ///
-    /// Commonly used for:
-    /// - Primary labels
-    /// - Button text
-    /// - Form field labels
-    static let themeBody: Font = .system(size: 13)
-
-    /// Title font (14pt) used for section headers and emphasis.
-    ///
-    /// Commonly used for:
-    /// - Section titles
-    /// - Modal headers
-    /// - Emphasized text
-    static let themeTitle: Font = .system(size: 14, weight: .semibold)
-
-    /// Small body font (12pt) used for secondary interface elements.
-    ///
-    /// Commonly used for:
-    /// - Secondary labels
-    /// - Tip titles
-    /// - Compact interface text
-    static let themeSmallBody: Font = .system(size: 12)
-}
-
 // MARK: - Color System
 
 /// Color system providing semantic colors for consistent theming.

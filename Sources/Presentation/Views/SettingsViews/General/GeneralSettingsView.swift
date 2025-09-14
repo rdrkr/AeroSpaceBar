@@ -14,6 +14,7 @@ struct GeneralSettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
     @State private var launchAtLoginUpdateTask: Task<Void, Never>?
 
+    /// The associated navigation page
     let navigationOption: RootNavigationPage = .general
 
     var body: some View {
@@ -153,7 +154,7 @@ struct GeneralSettingsView: View {
 
                         VStack(alignment: .leading) {
                             Text(LocalizedStringResource("Quick Hide Feature"))
-                                .font(.themeSmallBody)
+                                .font(.callout)
                                 .tag("general-tip-title")
 
                             Group {

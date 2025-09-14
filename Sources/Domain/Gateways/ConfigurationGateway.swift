@@ -83,7 +83,7 @@ public protocol ConfigurationGateway: Sendable {
     var spaceCornerRadiusPublisher: AnyPublisher<Double, Never> { get }
 
     /// Publisher that emits group configuration updates.
-    var groupsConfigurationPublisher: AnyPublisher<[GroupConfiguration], Never> { get }
+    var groupsConfigurationPublisher: AnyPublisher<[Domain.Group], Never> { get }
 
     /// Publisher that emits groups appearance mode updates.
     var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> { get }
@@ -199,7 +199,7 @@ public protocol ConfigurationGateway: Sendable {
 
     /// Sets the group configuration for organizing menu bar applications.
     /// - Parameter value: The group configuration
-    func setGroupsConfiguration(_ value: [GroupConfiguration]) async
+    func setGroupsConfiguration(_ value: [Domain.Group]) async
 
     /// Sets the groups appearance mode.
     /// - Parameter value: The groups appearance mode

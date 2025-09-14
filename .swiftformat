@@ -54,6 +54,8 @@
 --swiftversion 6.2
 
 # rules
+--disable preferForLoop
+--disable redundantInternal
 --enable blankLineAfterImports
 --enable blankLineAfterSwitchCase
 --enable blankLinesAfterGuardStatements
@@ -64,7 +66,8 @@
 --enable duplicateImports
 --enable leadingDelimiters
 --enable linebreakAtEndOfFile
+--enable privateStateVariables
+--enable redundantMemberwiseInit
 --enable spaceAroundComments
 --enable wrapMultilineFunctionChains
 --enable wrapSwitchCases
---disable preferForLoop

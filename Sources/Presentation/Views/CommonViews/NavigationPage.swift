@@ -16,17 +16,59 @@ protocol NavigationPage: Equatable, Hashable, Identifiable {
     /// The localized display name for this navigation page.
     var name: LocalizedStringResource { get }
 
-    /// The SF Symbol name to display in the sidebar.
+    /// The SF Symbol name to display for this page.
     var symbolName: String { get }
+
+    // /// The page associated icon.
+    // var icon: any View { get }
 
     /// The parent page of this navigation page, if any.
     var parentPage: (any NavigationPage)? { get }
+
+    // /// A view builder that returns the sidebar item view for this navigation page.
+    // /// - Returns: The sidebar item view associated with this navigation page
+    // @MainActor
+    // @ViewBuilder
+    // var viewForSidebar: any View { get }
 
     /// A view builder that returns the view for this navigation page.
     /// - Returns: The view associated with this navigation page
     @MainActor
     @ViewBuilder
     var viewForPage: PageView { get }
+}
+
+/// Default protocol implementations.
+extension NavigationPage {
+    /// The page icon to display for this page.
+    var icon: some View {
+        Image(systemName: symbolName)
+            .resizable()
+            .frame(width: 16, height: 16)
+            .padding(4)
+            .background(.white.opacity(0.1), in: .rect)
+            .cornerRadius(8)
+    }
+
+    /// A default internal view builder that returns the sidebar item view for this navigation page.
+    @MainActor
+    @ViewBuilder
+    // in order to retain internal, disable swiftformat.
+    // swiftformat:disable all
+    internal var defaultViewForSidebar: some View {
+        HStack {
+            icon
+            Text(name)
+        }
+    }
+    // swiftformat:enable all
+
+    /// A view builder that returns the sidebar item view for this navigation page.
+    @MainActor
+    @ViewBuilder
+    var viewForSidebar: some View {
+        defaultViewForSidebar
+    }
 }
 
 /// A type-erased wrapper for NavigationPage that allows storing different page types together.

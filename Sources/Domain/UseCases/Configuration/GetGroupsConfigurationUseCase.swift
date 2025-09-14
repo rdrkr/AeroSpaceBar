@@ -19,7 +19,7 @@ public final class GetGroupsConfigurationUseCase {
 
     /// Executes the use case to get the group configuration as a publisher.
     /// - Returns: A publisher that emits GroupConfiguration values representing the current grouping setup
-    public func execute() -> AnyPublisher<[GroupConfiguration], Never> {
+    public func execute() -> AnyPublisher<[Domain.Group], Never> {
         configurationGateway.groupsConfigurationPublisher
     }
 }

@@ -35,32 +35,20 @@ struct SettingsView: View {
                             }
                         }
                     )) {
-                        ForEach(viewModel.sidebarPages, id: \.id) { page in
-                            NavigationLink(value: page) {
-                                HStack {
-                                    let symbolImage = Image(systemName: page.symbolName)
-                                        .resizable()
-                                        .frame(width: 18, height: 18)
-                                        .padding(4)
-                                        .background(.white.opacity(0.1), in: .rect)
-
-                                    if #available(macOS 26.0, *) {
-                                        symbolImage
-                                            .glassEffect(.clear, in: .rect)
-                                            .cornerRadius(8)
-                                    } else {
-                                        symbolImage
-                                            .cornerRadius(8)
-                                    }
-
-                                    Text(page.name)
-                                }
+                        ForEach(viewModel.rootPages, id: \.id) { rootPage in
+                            NavigationLink(value: AnyNavigationPage(rootPage)) {
+                                rootPage.viewForSidebar
                             }
-                            .tag("settings-nav-\(page.id)")
+                            .tag("settings-nav-\(rootPage.id)")
+
+                            // Add spacing after license item
+                            if rootPage.id == RootNavigationPage.license.id {
+                                Section { }
+                            }
                         }
                     }
                     .toolbar(removing: .sidebarToggle)
-                    .frame(minWidth: 180)
+                    .navigationSplitViewColumnWidth(min: 216, ideal: 216, max: 216)
                     .focused($sidebarFocused)
                     .tag("settings-sidebar")
                 }
@@ -71,24 +59,30 @@ struct SettingsView: View {
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .navigation) {
-                        Button(action: viewModel.navigateBackward) {
-                            Image(systemName: "chevron.backward")
-                        }
-                        .disabled(!viewModel.canNavigateBackward)
-                        .tag("settings-back-button")
+                        HStack(spacing: 2) {
+                            Button(action: viewModel.navigateBackward) {
+                                Image(systemName: "chevron.backward")
+                            }
+                            .disabled(!viewModel.canNavigateBackward)
+                            .tag("settings-back-button")
 
-                        Button(action: viewModel.navigateForward) {
-                            Image(systemName: "chevron.forward")
+                            Rectangle()
+                                .fill(Color.secondary.opacity(0.4))
+                                .frame(width: 1, height: 16)
+
+                            Button(action: viewModel.navigateForward) {
+                                Image(systemName: "chevron.forward")
+                            }
+                            .disabled(!viewModel.canNavigateForward)
+                            .tag("settings-forward-button")
                         }
-                        .disabled(!viewModel.canNavigateForward)
-                        .tag("settings-forward-button")
                     }
                 }
                 .environmentObject(viewModel)
                 .tag("settings-navigation-split")
             }
         }
-        .frame(width: 680, height: 560)
+        .frame(width: 720, height: 560)
         .task {
             await configureWindow()
         }
@@ -133,4 +127,6 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(DependencyContainer.shared.getSettingsViewModel())
+        .environmentObject(DependencyContainer.shared.getGroupsViewModel())
+        .environmentObject(DependencyContainer.shared.getLicensingViewModel())
 }

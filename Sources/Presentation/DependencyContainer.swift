@@ -136,6 +136,16 @@ final class DependencyContainer {
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase()
     )
 
+    /// The LicensingViewModel instance.
+    private lazy var licensingViewModel: LicensingViewModel = .init(
+        getLicenseStatusUseCase: makeGetLicenseStatusUseCase(),
+        activateLicenseUseCase: makeActivateLicenseUseCase(),
+        openCheckoutUseCase: makeOpenCheckoutUseCase(),
+        startTrialUseCase: makeStartTrialUseCase(),
+        deactivateLicenseUseCase: makeDeactivateLicenseUseCase(),
+        getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase()
+    )
+
     /// The GroupsViewModel instance.
     private lazy var groupsViewModel: GroupsViewModel = .init(
         getShowGroupsUseCase: makeGetShowGroupsUseCase(),
@@ -146,6 +156,8 @@ final class DependencyContainer {
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getAnimationDurationUseCase: makeGetAnimationDurationUseCase(),
         getWidgetSpacingUseCase: makeGetWidgetSpacingUseCase(),
+        getMenuBarVerticalPaddingUseCase: makeGetMenuBarVerticalPaddingUseCase(),
+        getWindowIconSizeUseCase: makeGetWindowIconSizeUseCase(),
         getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
         setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
         getGroupsGlobalBackgroundTintColorUseCase: makeGetGroupsGlobalBgTintColorUseCase(),
@@ -164,6 +176,15 @@ final class DependencyContainer {
         getSpaceCornerRadiusUseCase: makeGetSpaceCornerRadiusUseCase()
     )
 
+    /// The licensing gateway for managing application licensing.
+    #if DEBUG
+        private lazy var licensingGateway: LicensingGateway = LicensingRepository(
+            featureFlagsGateway: featureFlagsGateway
+        )
+    #else
+        private lazy var licensingGateway: LicensingGateway = LicensingRepository()
+    #endif
+
     /// The feature flags gateway for managing development feature toggles.
     ///
     /// This gateway is only available in debug builds and provides access to
@@ -174,7 +195,8 @@ final class DependencyContainer {
         /// The DeveloperSettingsViewModel instance for managing developer settings.
         private lazy var developerSettingsViewModel: DeveloperSettingsViewModel = .init(
             getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
-            setFeatureFlagsUseCase: makeSetFeatureFlagsUseCase()
+            setFeatureFlagsUseCase: makeSetFeatureFlagsUseCase(),
+            deactivateLicenseUseCase: makeDeactivateLicenseUseCase()
         )
     #endif
 
@@ -202,6 +224,12 @@ final class DependencyContainer {
     /// - Returns: The groups view model instance
     func getGroupsViewModel() -> GroupsViewModel {
         groupsViewModel
+    }
+
+    /// Gets the licensing view model instance.
+    /// - Returns: The licensing view model instance
+    func getLicensingViewModel() -> LicensingViewModel {
+        licensingViewModel
     }
 
     // MARK: - Spaces Use Cases
@@ -662,6 +690,38 @@ final class DependencyContainer {
     /// - Returns: A new GetFeatureFlagsUseCase instance
     func makeGetFeatureFlagsUseCase() -> GetFeatureFlagsUseCase {
         GetFeatureFlagsUseCase(gateway: featureFlagsGateway)
+    }
+
+    // MARK: - Licensing Use Cases
+
+    /// Creates a new GetLicenseStatusUseCase instance.
+    /// - Returns: A new GetLicenseStatusUseCase instance
+    func makeGetLicenseStatusUseCase() -> GetLicenseStatusUseCase {
+        GetLicenseStatusUseCase(licensingGateway: licensingGateway)
+    }
+
+    /// Creates a new ActivateLicenseUseCase instance.
+    /// - Returns: A new ActivateLicenseUseCase instance
+    func makeActivateLicenseUseCase() -> ActivateLicenseUseCase {
+        ActivateLicenseUseCase(licensingGateway: licensingGateway)
+    }
+
+    /// Creates a new OpenCheckoutUseCase instance.
+    /// - Returns: A new OpenCheckoutUseCase instance
+    func makeOpenCheckoutUseCase() -> OpenCheckoutUseCase {
+        OpenCheckoutUseCase(licensingGateway: licensingGateway)
+    }
+
+    /// Creates a new StartTrialUseCase instance.
+    /// - Returns: A new StartTrialUseCase instance
+    func makeStartTrialUseCase() -> StartTrialUseCase {
+        StartTrialUseCase(licensingGateway: licensingGateway)
+    }
+
+    /// Creates a new DeactivateLicenseUseCase instance.
+    /// - Returns: A new DeactivateLicenseUseCase instance
+    func makeDeactivateLicenseUseCase() -> DeactivateLicenseUseCase {
+        DeactivateLicenseUseCase(licensingGateway: licensingGateway)
     }
 
     #if DEBUG

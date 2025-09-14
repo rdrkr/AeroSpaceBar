@@ -4,6 +4,8 @@ import SwiftUI
 
 /// An enumeration of navigation options for the settings interface.
 enum RootNavigationPage: Int, CaseIterable, NavigationPage {
+    /// A case that represents license and subscription settings.
+    case license
     /// A case that represents general application settings.
     case general
     /// A case that represents spaces settings.
@@ -23,6 +25,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     /// The name of the navigation option.
     var name: LocalizedStringResource {
         switch self {
+        case .license: LocalizedStringResource("License", comment: "Title for the License settings section.")
         case .general: LocalizedStringResource("General", comment: "Title for the General settings section.")
         case .spaces: LocalizedStringResource("Spaces", comment: "Title for the Spaces settings section.")
         case .groups: LocalizedStringResource("Groups", comment: "Title for the Groups settings section.")
@@ -36,6 +39,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     /// The symbol name of the navigation option.
     var symbolName: String {
         switch self {
+        case .license: "key.fill"
         case .general: "gear"
         case .spaces: "square.3.layers.3d"
         case .groups: "rectangle.3.group"
@@ -49,10 +53,24 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     /// The parent page of the navigation option.
     var parentPage: (any NavigationPage)? { nil }
 
+    @MainActor
+    var viewForSidebar: some View {
+        Group {
+            switch self {
+            case .license:
+                LicenseSettingsSidebarItemView()
+            default:
+                defaultViewForSidebar
+            }
+        }
+    }
+
     /// A view builder that the split view uses to show a view for the selected navigation option.
     @MainActor
     var viewForPage: PageView {
         switch self {
+        case .license:
+            return PageView(LicenseSettingsView())
         case .general:
             return PageView(GeneralSettingsView())
         case .spaces:

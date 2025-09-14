@@ -126,6 +126,7 @@
 				Presentation/Resources/Localizable.xcstrings,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
+				Presentation/ViewModels/LicensingViewModel.swift,
 				Presentation/ViewModels/SettingsViewModel.swift,
 				Presentation/ViewModels/SpacesViewModel.swift,
 				Presentation/Views/AboutView.swift,
@@ -150,6 +151,15 @@
 				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
 				Presentation/Views/SettingsViews/Groups/GroupSettingsListRowView.swift,
 				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
+				Presentation/Views/SettingsViews/License/CheckoutWebViewWrapper.swift,
+				Presentation/Views/SettingsViews/License/LicenseActionsSection.swift,
+				Presentation/Views/SettingsViews/License/LicenseKeyActivationView.swift,
+				Presentation/Views/SettingsViews/License/LicenseMenuItemView.swift,
+				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
+				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
+				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
+				Presentation/Views/SettingsViews/License/LicenseStatusView.swift,
+				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
 				Presentation/Views/SettingsViews/SettingsView.swift,
@@ -174,6 +184,7 @@
 				Presentation/Resources/Localizable.xcstrings,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
+				Presentation/ViewModels/LicensingViewModel.swift,
 				Presentation/ViewModels/SettingsViewModel.swift,
 				Presentation/ViewModels/SpacesViewModel.swift,
 				Presentation/Views/AboutView.swift,
@@ -198,6 +209,15 @@
 				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
 				Presentation/Views/SettingsViews/Groups/GroupSettingsListRowView.swift,
 				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
+				Presentation/Views/SettingsViews/License/CheckoutWebViewWrapper.swift,
+				Presentation/Views/SettingsViews/License/LicenseActionsSection.swift,
+				Presentation/Views/SettingsViews/License/LicenseKeyActivationView.swift,
+				Presentation/Views/SettingsViews/License/LicenseMenuItemView.swift,
+				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
+				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
+				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
+				Presentation/Views/SettingsViews/License/LicenseStatusView.swift,
+				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
 				Presentation/Views/SettingsViews/SettingsView.swift,
@@ -213,22 +233,10 @@
 				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
 				Service/Repositories/ConfigurationRepository.swift,
 				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/LicensingRepository.swift,
 				Service/Repositories/SystemMenuBarRepository.swift,
 			);
 			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-		};
-		1A4941192E73DC1200187B3E /* Exceptions for "Sources" folder in "Service" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Service/Network/AeroSpaceCLIClient.swift,
-				Service/Network/IconCache.swift,
-				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
-				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
-				Service/Repositories/ConfigurationRepository.swift,
-				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/SystemMenuBarRepository.swift,
-			);
-			target = 1A493DE32E73D9F000187B3E /* Service */;
 		};
 		1A49416B2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -324,6 +332,20 @@
 			);
 			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
 		};
+		1A5A333E2E7B127A00CFD22F /* Exceptions for "Sources" folder in "Service" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Service/Network/AeroSpaceCLIClient.swift,
+				Service/Network/IconCache.swift,
+				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
+				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
+				Service/Repositories/ConfigurationRepository.swift,
+				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/LicensingRepository.swift,
+				Service/Repositories/SystemMenuBarRepository.swift,
+			);
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -332,7 +354,7 @@
 			exceptions = (
 				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
 				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
-				1A4941192E73DC1200187B3E /* Exceptions for "Sources" folder in "Service" target */,
+				1A5A333E2E7B127A00CFD22F /* Exceptions for "Sources" folder in "Service" target */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

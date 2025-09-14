@@ -9,46 +9,61 @@ import SwiftUI
 /// and optionally its title if the window is focused. It provides
 /// interactive functionality for switching to the window.
 struct WindowView: View {
-    /// The spaces ViewModel for managing spaces data and interactions.
-    @EnvironmentObject var viewModel: SpacesViewModel
-
     /// The window to display.
     let window: Domain.Window
 
     /// The space that contains this window.
     let space: Space
 
+    /// The vertical padding applied to menu bar elements.
+    let menuBarVerticalPadding: Double
+
+    /// The size of window icons displayed in the menu bar.
+    let windowIconSize: Double
+
+    /// Whether window titles should be displayed.
+    let showWindowTitles: Bool
+
+    /// Whether window clicking functionality is enabled.
+    let focusWindowOnClick: Bool
+
+    /// The space foreground color for text elements.
+    let spaceForegroundColor: Color
+
+    /// The space background tint color.
+    let spaceBackgroundTintColor: Color
+
+    /// The duration for view animations in seconds.
+    let animationDuration: Double
+
+    /// Callback invoked when the user wants to switch to a space.
+    /// - Parameters:
+    ///   - space: The space to switch to
+    ///   - needWindowFocus: Whether to focus a window after switching
+    let onSwitchToSpace: (Space, Bool) -> Void
+
+    /// Callback invoked when the user wants to switch to a window.
+    /// - Parameter window: The window to switch to
+    let onSwitchToWindow: (Domain.Window) -> Void
+
     /// Whether the window view is currently being hovered.
-    @State var isHovered = false
+    @State private var isHovered = false
 
     // MARK: - Computed Properties
 
-    /// Computed property for window icon size
-    private var iconSize: Double {
-        viewModel.windowIconSize
-    }
-
-    /// Computed property for menu bar vertical padding
-    private var verticalPadding: Double {
-        viewModel.menuBarVerticalPadding
-    }
-
-    /// Computed property for title text to avoid repeated calculations
+    /// Computed property for title text to avoid repeated calculations.
+    /// - Returns: The window title if multiple apps of the same type exist, otherwise the app name
     private var titleText: String {
         let sameAppCount = space.windows.count(where: { $0.appName == window.appName })
         return sameAppCount > 1 ? window.title : (window.appName ?? "")
     }
 
-    /// Computed property for space focus state to avoid repeated calculations
+    /// Computed property for space focus state to avoid repeated calculations.
+    /// - Returns: True if any window in the space is focused
     private var spaceIsFocused: Bool {
         space.windows.contains {
             $0.isFocused
         }
-    }
-
-    /// Computed property for whether to show window titles
-    private var showWindowTitles: Bool {
-        viewModel.showWindowTitles
     }
 
     // MARK: - Body
@@ -59,33 +74,37 @@ struct WindowView: View {
     /// and optionally its title, with proper styling and interactions.
     var body: some View {
         HStack {
-            WindowIconView(window: window, iconSize: iconSize)
+            WindowIconView(window: window, iconSize: windowIconSize)
                 .windowFocusState(window.isFocused, spaceIsFocused: spaceIsFocused)
                 .tag("window-\(window.id)-icon-container")
 
             if window.isFocused, showWindowTitles, !titleText.isEmpty {
-                WindowTitleView(titleText: titleText, windowId: window.id)
+                WindowTitleView(
+                    titleText: titleText,
+                    windowId: window.id,
+                    spaceForegroundColor: spaceForegroundColor
+                )
             }
         }
-        .padding(.vertical, verticalPadding)
+        .padding(.vertical, menuBarVerticalPadding)
         .background(
             WindowHoverBackground(
-                color: viewModel.spaceBackgroundTintColor,
-                isHovered: viewModel.focusWindowOnClick ? isHovered : false
+                color: spaceForegroundColor,
+                isHovered: focusWindowOnClick ? isHovered : false
             )
         )
         .windowCornerRadius(8)
         .blurReplaceTransition()
-        .smoothAnimation(duration: viewModel.animationDuration)
+        .smoothAnimation(duration: animationDuration)
         .contentShape(.rect)
         .conditionalInteraction(
-            isEnabled: viewModel.focusWindowOnClick,
+            isEnabled: focusWindowOnClick,
             isHovered: $isHovered,
             onTap: {
                 DispatchQueue.main.async {
-                    viewModel.switchToSpace(space)
+                    onSwitchToSpace(space, false)
                     usleep(100_000)
-                    viewModel.switchToWindow(window)
+                    onSwitchToWindow(window)
                 }
             }
         )
@@ -95,11 +114,19 @@ struct WindowView: View {
 
 // MARK: - Supporting Views
 
-/// A reusable view for displaying window icons
+/// A reusable view for displaying window icons.
+///
+/// This view displays the application icon for a window, with a fallback
+/// to a system icon if no application icon is available.
 private struct WindowIconView: View {
+    /// The window whose icon should be displayed.
     let window: Domain.Window
+
+    /// The size for the icon display.
     let iconSize: Double
 
+    /// The body of the window icon view.
+    /// - Returns: A view containing either the app icon or a fallback icon
     var body: some View {
         ZStack {
             if let icon = window.appIcon {
@@ -119,36 +146,55 @@ private struct WindowIconView: View {
     }
 }
 
-/// A reusable view for displaying window titles
+/// A reusable view for displaying window titles.
+///
+/// This view displays the title text for a window with proper styling
+/// and truncation for long titles.
 private struct WindowTitleView: View {
-    @EnvironmentObject private var viewModel: SpacesViewModel
-
+    /// The title text to display.
     let titleText: String
+
+    /// The window ID for tagging purposes.
     let windowId: Int
 
+    /// The foreground color for the title text.
+    let spaceForegroundColor: Color
+
+    /// Truncated title text for display purposes.
+    /// - Returns: The title text truncated to 50 characters if necessary
     private var truncatedTitleText: String {
         titleText.count > 50 ? String(titleText.prefix(50)) + "..." : titleText
     }
 
+    /// The body of the window title view.
+    /// - Returns: A view containing the styled title text
     var body: some View {
-        HStack {
+        HStack(spacing: 2) {
             Text(truncatedTitleText)
-                .foregroundColor(viewModel.spaceForegroundColor)
+                .foregroundColor(spaceForegroundColor)
                 .textShadow()
                 .fontWeight(.semibold)
                 .tag("window-\(windowId)-title")
 
-            Spacer().frame(width: 5)
+            Spacer().frame(width: 2)
         }
         .tag("window-\(windowId)-title-container")
     }
 }
 
-/// A reusable view for window hover background
+/// A reusable view for window hover background.
+///
+/// This view provides a background color that appears when the window is hovered,
+/// creating a visual feedback for interactive elements.
 private struct WindowHoverBackground: View {
+    /// The background color to display when hovered.
     let color: Color
+
+    /// Whether the window is currently being hovered.
     let isHovered: Bool
 
+    /// The body of the window hover background view.
+    /// - Returns: A colored background with opacity based on hover state
     var body: some View {
         color.opacity(isHovered ? 0.4 : 0.0)
     }
@@ -170,7 +216,18 @@ private struct WindowHoverBackground: View {
         windows: [window]
     )
 
-    WindowView(window: window, space: space)
-        .environmentObject(DependencyContainer.shared.getSpacesViewModel())
-        .padding()
+    WindowView(
+        window: window,
+        space: space,
+        menuBarVerticalPadding: 4.0,
+        windowIconSize: 16.0,
+        showWindowTitles: true,
+        focusWindowOnClick: true,
+        spaceForegroundColor: .primary,
+        spaceBackgroundTintColor: .blue,
+        animationDuration: 0.3,
+        onSwitchToSpace: { _, _ in },
+        onSwitchToWindow: { _ in }
+    )
+    .padding()
 }

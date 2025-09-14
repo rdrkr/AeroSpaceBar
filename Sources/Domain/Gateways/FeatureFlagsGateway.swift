@@ -11,6 +11,9 @@ public protocol FeatureFlagsGateway: Sendable {
     /// Publisher that emits the current feature flags configuration.
     var featureFlags: AnyPublisher<FeatureFlags, Never> { get }
 
+    /// Current feature flags configuration (synchronous access).
+    var currentFeatureFlags: FeatureFlags { get }
+
     /// Sets the feature flags configuration.
     /// - Parameter flags: The new feature flags configuration to store
     func setFeatureFlags(_ flags: FeatureFlags) async

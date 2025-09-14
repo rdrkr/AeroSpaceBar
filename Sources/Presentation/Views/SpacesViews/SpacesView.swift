@@ -84,9 +84,37 @@ struct SpacesView: View {
                             menuBarHorizontalPadding: menuBarHorizontalPadding
                         )
 
-                        SpacesContainerView(spaces: spaces, widgetSpacing: widgetSpacing)
-                            .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
-                            .tag("spaces-container")
+                        SpacesContainerView(
+                            spaces: spaces,
+                            widgetSpacing: widgetSpacing,
+                            animationDuration: animationDuration,
+                            menuBarVerticalPadding: viewModel.menuBarVerticalPadding,
+                            windowIconSize: viewModel.windowIconSize,
+                            showWindowTitles: showWindowTitles,
+                            focusWindowOnClick: viewModel.focusWindowOnClick,
+                            visualConfiguration: VisualContainer.space(
+                                background: BackgroundProperties(
+                                    tintColor: viewModel.spaceBackgroundTintColor,
+                                    opacity: viewModel.spaceBackgroundOpacity,
+                                    blurRadius: viewModel.spaceBackgroundBlurRadius
+                                ),
+                                border: BorderProperties(
+                                    tintColor: viewModel.spaceBorderTintColor,
+                                    opacity: viewModel.spaceBorderOpacity,
+                                    width: viewModel.spaceBorderWidth
+                                ),
+                                cornerRadius: cornerRadius,
+                                foregroundColor: viewModel.spaceForegroundColor
+                            ),
+                            onSwitchToSpace: { space, needWindowFocus in
+                                viewModel.switchToSpace(space, needWindowFocus: needWindowFocus)
+                            },
+                            onSwitchToWindow: { window in
+                                viewModel.switchToWindow(window)
+                            }
+                        )
+                        .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
+                        .tag("spaces-container")
                     }
                     .spaceCornerRadius(cornerRadius)
                     .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)

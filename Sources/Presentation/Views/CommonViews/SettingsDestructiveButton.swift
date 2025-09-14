@@ -57,4 +57,5 @@ struct SettingsDestructiveButton: View {
             )
         }
     }
+    .settingsFormStyle()
 }

@@ -10,6 +10,7 @@
     struct DeveloperSettingsView: View {
         @StateObject private var viewModel = DependencyContainer.shared.getDeveloperSettingsViewModel()
 
+        /// The associated navigation page
         let navigationOption: RootNavigationPage = .developer
 
         var body: some View {
@@ -56,6 +57,33 @@
                     }
                 }
                 .tag("developer-core-features-section")
+
+                Section(LocalizedStringResource("Licensing")) {
+                    VStack(alignment: .leading) {
+                        FeatureFlagToggle(
+                            title: String(localized: LocalizedStringResource("Enable Licensing")),
+                            description: String(
+                                localized: LocalizedStringResource(
+                                    "Show/hide licensing features, trial periods, and purchase options."
+                                )
+                            ),
+                            isEnabled: $viewModel.enableLicensing
+                        )
+
+                        if viewModel.enableLicensing {
+                            FeatureFlagToggle(
+                                title: String(localized: LocalizedStringResource("Mock Active License")),
+                                description: String(
+                                    localized: LocalizedStringResource(
+                                        "Mock an active license for development testing without a real license."
+                                    )
+                                ),
+                                isEnabled: $viewModel.mockActiveLicense
+                            )
+                        }
+                    }
+                }
+                .tag("developer-licensing-section")
 
                 Section(LocalizedStringResource("Actions")) {
                     SettingsDestructiveButton(

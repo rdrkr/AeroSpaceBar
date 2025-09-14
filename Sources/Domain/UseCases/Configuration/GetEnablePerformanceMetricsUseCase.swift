@@ -22,5 +22,10 @@ public final class GetEnablePerformanceMetricsUseCase {
     /// - Returns: A publisher that emits enable performance metrics values
     public func execute() -> AnyPublisher<Bool, Never> {
         configurationGateway.enablePerformanceMetricsPublisher
+            .handleEvents(receiveOutput: { value in
+                // Ensure Logger is synchronized with configuration changes
+                Logger.enablePerformanceMetrics = value
+            })
+            .eraseToAnyPublisher()
     }
 }
