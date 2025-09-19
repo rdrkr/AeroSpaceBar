@@ -1,16 +1,14 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-import SwiftUI
-
-/// Use case for setting space foreground color configuration.
+/// Use case for setting global groups visual configuration.
 ///
 /// This use case encapsulates the business logic for updating the
-/// space foreground color setting through the data layer.
+/// global groups visual configuration setting through the data layer.
 /// It follows the clean architecture pattern by isolating this
 /// specific business operation.
 @MainActor
-public final class SetSpaceForegroundColorUseCase {
-    /// The configuration gateway for accessing space foreground color data.
+public final class SetGlobalGroupsVisualConfigUseCase {
+    /// The configuration gateway for accessing global groups visual configuration data.
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the specified configuration gateway.
@@ -19,9 +17,9 @@ public final class SetSpaceForegroundColorUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to set the space foreground color.
-    /// - Parameter spaceForegroundColor: The new space foreground color value to set
-    public func execute(spaceForegroundColor: Color) async {
-        await configurationGateway.setSpaceForegroundColor(spaceForegroundColor)
+    /// Executes the use case to set the global groups visual configuration.
+    /// - Parameter value: The new global groups visual configuration value to set
+    public func execute(value: VisualContainer) async {
+        await configurationGateway.setGlobalGroupsVisualConfig(value)
     }
 }

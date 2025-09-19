@@ -1,7 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
-import SwiftUI
 
 /// Use case for setting the window icon size configuration.
 ///
@@ -21,7 +20,7 @@ public final class SetWindowIconSizeUseCase {
 
     /// Executes the use case to set the window icon size.
     /// - Parameter value: The window icon size in points
-    public func execute(_ value: Double) async {
+    public func execute(value: Double) async {
         await configurationGateway.setWindowIconSize(value)
     }
 }

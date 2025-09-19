@@ -8,8 +8,7 @@ import SwiftUI
 /// This struct centralizes all default configuration values, making it easy to
 /// manage and modify defaults across the application. It follows the domain-driven
 /// design pattern by keeping configuration concerns within the domain layer.
-@MainActor
-public struct ConfigurationDefaults {
+public enum ConfigurationDefaults {
     #if DEBUG
         private static let debugMode = true
     #else
@@ -23,27 +22,6 @@ public struct ConfigurationDefaults {
 
     /// Default AeroSpace binary path (empty string means auto-detection).
     public static let aeroSpacePath = ""
-
-    /// Default background opacity level for the space elements.
-    public static let spaceBackgroundOpacity = 0.2
-
-    /// Default background blur radius for space elements in points.
-    public static let spaceBackgroundBlurRadius: Double = 0.0
-
-    /// Default background tint color for space elements.
-    public static let spaceBackgroundTintColor = Color.white
-
-    /// Default foreground color for space elements.
-    public static let spaceForegroundColor = Color.white
-
-    /// Default border tint color for space elements.
-    public static let spaceBorderTintColor = Color.white
-
-    /// Default border opacity level for the space elements.
-    public static let spaceBorderOpacity = 0.0
-
-    /// Default border width for the space elements in points.
-    public static let spaceBorderWidth: Double = 0.0
 
     /// Whether to focus a window when clicking on it by default.
     public static let focusWindowOnClick = true
@@ -83,33 +61,39 @@ public struct ConfigurationDefaults {
     /// Default size of window icons in points.
     public static let windowIconSize: Double = 22.5
 
-    /// Default corner radius for space elements in points.
-    public static let spaceCornerRadius: Double = 14
+    /// Default visual configuration for space elements.
+    public static let defaultSpaceVisualConfig: VisualContainer = .init(
+        backgroundTintColor: .white,
+        backgroundOpacity: 0.2,
+        backgroundBlurRadius: 0.0,
+        borderTintColor: .white,
+        borderOpacity: 0.0,
+        borderWidth: 0.0,
+        cornerRadius: 14,
+        foregroundColor: .white
+    )
+
+    /// Default space configuration for organizing spaces.
+    public static let spacesVisualConfiguration: [VisualContainer] = []
+
+    /// Default spaces appearance mode.
+    public static let spacesAppearanceMode: SpacesAppearanceMode = .allSpaces
 
     /// Default group configuration for menu bar applications.
-    public static let groupsConfiguration: [Domain.Group] = Group.singleGroup
+    public static let groups: [Domain.Group] = Group.singleGroup
 
     /// Default groups appearance mode.
     public static let groupsAppearanceMode: GroupsAppearanceMode = .matchSpaces
 
-    /// Default global background tint color for all groups.
-    public static let groupsGlobalBackgroundTintColor: Color = spaceBackgroundTintColor
-
-    /// Default global background opacity for all groups.
-    public static let groupsGlobalBackgroundOpacity: Double = spaceBackgroundOpacity
-
-    /// Default global background blur radius for all groups.
-    public static let groupsGlobalBackgroundBlurRadius: Double = spaceBackgroundBlurRadius
-
-    /// Default global border color for all groups.
-    public static let groupsGlobalBorderColor: Color = spaceBorderTintColor
-
-    /// Default global border opacity for all groups.
-    public static let groupsGlobalBorderOpacity: Double = spaceBorderOpacity
-
-    /// Default global border width for all groups.
-    public static let groupsGlobalBorderWidth: Double = spaceBorderWidth
-
-    /// Default global corner radius for all groups.
-    public static let groupsGlobalCornerRadius: Double = spaceCornerRadius
+    /// Default global visual configuration for all groups.
+    public static let defaultGroupsGlobalVisualConfig: VisualContainer = .init(
+        backgroundTintColor: defaultSpaceVisualConfig.backgroundTintColor,
+        backgroundOpacity: min(defaultSpaceVisualConfig.backgroundOpacity, 0.2),
+        backgroundBlurRadius: defaultSpaceVisualConfig.backgroundBlurRadius,
+        borderTintColor: defaultSpaceVisualConfig.borderTintColor,
+        borderOpacity: defaultSpaceVisualConfig.borderOpacity,
+        borderWidth: defaultSpaceVisualConfig.borderWidth,
+        cornerRadius: defaultSpaceVisualConfig.cornerRadius,
+        foregroundColor: .primary
+    )
 }

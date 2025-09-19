@@ -8,7 +8,8 @@ import Foundation
 /// This use case provides access to the current feature flags settings,
 /// allowing other parts of the application to react to feature flag changes.
 /// Only available in debug builds.
-public final class GetFeatureFlagsUseCase: Sendable {
+@MainActor
+public final class GetFeatureFlagsUseCase {
     private let gateway: FeatureFlagsGateway
 
     /// Initializes the use case with a feature flags gateway.

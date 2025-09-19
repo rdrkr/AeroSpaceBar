@@ -1,16 +1,14 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-import SwiftUI
-
-/// Use case for setting groups global border color configuration.
+/// Use case for setting global space visual configuration.
 ///
 /// This use case encapsulates the business logic for updating the
-/// groups global border color setting through the data layer.
+/// global space visual configuration setting through the data layer.
 /// It follows the clean architecture pattern by isolating this
 /// specific business operation.
 @MainActor
-public final class SetGroupsGlobalBorderColorUseCase {
-    /// The configuration gateway for accessing groups global border color data.
+public final class SetGlobalSpacesVisualConfigUseCase {
+    /// The configuration gateway for accessing global space visual configuration data.
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the specified configuration gateway.
@@ -19,9 +17,9 @@ public final class SetGroupsGlobalBorderColorUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to set the groups global border color.
-    /// - Parameter value: The new groups global border color value to set
-    public func execute(_ value: Color) async {
-        await configurationGateway.setGroupsGlobalBorderColor(value)
+    /// Executes the use case to set the global space visual configuration.
+    /// - Parameter value: The new global space visual configuration value to set
+    public func execute(value: VisualContainer) async {
+        await configurationGateway.setGlobalSpacesVisualConfig(value)
     }
 }

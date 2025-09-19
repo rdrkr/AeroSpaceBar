@@ -14,69 +14,6 @@ import SwiftUI
 class SettingsViewModel: ObservableObject {
     // MARK: - Display Properties
 
-    /// The background opacity level of the space elements (0.1 to 1.0).
-    @Published var spaceBackgroundOpacity: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBackgroundOpacityUseCase.execute(spaceBackgroundOpacity: spaceBackgroundOpacity)
-            }
-        }
-    }
-
-    /// The background blur radius for space elements in points.
-    @Published var spaceBackgroundBlurRadius: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBackgroundBlurRadiusUseCase.execute(spaceBackgroundBlurRadius: spaceBackgroundBlurRadius)
-            }
-        }
-    }
-
-    /// The background tint color for space elements.
-    @Published var spaceBackgroundTintColor: Color {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBackgroundTintColorUseCase.execute(spaceBackgroundTintColor: spaceBackgroundTintColor)
-            }
-        }
-    }
-
-    /// The foreground color for space elements.
-    @Published var spaceForegroundColor: Color {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceForegroundColorUseCase.execute(spaceForegroundColor: spaceForegroundColor)
-            }
-        }
-    }
-
-    /// The border tint color for space elements.
-    @Published var spaceBorderTintColor: Color {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBorderTintColorUseCase.execute(spaceBorderTintColor: spaceBorderTintColor)
-            }
-        }
-    }
-
-    /// The border opacity level of the space elements (0.0 to 1.0).
-    @Published var spaceBorderOpacity: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBorderOpacityUseCase.execute(spaceBorderOpacity: spaceBorderOpacity)
-            }
-        }
-    }
-
-    /// The border width of the space elements in points.
-    @Published var spaceBorderWidth: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceBorderWidthUseCase.execute(spaceBorderWidth: spaceBorderWidth)
-            }
-        }
-    }
-
     /// Whether to immediately focus a window when clicking on it.
     @Published var focusWindowOnClick: Bool {
         didSet {
@@ -100,80 +37,6 @@ class SettingsViewModel: ObservableObject {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setShowWindowTitlesUseCase.execute(value: showWindowTitles)
-            }
-        }
-    }
-
-    /// The corner radius for spaces in points.
-    @Published var spaceCornerRadius: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpaceCornerRadiusUseCase.execute(spaceCornerRadius)
-            }
-        }
-    }
-
-    // MARK: - Groups Global Appearance Properties
-
-    /// The global background tint color for all groups.
-    @Published var groupsGlobalBackgroundTintColor: Color {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBackgroundTintColorUseCase.execute(groupsGlobalBackgroundTintColor)
-            }
-        }
-    }
-
-    /// The global background opacity for all groups.
-    @Published var groupsGlobalBackgroundOpacity: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBackgroundOpacityUseCase.execute(groupsGlobalBackgroundOpacity)
-            }
-        }
-    }
-
-    /// The global background blur radius for all groups.
-    @Published var groupsGlobalBackgroundBlurRadius: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBackgroundBlurRadiusUseCase.execute(groupsGlobalBackgroundBlurRadius)
-            }
-        }
-    }
-
-    /// The global border color for all groups.
-    @Published var groupsGlobalBorderColor: Color {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBorderColorUseCase.execute(groupsGlobalBorderColor)
-            }
-        }
-    }
-
-    /// The global border opacity for all groups.
-    @Published var groupsGlobalBorderOpacity: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBorderOpacityUseCase.execute(groupsGlobalBorderOpacity)
-            }
-        }
-    }
-
-    /// The global border width for all groups.
-    @Published var groupsGlobalBorderWidth: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalBorderWidthUseCase.execute(groupsGlobalBorderWidth)
-            }
-        }
-    }
-
-    /// The global corner radius for all groups.
-    @Published var groupsGlobalCornerRadius: Double {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsGlobalCornerRadiusUseCase.execute(groupsGlobalCornerRadius)
             }
         }
     }
@@ -212,6 +75,58 @@ class SettingsViewModel: ObservableObject {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setOptimizedPerformanceEnabledUseCase.execute(value: isOptimizedPerformanceEnabled)
+            }
+        }
+    }
+
+    // MARK: - Spaces Appearance Properties
+
+    @Published var spacesVisualConfig: [VisualContainer] {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpacesVisualConfigUseCase.execute(value: spacesVisualConfig)
+            }
+        }
+    }
+
+    @Published var spacesAppearanceMode: SpacesAppearanceMode {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpacesAppearanceModeUseCase.execute(value: spacesAppearanceMode)
+            }
+        }
+    }
+
+    @Published var globalSpacesVisualConfig: VisualContainer {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalSpacesVisualConfigUseCase.execute(value: globalSpacesVisualConfig)
+            }
+        }
+    }
+
+    // MARK: - Groups Appearance Properties
+
+    @Published var groups: [Domain.Group] {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsUseCase.execute(value: groups)
+            }
+        }
+    }
+
+    @Published var groupsAppearanceMode: GroupsAppearanceMode {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGroupsAppearanceModeUseCase.execute(mode: groupsAppearanceMode)
+            }
+        }
+    }
+
+    @Published var globalGroupsVisualConfig: VisualContainer {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalGroupsVisualConfigUseCase.execute(value: globalGroupsVisualConfig)
             }
         }
     }
@@ -302,45 +217,12 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Display Use Cases
 
-    private let getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase
-    private let setSpaceBackgroundOpacityUseCase: SetSpaceBackgroundOpacityUseCase
-    private let getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase
-    private let setSpaceBackgroundBlurRadiusUseCase: SetSpaceBackgroundBlurRadiusUseCase
-    private let getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase
-    private let setSpaceBackgroundTintColorUseCase: SetSpaceBackgroundTintColorUseCase
-    private let getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase
-    private let setSpaceForegroundColorUseCase: SetSpaceForegroundColorUseCase
-    private let getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase
-    private let setSpaceBorderTintColorUseCase: SetSpaceBorderTintColorUseCase
-    private let getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase
-    private let setSpaceBorderOpacityUseCase: SetSpaceBorderOpacityUseCase
-    private let getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
-    private let setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
     private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
     private let setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase
     private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
     private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
-    private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
-    private let setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase
-
-    // MARK: - Groups Global Appearance Use Cases
-
-    private let getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase
-    private let setGroupsGlobalBackgroundTintColorUseCase: SetGroupsGlobalBgTintColorUseCase
-    private let getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase
-    private let setGroupsGlobalBackgroundOpacityUseCase: SetGroupsGlobalBackgroundOpacityUseCase
-    private let getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase
-    private let setGroupsGlobalBackgroundBlurRadiusUseCase: SetGroupsGlobalBgBlurRadiusUseCase
-    private let getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase
-    private let setGroupsGlobalBorderColorUseCase: SetGroupsGlobalBorderColorUseCase
-    private let getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase
-    private let setGroupsGlobalBorderOpacityUseCase: SetGroupsGlobalBorderOpacityUseCase
-    private let getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase
-    private let setGroupsGlobalBorderWidthUseCase: SetGroupsGlobalBorderWidthUseCase
-    private let getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase
-    private let setGroupsGlobalCornerRadiusUseCase: SetGroupsGlobalCornerRadiusUseCase
 
     // MARK: - System Menu Bar Use Cases
 
@@ -362,35 +244,43 @@ class SettingsViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getAnimationDurationUseCase: GetAnimationDurationUseCase
 
+    // MARK: - Spaces Use Cases
+
+    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
+    private let setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
+    private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
+    private let setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase
+    private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
+    private let setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase
+
+    // MARK: - Groups Use Cases
+
+    private let getGroupsUseCase: GetGroupsUseCase
+    private let setGroupsUseCase: SetGroupsUseCase
+    private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
+    private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
+    private let getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase
+    private let setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
+
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Current space visual configuration for building updates.
+    private var currentSpaceVisualConfig: VisualContainer?
+
+    /// Current groups visual configuration for building updates.
+    private var currentGroupsVisualConfig: VisualContainer?
 
     // MARK: - Initialization
 
     /// Initializes the settings view model with dependencies.
     /// - Parameters:
-    ///   - getSpaceBackgroundOpacityUseCase: Use case to get space background opacity.
-    ///   - setSpaceBackgroundOpacityUseCase: Use case to set space background opacity.
-    ///   - getSpaceBackgroundBlurRadiusUseCase: Use case to get space background blur radius.
-    ///   - setSpaceBackgroundBlurRadiusUseCase: Use case to set space background blur radius.
-    ///   - getSpaceBackgroundTintColorUseCase: Use case to get space background tint color.
-    ///   - setSpaceBackgroundTintColorUseCase: Use case to set space background tint color.
-    ///   - getSpaceForegroundColorUseCase: Use case to get space foreground color.
-    ///   - setSpaceForegroundColorUseCase: Use case to set space foreground color.
-    ///   - getSpaceBorderTintColorUseCase: Use case to get space border tint color.
-    ///   - setSpaceBorderTintColorUseCase: Use case to set space border tint color.
-    ///   - getSpaceBorderOpacityUseCase: Use case to get space border opacity.
-    ///   - setSpaceBorderOpacityUseCase: Use case to set space border opacity.
-    ///   - getSpaceBorderWidthUseCase: Use case to get space border width.
-    ///   - setSpaceBorderWidthUseCase: Use case to set space border width.
     ///   - getFocusWindowOnClickUseCase: Use case to get focus window on click setting.
     ///   - setFocusWindowOnClickUseCase: Use case to set focus window on click setting.
     ///   - getShowEmptySpacesUseCase: Use case to get show empty spaces setting.
     ///   - setShowEmptySpacesUseCase: Use case to set show empty spaces setting.
     ///   - getShowWindowTitlesUseCase: Use case to get show window titles setting.
     ///   - setShowWindowTitlesUseCase: Use case to set show window titles setting.
-    ///   - getSpaceCornerRadiusUseCase: Use case to get space corner radius.
-    ///   - setSpaceCornerRadiusUseCase: Use case to set space corner radius.
     ///   - getMenuBarAppsUseCase: Use case to get menu bar apps.
     ///   - getAeroSpacePathUseCase: Use case to get AeroSpace path.
     ///   - setAeroSpacePathUseCase: Use case to set AeroSpace path.
@@ -404,44 +294,26 @@ class SettingsViewModel: ObservableObject {
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get optimized performance enabled setting.
     ///   - setOptimizedPerformanceEnabledUseCase: Use case to set optimized performance enabled setting.
     ///   - getFeatureFlagsUseCase: Use case to get feature flags.
-    ///   - getAnimationDurationUseCase: Use case for getting animation duration
+    ///   - getAnimationDurationUseCase: Use case for getting animation duration.
+    ///   - getSpacesVisualConfigUseCase: Use case to get spaces visual config.
+    ///   - setSpacesVisualConfigUseCase: Use case to set spaces visual config.
+    ///   - getSpacesAppearanceModeUseCase: Use case to get spaces appearance mode.
+    ///   - setSpacesAppearanceModeUseCase: Use case to set spaces appearance mode.
+    ///   - getGlobalSpacesVisualConfigUseCase: Use case to get global spaces visual config.
+    ///   - setGlobalSpacesVisualConfigUseCase: Use case to set global spaces visual config.
+    ///   - getGroupsUseCase: Use case to get groups.
+    ///   - setGroupsUseCase: Use case to set groups.
+    ///   - getGroupsAppearanceModeUseCase: Use case to get groups appearance mode.
+    ///   - setGroupsAppearanceModeUseCase: Use case to set groups appearance mode.
+    ///   - getGlobalGroupsVisualConfigUseCase: Use case to get global groups visual config.
+    ///   - setGlobalGroupsVisualConfigUseCase: Use case to set global groups visual config.
     init(
-        getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase,
-        setSpaceBackgroundOpacityUseCase: SetSpaceBackgroundOpacityUseCase,
-        getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase,
-        setSpaceBackgroundBlurRadiusUseCase: SetSpaceBackgroundBlurRadiusUseCase,
-        getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase,
-        setSpaceBackgroundTintColorUseCase: SetSpaceBackgroundTintColorUseCase,
-        getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase,
-        setSpaceForegroundColorUseCase: SetSpaceForegroundColorUseCase,
-        getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase,
-        setSpaceBorderTintColorUseCase: SetSpaceBorderTintColorUseCase,
-        getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase,
-        setSpaceBorderOpacityUseCase: SetSpaceBorderOpacityUseCase,
-        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase,
-        setSpaceBorderWidthUseCase: SetSpaceBorderWidthUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
         setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
         getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase,
         setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase,
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
         setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
-        getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase,
-        setSpaceCornerRadiusUseCase: SetSpaceCornerRadiusUseCase,
-        getGroupsGlobalBackgroundTintColorUseCase: GetGroupsGlobalBgTintColorUseCase,
-        setGroupsGlobalBackgroundTintColorUseCase: SetGroupsGlobalBgTintColorUseCase,
-        getGroupsGlobalBackgroundOpacityUseCase: GetGroupsGlobalBackgroundOpacityUseCase,
-        setGroupsGlobalBackgroundOpacityUseCase: SetGroupsGlobalBackgroundOpacityUseCase,
-        getGroupsGlobalBackgroundBlurRadiusUseCase: GetGroupsGlobalBgBlurRadiusUseCase,
-        setGroupsGlobalBackgroundBlurRadiusUseCase: SetGroupsGlobalBgBlurRadiusUseCase,
-        getGroupsGlobalBorderColorUseCase: GetGroupsGlobalBorderColorUseCase,
-        setGroupsGlobalBorderColorUseCase: SetGroupsGlobalBorderColorUseCase,
-        getGroupsGlobalBorderOpacityUseCase: GetGroupsGlobalBorderOpacityUseCase,
-        setGroupsGlobalBorderOpacityUseCase: SetGroupsGlobalBorderOpacityUseCase,
-        getGroupsGlobalBorderWidthUseCase: GetGroupsGlobalBorderWidthUseCase,
-        setGroupsGlobalBorderWidthUseCase: SetGroupsGlobalBorderWidthUseCase,
-        getGroupsGlobalCornerRadiusUseCase: GetGroupsGlobalCornerRadiusUseCase,
-        setGroupsGlobalCornerRadiusUseCase: SetGroupsGlobalCornerRadiusUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         setAeroSpacePathUseCase: SetAeroSpacePathUseCase,
@@ -455,47 +327,27 @@ class SettingsViewModel: ObservableObject {
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-        getAnimationDurationUseCase: GetAnimationDurationUseCase
+        getAnimationDurationUseCase: GetAnimationDurationUseCase,
+        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
+        setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase,
+        getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
+        setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase,
+        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase,
+        setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase,
+        getGroupsUseCase: GetGroupsUseCase,
+        setGroupsUseCase: SetGroupsUseCase,
+        getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
+        setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
+        getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase,
+        setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
     ) {
         // Initialize Display Use Cases
-        self.getSpaceBackgroundOpacityUseCase = getSpaceBackgroundOpacityUseCase
-        self.setSpaceBackgroundOpacityUseCase = setSpaceBackgroundOpacityUseCase
-        self.getSpaceBackgroundBlurRadiusUseCase = getSpaceBackgroundBlurRadiusUseCase
-        self.setSpaceBackgroundBlurRadiusUseCase = setSpaceBackgroundBlurRadiusUseCase
-        self.getSpaceBackgroundTintColorUseCase = getSpaceBackgroundTintColorUseCase
-        self.setSpaceBackgroundTintColorUseCase = setSpaceBackgroundTintColorUseCase
-        self.getSpaceForegroundColorUseCase = getSpaceForegroundColorUseCase
-        self.setSpaceForegroundColorUseCase = setSpaceForegroundColorUseCase
-        self.getSpaceBorderTintColorUseCase = getSpaceBorderTintColorUseCase
-        self.setSpaceBorderTintColorUseCase = setSpaceBorderTintColorUseCase
-        self.getSpaceBorderOpacityUseCase = getSpaceBorderOpacityUseCase
-        self.setSpaceBorderOpacityUseCase = setSpaceBorderOpacityUseCase
-        self.getSpaceBorderWidthUseCase = getSpaceBorderWidthUseCase
-        self.setSpaceBorderWidthUseCase = setSpaceBorderWidthUseCase
         self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
         self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
         self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
         self.setShowEmptySpacesUseCase = setShowEmptySpacesUseCase
         self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
         self.setShowWindowTitlesUseCase = setShowWindowTitlesUseCase
-        self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
-        self.setSpaceCornerRadiusUseCase = setSpaceCornerRadiusUseCase
-
-        // Initialize Groups Global Appearance Use Cases
-        self.getGroupsGlobalBackgroundTintColorUseCase = getGroupsGlobalBackgroundTintColorUseCase
-        self.setGroupsGlobalBackgroundTintColorUseCase = setGroupsGlobalBackgroundTintColorUseCase
-        self.getGroupsGlobalBackgroundOpacityUseCase = getGroupsGlobalBackgroundOpacityUseCase
-        self.setGroupsGlobalBackgroundOpacityUseCase = setGroupsGlobalBackgroundOpacityUseCase
-        self.getGroupsGlobalBackgroundBlurRadiusUseCase = getGroupsGlobalBackgroundBlurRadiusUseCase
-        self.setGroupsGlobalBackgroundBlurRadiusUseCase = setGroupsGlobalBackgroundBlurRadiusUseCase
-        self.getGroupsGlobalBorderColorUseCase = getGroupsGlobalBorderColorUseCase
-        self.setGroupsGlobalBorderColorUseCase = setGroupsGlobalBorderColorUseCase
-        self.getGroupsGlobalBorderOpacityUseCase = getGroupsGlobalBorderOpacityUseCase
-        self.setGroupsGlobalBorderOpacityUseCase = setGroupsGlobalBorderOpacityUseCase
-        self.getGroupsGlobalBorderWidthUseCase = getGroupsGlobalBorderWidthUseCase
-        self.setGroupsGlobalBorderWidthUseCase = setGroupsGlobalBorderWidthUseCase
-        self.getGroupsGlobalCornerRadiusUseCase = getGroupsGlobalCornerRadiusUseCase
-        self.setGroupsGlobalCornerRadiusUseCase = setGroupsGlobalCornerRadiusUseCase
 
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
@@ -515,31 +367,40 @@ class SettingsViewModel: ObservableObject {
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getAnimationDurationUseCase = getAnimationDurationUseCase
 
+        // Initialize Spaces Use Cases
+        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
+        self.setSpacesVisualConfigUseCase = setSpacesVisualConfigUseCase
+        self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
+        self.setSpacesAppearanceModeUseCase = setSpacesAppearanceModeUseCase
+        self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
+        self.setGlobalSpacesVisualConfigUseCase = setGlobalSpacesVisualConfigUseCase
+
+        // Initialize Groups Use Cases
+        self.getGroupsUseCase = getGroupsUseCase
+        self.setGroupsUseCase = setGroupsUseCase
+        self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
+        self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
+        self.getGlobalGroupsVisualConfigUseCase = getGlobalGroupsVisualConfigUseCase
+        self.setGlobalGroupsVisualConfigUseCase = setGlobalGroupsVisualConfigUseCase
+
         // Load initial values from use cases
-        spaceBackgroundOpacity = getSpaceBackgroundOpacityUseCase.execute().blockingFirst()
-        spaceBackgroundBlurRadius = getSpaceBackgroundBlurRadiusUseCase.execute().blockingFirst()
-        spaceBackgroundTintColor = getSpaceBackgroundTintColorUseCase.execute().blockingFirst()
-        spaceForegroundColor = getSpaceForegroundColorUseCase.execute().blockingFirst()
-        spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
-        spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
-        spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
         showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
-        spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
-        groupsGlobalBackgroundTintColor = getGroupsGlobalBackgroundTintColorUseCase.execute().blockingFirst()
-        groupsGlobalBackgroundOpacity = getGroupsGlobalBackgroundOpacityUseCase.execute().blockingFirst()
-        groupsGlobalBackgroundBlurRadius = getGroupsGlobalBackgroundBlurRadiusUseCase.execute().blockingFirst()
-        groupsGlobalBorderColor = getGroupsGlobalBorderColorUseCase.execute().blockingFirst()
-        groupsGlobalBorderOpacity = getGroupsGlobalBorderOpacityUseCase.execute().blockingFirst()
-        groupsGlobalBorderWidth = getGroupsGlobalBorderWidthUseCase.execute().blockingFirst()
-        groupsGlobalCornerRadius = getGroupsGlobalCornerRadiusUseCase.execute().blockingFirst()
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
         aeroSpaceVersion = getAeroSpaceVersionUseCase.execute().blockingFirst()
         logLevel = getLogLevelUseCase.execute().blockingFirst()
         enablePerformanceMetrics = getEnablePerformanceMetricsUseCase.execute().blockingFirst()
         isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
         animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
+
+        // Load consolidated visual configurations
+        spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
+        spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
+        globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
+        groups = getGroupsUseCase.execute().blockingFirst()
+        groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
+        globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         setupReactiveSubscriptions()
@@ -719,33 +580,6 @@ class SettingsViewModel: ObservableObject {
     /// Setup reactive subscriptions to UseCase publishers.
     private func setupReactiveSubscriptions() {
         // Monitor configuration changes
-        getSpaceBackgroundOpacityUseCase.execute()
-            .assign(to: \.spaceBackgroundOpacity, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBackgroundBlurRadiusUseCase.execute()
-            .assign(to: \.spaceBackgroundBlurRadius, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBackgroundTintColorUseCase.execute()
-            .assign(to: \.spaceBackgroundTintColor, on: self)
-            .store(in: &cancellables)
-
-        getSpaceForegroundColorUseCase.execute()
-            .assign(to: \.spaceForegroundColor, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderTintColorUseCase.execute()
-            .assign(to: \.spaceBorderTintColor, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderOpacityUseCase.execute()
-            .assign(to: \.spaceBorderOpacity, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderWidthUseCase.execute()
-            .assign(to: \.spaceBorderWidth, on: self)
-            .store(in: &cancellables)
 
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
@@ -757,39 +591,6 @@ class SettingsViewModel: ObservableObject {
 
         getShowWindowTitlesUseCase.execute()
             .assign(to: \.showWindowTitles, on: self)
-            .store(in: &cancellables)
-
-        getSpaceCornerRadiusUseCase.execute()
-            .assign(to: \.spaceCornerRadius, on: self)
-            .store(in: &cancellables)
-
-        // Subscribe to groups global appearance configuration changes
-        getGroupsGlobalBackgroundTintColorUseCase.execute()
-            .assign(to: \.groupsGlobalBackgroundTintColor, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalBackgroundOpacityUseCase.execute()
-            .assign(to: \.groupsGlobalBackgroundOpacity, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalBackgroundBlurRadiusUseCase.execute()
-            .assign(to: \.groupsGlobalBackgroundBlurRadius, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalBorderColorUseCase.execute()
-            .assign(to: \.groupsGlobalBorderColor, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalBorderOpacityUseCase.execute()
-            .assign(to: \.groupsGlobalBorderOpacity, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalBorderWidthUseCase.execute()
-            .assign(to: \.groupsGlobalBorderWidth, on: self)
-            .store(in: &cancellables)
-
-        getGroupsGlobalCornerRadiusUseCase.execute()
-            .assign(to: \.groupsGlobalCornerRadius, on: self)
             .store(in: &cancellables)
 
         getAeroSpacePathUseCase.execute()
@@ -812,7 +613,6 @@ class SettingsViewModel: ObservableObject {
             .assign(to: \.isOptimizedPerformanceEnabled, on: self)
             .store(in: &cancellables)
 
-        // Subscribe to feature flags changes
         getFeatureFlagsUseCase.execute()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] featureFlags in
@@ -823,9 +623,34 @@ class SettingsViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Subscribe to animation duration changes
         getAnimationDurationUseCase.execute()
             .assign(to: \.animationDuration, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to consolidated spaces visual configuration changes
+        getSpacesVisualConfigUseCase.execute()
+            .assign(to: \.spacesVisualConfig, on: self)
+            .store(in: &cancellables)
+
+        getSpacesAppearanceModeUseCase.execute()
+            .assign(to: \.spacesAppearanceMode, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesVisualConfigUseCase.execute()
+            .assign(to: \.globalSpacesVisualConfig, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to consolidated groups visual configuration changes
+        getGroupsUseCase.execute()
+            .assign(to: \.groups, on: self)
+            .store(in: &cancellables)
+
+        getGroupsAppearanceModeUseCase.execute()
+            .assign(to: \.groupsAppearanceMode, on: self)
+            .store(in: &cancellables)
+
+        getGlobalGroupsVisualConfigUseCase.execute()
+            .assign(to: \.globalGroupsVisualConfig, on: self)
             .store(in: &cancellables)
     }
 

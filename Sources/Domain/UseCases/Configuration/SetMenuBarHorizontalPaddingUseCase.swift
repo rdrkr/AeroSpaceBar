@@ -21,7 +21,7 @@ public final class SetMenuBarHorizontalPaddingUseCase {
 
     /// Executes the use case to set the menu bar horizontal padding.
     /// - Parameter value: The menu bar horizontal padding in points
-    public func execute(_ value: Double) async {
+    public func execute(value: Double) async {
         await configurationGateway.setMenuBarHorizontalPadding(value)
     }
 }

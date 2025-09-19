@@ -7,7 +7,8 @@ import Foundation
 ///
 /// This protocol defines the contract for accessing and managing feature flags
 /// that control experimental and development features. Only available in debug builds.
-public protocol FeatureFlagsGateway: Sendable {
+@MainActor
+public protocol FeatureFlagsGateway {
     /// Publisher that emits the current feature flags configuration.
     var featureFlags: AnyPublisher<FeatureFlags, Never> { get }
 

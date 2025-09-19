@@ -9,7 +9,8 @@ import Foundation
 /// This class provides in-memory storage for feature flags that reset to defaults on each run,
 /// with reactive updates through Combine publishers. Only available in debug builds.
 #if DEBUG
-    public final class FeatureFlagsRepository: FeatureFlagsGateway, @unchecked Sendable {
+    @MainActor
+    public final class FeatureFlagsRepository: FeatureFlagsGateway {
         private let featureFlagsSubject: CurrentValueSubject<FeatureFlags, Never>
 
         /// Initializes the repository with default feature flags.
@@ -41,7 +42,8 @@ import Foundation
         }
     }
 #else
-    public final class FeatureFlagsRepository: FeatureFlagsGateway, @unchecked Sendable {
+    @MainActor
+    public final class FeatureFlagsRepository: FeatureFlagsGateway {
         public init() { }
 
         public var featureFlags: AnyPublisher<FeatureFlags, Never> {

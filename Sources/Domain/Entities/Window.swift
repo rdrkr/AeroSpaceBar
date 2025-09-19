@@ -7,12 +7,12 @@ import Foundation
 ///
 /// This struct contains information about a window including its identifier,
 /// title, associated application, focus state, workspace assignment, and visual configuration.
-public struct Window: Identifiable, Codable {
+public struct Window: VisualConfigurable {
     /// The unique identifier for the window.
     public let id: Int
 
-    /// The title of the window.
-    public let title: String
+    /// The Window title name
+    public var title: String
 
     /// The name of the application that owns the window.
     public let appName: String?
@@ -30,7 +30,7 @@ public struct Window: Identifiable, Codable {
     public var appIcon: NSImage?
 
     /// The visual configuration for the window container.
-    public var visualConfig: VisualContainer?
+    public var visualConfig: VisualContainer
 
     /// Coding keys for JSON serialization.
     public enum CodingKeys: String, CodingKey {
@@ -38,21 +38,7 @@ public struct Window: Identifiable, Codable {
         case title = "window-title"
         case appName = "app-name"
         case workspace
-        case visualConfig = "visual_config"
-    }
-
-    /// Creates a window from a decoder.
-    /// - Parameter decoder: The decoder to read from
-    /// - Throws: DecodingError if the data is invalid
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(Int.self, forKey: .id)
-        title = try container.decode(String.self, forKey: .title)
-        appName = try container.decodeIfPresent(String.self, forKey: .appName)
-        workspace = try container.decodeIfPresent(String.self, forKey: .workspace)
-        visualConfig = try container.decodeIfPresent(VisualContainer.self, forKey: .visualConfig)
-        isFocused = false
-        appIcon = nil // appIcon is not encoded/decoded as NSImage doesn't conform to Codable
+        case visualConfig = "visual-config"
     }
 
     /// Creates a window with the specified parameters.
@@ -71,7 +57,7 @@ public struct Window: Identifiable, Codable {
         isFocused: Bool = false,
         workspace: String?,
         appIcon: NSImage? = nil,
-        visualConfig: VisualContainer? = nil
+        visualConfig: VisualContainer
     ) {
         self.id = id
         self.title = title
@@ -81,11 +67,37 @@ public struct Window: Identifiable, Codable {
         self.appIcon = appIcon
         self.visualConfig = visualConfig
     }
-}
 
-// MARK: - Equatable Implementation
+    /// Creates a window from a decoder.
+    /// - Parameter decoder: The decoder to read from
+    /// - Throws: DecodingError if the data is invalid
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-extension Window: Equatable {
+        id = try container.decode(Int.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        appName = try container.decode(String.self, forKey: .appName)
+        workspace = try container.decode(String.self, forKey: .workspace)
+        visualConfig = try container.decodeIfPresent(
+            VisualContainer.self, forKey: .visualConfig
+        ) ?? ConfigurationDefaults.defaultSpaceVisualConfig
+        isFocused = false
+        appIcon = nil // appIcon is not encoded/decoded as NSImage doesn't conform to Codable
+    }
+
+    /// Encodes the window to an encoder.
+    /// - Parameter encoder: The encoder to write to
+    /// - Throws: EncodingError if the data cannot be encoded
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(appName, forKey: .appName)
+        try container.encode(workspace, forKey: .workspace)
+        try container.encode(visualConfig, forKey: .visualConfig)
+    }
+
     /// Compares two windows for equality.
     /// - Parameters:
     ///   - lhs: The left-hand side window
@@ -98,6 +110,5 @@ extension Window: Equatable {
             lhs.isFocused == rhs.isFocused &&
             lhs.workspace == rhs.workspace &&
             lhs.visualConfig == rhs.visualConfig
-        // Note: appIcon is excluded from equality comparison as NSImage doesn't conform to Equatable
     }
 }

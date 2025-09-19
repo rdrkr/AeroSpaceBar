@@ -5,7 +5,7 @@ import Foundation
 
 /// Use case for retrieving the groups appearance mode configuration.
 @MainActor
-public final class GetGroupsAppearanceModeUseCase: @unchecked Sendable {
+public final class GetGroupsAppearanceModeUseCase {
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the required gateway.

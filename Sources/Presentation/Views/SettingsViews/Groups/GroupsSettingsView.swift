@@ -14,93 +14,6 @@ struct GroupsSettingsView: View {
     /// The associated navigation page
     private let navigationOption: RootNavigationPage = .groups
 
-    /// Background appearance configuration section
-    private var backgroundSection: some View {
-        Section(LocalizedStringResource("Background")) {
-            SettingsColorPicker(
-                title: LocalizedStringResource("Tint Color"),
-                description: LocalizedStringResource("Choose the background tint color for all groups."),
-                selectedColor: $settingsViewModel.groupsGlobalBackgroundTintColor
-            )
-            .tag("groups-global-background-tint-color")
-
-            SettingsSlider(
-                value: $settingsViewModel.groupsGlobalBackgroundOpacity,
-                in: 0.0 ... 1.0,
-                defaultValue: ConfigurationDefaults.groupsGlobalBackgroundOpacity,
-                stickiness: 0.05,
-                label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource("Adjust the background opacity for all groups."),
-                displayAsPercentage: true
-            )
-            .tag("groups-global-background-opacity")
-
-            SettingsSlider(
-                value: $settingsViewModel.groupsGlobalBackgroundBlurRadius,
-                in: 0.0 ... 20.0,
-                defaultValue: ConfigurationDefaults.groupsGlobalBackgroundBlurRadius,
-                stickiness: 0.5,
-                label: LocalizedStringResource("Blur Radius"),
-                helpText: LocalizedStringResource("Adjust the background blur radius for all groups."),
-                displayAsPoints: true
-            )
-            .tag("groups-global-background-blur-radius")
-        }
-        .tag("groups-global-background-section")
-    }
-
-    /// Border appearance configuration section
-    private var borderSection: some View {
-        Section(LocalizedStringResource("Border")) {
-            SettingsColorPicker(
-                title: LocalizedStringResource("Color"),
-                description: LocalizedStringResource("Choose the border color for all groups."),
-                selectedColor: $settingsViewModel.groupsGlobalBorderColor
-            )
-            .tag("groups-global-border-color")
-
-            SettingsSlider(
-                value: $settingsViewModel.groupsGlobalBorderOpacity,
-                in: 0.0 ... 1.0,
-                defaultValue: ConfigurationDefaults.groupsGlobalBorderOpacity,
-                stickiness: 0.05,
-                label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource("Adjust the border opacity for all groups."),
-                displayAsPercentage: true
-            )
-            .tag("groups-global-border-opacity")
-
-            SettingsSlider(
-                value: $settingsViewModel.groupsGlobalBorderWidth,
-                in: 0.0 ... 5.0,
-                defaultValue: ConfigurationDefaults.groupsGlobalBorderWidth,
-                stickiness: 1.0,
-                label: LocalizedStringResource("Width"),
-                helpText: LocalizedStringResource("Adjust the border width for all groups."),
-                displayAsPoints: true
-            )
-            .tag("groups-global-border-width")
-        }
-        .tag("groups-global-border-section")
-    }
-
-    /// Shape appearance configuration section
-    private var shapeSection: some View {
-        Section(LocalizedStringResource("Shape")) {
-            SettingsSlider(
-                value: $settingsViewModel.groupsGlobalCornerRadius,
-                in: 0.0 ... ConfigurationDefaults.groupsGlobalCornerRadius,
-                defaultValue: ConfigurationDefaults.groupsGlobalCornerRadius,
-                stickiness: 1.0,
-                label: LocalizedStringResource("Corner Radius"),
-                helpText: LocalizedStringResource("Adjust the corner radius for all groups."),
-                displayAsPercentage: true
-            )
-            .tag("groups-global-corner-radius")
-        }
-        .tag("groups-global-shape-section")
-    }
-
     var body: some View {
         IntroForm(
             navigationTitle: String(localized: navigationOption.name),
@@ -136,12 +49,13 @@ struct GroupsSettingsView: View {
 
                 // Global Appearance Configuration Sections (for All Groups and Same as Spaces modes)
                 if groupsViewModel.groupsAppearanceMode == .allGroups {
-                    backgroundSection
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                    borderSection
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                    shapeSection
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+                    VisualSettingsView(
+                        entityPrefix: LocalizedStringResource("Group"),
+                        visualConfig: $settingsViewModel.globalGroupsVisualConfig,
+                        defaultConfig: ConfigurationDefaults.defaultGroupsGlobalVisualConfig,
+                        tagPrefix: "groups-global",
+                        showForegroundSection: false
+                    )
                 }
 
                 Section {

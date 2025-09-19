@@ -14,7 +14,7 @@ internal import TOMLKit
 /// to emit updates when configuration values change.
 /// This is the data layer implementation of the ConfigurationGateway.
 @MainActor
-public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sendable {
+public final class ConfigurationRepository: ConfigurationGateway {
     /// Cancellables for publisher subscriptions.
     private var cancellables = Set<AnyCancellable>()
 
@@ -65,34 +65,6 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
     // MARK: - UI Configuration Subjects
 
-    private let spaceBackgroundOpacitySubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.spaceBackgroundOpacity
-    )
-
-    private let spaceBackgroundBlurRadiusSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.spaceBackgroundBlurRadius
-    )
-
-    private let spaceBackgroundTintColorSubject = CurrentValueSubject<Color, Never>(
-        ConfigurationDefaults.spaceBackgroundTintColor
-    )
-
-    private let spaceForegroundColorSubject = CurrentValueSubject<Color, Never>(
-        ConfigurationDefaults.spaceForegroundColor
-    )
-
-    private let spaceBorderTintColorSubject = CurrentValueSubject<Color, Never>(
-        ConfigurationDefaults.spaceBorderTintColor
-    )
-
-    private let spaceBorderOpacitySubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.spaceBorderOpacity
-    )
-
-    private let spaceBorderWidthSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.spaceBorderWidth
-    )
-
     private let menuBarVerticalPaddingSubject = CurrentValueSubject<Double, Never>(
         ConfigurationDefaults.menuBarVerticalPadding
     )
@@ -113,44 +85,28 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         ConfigurationDefaults.windowIconSize
     )
 
-    private let spaceCornerRadiusSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.spaceCornerRadius
+    private let spacesVisualConfigSubject = CurrentValueSubject<[VisualContainer], Never>(
+        ConfigurationDefaults.spacesVisualConfiguration
     )
 
-    private let groupsConfigurationSubject = CurrentValueSubject<[Domain.Group], Never>(
-        ConfigurationDefaults.groupsConfiguration
+    private let spacesAppearanceModeSubject = CurrentValueSubject<SpacesAppearanceMode, Never>(
+        ConfigurationDefaults.spacesAppearanceMode
+    )
+
+    private let globalSpacesVisualConfigSubject = CurrentValueSubject<VisualContainer, Never>(
+        ConfigurationDefaults.defaultSpaceVisualConfig
+    )
+
+    private let groupsSubject = CurrentValueSubject<[Domain.Group], Never>(
+        ConfigurationDefaults.groups
     )
 
     private let groupsAppearanceModeSubject = CurrentValueSubject<GroupsAppearanceMode, Never>(
         ConfigurationDefaults.groupsAppearanceMode
     )
 
-    private let groupsGlobalBackgroundTintColorSubject = CurrentValueSubject<Color, Never>(
-        ConfigurationDefaults.groupsGlobalBackgroundTintColor
-    )
-
-    private let groupsGlobalBackgroundOpacitySubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.groupsGlobalBackgroundOpacity
-    )
-
-    private let groupsGlobalBgBlurRadiusSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.groupsGlobalBackgroundBlurRadius
-    )
-
-    private let groupsGlobalBorderColorSubject = CurrentValueSubject<Color, Never>(
-        ConfigurationDefaults.groupsGlobalBorderColor
-    )
-
-    private let groupsGlobalBorderOpacitySubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.groupsGlobalBorderOpacity
-    )
-
-    private let groupsGlobalBorderWidthSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.groupsGlobalBorderWidth
-    )
-
-    private let groupsGlobalCornerRadiusSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.groupsGlobalCornerRadius
+    private let globalGroupsVisualConfigSubject = CurrentValueSubject<VisualContainer, Never>(
+        ConfigurationDefaults.defaultGroupsGlobalVisualConfig
     )
 
     // MARK: - Publishers
@@ -193,32 +149,8 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
     // MARK: - UI Configuration Publishers
 
-    public var spaceBackgroundOpacityPublisher: AnyPublisher<Double, Never> {
-        spaceBackgroundOpacitySubject.eraseToAnyPublisher()
-    }
-
-    public var spaceBackgroundBlurRadiusPublisher: AnyPublisher<Double, Never> {
-        spaceBackgroundBlurRadiusSubject.eraseToAnyPublisher()
-    }
-
-    public var spaceBackgroundTintColorPublisher: AnyPublisher<Color, Never> {
-        spaceBackgroundTintColorSubject.eraseToAnyPublisher()
-    }
-
-    public var spaceForegroundColorPublisher: AnyPublisher<Color, Never> {
-        spaceForegroundColorSubject.eraseToAnyPublisher()
-    }
-
-    public var spaceBorderTintColorPublisher: AnyPublisher<Color, Never> {
-        spaceBorderTintColorSubject.eraseToAnyPublisher()
-    }
-
-    public var spaceBorderOpacityPublisher: AnyPublisher<Double, Never> {
-        spaceBorderOpacitySubject.eraseToAnyPublisher()
-    }
-
-    public var spaceBorderWidthPublisher: AnyPublisher<Double, Never> {
-        spaceBorderWidthSubject.eraseToAnyPublisher()
+    public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualContainer, Never> {
+        globalSpacesVisualConfigSubject.eraseToAnyPublisher()
     }
 
     public var menuBarVerticalPaddingPublisher: AnyPublisher<Double, Never> {
@@ -241,44 +173,24 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         windowIconSizeSubject.eraseToAnyPublisher()
     }
 
-    public var spaceCornerRadiusPublisher: AnyPublisher<Double, Never> {
-        spaceCornerRadiusSubject.eraseToAnyPublisher()
+    public var spacesVisualConfigPublisher: AnyPublisher<[VisualContainer], Never> {
+        spacesVisualConfigSubject.eraseToAnyPublisher()
     }
 
-    public var groupsConfigurationPublisher: AnyPublisher<[Domain.Group], Never> {
-        groupsConfigurationSubject.eraseToAnyPublisher()
+    public var spacesAppearanceModePublisher: AnyPublisher<SpacesAppearanceMode, Never> {
+        spacesAppearanceModeSubject.eraseToAnyPublisher()
+    }
+
+    public var groupsPublisher: AnyPublisher<[Domain.Group], Never> {
+        groupsSubject.eraseToAnyPublisher()
     }
 
     public var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> {
         groupsAppearanceModeSubject.eraseToAnyPublisher()
     }
 
-    public var groupsGlobalBackgroundTintColorPublisher: AnyPublisher<Color, Never> {
-        groupsGlobalBackgroundTintColorSubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalBackgroundOpacityPublisher: AnyPublisher<Double, Never> {
-        groupsGlobalBackgroundOpacitySubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalBgBlurRadiusPublisher: AnyPublisher<Double, Never> {
-        groupsGlobalBgBlurRadiusSubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalBorderColorPublisher: AnyPublisher<Color, Never> {
-        groupsGlobalBorderColorSubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalBorderOpacityPublisher: AnyPublisher<Double, Never> {
-        groupsGlobalBorderOpacitySubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalBorderWidthPublisher: AnyPublisher<Double, Never> {
-        groupsGlobalBorderWidthSubject.eraseToAnyPublisher()
-    }
-
-    public var groupsGlobalCornerRadiusPublisher: AnyPublisher<Double, Never> {
-        groupsGlobalCornerRadiusSubject.eraseToAnyPublisher()
+    public var globalGroupsVisualConfigPublisher: AnyPublisher<VisualContainer, Never> {
+        globalGroupsVisualConfigSubject.eraseToAnyPublisher()
     }
 
     /// Initializer for the configuration gateway.
@@ -308,45 +220,6 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         // Load AeroSpace path with validation and auto-detection
         let resolvedPath = resolveAeroSpacePath()
         aeroSpacePathSubject.send(resolvedPath)
-
-        // Load other boolean settings
-        let spaceBackgroundOpacity = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBackgroundOpacity.rawValue) as? Double
-            ?? spaceBackgroundOpacitySubject.value
-        spaceBackgroundOpacitySubject.send(spaceBackgroundOpacity)
-
-        let spaceBackgroundBlurRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue) as? Double
-            ?? spaceBackgroundBlurRadiusSubject.value
-        spaceBackgroundBlurRadiusSubject.send(spaceBackgroundBlurRadius)
-
-        let spaceBackgroundTintColor = loadColorFromUserDefaults(
-            key: UserDefaultsKeys.spaceBackgroundTintColor.rawValue,
-            defaultValue: spaceBackgroundTintColorSubject.value
-        )
-        spaceBackgroundTintColorSubject.send(spaceBackgroundTintColor)
-
-        let spaceForegroundColor = loadColorFromUserDefaults(
-            key: UserDefaultsKeys.spaceForegroundColor.rawValue,
-            defaultValue: spaceForegroundColorSubject.value
-        )
-        spaceForegroundColorSubject.send(spaceForegroundColor)
-
-        let spaceBorderTintColor = loadColorFromUserDefaults(
-            key: UserDefaultsKeys.spaceBorderTintColor.rawValue,
-            defaultValue: spaceBorderTintColorSubject.value
-        )
-        spaceBorderTintColorSubject.send(spaceBorderTintColor)
-
-        let spaceBorderOpacity = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBorderOpacity.rawValue) as? Double
-            ?? spaceBorderOpacitySubject.value
-        spaceBorderOpacitySubject.send(spaceBorderOpacity)
-
-        let spaceBorderWidth = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceBorderWidth.rawValue) as? Double
-            ?? spaceBorderWidthSubject.value
-        spaceBorderWidthSubject.send(spaceBorderWidth)
 
         let focusWindowOnClick = UserDefaults.standard
             .object(forKey: UserDefaultsKeys.focusWindowOnClick.rawValue) as? Bool
@@ -403,53 +276,33 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
             ?? windowIconSizeSubject.value
         windowIconSizeSubject.send(windowIconSize)
 
-        let spaceCornerRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.spaceCornerRadius.rawValue) as? Double
-            ?? spaceCornerRadiusSubject.value
-        spaceCornerRadiusSubject.send(spaceCornerRadius)
+        let spacesVisualConfigurationWrapper: CollectionWrapper<VisualContainer>? = loadStructFromTOML(
+            configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue
+        )
+        let spacesVisualConfiguration = spacesVisualConfigurationWrapper?.items ?? spacesVisualConfigSubject.value
+        spacesVisualConfigSubject.send(spacesVisualConfiguration)
 
-        let groupsConfiguration = loadGroupsConfiguration() ?? groupsConfigurationSubject.value
-        groupsConfigurationSubject.send(groupsConfiguration)
+        let spacesAppearanceMode = loadSpacesAppearanceMode() ?? spacesAppearanceModeSubject.value
+        spacesAppearanceModeSubject.send(spacesAppearanceMode)
+
+        let globalSpacesVisualConfig = loadStructFromTOML(
+            configKey: UserDefaultsKeys.globalSpacesVisualConfig.rawValue
+        ) ?? globalSpacesVisualConfigSubject.value
+        globalSpacesVisualConfigSubject.send(globalSpacesVisualConfig)
+
+        let groupsWrapper: CollectionWrapper<Domain.Group>? = loadStructFromTOML(
+            configKey: UserDefaultsKeys.groups.rawValue
+        )
+        let groups = groupsWrapper?.items ?? groupsSubject.value
+        groupsSubject.send(groups)
 
         let groupsAppearanceMode = loadGroupsAppearanceMode() ?? groupsAppearanceModeSubject.value
         groupsAppearanceModeSubject.send(groupsAppearanceMode)
 
-        let groupsGlobalBackgroundTintColor = loadColorFromUserDefaults(
-            key: UserDefaultsKeys.groupsGlobalBackgroundTintColor.rawValue,
-            defaultValue: groupsGlobalBackgroundTintColorSubject.value
-        )
-        groupsGlobalBackgroundTintColorSubject.send(groupsGlobalBackgroundTintColor)
-
-        let groupsGlobalBackgroundOpacity = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.groupsGlobalBackgroundOpacity.rawValue) as? Double
-            ?? groupsGlobalBackgroundOpacitySubject.value
-        groupsGlobalBackgroundOpacitySubject.send(groupsGlobalBackgroundOpacity)
-
-        let groupsGlobalBackgroundBlurRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.groupsGlobalBackgroundBlurRadius.rawValue) as? Double
-            ?? groupsGlobalBgBlurRadiusSubject.value
-        groupsGlobalBgBlurRadiusSubject.send(groupsGlobalBackgroundBlurRadius)
-
-        let groupsGlobalBorderColor = loadColorFromUserDefaults(
-            key: UserDefaultsKeys.groupsGlobalBorderColor.rawValue,
-            defaultValue: groupsGlobalBorderColorSubject.value
-        )
-        groupsGlobalBorderColorSubject.send(groupsGlobalBorderColor)
-
-        let groupsGlobalBorderOpacity = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.groupsGlobalBorderOpacity.rawValue) as? Double
-            ?? groupsGlobalBorderOpacitySubject.value
-        groupsGlobalBorderOpacitySubject.send(groupsGlobalBorderOpacity)
-
-        let groupsGlobalBorderWidth = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.groupsGlobalBorderWidth.rawValue) as? Double
-            ?? groupsGlobalBorderWidthSubject.value
-        groupsGlobalBorderWidthSubject.send(groupsGlobalBorderWidth)
-
-        let groupsGlobalCornerRadius = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.groupsGlobalCornerRadius.rawValue) as? Double
-            ?? groupsGlobalCornerRadiusSubject.value
-        groupsGlobalCornerRadiusSubject.send(groupsGlobalCornerRadius)
+        let globalGroupsVisualConfig = loadStructFromTOML(
+            configKey: UserDefaultsKeys.globalGroupsVisualConfig.rawValue
+        ) ?? globalGroupsVisualConfigSubject.value
+        globalGroupsVisualConfigSubject.send(globalGroupsVisualConfig)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
@@ -548,62 +401,6 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
 
     // MARK: - UI Configuration Async Setters
 
-    /// Sets the space background opacity level and emits update.
-    public func setSpaceBackgroundOpacity(_ value: Double) async {
-        if value == spaceBackgroundOpacitySubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBackgroundOpacity.rawValue)
-        spaceBackgroundOpacitySubject.send(value)
-    }
-
-    /// Sets the space background blur radius and emits update.
-    public func setSpaceBackgroundBlurRadius(_ value: Double) async {
-        if value == spaceBackgroundBlurRadiusSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBackgroundBlurRadius.rawValue)
-        spaceBackgroundBlurRadiusSubject.send(value)
-    }
-
-    /// Sets the space background tint color and emits update.
-    public func setSpaceBackgroundTintColor(_ value: Color) async {
-        if value == spaceBackgroundTintColorSubject.value { return }
-
-        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceBackgroundTintColor.rawValue)
-        spaceBackgroundTintColorSubject.send(value)
-    }
-
-    /// Sets the space foreground color and emits update.
-    public func setSpaceForegroundColor(_ value: Color) async {
-        if value == spaceForegroundColorSubject.value { return }
-
-        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceForegroundColor.rawValue)
-        spaceForegroundColorSubject.send(value)
-    }
-
-    /// Sets the space border tint color and emits update.
-    public func setSpaceBorderTintColor(_ value: Color) async {
-        if value == spaceBorderTintColorSubject.value { return }
-
-        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.spaceBorderTintColor.rawValue)
-        spaceBorderTintColorSubject.send(value)
-    }
-
-    /// Sets the space border opacity and emits update.
-    public func setSpaceBorderOpacity(_ value: Double) async {
-        if value == spaceBorderOpacitySubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBorderOpacity.rawValue)
-        spaceBorderOpacitySubject.send(value)
-    }
-
-    /// Sets the space border width and emits update.
-    public func setSpaceBorderWidth(_ value: Double) async {
-        if value == spaceBorderWidthSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceBorderWidth.rawValue)
-        spaceBorderWidthSubject.send(value)
-    }
-
     /// Sets the vertical padding for the menu bar interface in points.
     public func setMenuBarVerticalPadding(_ value: Double) async {
         if value == menuBarVerticalPaddingSubject.value { return }
@@ -644,77 +441,68 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         windowIconSizeSubject.send(value)
     }
 
-    /// Sets the corner radius for space elements in points.
-    public func setSpaceCornerRadius(_ value: Double) async {
-        if value == spaceCornerRadiusSubject.value { return }
+    /// Sets the spaces configuration and emits update.
+    public func setSpacesVisualConfig(_ value: [VisualContainer]) async {
+        if value == spacesVisualConfigSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.spaceCornerRadius.rawValue)
-        spaceCornerRadiusSubject.send(value)
+        saveStructToTOML(
+            configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue,
+            data: value
+        )
+
+        spacesVisualConfigSubject.send(value)
+    }
+
+    /// Sets the spaces appearance mode and emits update.
+    public func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) async {
+        if value == spacesAppearanceModeSubject.value { return }
+
+        UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.spacesAppearanceMode.rawValue)
+        spacesAppearanceModeSubject.send(value)
+    }
+
+    /// Sets the global space visual configuration and emits update.
+    public func setGlobalSpacesVisualConfig(_ value: VisualContainer) async {
+        if value == globalSpacesVisualConfigSubject.value { return }
+
+        saveStructToTOML(
+            configKey: UserDefaultsKeys.globalSpacesVisualConfig.rawValue,
+            data: value
+        )
+
+        globalSpacesVisualConfigSubject.send(value)
     }
 
     /// Sets the group configuration for menu bar applications and emits update.
-    public func setGroupsConfiguration(_ value: [Domain.Group]) async {
-        if value == groupsConfigurationSubject.value { return }
+    public func setGroups(_ value: [Domain.Group]) async {
+        if value == groupsSubject.value { return }
 
-        saveGroupsConfiguration(value)
-        groupsConfigurationSubject.send(value)
+        saveStructToTOML(
+            configKey: UserDefaultsKeys.groups.rawValue,
+            data: CollectionWrapper(items: value)
+        )
+
+        groupsSubject.send(value)
     }
 
     /// Sets the groups appearance mode and emits update.
     public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async {
         if value == groupsAppearanceModeSubject.value { return }
 
-        saveGroupsAppearanceMode(value)
+        UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue)
         groupsAppearanceModeSubject.send(value)
     }
 
-    /// Sets the groups global background tint color and emits update.
-    public func setGroupsGlobalBackgroundTintColor(_ value: Color) async {
-        if value == groupsGlobalBackgroundTintColorSubject.value { return }
-        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.groupsGlobalBackgroundTintColor.rawValue)
-        groupsGlobalBackgroundTintColorSubject.send(value)
-    }
+    /// Sets the global groups visual configuration and emits update.
+    public func setGlobalGroupsVisualConfig(_ value: VisualContainer) async {
+        if value == globalGroupsVisualConfigSubject.value { return }
 
-    /// Sets the groups global background opacity and emits update.
-    public func setGroupsGlobalBackgroundOpacity(_ value: Double) async {
-        if value == groupsGlobalBackgroundOpacitySubject.value { return }
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBackgroundOpacity.rawValue)
-        groupsGlobalBackgroundOpacitySubject.send(value)
-    }
+        saveStructToTOML(
+            configKey: UserDefaultsKeys.globalGroupsVisualConfig.rawValue,
+            data: value
+        )
 
-    /// Sets the groups global background blur radius and emits update.
-    public func setGroupsGlobalBackgroundBlurRadius(_ value: Double) async {
-        if value == groupsGlobalBgBlurRadiusSubject.value { return }
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBackgroundBlurRadius.rawValue)
-        groupsGlobalBgBlurRadiusSubject.send(value)
-    }
-
-    /// Sets the groups global border color and emits update.
-    public func setGroupsGlobalBorderColor(_ value: Color) async {
-        if value == groupsGlobalBorderColorSubject.value { return }
-        saveColorToUserDefaults(color: value, key: UserDefaultsKeys.groupsGlobalBorderColor.rawValue)
-        groupsGlobalBorderColorSubject.send(value)
-    }
-
-    /// Sets the groups global border opacity and emits update.
-    public func setGroupsGlobalBorderOpacity(_ value: Double) async {
-        if value == groupsGlobalBorderOpacitySubject.value { return }
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBorderOpacity.rawValue)
-        groupsGlobalBorderOpacitySubject.send(value)
-    }
-
-    /// Sets the groups global border width and emits update.
-    public func setGroupsGlobalBorderWidth(_ value: Double) async {
-        if value == groupsGlobalBorderWidthSubject.value { return }
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalBorderWidth.rawValue)
-        groupsGlobalBorderWidthSubject.send(value)
-    }
-
-    /// Sets the groups global corner radius and emits update.
-    public func setGroupsGlobalCornerRadius(_ value: Double) async {
-        if value == groupsGlobalCornerRadiusSubject.value { return }
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.groupsGlobalCornerRadius.rawValue)
-        groupsGlobalCornerRadiusSubject.send(value)
+        globalGroupsVisualConfigSubject.send(value)
     }
 
     // MARK: - AeroSpace Integration
@@ -825,12 +613,6 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         // Reset all subjects to default values
         await setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
         await setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
-        await setSpaceBackgroundOpacity(ConfigurationDefaults.spaceBackgroundOpacity)
-        await setSpaceBackgroundBlurRadius(ConfigurationDefaults.spaceBackgroundBlurRadius)
-        await setSpaceBackgroundTintColor(ConfigurationDefaults.spaceBackgroundTintColor)
-        await setSpaceForegroundColor(ConfigurationDefaults.spaceForegroundColor)
-        await setSpaceBorderTintColor(ConfigurationDefaults.spaceBorderTintColor)
-        await setSpaceBorderOpacity(ConfigurationDefaults.spaceBorderOpacity)
         await setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
         await setShowEmptySpaces(ConfigurationDefaults.showEmptySpaces)
         await setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
@@ -843,116 +625,16 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         await setWidgetSpacing(ConfigurationDefaults.widgetSpacing)
         await setAnimationDuration(ConfigurationDefaults.animationDuration)
         await setWindowIconSize(ConfigurationDefaults.windowIconSize)
-        await setSpaceCornerRadius(ConfigurationDefaults.spaceCornerRadius)
         await setShowGroups(ConfigurationDefaults.showGroups)
-        await setGroupsConfiguration(ConfigurationDefaults.groupsConfiguration)
+
+        await setSpacesVisualConfig(ConfigurationDefaults.spacesVisualConfiguration)
+        await setSpacesAppearanceMode(ConfigurationDefaults.spacesAppearanceMode)
+        await setGlobalSpacesVisualConfig(ConfigurationDefaults.defaultSpaceVisualConfig)
+        await setGroups(ConfigurationDefaults.groups)
         await setGroupsAppearanceMode(ConfigurationDefaults.groupsAppearanceMode)
-        await setGroupsGlobalBackgroundTintColor(ConfigurationDefaults.groupsGlobalBackgroundTintColor)
-        await setGroupsGlobalBackgroundOpacity(ConfigurationDefaults.groupsGlobalBackgroundOpacity)
-        await setGroupsGlobalBackgroundBlurRadius(ConfigurationDefaults.groupsGlobalBackgroundBlurRadius)
-        await setGroupsGlobalBorderColor(ConfigurationDefaults.groupsGlobalBorderColor)
-        await setGroupsGlobalBorderOpacity(ConfigurationDefaults.groupsGlobalBorderOpacity)
-        await setGroupsGlobalBorderWidth(ConfigurationDefaults.groupsGlobalBorderWidth)
-        await setGroupsGlobalCornerRadius(ConfigurationDefaults.groupsGlobalCornerRadius)
+        await setGlobalGroupsVisualConfig(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
-    }
-
-    // MARK: - Color Serialization Helpers
-
-    /// Loads a Color from UserDefaults with a default fallback.
-    /// - Parameters:
-    ///   - key: The UserDefaults key
-    ///   - defaultValue: The default value to use if not found
-    /// - Returns: The loaded Color or the default value
-    private func loadColorFromUserDefaults(key: String, defaultValue: Color) -> Color {
-        guard let data = UserDefaults.standard.data(forKey: key) else {
-            return defaultValue
-        }
-
-        do {
-            let decoder = JSONDecoder()
-            let colorComponents = try decoder.decode(ColorComponents.self, from: data)
-            return Color(
-                .sRGB,
-                red: colorComponents.red,
-                green: colorComponents.green,
-                blue: colorComponents.blue,
-                opacity: colorComponents.alpha
-            )
-        } catch {
-            Logger.warning("Failed to decode color from UserDefaults for key \(key): \(error)", category: Logger.config)
-            return defaultValue
-        }
-    }
-
-    /// Saves a Color to UserDefaults by encoding its components.
-    /// - Parameters:
-    ///   - color: The Color to save
-    ///   - key: The UserDefaults key
-    private func saveColorToUserDefaults(color: Color, key: String) {
-        let resolved = color.resolve(in: EnvironmentValues())
-        let colorComponents = ColorComponents(
-            red: Double(resolved.red),
-            green: Double(resolved.green),
-            blue: Double(resolved.blue),
-            alpha: Double(resolved.opacity)
-        )
-
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(colorComponents)
-            UserDefaults.standard.set(data, forKey: key)
-        } catch {
-            Logger.error("Failed to encode color to UserDefaults for key \(key): \(error)", category: Logger.config)
-        }
-    }
-
-    /// Loads a GroupConfiguration from UserDefaults using TOML format.
-    /// - Returns: The GroupConfiguration if found, nil otherwise
-    private func loadGroupsConfiguration() -> [Domain.Group]? {
-        guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.groupsConfiguration.rawValue) else {
-            return nil
-        }
-
-        do {
-            // Convert Data to String for TOML parsing
-            guard let tomlString = String(data: data, encoding: .utf8) else {
-                Logger.warning("Failed to convert Data to String for TOML parsing", category: Logger.config)
-                return nil
-            }
-
-            let decoder = TOMLDecoder()
-            let wrapper = try decoder.decode(GroupsConfigurationWrapper.self, from: tomlString)
-            return wrapper.groups
-        } catch {
-            Logger.warning(
-                "Failed to decode GroupConfiguration from UserDefaults using TOML: \(error)",
-                category: Logger.config
-            )
-            return nil
-        }
-    }
-
-    /// Saves a GroupConfiguration to UserDefaults using TOML format.
-    /// - Parameter configuration: The GroupConfiguration to save
-    private func saveGroupsConfiguration(_ configuration: [Domain.Group]) {
-        do {
-            let encoder = TOMLEncoder()
-            let wrapper = GroupsConfigurationWrapper(groups: configuration)
-            let tomlString = try encoder.encode(wrapper)
-            guard let data = tomlString.data(using: String.Encoding.utf8) else {
-                Logger.error("Failed to convert TOML string to Data", category: Logger.config)
-                return
-            }
-
-            UserDefaults.standard.set(data, forKey: UserDefaultsKeys.groupsConfiguration.rawValue)
-        } catch {
-            Logger.error(
-                "Failed to encode GroupConfiguration to UserDefaults using TOML: \(error)",
-                category: Logger.config
-            )
-        }
     }
 
     /// Loads the groups appearance mode from UserDefaults.
@@ -965,22 +647,65 @@ public final class ConfigurationRepository: ConfigurationGateway, @unchecked Sen
         return GroupsAppearanceMode(rawValue: rawValue)
     }
 
-    /// Saves the groups appearance mode to UserDefaults.
-    /// - Parameter mode: The groups appearance mode to save
-    private func saveGroupsAppearanceMode(_ mode: GroupsAppearanceMode) {
-        UserDefaults.standard.set(mode.rawValue, forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue)
+    /// Loads the spaces appearance mode from UserDefaults.
+    /// - Returns: The spaces appearance mode if found, nil otherwise
+    private func loadSpacesAppearanceMode() -> SpacesAppearanceMode? {
+        guard let rawValue = UserDefaults.standard.string(forKey: UserDefaultsKeys.spacesAppearanceMode.rawValue) else {
+            return nil
+        }
+
+        return SpacesAppearanceMode(rawValue: rawValue)
+    }
+
+    /// Loads a TOML formatted configuration UserDefaults value to a struct.
+    /// - Parameter configKey: The UserDefaults key for the configuration
+    /// - Returns: The configuration struct if found, nil otherwise
+    private func loadStructFromTOML<T: Codable>(configKey: String) -> T? {
+        guard let data = UserDefaults.standard.data(forKey: configKey) else {
+            return nil
+        }
+
+        do {
+            // Convert Data to String for TOML parsing
+            guard let tomlString = String(data: data, encoding: .utf8) else {
+                Logger.warning("Failed to convert Data to String for TOML parsing", category: Logger.config)
+                return nil
+            }
+
+            let decoder = TOMLDecoder()
+            return try decoder.decode(T.self, from: tomlString)
+        } catch {
+            Logger.warning(
+                "Failed to decode \(configKey) from UserDefaults using TOML: \(error)",
+                category: Logger.config
+            )
+            return nil
+        }
+    }
+
+    /// Saves a given struct to TOML formatted UserDefaults.
+    /// - Parameter configKey: The UserDefaults key for the configuration
+    /// - Parameter data: The data to save
+    private func saveStructToTOML(configKey: String, data: some Codable) {
+        do {
+            let encoder = TOMLEncoder()
+            let tomlString = try encoder.encode(data)
+            guard let data = tomlString.data(using: String.Encoding.utf8) else {
+                Logger.error("Failed to convert TOML string to Data", category: Logger.config)
+                return
+            }
+
+            UserDefaults.standard.set(data, forKey: configKey)
+        } catch {
+            Logger.error(
+                "Failed to encode \(configKey) to UserDefaults using TOML: \(error)",
+                category: Logger.config
+            )
+        }
     }
 }
 
-/// Wrapper struct for TOML encoding of groups configuration array.
-private struct GroupsConfigurationWrapper: Codable {
-    let groups: [Domain.Group]
-}
-
-/// Helper struct for Color serialization to UserDefaults.
-private struct ColorComponents: Codable {
-    let red: Double
-    let green: Double
-    let blue: Double
-    let alpha: Double
+/// Wrapper struct for TOML encoding of array.
+private struct CollectionWrapper<T: Codable>: Codable {
+    let items: [T]
 }

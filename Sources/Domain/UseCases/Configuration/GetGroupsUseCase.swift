@@ -8,7 +8,7 @@ import Foundation
 /// Exposes a publisher of GroupConfiguration reflecting the current
 /// menu bar application grouping configuration.
 @MainActor
-public final class GetGroupsConfigurationUseCase {
+public final class GetGroupsUseCase {
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the required gateway dependency.
@@ -20,6 +20,6 @@ public final class GetGroupsConfigurationUseCase {
     /// Executes the use case to get the group configuration as a publisher.
     /// - Returns: A publisher that emits GroupConfiguration values representing the current grouping setup
     public func execute() -> AnyPublisher<[Domain.Group], Never> {
-        configurationGateway.groupsConfigurationPublisher
+        configurationGateway.groupsPublisher
     }
 }

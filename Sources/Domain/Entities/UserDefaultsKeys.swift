@@ -28,29 +28,6 @@ public enum UserDefaultsKeys: String, CaseIterable {
     /// Whether to launch the application at login.
     case launchAtLogin = "com.aerospacebar.preferences.launchAtLogin"
 
-    // MARK: - Appearance Preferences
-
-    /// The background opacity level of the space elements (0.1 to 1.0).
-    case spaceBackgroundOpacity = "com.aerospacebar.preferences.spaceBackgroundOpacity"
-
-    /// The background blur radius for space elements in points.
-    case spaceBackgroundBlurRadius = "com.aerospacebar.preferences.spaceBackgroundBlurRadius"
-
-    /// The background tint color for space elements.
-    case spaceBackgroundTintColor = "com.aerospacebar.preferences.spaceBackgroundTintColor"
-
-    /// The foreground color for space elements.
-    case spaceForegroundColor = "com.aerospacebar.preferences.spaceForegroundColor"
-
-    /// The border tint color for space elements.
-    case spaceBorderTintColor = "com.aerospacebar.preferences.spaceBorderTintColor"
-
-    /// The border opacity level of the space elements (0.0 to 1.0).
-    case spaceBorderOpacity = "com.aerospacebar.preferences.spaceBorderOpacity"
-
-    /// The border width of the space elements in points.
-    case spaceBorderWidth = "com.aerospacebar.preferences.spaceBorderWidth"
-
     // MARK: - Logging Preferences
 
     /// The current log level for application logging.
@@ -87,35 +64,23 @@ public enum UserDefaultsKeys: String, CaseIterable {
     /// The size of window icons in points.
     case windowIconSize = "com.aerospacebar.preferences.ui.windowIconSize"
 
-    /// The corner radius for space elements in points.
-    case spaceCornerRadius = "com.aerospacebar.preferences.ui.spaceCornerRadius"
+    /// The spaces configuration for organizing spaces.
+    case spacesVisualConfiguration = "com.aerospacebar.preferences.spacesVisualConfiguration"
+
+    /// The spaces appearance mode (per space, all spaces).
+    case spacesAppearanceMode = "com.aerospacebar.preferences.spacesAppearanceMode"
+
+    /// The global visual configuration for space elements.
+    case globalSpacesVisualConfig = "com.aerospacebar.preferences.globalSpacesVisualConfig"
 
     /// The group configuration for organizing menu bar applications.
-    case groupsConfiguration = "com.aerospacebar.preferences.ui.groupsConfiguration"
+    case groups = "com.aerospacebar.preferences.ui.groups"
 
     /// The groups appearance mode (per app, all groups, same as spaces).
     case groupsAppearanceMode = "com.aerospacebar.preferences.ui.groupsAppearanceMode"
 
-    /// The global background tint color for all groups.
-    case groupsGlobalBackgroundTintColor = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundTintColor"
-
-    /// The global background opacity for all groups.
-    case groupsGlobalBackgroundOpacity = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundOpacity"
-
-    /// The global background blur radius for all groups.
-    case groupsGlobalBackgroundBlurRadius = "com.aerospacebar.preferences.ui.groupsGlobalBackgroundBlurRadius"
-
-    /// The global border color for all groups.
-    case groupsGlobalBorderColor = "com.aerospacebar.preferences.ui.groupsGlobalBorderColor"
-
-    /// The global border opacity for all groups.
-    case groupsGlobalBorderOpacity = "com.aerospacebar.preferences.ui.groupsGlobalBorderOpacity"
-
-    /// The global border width for all groups.
-    case groupsGlobalBorderWidth = "com.aerospacebar.preferences.ui.groupsGlobalBorderWidth"
-
-    /// The global corner radius for all groups.
-    case groupsGlobalCornerRadius = "com.aerospacebar.preferences.ui.groupsGlobalCornerRadius"
+    /// The global visual configuration for all groups.
+    case globalGroupsVisualConfig = "com.aerospacebar.preferences.ui.globalGroupsVisualConfig"
 
     // MARK: - Profile Preferences
 

@@ -18,7 +18,7 @@ public final class SetShowGroupsUseCase {
 
     /// Executes the use case to set the show-groups setting.
     /// - Parameter value: Whether to show groups in the interface
-    public func execute(_ value: Bool) async {
+    public func execute(value: Bool) async {
         await configurationGateway.setShowGroups(value)
     }
 }

@@ -7,7 +7,7 @@ import os
 
 /// Repository implementation for Paddle licensing.
 @MainActor
-public final class LicensingRepository: @MainActor LicensingGateway, @unchecked Sendable {
+public final class LicensingRepository: LicensingGateway {
     // MARK: - Configuration
 
     /// Your Paddle vendor ID - replace with your actual vendor ID

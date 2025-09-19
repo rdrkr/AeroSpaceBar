@@ -7,7 +7,7 @@ import Foundation
 /// Handles updating the configuration to control how menu bar
 /// applications are organized into groups.
 @MainActor
-public final class SetGroupsConfigurationUseCase {
+public final class SetGroupsUseCase {
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the required gateway dependency.
@@ -18,7 +18,7 @@ public final class SetGroupsConfigurationUseCase {
 
     /// Executes the use case to set the group configuration.
     /// - Parameter value: The group configuration defining how apps should be grouped
-    public func execute(_ value: [Domain.Group]) async {
-        await configurationGateway.setGroupsConfiguration(value)
+    public func execute(value: [Domain.Group]) async {
+        await configurationGateway.setGroups(value)
     }
 }

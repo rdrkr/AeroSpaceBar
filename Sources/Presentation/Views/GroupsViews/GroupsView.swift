@@ -23,7 +23,7 @@ struct GroupsView: View {
     }
 
     /// Computed property for group configuration to avoid repeated access
-    private var groupsConfiguration: [Domain.Group] {
+    private var groups: [Domain.Group] {
         viewModel.groups
     }
 
@@ -49,7 +49,7 @@ struct GroupsView: View {
     var body: some View {
         GeometryReader { _ in
             // Display grouped apps with their group styling
-            ForEach(groupsConfiguration, id: \.id) { group in
+            ForEach(groups, id: \.id) { group in
                 GroupView(
                     group: group,
                     menuBarApps: menuBarApps,
@@ -58,33 +58,8 @@ struct GroupsView: View {
                     menuBarVerticalPadding: viewModel.menuBarVerticalPadding,
                     windowIconSize: viewModel.windowIconSize,
                     appearanceMode: viewModel.groupsAppearanceMode,
-                    globalVisualConfiguration: VisualContainer.group(
-                        background: BackgroundProperties(
-                            tintColor: viewModel.groupsGlobalBackgroundTintColor,
-                            opacity: viewModel.groupsGlobalBackgroundOpacity,
-                            blurRadius: viewModel.groupsGlobalBackgroundBlurRadius
-                        ),
-                        border: BorderProperties(
-                            tintColor: viewModel.groupsGlobalBorderColor,
-                            opacity: viewModel.groupsGlobalBorderOpacity,
-                            width: viewModel.groupsGlobalBorderWidth
-                        ),
-                        cornerRadius: viewModel.groupsGlobalCornerRadius
-                    ),
-                    spaceVisualConfiguration: VisualContainer.space(
-                        background: BackgroundProperties(
-                            tintColor: viewModel.spaceBackgroundTintColor,
-                            opacity: viewModel.spaceBackgroundOpacity,
-                            blurRadius: viewModel.spaceBackgroundBlurRadius
-                        ),
-                        border: BorderProperties(
-                            tintColor: viewModel.spaceBorderTintColor,
-                            opacity: viewModel.spaceBorderOpacity,
-                            width: viewModel.spaceBorderWidth
-                        ),
-                        cornerRadius: viewModel.spaceCornerRadius,
-                        foregroundColor: .primary
-                    )
+                    globalVisualConfiguration: viewModel.globalGroupsVisualConfig,
+                    spaceVisualConfiguration: viewModel.globalSpacesVisualConfig
                 )
             }
         }

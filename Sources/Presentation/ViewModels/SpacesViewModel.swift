@@ -34,16 +34,10 @@ final class SpacesViewModel: ObservableObject {
     @Published var widgetSpacing: Double
     @Published var animationDuration: Double
     @Published var windowIconSize: Double
-    @Published var spaceCornerRadius: Double
     @Published var showWindowTitles: Bool
     @Published var focusWindowOnClick: Bool
-    @Published var spaceBackgroundOpacity: Double
-    @Published var spaceBackgroundBlurRadius: Double
-    @Published var spaceBackgroundTintColor: Color
-    @Published var spaceForegroundColor: Color
-    @Published var spaceBorderTintColor: Color
-    @Published var spaceBorderOpacity: Double
-    @Published var spaceBorderWidth: Double
+    @Published var spacesAppearanceMode: SpacesAppearanceMode
+    @Published var globalSpacesVisualConfig: VisualContainer
 
     /// Whether the globe key is currently being held.
     @Published var isGlobeKeyPressed: Bool = false
@@ -79,17 +73,11 @@ final class SpacesViewModel: ObservableObject {
     private let getWidgetSpacingUseCase: GetWidgetSpacingUseCase
     private let getAnimationDurationUseCase: GetAnimationDurationUseCase
     private let getWindowIconSizeUseCase: GetWindowIconSizeUseCase
-    private let getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase
     private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
-    private let getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase
-    private let getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase
-    private let getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase
-    private let getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase
-    private let getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase
-    private let getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase
-    private let getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
+    private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
+    private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -110,7 +98,8 @@ final class SpacesViewModel: ObservableObject {
     ///   - getWidgetSpacingUseCase: Use case for getting widget spacing
     ///   - getAnimationDurationUseCase: Use case for getting animation duration
     ///   - getWindowIconSizeUseCase: Use case for getting window icon size
-    ///   - getSpaceCornerRadiusUseCase: Use case for getting space corner radius
+    ///   - getSpacesAppearanceModeUseCase: Use case for getting spaces appearance mode
+    ///   - getGlobalSpacesVisualConfigUseCase: Use case for getting consolidated space visual configuration
     init(
         getSpacesUseCase: GetSpacesUseCase,
         setFocusSpaceUseCase: SetFocusSpaceUseCase,
@@ -127,15 +116,9 @@ final class SpacesViewModel: ObservableObject {
         getWidgetSpacingUseCase: GetWidgetSpacingUseCase,
         getAnimationDurationUseCase: GetAnimationDurationUseCase,
         getWindowIconSizeUseCase: GetWindowIconSizeUseCase,
-        getSpaceCornerRadiusUseCase: GetSpaceCornerRadiusUseCase,
-        getSpaceBackgroundOpacityUseCase: GetSpaceBackgroundOpacityUseCase,
-        getSpaceBackgroundBlurRadiusUseCase: GetSpaceBackgroundBlurRadiusUseCase,
-        getSpaceBackgroundTintColorUseCase: GetSpaceBackgroundTintColorUseCase,
-        getSpaceForegroundColorUseCase: GetSpaceForegroundColorUseCase,
-        getSpaceBorderTintColorUseCase: GetSpaceBorderTintColorUseCase,
-        getSpaceBorderOpacityUseCase: GetSpaceBorderOpacityUseCase,
-        getSpaceBorderWidthUseCase: GetSpaceBorderWidthUseCase,
-        getFeatureFlagsUseCase: GetFeatureFlagsUseCase
+        getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
+        getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
+        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -157,15 +140,9 @@ final class SpacesViewModel: ObservableObject {
         self.getWidgetSpacingUseCase = getWidgetSpacingUseCase
         self.getAnimationDurationUseCase = getAnimationDurationUseCase
         self.getWindowIconSizeUseCase = getWindowIconSizeUseCase
-        self.getSpaceCornerRadiusUseCase = getSpaceCornerRadiusUseCase
-        self.getSpaceBackgroundOpacityUseCase = getSpaceBackgroundOpacityUseCase
-        self.getSpaceBackgroundBlurRadiusUseCase = getSpaceBackgroundBlurRadiusUseCase
-        self.getSpaceBorderTintColorUseCase = getSpaceBorderTintColorUseCase
-        self.getSpaceBorderOpacityUseCase = getSpaceBorderOpacityUseCase
-        self.getSpaceBorderWidthUseCase = getSpaceBorderWidthUseCase
-        self.getSpaceBackgroundTintColorUseCase = getSpaceBackgroundTintColorUseCase
-        self.getSpaceForegroundColorUseCase = getSpaceForegroundColorUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
+        self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
+        self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
@@ -180,18 +157,12 @@ final class SpacesViewModel: ObservableObject {
         widgetSpacing = getWidgetSpacingUseCase.execute().blockingFirst()
         animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
         windowIconSize = getWindowIconSizeUseCase.execute().blockingFirst()
-        spaceCornerRadius = getSpaceCornerRadiusUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
-        spaceBackgroundOpacity = getSpaceBackgroundOpacityUseCase.execute().blockingFirst()
-        spaceBackgroundBlurRadius = getSpaceBackgroundBlurRadiusUseCase.execute().blockingFirst()
-        spaceBorderTintColor = getSpaceBorderTintColorUseCase.execute().blockingFirst()
-        spaceBorderOpacity = getSpaceBorderOpacityUseCase.execute().blockingFirst()
-        spaceBorderWidth = getSpaceBorderWidthUseCase.execute().blockingFirst()
         isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
         isSpacesEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableSpaces
-        spaceBackgroundTintColor = getSpaceBackgroundTintColorUseCase.execute().blockingFirst()
-        spaceForegroundColor = getSpaceForegroundColorUseCase.execute().blockingFirst()
+        spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
+        globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
         setupGlobeKeyMonitors()
@@ -301,43 +272,11 @@ final class SpacesViewModel: ObservableObject {
             .assign(to: \.windowIconSize, on: self)
             .store(in: &cancellables)
 
-        getSpaceCornerRadiusUseCase.execute()
-            .assign(to: \.spaceCornerRadius, on: self)
-            .store(in: &cancellables)
-
         getShowWindowTitlesUseCase.execute()
             .assign(to: \.showWindowTitles, on: self)
             .store(in: &cancellables)
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBackgroundOpacityUseCase.execute()
-            .assign(to: \.spaceBackgroundOpacity, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBackgroundBlurRadiusUseCase.execute()
-            .assign(to: \.spaceBackgroundBlurRadius, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderTintColorUseCase.execute()
-            .assign(to: \.spaceBorderTintColor, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderOpacityUseCase.execute()
-            .assign(to: \.spaceBorderOpacity, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBorderWidthUseCase.execute()
-            .assign(to: \.spaceBorderWidth, on: self)
-            .store(in: &cancellables)
-
-        getSpaceBackgroundTintColorUseCase.execute()
-            .assign(to: \.spaceBackgroundTintColor, on: self)
-            .store(in: &cancellables)
-
-        getSpaceForegroundColorUseCase.execute()
-            .assign(to: \.spaceForegroundColor, on: self)
             .store(in: &cancellables)
 
         // Monitor system menu bar visibility changes
@@ -351,6 +290,14 @@ final class SpacesViewModel: ObservableObject {
             .sink { [weak self] featureFlags in
                 self?.isSpacesEnabled = featureFlags.enableSpaces
             }
+            .store(in: &cancellables)
+
+        getSpacesAppearanceModeUseCase.execute()
+            .assign(to: \.spacesAppearanceMode, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesVisualConfigUseCase.execute()
+            .assign(to: \.globalSpacesVisualConfig, on: self)
             .store(in: &cancellables)
     }
 

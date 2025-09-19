@@ -20,7 +20,7 @@ public final class SetAnimationDurationUseCase {
 
     /// Executes the use case to set the animation duration.
     /// - Parameter value: The animation duration in seconds
-    public func execute(_ value: Double) async {
+    public func execute(value: Double) async {
         await configurationGateway.setAnimationDuration(value)
     }
 }

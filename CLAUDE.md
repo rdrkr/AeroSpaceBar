@@ -145,3 +145,21 @@ When adding AeroSpace features:
 
 - Avoid code duplication and repeatition of values.
 - Prefer let const properties for strings and other constants
+
+## UI Development Rules
+
+### Localization
+- **Never use raw strings for end-user presented text**: All user-facing text must use `LocalizedStringResource` for proper internationalization support. This includes button titles, labels, descriptions, error messages, and any text that users will see.
+- Examples:
+  - ✅ `LocalizedStringResource("Save Changes")`
+  - ❌ `"Save Changes"`
+  - ✅ `LocalizedStringResource("Choose the background color for \(entityType) elements.")`
+  - ❌ `"Choose the background color for \(entityType) elements."`
+
+### View Architecture
+- **Subviews must not access ViewModels directly**: Views which are owned by root views should not have direct access to ViewModels. The root view should pass only the relevant properties and functions to the subviews it uses. This ensures proper separation of concerns and makes components more reusable.
+- Examples:
+  - ✅ Root view passes specific bindings and callbacks to subviews
+  - ❌ Subview directly accesses `@EnvironmentObject private var viewModel: SomeViewModel`
+  - ✅ `SubView(value: $viewModel.specificProperty, onAction: viewModel.handleAction)`
+  - ❌ `SubView()` where `SubView` internally accesses the ViewModel

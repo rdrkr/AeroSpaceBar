@@ -3,7 +3,7 @@
 import Foundation
 
 /// Defines how groups visual appearance is configured
-public enum GroupsAppearanceMode: String, CaseIterable, Codable, @unchecked Sendable {
+public enum GroupsAppearanceMode: String, CaseIterable, Codable, Sendable {
     /// Each group has its own appearance configuration
     case perApp = "per_app"
 

@@ -1,16 +1,14 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-import SwiftUI
-
-/// Use case for setting space border tint color configuration.
+/// Use case for setting spaces configuration.
 ///
 /// This use case encapsulates the business logic for updating the
-/// space border tint color setting through the data layer.
+/// spaces configuration setting through the data layer.
 /// It follows the clean architecture pattern by isolating this
 /// specific business operation.
 @MainActor
-public final class SetSpaceBorderTintColorUseCase {
-    /// The configuration gateway for accessing space border tint color data.
+public final class SetSpacesVisualConfigUseCase {
+    /// The configuration gateway for accessing spaces configuration data.
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the specified configuration gateway.
@@ -19,9 +17,9 @@ public final class SetSpaceBorderTintColorUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to set the space border tint color.
-    /// - Parameter spaceBorderTintColor: The new space border tint color value to set
-    public func execute(spaceBorderTintColor: Color) async {
-        await configurationGateway.setSpaceBorderTintColor(spaceBorderTintColor)
+    /// Executes the use case to set the spaces configuration.
+    /// - Parameter value: The new spaces configuration value to set
+    public func execute(value: [VisualContainer]) async {
+        await configurationGateway.setSpacesVisualConfig(value)
     }
 }

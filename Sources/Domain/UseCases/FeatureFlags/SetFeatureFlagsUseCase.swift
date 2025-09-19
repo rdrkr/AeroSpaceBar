@@ -7,7 +7,8 @@ import Foundation
 /// This use case handles updating the feature flags settings,
 /// ensuring proper validation and persistence of the configuration.
 /// Only available in debug builds.
-public final class SetFeatureFlagsUseCase: Sendable {
+@MainActor
+public final class SetFeatureFlagsUseCase {
     private let gateway: FeatureFlagsGateway
 
     /// Initializes the use case with a feature flags gateway.

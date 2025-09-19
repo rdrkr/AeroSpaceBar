@@ -54,7 +54,7 @@ struct SpacesView: View {
 
     /// Computed property for window corner radius
     private var cornerRadius: Double {
-        viewModel.spaceCornerRadius
+        viewModel.globalSpacesVisualConfig.cornerRadius
     }
 
     /// Computed property for whether to show window titles
@@ -92,20 +92,7 @@ struct SpacesView: View {
                             windowIconSize: viewModel.windowIconSize,
                             showWindowTitles: showWindowTitles,
                             focusWindowOnClick: viewModel.focusWindowOnClick,
-                            visualConfiguration: VisualContainer.space(
-                                background: BackgroundProperties(
-                                    tintColor: viewModel.spaceBackgroundTintColor,
-                                    opacity: viewModel.spaceBackgroundOpacity,
-                                    blurRadius: viewModel.spaceBackgroundBlurRadius
-                                ),
-                                border: BorderProperties(
-                                    tintColor: viewModel.spaceBorderTintColor,
-                                    opacity: viewModel.spaceBorderOpacity,
-                                    width: viewModel.spaceBorderWidth
-                                ),
-                                cornerRadius: cornerRadius,
-                                foregroundColor: viewModel.spaceForegroundColor
-                            ),
+                            visualConfiguration: viewModel.globalSpacesVisualConfig,
                             onSwitchToSpace: { space, needWindowFocus in
                                 viewModel.switchToSpace(space, needWindowFocus: needWindowFocus)
                             },

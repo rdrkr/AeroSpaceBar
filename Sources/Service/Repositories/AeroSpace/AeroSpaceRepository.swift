@@ -556,7 +556,10 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// - Throws: AppError if the operation fails
     private nonisolated func fetchFocusedWindow(executablePath: String) throws -> Window? {
         let cli = AeroSpaceCLIClient(executablePath: executablePath)
-        let data = try cli.execute(arguments: ["list-windows", "--focused", "--json"])
+        let data = try cli.execute(arguments: [
+            "list-windows", "--focused", "--json", "--format",
+            "%{window-id} %{app-name} %{window-title} %{workspace}"
+        ])
 
         do {
             let windows = try JSONDecoder().decode([Window].self, from: data)

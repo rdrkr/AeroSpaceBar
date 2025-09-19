@@ -72,7 +72,7 @@ struct SpaceView: View {
         HStack(spacing: 0) {
             Spacer().frame(width: 8)
 
-            Text(space.id)
+            Text(space.title)
                 .font(.headline)
                 .foregroundColor(visualConfiguration.foregroundColor)
                 .frame(minWidth: 15)
@@ -138,17 +138,13 @@ struct SpaceView: View {
         windowIconSize: 16.0,
         showWindowTitles: true,
         focusWindowOnClick: true,
-        visualConfiguration: VisualContainer.space(
-            background: BackgroundProperties(
-                tintColor: .blue,
-                opacity: 0.2,
-                blurRadius: 8.0
-            ),
-            border: BorderProperties(
-                tintColor: .white,
-                opacity: 0.8,
-                width: 2.0
-            ),
+        visualConfiguration: VisualContainer(
+            backgroundTintColor: .blue,
+            backgroundOpacity: 0.2,
+            backgroundBlurRadius: 8.0,
+            borderTintColor: .white,
+            borderOpacity: 0.8,
+            borderWidth: 2.0,
             cornerRadius: 8.0,
             foregroundColor: .primary
         ),

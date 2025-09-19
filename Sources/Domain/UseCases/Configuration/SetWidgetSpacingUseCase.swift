@@ -1,7 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
-import SwiftUI
 
 /// Use case for setting the widget spacing configuration.
 ///
@@ -21,7 +20,7 @@ public final class SetWidgetSpacingUseCase {
 
     /// Executes the use case to set the widget spacing.
     /// - Parameter value: The widget spacing in points
-    public func execute(_ value: Double) async {
+    public func execute(value: Double) async {
         await configurationGateway.setWidgetSpacing(value)
     }
 }
