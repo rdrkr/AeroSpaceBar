@@ -11,18 +11,6 @@ struct GroupView: View {
     /// The complete list of menu bar applications from which to select group members.
     let menuBarApps: [MenuBarApp]
 
-    /// The duration for view animations in seconds.
-    let animationDuration: Double
-
-    /// The spacing between widget elements in the menu bar.
-    let widgetSpacing: Double
-
-    /// The vertical padding applied to menu bar elements.
-    let menuBarVerticalPadding: Double
-
-    /// The size of window icons displayed in the menu bar.
-    let windowIconSize: Double
-
     /// The appearance mode determining which styling properties to use.
     let appearanceMode: GroupsAppearanceMode
 
@@ -111,8 +99,8 @@ struct GroupView: View {
 
         let fullWidth = maxX - minX
         let fullHeight = maxY - minY
-        let reduceWidth = fullWidth - widgetSpacing
-        let reducedHeight = windowIconSize + (menuBarVerticalPadding * 2)
+        let reduceWidth = fullWidth - ConfigurationDefaults.widgetSpacing
+        let reducedHeight = ConfigurationDefaults.windowIconSize + (ConfigurationDefaults.menuBarVerticalPadding * 2)
         let horizontalMargin = (fullWidth - reduceWidth) / 2
         let verticalMargin = (fullHeight - reducedHeight) / 2
 
@@ -125,14 +113,14 @@ struct GroupView: View {
     }
 
     var body: some View {
-        if !groupApps.isEmpty {
+        Group {
             Color.clear
                 .background(
                     backgroundTintColor
                         .opacity(backgroundOpacity)
                         .blur(radius: backgroundBlurRadius)
                 )
-                .spaceCornerRadius(cornerRadius)
+                .cornerRadius(cornerRadius)
                 .frame(width: groupFrame.width, height: groupFrame.height)
                 .background(
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -150,8 +138,7 @@ struct GroupView: View {
                     y: groupFrame.midY
                 )
                 .standardShadow()
-                .blurReplaceTransition()
-                .smoothAnimation(duration: animationDuration)
         }
+        .animation(.themeEaseInOutFast, value: groupFrame)
     }
 }

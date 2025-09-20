@@ -11,17 +11,38 @@
     /// and handles persistence through use cases. Only available in debug builds.
     @MainActor
     final class DeveloperSettingsViewModel: ObservableObject {
-        @Published var enableGroups: Bool = false
-        @Published var enableSpaces: Bool = false
-        @Published var enableAdvancedSettings: Bool = false
-        @Published var enableLicensing: Bool = false
-        @Published var mockActiveLicense: Bool = false
+        /// The current feature flags configuration.
+        ///
+        /// When this property is updated, the changes are automatically persisted
+        /// through the set feature flags use case.
+        @Published var featureFlags: FeatureFlags {
+            didSet {
+                Task.detached(priority: .utility) { [self] in
+                    await setFeatureFlagsUseCase.execute(flags: featureFlags)
+                }
+            }
+        }
 
+        /// Use case for retrieving current feature flags.
         private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
+
+        /// Use case for updating feature flags configuration.
         private let setFeatureFlagsUseCase: SetFeatureFlagsUseCase
+
+        /// Use case for deactivating the current license.
         private let deactivateLicenseUseCase: DeactivateLicenseUseCase
+
+        /// Set of cancellable subscriptions for Combine publishers.
         private var cancellables = Set<AnyCancellable>()
 
+        /// Initializes the developer settings view model with required use cases.
+        ///
+        /// Sets up reactive bindings to monitor feature flag changes and loads
+        /// the initial feature flags state.
+        /// - Parameters:
+        ///   - getFeatureFlagsUseCase: Use case for retrieving feature flags
+        ///   - setFeatureFlagsUseCase: Use case for updating feature flags
+        ///   - deactivateLicenseUseCase: Use case for deactivating licenses
         init(
             getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
             setFeatureFlagsUseCase: SetFeatureFlagsUseCase,
@@ -31,58 +52,15 @@
             self.setFeatureFlagsUseCase = setFeatureFlagsUseCase
             self.deactivateLicenseUseCase = deactivateLicenseUseCase
 
-            bindFeatureFlags()
-            loadInitialState()
+            featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
         }
 
-        private func bindFeatureFlags() {
-            // Subscribe to feature flag changes
-            getFeatureFlagsUseCase.execute()
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] flags in
-                    self?.updatePublishedProperties(from: flags)
-                }
-                .store(in: &cancellables)
-
-            // Bind property changes to use case updates
-            Publishers.CombineLatest($enableSpaces, $enableGroups)
-                .combineLatest(Publishers.CombineLatest($enableAdvancedSettings, $enableLicensing))
-                .combineLatest($mockActiveLicense)
-                .dropFirst() // Skip initial values
-                .debounce(for: DispatchQueue.SchedulerTimeType.Stride.milliseconds(300), scheduler: DispatchQueue.main)
-                .sink { [weak self] _, mockLicense in
-                    guard let self else { return }
-
-                    let flags = FeatureFlags(
-                        enableGroups: enableGroups,
-                        enableSpaces: enableSpaces,
-                        enableAdvancedSettings: enableAdvancedSettings,
-                        enableLicensing: enableLicensing,
-                        mockActiveLicense: mockLicense
-                    )
-
-                    Task {
-                        await self.setFeatureFlagsUseCase.execute(flags)
-                    }
-                }
-                .store(in: &cancellables)
-        }
-
-        private func loadInitialState() {
-            let currentFlags = getFeatureFlagsUseCase.execute().blockingFirst()
-            updatePublishedProperties(from: currentFlags)
-        }
-
-        private func updatePublishedProperties(from flags: FeatureFlags) {
-            enableGroups = flags.enableGroups
-            enableSpaces = flags.enableSpaces
-            enableAdvancedSettings = flags.enableAdvancedSettings
-            enableLicensing = flags.enableLicensing
-            mockActiveLicense = flags.mockActiveLicense
-        }
-
+        /// Resets all feature flags to their default values and deactivates the current license.
+        ///
+        /// This method is typically used for development purposes to quickly reset
+        /// the application to a clean state.
         func resetToDefaults() async {
-            await setFeatureFlagsUseCase.resetToDefaults()
+            setFeatureFlagsUseCase.resetToDefaults()
             await deactivateLicenseUseCase.execute()
         }
     }

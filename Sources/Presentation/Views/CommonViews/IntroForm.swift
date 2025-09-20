@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 /// A reusable form component that contains an intro section and a content section.
@@ -22,8 +23,8 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     /// The style of the form intro section.
     let style: Style
 
-    /// The image to display in the intro section.
-    let image: Image
+    /// The icon to display in the intro section.
+    let icon: AnyView
 
     /// The title of the form.
     let title: String
@@ -40,14 +41,14 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     init(
         navigationTitle: String,
         style: Style = .intro,
-        image: Image,
+        icon: some View,
         title: String,
         subtitle: String,
         @ViewBuilder content: @escaping () -> Content
     ) where HeaderContent == EmptyView {
         self.navigationTitle = navigationTitle
         self.style = style
-        self.image = image
+        self.icon = AnyView(icon)
         self.title = title
         self.subtitle = subtitle
         self.content = content
@@ -57,7 +58,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     init(
         navigationTitle: String,
         style: Style = .intro,
-        image: Image,
+        icon: some View,
         title: String,
         subtitle: String,
         @ViewBuilder content: @escaping () -> Content,
@@ -65,7 +66,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     ) {
         self.navigationTitle = navigationTitle
         self.style = style
-        self.image = image
+        self.icon = AnyView(icon)
         self.title = title
         self.subtitle = subtitle
         self.content = content
@@ -81,8 +82,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
                         HStack {
                             Spacer()
 
-                            image
-                                .resizable()
+                            icon
                                 .frame(width: 64, height: 64)
                                 .tag("intro-form-icon")
 
@@ -109,21 +109,10 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
 
                 case .compact:
                     HStack(alignment: .top) {
-                        let displayImage = image
-                            .resizable()
-                            .frame(width: 18, height: 18)
-                            .padding(4)
-                            .background(.white.opacity(0.1), in: .rect)
+                        icon
+                            .scaleEffect(18.0 / ConfigurationDefaults.settingsIconSmallSize)
+                            .padding(5)
                             .tag("intro-form-compact-icon")
-
-                        if #available(macOS 26.0, *) {
-                            displayImage
-                                .glassEffect(.clear, in: .rect)
-                                .cornerRadius(8)
-                        } else {
-                            displayImage
-                                .cornerRadius(8)
-                        }
 
                         VStack(alignment: .leading) {
                             Text(title)
@@ -156,7 +145,9 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     IntroForm(
         navigationTitle: "General Settings",
         style: .intro,
-        image: Image(nsImage: NSApplication.shared.applicationIconImage),
+        icon: AnyView(Image(nsImage: NSApplication.shared.applicationIconImage)
+            .resizable()
+        ),
         title: "General Settings",
         subtitle: "Manage your overall setup and preferences for AeroSpaceBar, " +
             "such as AeroSpace path and Appearance settings."
@@ -165,7 +156,9 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     IntroForm(
         navigationTitle: "Some Other Settings",
         style: .compact,
-        image: Image(systemName: "star"),
+        icon: AnyView(Image(systemName: "star")
+            .resizable()
+        ),
         title: "General Settings",
         subtitle: "Manage your overall setup and preferences for AeroSpaceBar, " +
             "such as AeroSpace path and Appearance settings."
@@ -174,7 +167,9 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
     IntroForm(
         navigationTitle: "Some More Settings",
         style: .compact,
-        image: Image(systemName: "hammer"),
+        icon: AnyView(Image(systemName: "hammer")
+            .resizable()
+        ),
         title: "Non General Settings",
         subtitle: "Manage your overall setup and preferences for AeroSpaceBar, " +
             "such as AeroSpace path and Appearance settings."

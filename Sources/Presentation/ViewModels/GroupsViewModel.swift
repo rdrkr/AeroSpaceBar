@@ -37,18 +37,6 @@ final class GroupsViewModel: ObservableObject {
     /// Whether groups functionality is enabled via feature flags.
     @Published var isGroupsFeatureEnabled: Bool
 
-    /// The animation duration for UI transitions.
-    @Published var animationDuration: Double
-
-    /// The widget spacing for UI layout.
-    @Published var widgetSpacing: Double
-
-    /// The vertical padding for menu bar UI layout.
-    @Published var menuBarVerticalPadding: Double
-
-    /// The size of window icons in the interface.
-    @Published var windowIconSize: Double
-
     /// The current groups appearance mode.
     @Published var groupsAppearanceMode: GroupsAppearanceMode {
         didSet {
@@ -64,78 +52,6 @@ final class GroupsViewModel: ObservableObject {
     /// Consolidated global space visual configuration.
     @Published var globalSpacesVisualConfig: VisualContainer
 
-    // MARK: - Computed Properties for UI Compatibility
-
-    /// The global background tint color for all groups.
-    var groupsGlobalBackgroundTintColor: Color {
-        globalGroupsVisualConfig.backgroundTintColor
-    }
-
-    /// The global background opacity for all groups.
-    var groupsGlobalBackgroundOpacity: Double {
-        globalGroupsVisualConfig.backgroundOpacity
-    }
-
-    /// The global background blur radius for all groups.
-    var groupsGlobalBackgroundBlurRadius: Double {
-        globalGroupsVisualConfig.backgroundBlurRadius
-    }
-
-    /// The global border color for all groups.
-    var groupsGlobalBorderColor: Color {
-        globalGroupsVisualConfig.borderTintColor
-    }
-
-    /// The global border opacity for all groups.
-    var groupsGlobalBorderOpacity: Double {
-        globalGroupsVisualConfig.borderOpacity
-    }
-
-    /// The global border width for all groups.
-    var groupsGlobalBorderWidth: Double {
-        globalGroupsVisualConfig.borderWidth
-    }
-
-    /// The global corner radius for all groups.
-    var groupsGlobalCornerRadius: Double {
-        globalGroupsVisualConfig.cornerRadius
-    }
-
-    /// The background opacity level of the space elements.
-    var spaceBackgroundOpacity: Double {
-        globalSpacesVisualConfig.backgroundOpacity
-    }
-
-    /// The background blur radius for space elements in points.
-    var spaceBackgroundBlurRadius: Double {
-        globalSpacesVisualConfig.backgroundBlurRadius
-    }
-
-    /// The background tint color for space elements.
-    var spaceBackgroundTintColor: Color {
-        globalSpacesVisualConfig.backgroundTintColor
-    }
-
-    /// The border tint color for space elements.
-    var spaceBorderTintColor: Color {
-        globalSpacesVisualConfig.borderTintColor
-    }
-
-    /// The border opacity level of the space elements.
-    var spaceBorderOpacity: Double {
-        globalSpacesVisualConfig.borderOpacity
-    }
-
-    /// The border width of the space elements in points.
-    var spaceBorderWidth: Double {
-        globalSpacesVisualConfig.borderWidth
-    }
-
-    /// The corner radius for spaces in points.
-    var spaceCornerRadius: Double {
-        globalSpacesVisualConfig.cornerRadius
-    }
-
     // MARK: - Dependencies
 
     private let getShowGroupsUseCase: GetShowGroupsUseCase
@@ -144,10 +60,6 @@ final class GroupsViewModel: ObservableObject {
     private let setGroupsUseCase: SetGroupsUseCase
     private let getMenuBarAppsUseCase: GetMenuBarAppsUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
-    private let getAnimationDurationUseCase: GetAnimationDurationUseCase
-    private let getWidgetSpacingUseCase: GetWidgetSpacingUseCase
-    private let getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase
-    private let getWindowIconSizeUseCase: GetWindowIconSizeUseCase
     private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
     private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
     private let getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase
@@ -166,10 +78,6 @@ final class GroupsViewModel: ObservableObject {
     ///   - setGroupsUseCase: The use case for setting group configuration
     ///   - getMenuBarAppsUseCase: The use case for getting menu bar apps
     ///   - getFeatureFlagsUseCase: The use case for getting feature flags
-    ///   - getAnimationDurationUseCase: The use case for getting animation duration
-    ///   - getWidgetSpacingUseCase: The use case for getting widget spacing
-    ///   - getMenuBarVerticalPaddingUseCase: The use case for getting menu bar vertical padding
-    ///   - getWindowIconSizeUseCase: The use case for getting window icon size
     ///   - getGroupsAppearanceModeUseCase: The use case for getting groups appearance mode
     ///   - setGroupsAppearanceModeUseCase: The use case for setting groups appearance mode
     ///   - getGlobalGroupsVisualConfigUseCase: The use case for getting global groups visual configuration
@@ -181,10 +89,6 @@ final class GroupsViewModel: ObservableObject {
         setGroupsUseCase: SetGroupsUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-        getAnimationDurationUseCase: GetAnimationDurationUseCase,
-        getWidgetSpacingUseCase: GetWidgetSpacingUseCase,
-        getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase,
-        getWindowIconSizeUseCase: GetWindowIconSizeUseCase,
         getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
         setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
         getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase,
@@ -196,10 +100,6 @@ final class GroupsViewModel: ObservableObject {
         self.setGroupsUseCase = setGroupsUseCase
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
-        self.getAnimationDurationUseCase = getAnimationDurationUseCase
-        self.getWidgetSpacingUseCase = getWidgetSpacingUseCase
-        self.getMenuBarVerticalPaddingUseCase = getMenuBarVerticalPaddingUseCase
-        self.getWindowIconSizeUseCase = getWindowIconSizeUseCase
         self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
         self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
         self.getGlobalGroupsVisualConfigUseCase = getGlobalGroupsVisualConfigUseCase
@@ -210,10 +110,6 @@ final class GroupsViewModel: ObservableObject {
         groups = getGroupsUseCase.execute().blockingFirst()
         menuBarApps = getMenuBarAppsUseCase.execute().blockingFirst()
         isGroupsFeatureEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableGroups
-        animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
-        widgetSpacing = getWidgetSpacingUseCase.execute().blockingFirst()
-        menuBarVerticalPadding = getMenuBarVerticalPaddingUseCase.execute().blockingFirst()
-        windowIconSize = getWindowIconSizeUseCase.execute().blockingFirst()
         groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
         globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
         globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
@@ -450,24 +346,20 @@ final class GroupsViewModel: ObservableObject {
     private func setupBasicSubscriptions() {
         // Subscribe to configuration changes
         getShowGroupsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.showGroups, on: self)
             .store(in: &cancellables)
 
         getGroupsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.groups, on: self)
             .store(in: &cancellables)
 
         // Subscribe to menu bar apps changes
         getMenuBarAppsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.menuBarApps, on: self)
             .store(in: &cancellables)
 
         // Subscribe to feature flags changes
         getFeatureFlagsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] featureFlags in
                 if self?.isGroupsFeatureEnabled != featureFlags.enableGroups {
                     self?.isGroupsFeatureEnabled = featureFlags.enableGroups
@@ -475,36 +367,8 @@ final class GroupsViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Subscribe to animation duration changes
-        getAnimationDurationUseCase.execute()
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.animationDuration, on: self)
-            .store(in: &cancellables)
-
-        // Subscribe to widget spacing changes
-        getWidgetSpacingUseCase.execute()
-            .receive(on: DispatchQueue.main)
-            .map { Double($0) }
-            .assign(to: \.widgetSpacing, on: self)
-            .store(in: &cancellables)
-
-        // Subscribe to menu bar vertical padding changes
-        getMenuBarVerticalPaddingUseCase.execute()
-            .receive(on: DispatchQueue.main)
-            .map { Double($0) }
-            .assign(to: \.menuBarVerticalPadding, on: self)
-            .store(in: &cancellables)
-
-        // Subscribe to window icon size changes
-        getWindowIconSizeUseCase.execute()
-            .receive(on: DispatchQueue.main)
-            .map { Double($0) }
-            .assign(to: \.windowIconSize, on: self)
-            .store(in: &cancellables)
-
         // Subscribe to groups appearance mode changes
         getGroupsAppearanceModeUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.groupsAppearanceMode, on: self)
             .store(in: &cancellables)
     }
@@ -512,12 +376,10 @@ final class GroupsViewModel: ObservableObject {
     /// Setup subscriptions for groups global appearance configuration changes
     private func setupGroupsAppearanceSubscriptions() {
         getGlobalGroupsVisualConfigUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.globalGroupsVisualConfig, on: self)
             .store(in: &cancellables)
 
         getGlobalSpacesVisualConfigUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .assign(to: \.globalSpacesVisualConfig, on: self)
             .store(in: &cancellables)
     }
@@ -525,7 +387,6 @@ final class GroupsViewModel: ObservableObject {
     /// Setup menu bar apps subscription with change handling
     private func setupMenuBarAppsSubscriptions() {
         getMenuBarAppsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] newMenuBarApps in
                 guard let self else { return }
 

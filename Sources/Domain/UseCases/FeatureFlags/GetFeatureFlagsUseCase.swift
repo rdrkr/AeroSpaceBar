@@ -21,6 +21,6 @@ public final class GetFeatureFlagsUseCase {
     /// Executes the use case to get feature flags.
     /// - Returns: A publisher that emits the current FeatureFlags configuration
     public func execute() -> AnyPublisher<FeatureFlags, Never> {
-        gateway.featureFlags
+        gateway.featureFlagsPublisher
     }
 }

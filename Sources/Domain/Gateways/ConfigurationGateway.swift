@@ -43,21 +43,6 @@ public protocol ConfigurationGateway {
 
     // MARK: - UI Configuration Publishers
 
-    /// Publisher that emits menu bar vertical padding updates.
-    var menuBarVerticalPaddingPublisher: AnyPublisher<Double, Never> { get }
-
-    /// Publisher that emits menu bar horizontal padding updates.
-    var menuBarHorizontalPaddingPublisher: AnyPublisher<Double, Never> { get }
-
-    /// Publisher that emits widget spacing updates.
-    var widgetSpacingPublisher: AnyPublisher<Double, Never> { get }
-
-    /// Publisher that emits animation duration updates.
-    var animationDurationPublisher: AnyPublisher<Double, Never> { get }
-
-    /// Publisher that emits window icon size updates.
-    var windowIconSizePublisher: AnyPublisher<Double, Never> { get }
-
     /// Publisher that emits spaces configuration updates.
     var spacesVisualConfigPublisher: AnyPublisher<[VisualContainer], Never> { get }
 
@@ -78,92 +63,40 @@ public protocol ConfigurationGateway {
 
     // MARK: - Async Setters (trigger updates via publishers)
 
-    /// Sets whether to show window titles in the interface.
-    /// - Parameter value: Whether to show window titles
     func setShowWindowTitles(_ value: Bool) async
 
-    /// Sets the absolute path to the AeroSpace binary.
-    /// - Parameter path: The path, or empty to clear
     func setAeroSpacePath(_ path: String) async
 
-    /// Sets whether to focus a window when clicking on it.
-    /// - Parameter value: Whether to focus window on click
     func setFocusWindowOnClick(_ value: Bool) async
 
-    /// Sets whether to show empty spaces in the interface.
-    /// - Parameter value: Whether to show empty spaces
     func setShowEmptySpaces(_ value: Bool) async
 
-    /// Sets whether to show groups in the interface.
-    /// - Parameter value: Whether to show groups
     func setShowGroups(_ value: Bool) async
 
-    /// Sets whether to enable performance metrics collection.
-    /// - Parameter value: Whether to enable performance metrics
     func setEnablePerformanceMetrics(_ value: Bool) async
 
-    /// Sets whether to enable optimized performance behavior.
-    /// - Parameter value: Whether to enable optimized performance
     func setIsOptimizedPerformanceEnabled(_ value: Bool) async
 
-    /// Sets the current log level for application logging.
-    /// - Parameter level: The log level
     func setLogLevel(_ level: Logger.Level) async
 
     // MARK: - UI Configuration Async Setters
 
-    /// Sets the vertical padding for the menu bar interface in points.
-    /// - Parameter value: The vertical padding
-    func setMenuBarVerticalPadding(_ value: Double) async
-
-    /// Sets the horizontal padding for the menu bar interface in points.
-    /// - Parameter value: The horizontal padding
-    func setMenuBarHorizontalPadding(_ value: Double) async
-
-    /// Sets the spacing between widgets in the menu bar in points.
-    /// - Parameter value: The widget spacing
-    func setWidgetSpacing(_ value: Double) async
-
-    /// Sets the animation duration in seconds.
-    /// - Parameter value: The animation duration
-    func setAnimationDuration(_ value: Double) async
-
-    /// Sets the size of window icons in points.
-    /// - Parameter value: The window icon size
-    func setWindowIconSize(_ value: Double) async
-
-    /// Sets the spaces configuration for organizing spaces.
-    /// - Parameter value: The spaces configuration
     func setSpacesVisualConfig(_ value: [VisualContainer]) async
 
-    /// Sets the spaces appearance mode.
-    /// - Parameter value: The spaces appearance mode
     func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) async
 
-    /// Sets the global groups visual configuration.
-    /// - Parameter value: The global groups visual configuration
     func setGlobalGroupsVisualConfig(_ value: VisualContainer) async
 
-    /// Sets the group configuration for organizing menu bar applications.
-    /// - Parameter value: The group configuration
     func setGroups(_ value: [Domain.Group]) async
 
-    /// Sets the groups appearance mode.
-    /// - Parameter value: The groups appearance mode
     func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async
 
-    /// Sets the global space visual configuration.
-    /// - Parameter value: The global space visual configuration
     func setGlobalSpacesVisualConfig(_ value: VisualContainer) async
 
     // MARK: - AeroSpace Configuration Management
 
-    /// Opens the AeroSpace configuration file.
-    /// If no config file exists, creates a default one.
     func openAeroSpaceConfig() async
 
-    /// Gets the AeroSpace configuration file path.
-    /// - Returns: The AeroSpace configuration file path
     func getAeroSpaceConfigPath() async -> URL
 
     // MARK: - Configuration Management

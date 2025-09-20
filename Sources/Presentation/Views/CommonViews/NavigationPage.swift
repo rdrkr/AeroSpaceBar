@@ -1,12 +1,13 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 /// A protocol that defines the requirements for any navigation page in the settings interface.
 ///
 /// This protocol allows for both static enum-based navigation (like main settings pages)
 /// and dynamic navigation (like group pages) to work together in a unified system.
-protocol NavigationPage: Equatable, Hashable, Identifiable {
+protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     /// The associated type for the view returned by this navigation page.
     typealias PageView = AnyView
 
@@ -19,17 +20,8 @@ protocol NavigationPage: Equatable, Hashable, Identifiable {
     /// The SF Symbol name to display for this page.
     var symbolName: String { get }
 
-    // /// The page associated icon.
-    // var icon: any View { get }
-
     /// The parent page of this navigation page, if any.
     var parentPage: (any NavigationPage)? { get }
-
-    // /// A view builder that returns the sidebar item view for this navigation page.
-    // /// - Returns: The sidebar item view associated with this navigation page
-    // @MainActor
-    // @ViewBuilder
-    // var viewForSidebar: any View { get }
 
     /// A view builder that returns the view for this navigation page.
     /// - Returns: The view associated with this navigation page
@@ -40,14 +32,46 @@ protocol NavigationPage: Equatable, Hashable, Identifiable {
 
 /// Default protocol implementations.
 extension NavigationPage {
-    /// The page icon to display for this page.
-    var icon: some View {
-        Image(systemName: symbolName)
+    // swiftformat:disable all
+    @MainActor
+    internal var defaultIcon: some View {
+        // swiftformat:enable all
+        let image = Image(systemName: symbolName)
             .resizable()
-            .frame(width: 16, height: 16)
-            .padding(4)
-            .background(.white.opacity(0.1), in: .rect)
-            .cornerRadius(8)
+            .frame(
+                width: ConfigurationDefaults.settingsIconSmallSize,
+                height: ConfigurationDefaults.settingsIconSmallSize
+            )
+            .padding(3)
+            .background(
+                LinearGradient(
+                    gradient: Gradient(
+                        colors: [
+                            Color.gray.opacity(0.4),
+                            Color(NSColor.controlBackgroundColor).opacity(0.8),
+                            Color(NSColor.controlBackgroundColor).opacity(0.9),
+                            Color(NSColor.controlBackgroundColor).opacity(1.0)
+                        ]
+                    ),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .edgesIgnoringSafeArea(.all)
+            )
+            .cornerRadius(5)
+
+        if #available(macOS 26.0, *) {
+            return image
+                .glassEffect(.regular, in: .rect(cornerRadius: 5))
+        } else {
+            return image
+        }
+    }
+
+    /// The page icon view to display for this page.
+    @MainActor
+    var icon: AnyView {
+        AnyView(defaultIcon)
     }
 
     /// A default internal view builder that returns the sidebar item view for this navigation page.
@@ -55,19 +79,19 @@ extension NavigationPage {
     @ViewBuilder
     // in order to retain internal, disable swiftformat.
     // swiftformat:disable all
-    internal var defaultViewForSidebar: some View {
-        HStack {
+    internal func defaultViewForSidebar(_ icon: AnyView) -> some View {
+        // swiftformat:enable all
+        HStack(spacing: 5) {
             icon
-            Text(name)
+            Text(name).font(.callout)
         }
     }
-    // swiftformat:enable all
 
     /// A view builder that returns the sidebar item view for this navigation page.
     @MainActor
     @ViewBuilder
     var viewForSidebar: some View {
-        defaultViewForSidebar
+        defaultViewForSidebar(AnyView(icon))
     }
 }
 
@@ -85,9 +109,17 @@ struct AnyNavigationPage: NavigationPage {
     /// The parent page of this navigation page, if any.
     let parentPage: (any NavigationPage)?
 
+    /// A closure that returns the view for this navigation page.
+    /// Stored as a closure to avoid Sendable issues with AnyView.
+    private let _viewForPage: @Sendable @MainActor () -> PageView
+
     /// A view builder that returns the view for this navigation page.
     /// - Returns: The view associated with this navigation page
-    @MainActor @ViewBuilder let viewForPage: PageView
+    @MainActor
+    @ViewBuilder
+    var viewForPage: PageView {
+        _viewForPage()
+    }
 
     /// Initializes an AnyNavigationPage with a concrete NavigationPage.
     /// - Parameter page: The concrete navigation page to wrap
@@ -97,7 +129,7 @@ struct AnyNavigationPage: NavigationPage {
         name = page.name
         symbolName = page.symbolName
         parentPage = page.parentPage
-        viewForPage = page.viewForPage
+        _viewForPage = { page.viewForPage }
     }
 
     /// Hashes the essential components of this navigation page.

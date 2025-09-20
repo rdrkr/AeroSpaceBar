@@ -176,7 +176,7 @@ public enum Logger {
             print(logMessage)
         #endif
 
-        os_log(level.osLogType, log: category, "%{public}@", logMessage)
+        unsafe os_log(level.osLogType, log: category, "%{public}@", logMessage)
     }
 
     // MARK: - Public Logging Interface
@@ -288,7 +288,7 @@ public enum Logger {
         defer {
             let endTime = CFAbsoluteTimeGetCurrent()
             let duration = endTime - startTime
-            info("Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
+            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
         }
 
         return try operation()
@@ -306,7 +306,7 @@ public enum Logger {
         defer {
             let endTime = CFAbsoluteTimeGetCurrent()
             let duration = endTime - startTime
-            info("Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
+            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
         }
 
         return try await operation()

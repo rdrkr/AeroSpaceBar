@@ -117,7 +117,7 @@ struct GroupPageView: View {
         settingsViewModel.navigateBackward()
 
         // Then update the configuration on the next run loop
-        DispatchQueue.main.async {
+        Task { @MainActor in
             // Use the view model's method to remove the group
             groupsViewModel.removeGroup(at: id)
         }

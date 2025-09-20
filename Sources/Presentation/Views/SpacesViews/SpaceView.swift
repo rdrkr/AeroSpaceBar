@@ -12,18 +12,6 @@ struct SpaceView: View {
     /// The space to display.
     let space: Space
 
-    /// The duration for view animations in seconds.
-    let animationDuration: Double
-
-    /// The spacing between widget elements in the menu bar.
-    let widgetSpacing: Double
-
-    /// The vertical padding applied to menu bar elements.
-    let menuBarVerticalPadding: Double
-
-    /// The size of window icons displayed in the menu bar.
-    let windowIconSize: Double
-
     /// Whether window titles should be displayed.
     let showWindowTitles: Bool
 
@@ -59,7 +47,9 @@ struct SpaceView: View {
     /// Computed property for minimum height to match spaces with windows.
     /// - Returns: The calculated height based on icon size and padding
     private var spaceHeight: Double {
-        windowIconSize + (menuBarVerticalPadding * 2) + (visualConfiguration.borderWidth * 2)
+        ConfigurationDefaults.windowIconSize +
+            (ConfigurationDefaults.menuBarVerticalPadding * 2) +
+            (visualConfiguration.borderWidth * 2)
     }
 
     // MARK: - Body
@@ -87,13 +77,10 @@ struct SpaceView: View {
                     WindowView(
                         window: window,
                         space: space,
-                        menuBarVerticalPadding: menuBarVerticalPadding,
-                        windowIconSize: windowIconSize,
                         showWindowTitles: showWindowTitles,
                         focusWindowOnClick: focusWindowOnClick,
                         spaceForegroundColor: visualConfiguration.foregroundColor,
                         spaceBackgroundTintColor: visualConfiguration.backgroundTintColor,
-                        animationDuration: animationDuration,
                         onSwitchToSpace: onSwitchToSpace,
                         onSwitchToWindow: onSwitchToWindow
                     )
@@ -107,13 +94,11 @@ struct SpaceView: View {
         .frame(height: spaceHeight)
         .spaceFocusState(
             isFocused,
-            visualConfig: visualConfiguration,
-            widgetSpacing: widgetSpacing
+            visualConfig: visualConfiguration
         )
-        .spaceCornerRadius(visualConfiguration.cornerRadius)
+        .cornerRadius(visualConfiguration.cornerRadius)
         .standardShadow()
-        .blurReplaceTransition()
-        .smoothAnimation(duration: animationDuration)
+        .transition(.blurReplace)
         .conditionalInteraction(
             isEnabled: focusWindowOnClick,
             isHovered: $isHovered,
@@ -132,10 +117,6 @@ struct SpaceView: View {
             isFocused: true,
             windows: []
         ),
-        animationDuration: 0.3,
-        widgetSpacing: 8.0,
-        menuBarVerticalPadding: 4.0,
-        windowIconSize: 16.0,
         showWindowTitles: true,
         focusWindowOnClick: true,
         visualConfiguration: VisualContainer(

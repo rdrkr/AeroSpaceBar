@@ -163,3 +163,13 @@ When adding AeroSpace features:
   - ❌ Subview directly accesses `@EnvironmentObject private var viewModel: SomeViewModel`
   - ✅ `SubView(value: $viewModel.specificProperty, onAction: viewModel.handleAction)`
   - ❌ `SubView()` where `SubView` internally accesses the ViewModel
+
+### Concurrency
+- **Use modern Swift concurrency over DispatchQueue**: Replace all DispatchQueue usage with Swift 6 async/await patterns for better type safety and performance.
+- Examples:
+  - ✅ `Task { @MainActor in /* UI updates */ }`
+  - ❌ `DispatchQueue.main.async { /* UI updates */ }`
+  - ✅ `try await Task.sleep(for: .seconds(1))`
+  - ❌ `DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { }`
+  - ✅ `Task.detached(priority: .userInitiated) { /* background work */ }`
+  - ❌ `DispatchQueue(label: "background", qos: .userInitiated).async { }`

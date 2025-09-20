@@ -3,6 +3,7 @@
 import Foundation
 
 /// Use case for deactivating the current license.
+@MainActor
 public final class DeactivateLicenseUseCase {
     private let licensingGateway: LicensingGateway
 

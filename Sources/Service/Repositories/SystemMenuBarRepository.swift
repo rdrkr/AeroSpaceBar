@@ -60,7 +60,6 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Sets up the show groups publisher subscription.
     private func setupShowGroupsSubscription() {
         showGroupsCancellable = getShowGroupsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] value in
                 self?.showGroupsEnabled = value
             }
@@ -108,14 +107,14 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     }
 
     /// The action performed periodically to recognize windows and menu bar apps.
-    private func recognizeAction() async {
+    private func recognizeAction() {
         let screenWindows = WindowInfo.getOnScreenWindows(excludeDesktopWindows: true)
 
-        await recognizeSystemMenuBar(windows: screenWindows)
+        recognizeSystemMenuBar(windows: screenWindows)
 
         // Only recognize menu bar apps if show groups is enabled
         if showGroupsEnabled {
-            await recognizeSystemMenuBarApps(windows: screenWindows)
+            recognizeSystemMenuBarApps(windows: screenWindows)
         }
     }
 
@@ -169,7 +168,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// This lightweight method runs frequently to detect menu bar state changes without
     /// performing expensive wallpaper capture operations.
     /// - Parameter windows: The current list of on-screen windows.
-    private func recognizeSystemMenuBar(windows: [WindowInfo]) async {
+    private func recognizeSystemMenuBar(windows: [WindowInfo]) {
         // Find the menu bar window
         let menuBarWindow = findSystemMenuBarWindow(windows: windows)
         let isMenuBarVisible = menuBarWindow != nil
@@ -194,7 +193,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     ///
     /// This resource-intensive method runs less frequently to capture and update
     /// the wallpaper image when the menu bar is visible.
-    private func captureWallpaperImage() async {
+    private func captureWallpaperImage() {
         // Find the wallpaper window for the main display
         guard let wallpaperWindow = findDesktopWallpaperWindow() else {
             Logger.info("No wallpaper window found", category: Logger.config)
@@ -234,7 +233,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// This method scans for menu bar items and extracts application information
     /// from processes that have menu bar icons.
     /// - Parameter windows: The current list of on-screen windows.
-    private func recognizeSystemMenuBarApps(windows: [WindowInfo]) async {
+    private func recognizeSystemMenuBarApps(windows: [WindowInfo]) {
         let foundApps: [MenuBarApp] = findMenuBarApplications(windows: windows)
         let currentApps: [MenuBarApp] = Array(menuBarAppsSubject.value.dropFirst())
 
@@ -353,9 +352,9 @@ private struct WindowInfo {
     /// Creates a window with the given window identifier.
     /// - Parameter windowID: The Core Graphics window identifier.
     init?(windowID: CGWindowID) {
-        var pointer = UnsafeRawPointer(bitPattern: Int(windowID))
+        var pointer = unsafe UnsafeRawPointer(bitPattern: Int(windowID))
         guard
-            CFArrayCreate(kCFAllocatorDefault, &pointer, 1, nil) != nil,
+            unsafe CFArrayCreate(kCFAllocatorDefault, &pointer, 1, nil) != nil,
             let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[CFString: CFTypeRef]],
             let dictionary = list.first(where: { ($0[kCGWindowNumber] as? CGWindowID) == windowID })
         else {
@@ -431,14 +430,14 @@ private enum ScreenCapture {
         option: CGWindowImageOption = []
     ) -> CGImage? {
         let pointer = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
-        pointer[0] = UnsafeRawPointer(bitPattern: UInt(windowID))
+        unsafe pointer[0] = unsafe UnsafeRawPointer(bitPattern: UInt(windowID))
 
         // Create the window array for the protocol call
-        guard let windowArray = CFArrayCreate(kCFAllocatorDefault, pointer, 1, nil) else {
+        guard let windowArray = unsafe CFArrayCreate(kCFAllocatorDefault, pointer, 1, nil) else {
             return nil
         }
 
-        pointer.deallocate()
+        unsafe pointer.deallocate()
 
         return CGImage.windowListImage(from: screenBounds ?? .null, windowArray: windowArray, imageOption: option)
     }

@@ -11,22 +11,22 @@ public final class LicensingViewModel: ObservableObject {
     // MARK: - Published Properties
 
     /// The current license status.
-    @Published public var licenseStatus: LicenseStatus = .unknown
+    @Published public var licenseStatus: LicenseStatus
 
     /// The license key input field text.
-    @Published public var licenseKeyInput: String = ""
+    @Published public var licenseKeyInput: String
+
+    /// Whether licensing features are enabled via feature flags.
+    @Published public var enableLicensing: Bool
 
     /// Whether a license activation operation is currently in progress.
     @Published public var isActivating: Bool = false
 
-    /// Error message from the most recent license activation attempt, if any.
-    @Published public var activationError: String?
-
-    /// Whether licensing features are enabled via feature flags.
-    @Published public var enableLicensing: Bool = true
-
     /// Whether the checkout WebView is currently being presented.
     @Published public var showingCheckoutWebView: Bool = false
+
+    /// Error message from the most recent license activation attempt, if any.
+    @Published public var activationError: String?
 
     /// The checkout URL for the WebView, if available.
     @Published public var checkoutURL: URL?
@@ -79,6 +79,10 @@ public final class LicensingViewModel: ObservableObject {
         self.deactivateLicenseUseCase = deactivateLicenseUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
 
+        licenseStatus = getLicenseStatusUseCase.execute().blockingFirst()
+        licenseKeyInput = ""
+        enableLicensing = getFeatureFlagsUseCase.execute().blockingFirst().enableLicensing
+
         Logger.info("LicensingViewModel initialized", category: Logger.app)
         setupSubscriptions()
     }
@@ -95,7 +99,7 @@ public final class LicensingViewModel: ObservableObject {
     public func openCheckout() {
         Logger.info("Opening checkout flow in WebView", category: Logger.app)
         Task {
-            let url = await openCheckoutUseCase.execute(from: nil)
+            let url = openCheckoutUseCase.execute(from: nil)
             await MainActor.run {
                 checkoutURL = url
                 showingCheckoutWebView = true
@@ -185,18 +189,15 @@ public final class LicensingViewModel: ObservableObject {
     /// - License key input validation and error clearing
     private func setupSubscriptions() {
         getLicenseStatusUseCase.execute()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newStatus in
-                Logger.debug("License status changed to: \(newStatus)", category: Logger.app)
-                self?.licenseStatus = newStatus
-            }
+            .assign(to: \.licenseStatus, on: self)
             .store(in: &cancellables)
 
         // Subscribe to feature flags changes
         getFeatureFlagsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] featureFlags in
-                self?.enableLicensing = featureFlags.enableLicensing
+                if self?.enableLicensing != featureFlags.enableLicensing {
+                    self?.enableLicensing = featureFlags.enableLicensing
+                }
             }
             .store(in: &cancellables)
 

@@ -3,6 +3,7 @@
 import Foundation
 
 /// Use case for activating a license key.
+@MainActor
 public final class ActivateLicenseUseCase {
     private let licensingGateway: LicensingGateway
 

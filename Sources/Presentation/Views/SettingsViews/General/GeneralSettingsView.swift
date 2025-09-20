@@ -21,7 +21,9 @@ struct GeneralSettingsView: View {
         IntroForm(
             navigationTitle: String(localized: navigationOption.name),
             style: .intro,
-            image: Image(nsImage: NSApplication.shared.applicationIconImage),
+            icon: AnyView(Image(nsImage: NSApplication.shared.applicationIconImage)
+                .resizable()
+            ),
             title: String(localized: navigationOption.name),
             subtitle: String(
                 localized: LocalizedStringResource(

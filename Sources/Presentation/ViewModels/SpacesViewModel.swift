@@ -29,11 +29,6 @@ final class SpacesViewModel: ObservableObject {
 
     /// UI configuration properties.
     @Published var menuBarHeight: Double
-    @Published var menuBarVerticalPadding: Double
-    @Published var menuBarHorizontalPadding: Double
-    @Published var widgetSpacing: Double
-    @Published var animationDuration: Double
-    @Published var windowIconSize: Double
     @Published var showWindowTitles: Bool
     @Published var focusWindowOnClick: Bool
     @Published var spacesAppearanceMode: SpacesAppearanceMode
@@ -68,11 +63,6 @@ final class SpacesViewModel: ObservableObject {
 
     /// Use cases for UI configuration properties.
     private let getMenuBarHeightUseCase: GetMenuBarHeightUseCase
-    private let getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase
-    private let getMenuBarHorizontalPaddingUseCase: GetMenuBarHorizontalPaddingUseCase
-    private let getWidgetSpacingUseCase: GetWidgetSpacingUseCase
-    private let getAnimationDurationUseCase: GetAnimationDurationUseCase
-    private let getWindowIconSizeUseCase: GetWindowIconSizeUseCase
     private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
@@ -93,11 +83,6 @@ final class SpacesViewModel: ObservableObject {
     ///   - getShowWindowTitlesUseCase: Use case for getting window titles display setting
     ///   - getWallpaperUseCase: Use case for getting wallpaper image
     ///   - getMenuBarHeightUseCase: Use case for getting menu bar height
-    ///   - getMenuBarVerticalPaddingUseCase: Use case for getting vertical padding
-    ///   - getMenuBarHorizontalPaddingUseCase: Use case for getting horizontal padding
-    ///   - getWidgetSpacingUseCase: Use case for getting widget spacing
-    ///   - getAnimationDurationUseCase: Use case for getting animation duration
-    ///   - getWindowIconSizeUseCase: Use case for getting window icon size
     ///   - getSpacesAppearanceModeUseCase: Use case for getting spaces appearance mode
     ///   - getGlobalSpacesVisualConfigUseCase: Use case for getting consolidated space visual configuration
     init(
@@ -111,11 +96,6 @@ final class SpacesViewModel: ObservableObject {
         getWallpaperUseCase: GetWallpaperUseCase,
         getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
-        getMenuBarVerticalPaddingUseCase: GetMenuBarVerticalPaddingUseCase,
-        getMenuBarHorizontalPaddingUseCase: GetMenuBarHorizontalPaddingUseCase,
-        getWidgetSpacingUseCase: GetWidgetSpacingUseCase,
-        getAnimationDurationUseCase: GetAnimationDurationUseCase,
-        getWindowIconSizeUseCase: GetWindowIconSizeUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
         getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
@@ -135,11 +115,6 @@ final class SpacesViewModel: ObservableObject {
 
         // Initialize UI configuration use cases
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
-        self.getMenuBarVerticalPaddingUseCase = getMenuBarVerticalPaddingUseCase
-        self.getMenuBarHorizontalPaddingUseCase = getMenuBarHorizontalPaddingUseCase
-        self.getWidgetSpacingUseCase = getWidgetSpacingUseCase
-        self.getAnimationDurationUseCase = getAnimationDurationUseCase
-        self.getWindowIconSizeUseCase = getWindowIconSizeUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
         self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
@@ -152,11 +127,6 @@ final class SpacesViewModel: ObservableObject {
         )
 
         menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
-        menuBarVerticalPadding = getMenuBarVerticalPaddingUseCase.execute().blockingFirst()
-        menuBarHorizontalPadding = getMenuBarHorizontalPaddingUseCase.execute().blockingFirst()
-        widgetSpacing = getWidgetSpacingUseCase.execute().blockingFirst()
-        animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
-        windowIconSize = getWindowIconSizeUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
         isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
@@ -252,43 +222,25 @@ final class SpacesViewModel: ObservableObject {
             .assign(to: \.menuBarHeight, on: self)
             .store(in: &cancellables)
 
-        getMenuBarVerticalPaddingUseCase.execute()
-            .assign(to: \.menuBarVerticalPadding, on: self)
-            .store(in: &cancellables)
-
-        getMenuBarHorizontalPaddingUseCase.execute()
-            .assign(to: \.menuBarHorizontalPadding, on: self)
-            .store(in: &cancellables)
-
-        getWidgetSpacingUseCase.execute()
-            .assign(to: \.widgetSpacing, on: self)
-            .store(in: &cancellables)
-
-        getAnimationDurationUseCase.execute()
-            .assign(to: \.animationDuration, on: self)
-            .store(in: &cancellables)
-
-        getWindowIconSizeUseCase.execute()
-            .assign(to: \.windowIconSize, on: self)
-            .store(in: &cancellables)
-
         getShowWindowTitlesUseCase.execute()
             .assign(to: \.showWindowTitles, on: self)
             .store(in: &cancellables)
+
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
             .store(in: &cancellables)
 
         // Monitor system menu bar visibility changes
         getMenuBarVisibilityUseCase.execute()
-            .assign(to: \SpacesViewModel.isMenuBarVisible, on: self)
+            .assign(to: \.isMenuBarVisible, on: self)
             .store(in: &cancellables)
 
         // Subscribe to feature flags changes
         getFeatureFlagsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] featureFlags in
-                self?.isSpacesEnabled = featureFlags.enableSpaces
+                if self?.isSpacesEnabled != featureFlags.enableSpaces {
+                    self?.isSpacesEnabled = featureFlags.enableSpaces
+                }
             }
             .store(in: &cancellables)
 
@@ -338,13 +290,13 @@ final class SpacesViewModel: ObservableObject {
     /// Sets up global key monitoring for the globe key (fn key)
     private func setupGlobeKeyMonitors() {
         let keyPressedCallback = { [weak self] (event: NSEvent) in
-            DispatchQueue.main.async {
+            _ = Task { @MainActor in
                 // The globe/fn key is represented by the .function modifier flag
                 self?.isGlobeKeyPressed = event.modifierFlags.contains(.function)
             }
         }
 
-        keyMonitors = [
+        unsafe keyMonitors = [
             // Local monitor to capture key events when the app is focused
             NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { event in
                 keyPressedCallback(event)
@@ -358,7 +310,7 @@ final class SpacesViewModel: ObservableObject {
 
     /// Removes the global key monitor
     private nonisolated func removeGlobeKeyMonitors() {
-        keyMonitors.forEach { monitor in
+        unsafe keyMonitors.forEach { monitor in
             NSEvent.removeMonitor(monitor)
         }
 

@@ -34,27 +34,4 @@ public enum FeatureFlagDefaults {
         /// Set to false by default, can be enabled for testing licensed features.
         public static let mockActiveLicense: Bool = false
     #endif
-
-    // MARK: - Convenience
-
-    /// Creates a FeatureFlags instance with all default values.
-    /// - Returns: FeatureFlags configured with default values
-    public static func createDefault() -> FeatureFlags {
-        #if DEBUG
-            return FeatureFlags(
-                enableGroups: enableGroups,
-                enableSpaces: enableSpaces,
-                enableAdvancedSettings: enableAdvancedSettings,
-                enableLicensing: enableLicensing,
-                mockActiveLicense: mockActiveLicense
-            )
-        #else
-            return FeatureFlags(
-                enableGroups: enableGroups,
-                enableSpaces: enableSpaces,
-                enableAdvancedSettings: enableAdvancedSettings,
-                enableLicensing: enableLicensing
-            )
-        #endif
-    }
 }

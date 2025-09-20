@@ -91,52 +91,25 @@ extension Color {
     static let foregroundShadow: Color = .black.opacity(0.5)
 }
 
-// MARK: - Spacing System
-
-/// Spacing system providing consistent layout values.
-extension Double {
-    // MARK: - Standard Spacing
-
-    /// Extra small spacing (4pt) for tight layouts.
-    static let themeSpacingXS: Double = 4
-
-    /// Small spacing (8pt) for compact layouts.
-    static let themeSpacingS: Double = 8
-
-    /// Medium spacing (16pt) for standard layouts.
-    static let themeSpacingM: Double = 16
-
-    /// Large spacing (24pt) for generous layouts.
-    static let themeSpacingL: Double = 24
-
-    /// Extra large spacing (32pt) for section separation.
-    static let themeSpacingXL: Double = 32
-
-    // MARK: - Component Spacing
-
-    /// Corner radius for space elements.
-    static let themeSpaceCornerRadius: Double = 8.0
-
-    /// Corner radius for window elements.
-    static let themeWindowCornerRadius: Double = 4.0
-
-    /// Corner radius for card elements.
-    static let themeCardCornerRadius: Double = 12.0
-
-    /// Fixed width for value display elements.
-    static let themeValueDisplayWidth: Double = 34
-}
-
 // MARK: - Animation System
 
 /// Animation system providing consistent timing and easing.
 extension Animation {
-    /// Smooth animation with default duration (0.3s).
+    /// Smooth animation with default duration.
     static let themeSmooth: Animation = .smooth(duration: 0.3)
 
-    /// Fast smooth animation for quick interactions (0.15s).
+    /// Fast smooth animation for quick interactions.
     static let themeSmoothFast: Animation = .smooth(duration: 0.15)
 
-    /// Slow smooth animation for emphasis (0.5s).
+    /// Slow smooth animation for emphasis.
     static let themeSmoothSlow: Animation = .smooth(duration: 0.5)
+
+    /// Easing animation with default duration.
+    static let themeEaseInOut: Animation = .easeInOut(duration: 0.3)
+
+    /// Fast easing animation for quick interactions.
+    static let themeEaseInOutFast: Animation = .easeInOut(duration: 0.15)
+
+    /// Slow easing animation for emphasis.
+    static let themeEaseInOutSlow: Animation = .easeInOut(duration: 0.5)
 }

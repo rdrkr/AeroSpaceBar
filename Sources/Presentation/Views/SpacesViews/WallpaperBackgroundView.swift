@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 /// A view that displays the desktop wallpaper as background for the spaces.
@@ -11,7 +12,7 @@ struct WallpaperBackgroundView: View {
     let wallpaper: NSImage
 
     /// The horizontal padding for the menu bar
-    let menuBarHorizontalPadding: Double
+    let menuBarHorizontalPadding: Double = 16
 
     // MARK: - Computed Properties
 
@@ -43,8 +44,7 @@ struct WallpaperBackgroundView: View {
 #Preview {
     if let wallpaper = NSImage(named: "AppIcon") {
         WallpaperBackgroundView(
-            wallpaper: wallpaper,
-            menuBarHorizontalPadding: 16
+            wallpaper: wallpaper
         )
         .padding()
     } else {

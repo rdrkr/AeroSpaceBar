@@ -55,11 +55,11 @@ public enum ConfigurationDefaults {
     /// Default spacing between widgets in the menu bar in points.
     public static let widgetSpacing: Double = 4
 
-    /// Default animation duration in seconds.
-    public static let animationDuration: Double = 0.2
-
     /// Default size of window icons in points.
     public static let windowIconSize: Double = 22.5
+
+    /// Default size of settings icons in points.
+    public static let settingsIconSmallSize: Double = 13.0
 
     /// Default visual configuration for space elements.
     public static let defaultSpaceVisualConfig: VisualContainer = .init(

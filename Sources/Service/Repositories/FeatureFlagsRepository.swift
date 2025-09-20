@@ -11,34 +11,25 @@ import Foundation
 #if DEBUG
     @MainActor
     public final class FeatureFlagsRepository: FeatureFlagsGateway {
-        private let featureFlagsSubject: CurrentValueSubject<FeatureFlags, Never>
+        private let featureFlagsSubject = CurrentValueSubject<FeatureFlags, Never>(
+            FeatureFlags.defaultFlags()
+        )
 
-        /// Initializes the repository with default feature flags.
-        public init() {
-            // Always start with default feature flags
-            let defaultFlags = FeatureFlagDefaults.createDefault()
-            featureFlagsSubject = CurrentValueSubject(defaultFlags)
-        }
+        /// Initializes a new FeatureFlagsRepository with default values.
+        public init() { }
 
         // MARK: - FeatureFlagsGateway Implementation
 
-        public var featureFlags: AnyPublisher<FeatureFlags, Never> {
+        public var featureFlagsPublisher: AnyPublisher<FeatureFlags, Never> {
             featureFlagsSubject.eraseToAnyPublisher()
         }
 
-        public var currentFeatureFlags: FeatureFlags {
-            featureFlagsSubject.value
+        public func setFeatureFlags(_ flags: FeatureFlags) {
+            featureFlagsSubject.send(flags)
         }
 
-        public func setFeatureFlags(_ flags: FeatureFlags) async {
-            await MainActor.run {
-                featureFlagsSubject.send(flags)
-            }
-        }
-
-        public func resetToDefaults() async {
-            let defaultFlags = FeatureFlagDefaults.createDefault()
-            await setFeatureFlags(defaultFlags)
+        public func resetToDefaults() {
+            setFeatureFlags(FeatureFlags.defaultFlags())
         }
     }
 #else
@@ -46,19 +37,15 @@ import Foundation
     public final class FeatureFlagsRepository: FeatureFlagsGateway {
         public init() { }
 
-        public var featureFlags: AnyPublisher<FeatureFlags, Never> {
-            Just(FeatureFlagDefaults.createDefault()).eraseToAnyPublisher()
+        public var featureFlagsPublisher: AnyPublisher<FeatureFlags, Never> {
+            Just(FeatureFlags.defaultFlags()).eraseToAnyPublisher()
         }
 
-        public var currentFeatureFlags: FeatureFlags {
-            FeatureFlagDefaults.createDefault()
-        }
-
-        public func setFeatureFlags(_: FeatureFlags) async {
+        public func setFeatureFlags(_: FeatureFlags) {
             // No-op in release builds
         }
 
-        public func resetToDefaults() async {
+        public func resetToDefaults() {
             // No-op in release builds
         }
     }

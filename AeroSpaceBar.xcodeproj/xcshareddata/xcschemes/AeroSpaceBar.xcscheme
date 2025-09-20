@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES"
-      buildArchitectures = "Automatic">
+      buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -29,74 +27,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1AFC28792E609B9E00258BEE"
-               BuildableName = "AeroSpaceBarUITests.xctest"
-               BlueprintName = "AeroSpaceBarUITests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1AFC28882E609BDA00258BEE"
-               BuildableName = "AeroSpaceBarTests.xctest"
-               BlueprintName = "AeroSpaceBarTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A493DEB2E73D9F100187B3E"
-               BuildableName = "ServiceTests.xctest"
-               BlueprintName = "ServiceTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A493D032E73D9CF00187B3E"
-               BuildableName = "DomainTests.xctest"
-               BlueprintName = "DomainTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A493DEB2E73D9F100187B3E"
-               BuildableName = "ServiceTests.xctest"
-               BlueprintName = "ServiceTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1AFC28882E609BDA00258BEE"
-               BuildableName = "AeroSpaceBarTests.xctest"
-               BlueprintName = "AeroSpaceBarTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -129,16 +59,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C10E2F892D41235900AC957C"
-            BuildableName = "AeroSpaceBar.app"
-            BlueprintName = "AeroSpaceBar"
-            ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

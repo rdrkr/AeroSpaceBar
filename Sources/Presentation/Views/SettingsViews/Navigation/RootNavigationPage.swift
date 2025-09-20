@@ -41,18 +41,32 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         switch self {
         case .license: "key.fill"
         case .general: "gear"
-        case .spaces: "square.3.layers.3d"
-        case .groups: "rectangle.3.group"
-        case .advanced: "star"
+        case .spaces: "square.3.layers.3d.top.filled"
+        case .groups: "rectangle.3.group.fill"
+        case .advanced: "star.fill"
         #if DEBUG
-            case .developer: "hammer"
+            case .developer: "hammer.fill"
         #endif
+        }
+    }
+
+    /// The icon for the navigation option.
+    @MainActor
+    var icon: AnyView {
+        switch self {
+        case .general:
+            AnyView(defaultIcon.foregroundColor(Color.gray))
+        case .advanced:
+            AnyView(defaultIcon.foregroundColor(Color.red))
+        default:
+            AnyView(defaultIcon.foregroundColor(Color(NSColor.controlAccentColor)))
         }
     }
 
     /// The parent page of the navigation option.
     var parentPage: (any NavigationPage)? { nil }
 
+    /// The view for the sidebar item.
     @MainActor
     var viewForSidebar: some View {
         Group {
@@ -60,7 +74,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
             case .license:
                 LicenseSettingsSidebarItemView()
             default:
-                defaultViewForSidebar
+                defaultViewForSidebar(icon)
             }
         }
     }

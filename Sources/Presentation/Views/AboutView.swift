@@ -23,7 +23,7 @@ struct AboutView: View {
             Image(nsImage: NSApplication.shared.applicationIconImage)
                 .resizable()
                 .frame(width: 128, height: 128)
-                .spaceCornerRadius(16)
+                .cornerRadius(16)
                 .standardShadow()
                 .accessibleImage("App Icon")
                 .tag("about-app-icon")

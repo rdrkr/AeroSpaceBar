@@ -253,13 +253,12 @@ private extension LicenseStatus {
 
 #Preview {
     let gateway = LicensingRepository()
-    let featureFlagsGateway = FeatureFlagsRepository()
     LicenseStatusView(viewModel: LicensingViewModel(
         getLicenseStatusUseCase: GetLicenseStatusUseCase(licensingGateway: gateway),
         activateLicenseUseCase: ActivateLicenseUseCase(licensingGateway: gateway),
         openCheckoutUseCase: OpenCheckoutUseCase(licensingGateway: gateway),
         startTrialUseCase: StartTrialUseCase(licensingGateway: gateway),
         deactivateLicenseUseCase: DeactivateLicenseUseCase(licensingGateway: gateway),
-        getFeatureFlagsUseCase: GetFeatureFlagsUseCase(gateway: featureFlagsGateway)
+        getFeatureFlagsUseCase: GetFeatureFlagsUseCase(gateway: FeatureFlagsRepository())
     ))
 }

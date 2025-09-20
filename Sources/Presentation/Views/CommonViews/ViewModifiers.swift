@@ -26,60 +26,6 @@ struct TextShadow: ViewModifier {
     }
 }
 
-// MARK: - Animation Modifiers
-
-/// Smooth animation modifier with configurable duration
-struct SmoothAnimation: ViewModifier {
-    let duration: Double
-
-    init(duration: Double = 0.3) {
-        self.duration = duration
-    }
-
-    func body(content: Content) -> some View {
-        content.animation(.smooth(duration: duration), value: true)
-    }
-}
-
-/// Blur replace transition modifier
-struct BlurReplaceTransition: ViewModifier {
-    func body(content: Content) -> some View {
-        content.transition(.blurReplace)
-    }
-}
-
-// MARK: - Corner Radius Modifiers
-
-/// Space corner radius modifier
-struct SpaceCornerRadius: ViewModifier {
-    let cornerRadius: Double
-
-    init(cornerRadius: Double = .themeSpaceCornerRadius) {
-        self.cornerRadius = cornerRadius
-    }
-
-    func body(content: Content) -> some View {
-        content.clipShape(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        )
-    }
-}
-
-/// Window corner radius modifier
-struct WindowCornerRadius: ViewModifier {
-    let cornerRadius: Double
-
-    init(cornerRadius: Double = .themeWindowCornerRadius) {
-        self.cornerRadius = cornerRadius
-    }
-
-    func body(content: Content) -> some View {
-        content.clipShape(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        )
-    }
-}
-
 // MARK: - Hover Modifiers
 
 /// Hover state modifier for interactive elements
@@ -101,7 +47,7 @@ struct HoverState: ViewModifier {
 struct SpaceFocusState: ViewModifier {
     let isFocused: Bool
     let visualConfig: VisualContainer
-    let widgetSpacing: Double
+    let widgetSpacing: Double = ConfigurationDefaults.widgetSpacing
 
     func body(content: Content) -> some View {
         content
@@ -115,7 +61,7 @@ struct SpaceFocusState: ViewModifier {
                             ) : visualConfig.backgroundOpacity
                         )
                         .blur(radius: visualConfig.backgroundBlurRadius)
-                        .spaceCornerRadius(visualConfig.cornerRadius)
+                        .cornerRadius(visualConfig.cornerRadius)
                         .frame(
                             width: geometry.size.width,
                             height: geometry.size.height - (visualConfig.borderWidth * 2)
@@ -398,37 +344,15 @@ extension View {
         modifier(TextShadow())
     }
 
-    /// Apply smooth animation modifier
-    func smoothAnimation(duration: Double = 0.3) -> some View {
-        modifier(SmoothAnimation(duration: duration))
-    }
-
-    /// Apply blur replace transition modifier
-    func blurReplaceTransition() -> some View {
-        modifier(BlurReplaceTransition())
-    }
-
-    /// Apply space corner radius modifier
-    func spaceCornerRadius(_ cornerRadius: Double = .themeSpaceCornerRadius) -> some View {
-        modifier(SpaceCornerRadius(cornerRadius: cornerRadius))
-    }
-
-    /// Apply window corner radius modifier
-    func windowCornerRadius(_ cornerRadius: Double = .themeWindowCornerRadius) -> some View {
-        modifier(WindowCornerRadius(cornerRadius: cornerRadius))
-    }
-
     /// Apply space focus state modifier
     func spaceFocusState(
         _ isFocused: Bool,
-        visualConfig: VisualContainer,
-        widgetSpacing: Double
+        visualConfig: VisualContainer
     ) -> some View {
         modifier(
             SpaceFocusState(
                 isFocused: isFocused,
-                visualConfig: visualConfig,
-                widgetSpacing: widgetSpacing
+                visualConfig: visualConfig
             )
         )
     }

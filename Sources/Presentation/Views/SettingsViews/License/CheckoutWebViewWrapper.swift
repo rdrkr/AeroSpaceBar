@@ -59,7 +59,8 @@ struct CheckoutWebViewWrapper: NSViewRepresentable {
         func webView(_ webView: WKWebView, didFinish _: WKNavigation?) {
             if let currentURL = webView.url?.absoluteString {
                 if currentURL.contains("success") || currentURL.contains("complete") {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    Task { @MainActor in
+                        try await Task.sleep(for: .seconds(2.0))
                         self.onDismiss()
                     }
                 }

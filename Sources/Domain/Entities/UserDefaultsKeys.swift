@@ -49,21 +49,6 @@ public enum UserDefaultsKeys: String, CaseIterable {
 
     // MARK: - UI Configuration Preferences
 
-    /// The vertical padding for the menu bar interface in points.
-    case menuBarVerticalPadding = "com.aerospacebar.preferences.ui.menuBarVerticalPadding"
-
-    /// The horizontal padding for the menu bar interface in points.
-    case menuBarHorizontalPadding = "com.aerospacebar.preferences.ui.menuBarHorizontalPadding"
-
-    /// The spacing between widgets in the menu bar in points.
-    case widgetSpacing = "com.aerospacebar.preferences.ui.widgetSpacing"
-
-    /// The animation duration in seconds.
-    case animationDuration = "com.aerospacebar.preferences.ui.animationDuration"
-
-    /// The size of window icons in points.
-    case windowIconSize = "com.aerospacebar.preferences.ui.windowIconSize"
-
     /// The spaces configuration for organizing spaces.
     case spacesVisualConfiguration = "com.aerospacebar.preferences.spacesVisualConfiguration"
 

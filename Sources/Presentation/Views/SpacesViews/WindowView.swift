@@ -15,12 +15,6 @@ struct WindowView: View {
     /// The space that contains this window.
     let space: Space
 
-    /// The vertical padding applied to menu bar elements.
-    let menuBarVerticalPadding: Double
-
-    /// The size of window icons displayed in the menu bar.
-    let windowIconSize: Double
-
     /// Whether window titles should be displayed.
     let showWindowTitles: Bool
 
@@ -32,9 +26,6 @@ struct WindowView: View {
 
     /// The space background tint color.
     let spaceBackgroundTintColor: Color
-
-    /// The duration for view animations in seconds.
-    let animationDuration: Double
 
     /// Callback invoked when the user wants to switch to a space.
     /// - Parameters:
@@ -74,7 +65,7 @@ struct WindowView: View {
     /// and optionally its title, with proper styling and interactions.
     var body: some View {
         HStack {
-            WindowIconView(window: window, iconSize: windowIconSize)
+            WindowIconView(window: window, iconSize: ConfigurationDefaults.windowIconSize)
                 .windowFocusState(window.isFocused, spaceIsFocused: spaceIsFocused)
                 .tag("window-\(window.id)-icon-container")
 
@@ -86,24 +77,22 @@ struct WindowView: View {
                 )
             }
         }
-        .padding(.vertical, menuBarVerticalPadding)
+        .padding(.vertical, ConfigurationDefaults.menuBarVerticalPadding)
         .background(
             WindowHoverBackground(
                 color: spaceForegroundColor,
                 isHovered: focusWindowOnClick ? isHovered : false
             )
         )
-        .windowCornerRadius(8)
-        .blurReplaceTransition()
-        .smoothAnimation(duration: animationDuration)
-        .contentShape(.rect)
+        .cornerRadius(8)
+        .transition(.blurReplace)
         .conditionalInteraction(
             isEnabled: focusWindowOnClick,
             isHovered: $isHovered,
             onTap: {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     onSwitchToSpace(space, false)
-                    usleep(100_000)
+                    try await Task.sleep(for: .milliseconds(100))
                     onSwitchToWindow(window)
                 }
             }
@@ -229,13 +218,10 @@ private struct WindowHoverBackground: View {
     WindowView(
         window: window,
         space: space,
-        menuBarVerticalPadding: 4.0,
-        windowIconSize: 16.0,
         showWindowTitles: true,
         focusWindowOnClick: true,
         spaceForegroundColor: .primary,
         spaceBackgroundTintColor: .blue,
-        animationDuration: 0.3,
         onSwitchToSpace: { _, _ in },
         onSwitchToWindow: { _ in }
     )

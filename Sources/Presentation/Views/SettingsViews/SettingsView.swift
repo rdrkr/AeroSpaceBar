@@ -10,10 +10,39 @@ import SwiftUI
 /// - Settings are automatically saved when changed
 /// - Navigation buttons in the toolbar are fully functional
 struct SettingsView: View {
+    /// The settings view models
     @EnvironmentObject private var viewModel: SettingsViewModel
 
+    /// Whether the sidebar is in focus
     @FocusState private var sidebarFocused: Bool
+
+    /// Whether the window is configured and ready to be displayed
     @State private var isWindowConfigured = false
+
+    /// Whether the navigation button is currently hovered
+    @State private var isNavigationButtonHovered = false
+
+    // MARK: - Computed Properties
+
+    /// Binding for the sidebar selection, converting between AnyNavigationPage and AnyNavigationPage?
+    private var sidebarSelectionBinding: Binding<AnyNavigationPage?> {
+        Binding(
+            get: { viewModel.sidebarSelectedPage },
+            set: { newPage in
+                guard let newPage else { return }
+
+                // Only navigate if the selected page is different and is a root page
+                if
+                    newPage.id != viewModel.sidebarSelectedPage.id,
+                    viewModel.rootPages.contains(where: { AnyNavigationPage($0).id == newPage.id })
+                {
+                    Task {
+                        viewModel.navigateTo(newPage)
+                    }
+                }
+            }
+        )
+    }
 
     // MARK: - Body
 
@@ -21,29 +50,16 @@ struct SettingsView: View {
         Group {
             if isWindowConfigured {
                 NavigationSplitView {
-                    List(selection: Binding(
-                        get: { viewModel.sidebarSelectedPage },
-                        set: { newPage in
-                            // Only navigate if the selected page is different and is a root page
-                            if
-                                newPage.id != viewModel.sidebarSelectedPage.id,
-                                viewModel.rootPages.contains(where: { AnyNavigationPage($0).id == newPage.id })
-                            {
-                                Task {
-                                    viewModel.navigateTo(newPage)
-                                }
-                            }
-                        }
-                    )) {
-                        ForEach(viewModel.rootPages, id: \.id) { rootPage in
-                            NavigationLink(value: AnyNavigationPage(rootPage)) {
+                    LazyVStackList(selection: sidebarSelectionBinding) {
+                        ForEach(viewModel.rootPages) { rootPage in
+                            LazyVStackNavigationLink(value: AnyNavigationPage(rootPage)) {
                                 rootPage.viewForSidebar
                             }
                             .tag("settings-nav-\(rootPage.id)")
 
                             // Add spacing after license item
                             if rootPage.id == RootNavigationPage.license.id {
-                                Section { }
+                                Spacer()
                             }
                         }
                     }
@@ -63,15 +79,21 @@ struct SettingsView: View {
                             Button(action: viewModel.navigateBackward) {
                                 Image(systemName: "chevron.backward")
                             }
+                            .onHover { hovering in
+                                isNavigationButtonHovered = hovering
+                            }
                             .disabled(!viewModel.canNavigateBackward)
                             .tag("settings-back-button")
 
                             Rectangle()
-                                .fill(Color.secondary.opacity(0.4))
+                                .fill(Color.secondary.opacity(isNavigationButtonHovered ? 0.0 : 0.4))
                                 .frame(width: 1, height: 16)
 
                             Button(action: viewModel.navigateForward) {
                                 Image(systemName: "chevron.forward")
+                            }
+                            .onHover { hovering in
+                                isNavigationButtonHovered = hovering
                             }
                             .disabled(!viewModel.canNavigateForward)
                             .tag("settings-forward-button")
@@ -89,6 +111,7 @@ struct SettingsView: View {
         .onDisappear {
             viewModel.resetNavigationOnWindowClose()
         }
+        .animation(.themeEaseInOutFast, value: viewModel.rootPages)
         .tag("settings-view")
     }
 

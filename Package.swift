@@ -31,6 +31,7 @@ let package = Package(
         .executableTarget(
             name: "AeroSpaceBar",
             dependencies: [
+                .target(name: "AppIntents"),
                 .target(name: "Service")
             ],
             path: "Sources/Presentation",
@@ -45,29 +46,31 @@ let package = Package(
             ],
             swiftSettings: [
                 .treatAllWarnings(as: .error)
-                // .strictMemorySafety()
+                    .strictMemorySafety()
             ]
         ),
         .target(
             name: "Domain",
             dependencies: [
+                .target(name: "AppIntents")
             ],
             path: "Sources/Domain",
             swiftSettings: [
                 .treatAllWarnings(as: .error)
-                // .strictMemorySafety()
+                    .strictMemorySafety()
             ]
         ),
         .target(
             name: "Service",
             dependencies: [
+                .target(name: "AppIntents"),
                 .target(name: "Domain"),
                 .product(name: "TOMLKit", package: "TOMLKit")
             ],
             path: "Sources/Service",
             swiftSettings: [
                 .treatAllWarnings(as: .error)
-                // .strictMemorySafety()
+                    .strictMemorySafety()
             ]
         ),
         .testTarget(

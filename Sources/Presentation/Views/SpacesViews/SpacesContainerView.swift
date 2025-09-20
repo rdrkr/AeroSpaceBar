@@ -11,18 +11,6 @@ struct SpacesContainerView: View {
     /// The spaces to display.
     let spaces: [Space]
 
-    /// The spacing between spaces.
-    let widgetSpacing: Double
-
-    /// The duration for view animations in seconds.
-    let animationDuration: Double
-
-    /// The vertical padding applied to menu bar elements.
-    let menuBarVerticalPadding: Double
-
-    /// The size of window icons displayed in the menu bar.
-    let windowIconSize: Double
-
     /// Whether window titles should be displayed.
     let showWindowTitles: Bool
 
@@ -47,14 +35,10 @@ struct SpacesContainerView: View {
     /// The body of the spaces container view.
     /// - Returns: A horizontal stack containing all space views with proper parameters
     var body: some View {
-        HStack(spacing: -widgetSpacing - (visualConfiguration.borderWidth * 2)) {
+        HStack(spacing: -ConfigurationDefaults.widgetSpacing - (visualConfiguration.borderWidth * 2)) {
             ForEach(spaces) { space in
                 SpaceView(
                     space: space,
-                    animationDuration: animationDuration,
-                    widgetSpacing: widgetSpacing,
-                    menuBarVerticalPadding: menuBarVerticalPadding,
-                    windowIconSize: windowIconSize,
                     showWindowTitles: showWindowTitles,
                     focusWindowOnClick: focusWindowOnClick,
                     visualConfiguration: visualConfiguration,
@@ -77,10 +61,6 @@ struct SpacesContainerView: View {
 
     SpacesContainerView(
         spaces: spaces,
-        widgetSpacing: 8.0,
-        animationDuration: 0.3,
-        menuBarVerticalPadding: 4.0,
-        windowIconSize: 16.0,
         showWindowTitles: true,
         focusWindowOnClick: true,
         visualConfiguration: VisualContainer(

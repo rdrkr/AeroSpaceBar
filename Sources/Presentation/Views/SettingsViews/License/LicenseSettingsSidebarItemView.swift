@@ -25,7 +25,7 @@ struct LicenseSettingsSidebarItemView: View {
     /// The body of the license settings sidebar item view.
     /// - Returns: A horizontal stack containing the profile image and user information
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             // Profile Image
             Group {
                 if let profileImage {

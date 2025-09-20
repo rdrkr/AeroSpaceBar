@@ -17,7 +17,7 @@ public final class OpenCheckoutUseCase {
     /// Executes the use case to start the checkout process.
     /// - Parameter parentWindow: The parent window (ignored for now)
     /// - Returns: The Paddle checkout URL for the presentation layer to use
-    public func execute(from _: NSWindow?) async -> URL {
+    public func execute(from _: NSWindow?) -> URL {
         licensingGateway.createCheckoutURL()
     }
 

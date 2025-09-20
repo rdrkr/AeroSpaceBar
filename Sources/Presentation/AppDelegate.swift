@@ -46,7 +46,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         Task { @MainActor in
             Logger.beginInterval("App Initialization", id: Logger.SignpostID.spacesFetch)
 
-            await initializeAllPanels()
+            initializeAllPanels()
 
             Logger.endInterval("App Initialization", id: Logger.SignpostID.spacesFetch)
             Logger.info("Application launch completed", category: Logger.app)
@@ -81,14 +81,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             "mainScreenFrame": NSScreen.main?.frame.debugDescription ?? "unknown"
         ])
 
-        Task { @MainActor in
-            await initializeAllPanels()
-        }
+        initializeAllPanels()
     }
 
     /// Initializes all panels (Release builds or fallback)
     @MainActor
-    private func initializeAllPanels() async {
+    private func initializeAllPanels() {
         guard let screenFrame = NSScreen.main?.frame else { return }
 
         spacesViewModel = dependencyContainer.getSpacesViewModel()

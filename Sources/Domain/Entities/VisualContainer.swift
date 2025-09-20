@@ -255,6 +255,6 @@ extension Color {
         let green = Int(components[1] * 255)
         let blue = Int(components[2] * 255)
 
-        return String(format: "#%02X%02X%02X", red, green, blue)
+        return unsafe String(format: "#%02X%02X%02X", red, green, blue)
     }
 }

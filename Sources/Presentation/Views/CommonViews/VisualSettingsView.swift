@@ -64,7 +64,6 @@ struct VisualSettingsView: View {
                 geometrySection
             }
         }
-        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     // MARK: - Private Sections

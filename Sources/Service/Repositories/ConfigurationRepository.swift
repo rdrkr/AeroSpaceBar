@@ -65,26 +65,6 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Subjects
 
-    private let menuBarVerticalPaddingSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.menuBarVerticalPadding
-    )
-
-    private let menuBarHorizontalPaddingSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.menuBarHorizontalPadding
-    )
-
-    private let widgetSpacingSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.widgetSpacing
-    )
-
-    private let animationDurationSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.animationDuration
-    )
-
-    private let windowIconSizeSubject = CurrentValueSubject<Double, Never>(
-        ConfigurationDefaults.windowIconSize
-    )
-
     private let spacesVisualConfigSubject = CurrentValueSubject<[VisualContainer], Never>(
         ConfigurationDefaults.spacesVisualConfiguration
     )
@@ -151,26 +131,6 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualContainer, Never> {
         globalSpacesVisualConfigSubject.eraseToAnyPublisher()
-    }
-
-    public var menuBarVerticalPaddingPublisher: AnyPublisher<Double, Never> {
-        menuBarVerticalPaddingSubject.eraseToAnyPublisher()
-    }
-
-    public var menuBarHorizontalPaddingPublisher: AnyPublisher<Double, Never> {
-        menuBarHorizontalPaddingSubject.eraseToAnyPublisher()
-    }
-
-    public var widgetSpacingPublisher: AnyPublisher<Double, Never> {
-        widgetSpacingSubject.eraseToAnyPublisher()
-    }
-
-    public var animationDurationPublisher: AnyPublisher<Double, Never> {
-        animationDurationSubject.eraseToAnyPublisher()
-    }
-
-    public var windowIconSizePublisher: AnyPublisher<Double, Never> {
-        windowIconSizeSubject.eraseToAnyPublisher()
     }
 
     public var spacesVisualConfigPublisher: AnyPublisher<[VisualContainer], Never> {
@@ -253,29 +213,6 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Load UI configuration settings from UserDefaults.
     private func loadUIConfigurationSettings() {
-        let menuBarVerticalPadding = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.menuBarVerticalPadding.rawValue) as? Double
-            ?? menuBarVerticalPaddingSubject.value
-        menuBarVerticalPaddingSubject.send(menuBarVerticalPadding)
-
-        let menuBarHorizontalPadding = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.menuBarHorizontalPadding.rawValue) as? Double
-            ?? menuBarHorizontalPaddingSubject.value
-        menuBarHorizontalPaddingSubject.send(menuBarHorizontalPadding)
-
-        let widgetSpacing = UserDefaults.standard.object(forKey: UserDefaultsKeys.widgetSpacing.rawValue) as? Double
-            ?? widgetSpacingSubject.value
-        widgetSpacingSubject.send(widgetSpacing)
-
-        let animationDuration = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.animationDuration.rawValue) as? Double
-            ?? animationDurationSubject.value
-        animationDurationSubject.send(animationDuration)
-
-        let windowIconSize = UserDefaults.standard.object(forKey: UserDefaultsKeys.windowIconSize.rawValue) as? Double
-            ?? windowIconSizeSubject.value
-        windowIconSizeSubject.send(windowIconSize)
-
         let spacesVisualConfigurationWrapper: CollectionWrapper<VisualContainer>? = loadStructFromTOML(
             configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue
         )
@@ -334,7 +271,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether to show window titles and emits update.
-    public func setShowWindowTitles(_ value: Bool) async {
+    public func setShowWindowTitles(_ value: Bool) {
         if value == showWindowTitlesSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showWindowTitles.rawValue)
@@ -342,7 +279,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the AeroSpace path and emits update.
-    public func setAeroSpacePath(_ path: String) async {
+    public func setAeroSpacePath(_ path: String) {
         if path == aeroSpacePathSubject.value { return }
 
         UserDefaults.standard.set(path, forKey: UserDefaultsKeys.aeroSpaceCustomPath.rawValue)
@@ -352,7 +289,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether to focus window on click and emits update.
-    public func setFocusWindowOnClick(_ value: Bool) async {
+    public func setFocusWindowOnClick(_ value: Bool) {
         if value == focusWindowOnClickSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.focusWindowOnClick.rawValue)
@@ -360,7 +297,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether to show empty spaces and emits update.
-    public func setShowEmptySpaces(_ value: Bool) async {
+    public func setShowEmptySpaces(_ value: Bool) {
         if value == showEmptySpacesSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showEmptySpaces.rawValue)
@@ -368,7 +305,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether to show groups and emits update.
-    public func setShowGroups(_ value: Bool) async {
+    public func setShowGroups(_ value: Bool) {
         if value == showGroupsSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showGroups.rawValue)
@@ -376,7 +313,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether performance metrics are enabled and emits update.
-    public func setEnablePerformanceMetrics(_ value: Bool) async {
+    public func setEnablePerformanceMetrics(_ value: Bool) {
         if value == enablePerformanceMetricsSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue)
@@ -384,7 +321,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets whether optimized performance is enabled and emits update.
-    public func setIsOptimizedPerformanceEnabled(_ value: Bool) async {
+    public func setIsOptimizedPerformanceEnabled(_ value: Bool) {
         if value == isOptimizedPerformanceEnabledSubject.value { return }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.isOptimizedPerformanceEnabled.rawValue)
@@ -392,7 +329,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the log level and emits update.
-    public func setLogLevel(_ level: Logger.Level) async {
+    public func setLogLevel(_ level: Logger.Level) {
         if level == logLevelSubject.value { return }
 
         UserDefaults.standard.set(level.rawValue, forKey: UserDefaultsKeys.logLevel.rawValue)
@@ -402,47 +339,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
     // MARK: - UI Configuration Async Setters
 
     /// Sets the vertical padding for the menu bar interface in points.
-    public func setMenuBarVerticalPadding(_ value: Double) async {
-        if value == menuBarVerticalPaddingSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.menuBarVerticalPadding.rawValue)
-        menuBarVerticalPaddingSubject.send(value)
-    }
-
-    /// Sets the horizontal padding for the menu bar interface in points.
-    public func setMenuBarHorizontalPadding(_ value: Double) async {
-        if value == menuBarHorizontalPaddingSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.menuBarHorizontalPadding.rawValue)
-        menuBarHorizontalPaddingSubject.send(value)
-    }
-
-    /// Sets the spacing between widgets in the menu bar in points.
-    public func setWidgetSpacing(_ value: Double) async {
-        if value == widgetSpacingSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.widgetSpacing.rawValue)
-        widgetSpacingSubject.send(value)
-    }
-
-    /// Sets the animation duration in seconds.
-    public func setAnimationDuration(_ value: Double) async {
-        if value == animationDurationSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.animationDuration.rawValue)
-        animationDurationSubject.send(value)
-    }
-
-    /// Sets the size of window icons in points.
-    public func setWindowIconSize(_ value: Double) async {
-        if value == windowIconSizeSubject.value { return }
-
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.windowIconSize.rawValue)
-        windowIconSizeSubject.send(value)
-    }
 
     /// Sets the spaces configuration and emits update.
-    public func setSpacesVisualConfig(_ value: [VisualContainer]) async {
+    public func setSpacesVisualConfig(_ value: [VisualContainer]) {
         if value == spacesVisualConfigSubject.value { return }
 
         saveStructToTOML(
@@ -454,7 +353,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the spaces appearance mode and emits update.
-    public func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) async {
+    public func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) {
         if value == spacesAppearanceModeSubject.value { return }
 
         UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.spacesAppearanceMode.rawValue)
@@ -462,7 +361,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the global space visual configuration and emits update.
-    public func setGlobalSpacesVisualConfig(_ value: VisualContainer) async {
+    public func setGlobalSpacesVisualConfig(_ value: VisualContainer) {
         if value == globalSpacesVisualConfigSubject.value { return }
 
         saveStructToTOML(
@@ -474,7 +373,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the group configuration for menu bar applications and emits update.
-    public func setGroups(_ value: [Domain.Group]) async {
+    public func setGroups(_ value: [Domain.Group]) {
         if value == groupsSubject.value { return }
 
         saveStructToTOML(
@@ -486,7 +385,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the groups appearance mode and emits update.
-    public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async {
+    public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) {
         if value == groupsAppearanceModeSubject.value { return }
 
         UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue)
@@ -494,7 +393,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the global groups visual configuration and emits update.
-    public func setGlobalGroupsVisualConfig(_ value: VisualContainer) async {
+    public func setGlobalGroupsVisualConfig(_ value: VisualContainer) {
         if value == globalGroupsVisualConfigSubject.value { return }
 
         saveStructToTOML(
@@ -605,34 +504,29 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Resets all configuration settings to their default values.
-    public func resetToDefaults() async {
+    public func resetToDefaults() {
         for item in UserDefaultsKeys.allCases {
             UserDefaults.standard.removeObject(forKey: item.rawValue)
         }
 
         // Reset all subjects to default values
-        await setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
-        await setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
-        await setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
-        await setShowEmptySpaces(ConfigurationDefaults.showEmptySpaces)
-        await setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
-        await setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
-        await setLogLevel(ConfigurationDefaults.logLevel)
+        setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
+        setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
+        setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
+        setShowEmptySpaces(ConfigurationDefaults.showEmptySpaces)
+        setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
+        setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
+        setLogLevel(ConfigurationDefaults.logLevel)
 
         // Reset UI configuration subjects
-        menuBarVerticalPaddingSubject.send(ConfigurationDefaults.menuBarVerticalPadding)
-        menuBarHorizontalPaddingSubject.send(ConfigurationDefaults.menuBarHorizontalPadding)
-        await setWidgetSpacing(ConfigurationDefaults.widgetSpacing)
-        await setAnimationDuration(ConfigurationDefaults.animationDuration)
-        await setWindowIconSize(ConfigurationDefaults.windowIconSize)
-        await setShowGroups(ConfigurationDefaults.showGroups)
+        setShowGroups(ConfigurationDefaults.showGroups)
 
-        await setSpacesVisualConfig(ConfigurationDefaults.spacesVisualConfiguration)
-        await setSpacesAppearanceMode(ConfigurationDefaults.spacesAppearanceMode)
-        await setGlobalSpacesVisualConfig(ConfigurationDefaults.defaultSpaceVisualConfig)
-        await setGroups(ConfigurationDefaults.groups)
-        await setGroupsAppearanceMode(ConfigurationDefaults.groupsAppearanceMode)
-        await setGlobalGroupsVisualConfig(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
+        setSpacesVisualConfig(ConfigurationDefaults.spacesVisualConfiguration)
+        setSpacesAppearanceMode(ConfigurationDefaults.spacesAppearanceMode)
+        setGlobalSpacesVisualConfig(ConfigurationDefaults.defaultSpaceVisualConfig)
+        setGroups(ConfigurationDefaults.groups)
+        setGroupsAppearanceMode(ConfigurationDefaults.groupsAppearanceMode)
+        setGlobalGroupsVisualConfig(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }

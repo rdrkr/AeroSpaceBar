@@ -8,6 +8,7 @@
     /// This view provides toggles for enabling/disabling various features during development
     /// and testing. Only available in debug builds.
     struct DeveloperSettingsView: View {
+        /// The associated developer settings view model
         @StateObject private var viewModel = DependencyContainer.shared.getDeveloperSettingsViewModel()
 
         /// The associated navigation page
@@ -17,7 +18,7 @@
             IntroForm(
                 navigationTitle: String(localized: navigationOption.name),
                 style: .compact,
-                image: Image(systemName: navigationOption.symbolName),
+                icon: navigationOption.icon,
                 title: String(localized: navigationOption.name),
                 subtitle: String(
                     localized: LocalizedStringResource(
@@ -34,7 +35,7 @@
                                     "Show/hide the Spaces feature in the menu bar and settings."
                                 )
                             ),
-                            isEnabled: $viewModel.enableSpaces
+                            isEnabled: $viewModel.featureFlags.enableSpaces
                         )
 
                         FeatureFlagToggle(
@@ -44,7 +45,7 @@
                                     "Show/hide the Groups feature in the menu bar and settings."
                                 )
                             ),
-                            isEnabled: $viewModel.enableGroups
+                            isEnabled: $viewModel.featureFlags.enableGroups
                         )
 
                         FeatureFlagToggle(
@@ -52,7 +53,7 @@
                             description: String(
                                 localized: LocalizedStringResource("Show/hide the Advanced Settings section.")
                             ),
-                            isEnabled: $viewModel.enableAdvancedSettings
+                            isEnabled: $viewModel.featureFlags.enableAdvancedSettings
                         )
                     }
                 }
@@ -67,10 +68,10 @@
                                     "Show/hide licensing features, trial periods, and purchase options."
                                 )
                             ),
-                            isEnabled: $viewModel.enableLicensing
+                            isEnabled: $viewModel.featureFlags.enableLicensing
                         )
 
-                        if viewModel.enableLicensing {
+                        if viewModel.featureFlags.enableLicensing {
                             FeatureFlagToggle(
                                 title: String(localized: LocalizedStringResource("Mock Active License")),
                                 description: String(
@@ -78,7 +79,7 @@
                                         "Mock an active license for development testing without a real license."
                                     )
                                 ),
-                                isEnabled: $viewModel.mockActiveLicense
+                                isEnabled: $viewModel.featureFlags.mockActiveLicense
                             )
                         }
                     }
@@ -99,6 +100,7 @@
                 }
                 .tag("developer-actions-section")
             }
+            .animation(.themeEaseInOutFast, value: viewModel.featureFlags.enableLicensing)
             .tag("developer-settings-view")
         }
     }

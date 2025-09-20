@@ -21,23 +21,11 @@ struct AdvancedSettingsView: View {
         viewModel.rootPages.contains(.advanced)
     }
 
-    /// Animation duration for UI transitions.
-    private var animationDuration: Double {
-        viewModel.animationDuration
-    }
-
     var body: some View {
-        advancedSettingsContent
-            .opacity(isAdvancedSettingsEnabled ? 1.0 : 0.3)
-            .animation(.smooth(duration: animationDuration), value: isAdvancedSettingsEnabled)
-            .disabled(!isAdvancedSettingsEnabled)
-    }
-
-    private var advancedSettingsContent: some View {
         IntroForm(
             navigationTitle: String(localized: navigationOption.name),
             style: .compact,
-            image: Image(systemName: navigationOption.symbolName),
+            icon: navigationOption.icon,
             title: String(localized: navigationOption.name),
             subtitle: String(
                 localized: LocalizedStringResource(
@@ -98,7 +86,6 @@ struct AdvancedSettingsView: View {
             }
             .tag("advanced-reset-section")
         }
-        .tag("advanced-settings-view")
         .alert(
             String(localized: LocalizedStringResource("Reset All Settings")),
             isPresented: $showingResetConfirmation
@@ -116,6 +103,8 @@ struct AdvancedSettingsView: View {
                 )
             )
         }
+        .disabled(!isAdvancedSettingsEnabled)
+        .tag("advanced-settings-view")
     }
 }
 

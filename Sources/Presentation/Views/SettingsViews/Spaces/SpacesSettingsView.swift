@@ -14,7 +14,7 @@ struct SpacesSettingsView: View {
         IntroForm(
             navigationTitle: String(localized: navigationOption.name),
             style: .compact,
-            image: Image(systemName: navigationOption.symbolName),
+            icon: navigationOption.icon,
             title: String(localized: navigationOption.name),
             subtitle: String(
                 localized: LocalizedStringResource(

@@ -134,7 +134,6 @@ struct LicenseMenuItemView: View {
 
 #Preview {
     let gateway = LicensingRepository()
-    let featureFlagsGateway = FeatureFlagsRepository()
     LicenseMenuItemView()
         .environmentObject(LicensingViewModel(
             getLicenseStatusUseCase: GetLicenseStatusUseCase(licensingGateway: gateway),
@@ -142,7 +141,7 @@ struct LicenseMenuItemView: View {
             openCheckoutUseCase: OpenCheckoutUseCase(licensingGateway: gateway),
             startTrialUseCase: StartTrialUseCase(licensingGateway: gateway),
             deactivateLicenseUseCase: DeactivateLicenseUseCase(licensingGateway: gateway),
-            getFeatureFlagsUseCase: GetFeatureFlagsUseCase(gateway: featureFlagsGateway)
+            getFeatureFlagsUseCase: GetFeatureFlagsUseCase(gateway: FeatureFlagsRepository())
         ))
         .frame(width: 200)
 }

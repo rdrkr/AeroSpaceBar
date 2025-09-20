@@ -5,7 +5,10 @@ import SwiftUI
 
 /// Displays groups-related settings: group management, configuration, and organization of menu bar applications.
 struct GroupsSettingsView: View {
+    /// The settings view models
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
+
+    /// The groups view model
     @EnvironmentObject private var groupsViewModel: GroupsViewModel
 
     /// Whether to show the reset groups confirmation
@@ -18,7 +21,7 @@ struct GroupsSettingsView: View {
         IntroForm(
             navigationTitle: String(localized: navigationOption.name),
             style: .compact,
-            image: Image(systemName: navigationOption.symbolName),
+            icon: navigationOption.icon,
             title: String(localized: navigationOption.name),
             subtitle: String(localized: LocalizedStringResource(
                 """
@@ -59,24 +62,44 @@ struct GroupsSettingsView: View {
                 }
 
                 Section {
-                    List {
-                        ForEach(Array(groupsViewModel.groups.enumerated()), id: \.element.id) { _, group in
-                            GroupSettingsListRowView(
-                                groupId: group.id,
-                                onRegisterDynamicSubPage: { groupPage in
-                                    settingsViewModel.registerDynamicSubPage(groupPage)
-                                },
-                                onNavigateTo: { groupPage in
-                                    settingsViewModel.navigateTo(groupPage)
-                                },
-                                onDelete: { groupPage in
-                                    deleteGroup(at: groupPage.id)
-                                }
-                            )
+                    LazyVStackList(
+                        onScrollProxyAvailable: { scrollToElement in
+                            // Try to scroll when the LazyVStackList appears
+                            if let storedGroupId = settingsViewModel.consumeGroupsScrollPosition() {
+                                scrollToElement("group-\(storedGroupId)")
+                            }
+                        },
+                        content: {
+                            ForEach(groupsViewModel.groups) { group in
+                                LazyVStackListRowItem(
+                                    item: group,
+                                    itemIndex: group.id,
+                                    numberOfItems: groupsViewModel.groups.count,
+                                    content: { group in
+                                        Text(LocalizedStringResource("Group \(group.id + 1)"))
+                                    },
+                                    createPage: { group in
+                                        AnyNavigationPage(GroupNavigationPage(index: group.id))
+                                    },
+                                    onRegisterDynamicSubPage: { groupPage in
+                                        settingsViewModel.registerDynamicSubPage(groupPage)
+                                    },
+                                    onNavigateTo: { groupPage in
+                                        // Store current group ID for scroll restoration
+                                        settingsViewModel.storeGroupsScrollPosition(groupId: groupPage.id)
+                                        settingsViewModel.navigateTo(groupPage)
+                                    },
+                                    onDelete: { groupPage in
+                                        deleteGroup(at: groupPage.id)
+                                    },
+                                    shouldShowDeleteAction: { group in
+                                        group.id > 0 // Groups with id > 0 can be deleted
+                                    }
+                                )
+                                .id("group-\(group.id)")
+                            }
                         }
-                    }
-                    .environment(\.defaultMinListHeaderHeight, 45)
-                    .environment(\.defaultMinListRowHeight, 50)
+                    )
                 } header: {
                     HStack {
                         Text(LocalizedStringResource("Groups"))
@@ -97,7 +120,6 @@ struct GroupsSettingsView: View {
                         """
                     ))
                 }
-                .transition(.opacity.combined(with: .move(edge: .top)))
 
                 if !groupsViewModel.groups.isEmpty {
                     Section(LocalizedStringResource("Reset")) {
@@ -111,7 +133,6 @@ struct GroupsSettingsView: View {
                         .tag("groups-reset-button")
                     }
                     .tag("groups-reset-section")
-                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
         } appendToHeader: {
@@ -121,9 +142,10 @@ struct GroupsSettingsView: View {
             .toggleStyle(.switch)
             .tag("groups-show-groups-toggle")
         }
-        .animation(.themeSmoothFast, value: groupsViewModel.showGroups)
-        .animation(.themeSmoothFast, value: groupsViewModel.groups.isEmpty)
-        .animation(.themeSmoothFast, value: groupsViewModel.groupsAppearanceMode)
+        .animation(.themeEaseInOutFast, value: groupsViewModel.showGroups)
+        .animation(.themeEaseInOutFast, value: groupsViewModel.groups.isEmpty)
+        .animation(.themeEaseInOutFast, value: groupsViewModel.groupsAppearanceMode)
+        .animation(.themeEaseInOutFast, value: groupsViewModel.groups)
         .onChange(of: groupsViewModel.showGroups) { _, isEnabled in
             if !isEnabled {
                 // When groups feature is disabled, remove all group pages from navigation history

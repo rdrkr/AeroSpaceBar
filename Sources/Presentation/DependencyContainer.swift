@@ -75,7 +75,6 @@ final class DependencyContainer {
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
         setOptimizedPerformanceEnabledUseCase: makeSetOptimizedPerformanceEnabledUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
-        getAnimationDurationUseCase: makeGetAnimationDurationUseCase(),
         getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase(),
         setSpacesVisualConfigUseCase: makeSetSpacesVisualConfigUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
@@ -102,11 +101,6 @@ final class DependencyContainer {
         getWallpaperUseCase: makeGetWallpaperUseCase(),
         getMenuBarVisibilityUseCase: makeGetMenuBarVisibilityUseCase(),
         getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
-        getMenuBarVerticalPaddingUseCase: makeGetMenuBarVerticalPaddingUseCase(),
-        getMenuBarHorizontalPaddingUseCase: makeGetMenuBarHorizontalPaddingUseCase(),
-        getWidgetSpacingUseCase: makeGetWidgetSpacingUseCase(),
-        getAnimationDurationUseCase: makeGetAnimationDurationUseCase(),
-        getWindowIconSizeUseCase: makeGetWindowIconSizeUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
         getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
@@ -130,10 +124,6 @@ final class DependencyContainer {
         setGroupsUseCase: makeSetGroupsUseCase(),
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
-        getAnimationDurationUseCase: makeGetAnimationDurationUseCase(),
-        getWidgetSpacingUseCase: makeGetWidgetSpacingUseCase(),
-        getMenuBarVerticalPaddingUseCase: makeGetMenuBarVerticalPaddingUseCase(),
-        getWindowIconSizeUseCase: makeGetWindowIconSizeUseCase(),
         getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
         setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
         getGlobalGroupsVisualConfigUseCase: makeGetGlobalGroupsVisualConfigUseCase(),
@@ -143,7 +133,7 @@ final class DependencyContainer {
     /// The licensing gateway for managing application licensing.
     #if DEBUG
         private lazy var licensingGateway: LicensingGateway = LicensingRepository(
-            featureFlagsGateway: featureFlagsGateway
+            getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase()
         )
     #else
         private lazy var licensingGateway: LicensingGateway = LicensingRepository()
@@ -447,66 +437,6 @@ final class DependencyContainer {
     /// - Returns: A new GetMenuBarHeightUseCase instance
     func makeGetMenuBarHeightUseCase() -> GetMenuBarHeightUseCase {
         GetMenuBarHeightUseCase(systemMenuBarGateway: systemMenuBarGateway)
-    }
-
-    /// Creates a new GetMenuBarVerticalPaddingUseCase instance.
-    /// - Returns: A new GetMenuBarVerticalPaddingUseCase instance
-    func makeGetMenuBarVerticalPaddingUseCase() -> GetMenuBarVerticalPaddingUseCase {
-        GetMenuBarVerticalPaddingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new SetMenuBarVerticalPaddingUseCase instance.
-    /// - Returns: A new SetMenuBarVerticalPaddingUseCase instance
-    func makeSetMenuBarVerticalPaddingUseCase() -> SetMenuBarVerticalPaddingUseCase {
-        SetMenuBarVerticalPaddingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new GetMenuBarHorizontalPaddingUseCase instance.
-    /// - Returns: A new GetMenuBarHorizontalPaddingUseCase instance
-    func makeGetMenuBarHorizontalPaddingUseCase() -> GetMenuBarHorizontalPaddingUseCase {
-        GetMenuBarHorizontalPaddingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new SetMenuBarHorizontalPaddingUseCase instance.
-    /// - Returns: A new SetMenuBarHorizontalPaddingUseCase instance
-    func makeSetMenuBarHorizontalPaddingUseCase() -> SetMenuBarHorizontalPaddingUseCase {
-        SetMenuBarHorizontalPaddingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new GetWidgetSpacingUseCase instance.
-    /// - Returns: A new GetWidgetSpacingUseCase instance
-    func makeGetWidgetSpacingUseCase() -> GetWidgetSpacingUseCase {
-        GetWidgetSpacingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new SetWidgetSpacingUseCase instance.
-    /// - Returns: A new SetWidgetSpacingUseCase instance
-    func makeSetWidgetSpacingUseCase() -> SetWidgetSpacingUseCase {
-        SetWidgetSpacingUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new GetAnimationDurationUseCase instance.
-    /// - Returns: A new GetAnimationDurationUseCase instance
-    func makeGetAnimationDurationUseCase() -> GetAnimationDurationUseCase {
-        GetAnimationDurationUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new SetAnimationDurationUseCase instance.
-    /// - Returns: A new SetAnimationDurationUseCase instance
-    func makeSetAnimationDurationUseCase() -> SetAnimationDurationUseCase {
-        SetAnimationDurationUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new GetWindowIconSizeUseCase instance.
-    /// - Returns: A new GetWindowIconSizeUseCase instance
-    func makeGetWindowIconSizeUseCase() -> GetWindowIconSizeUseCase {
-        GetWindowIconSizeUseCase(configurationGateway: configurationGateway)
-    }
-
-    /// Creates a new SetWindowIconSizeUseCase instance.
-    /// - Returns: A new SetWindowIconSizeUseCase instance
-    func makeSetWindowIconSizeUseCase() -> SetWindowIconSizeUseCase {
-        SetWindowIconSizeUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - System State Use Cases

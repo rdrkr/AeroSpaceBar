@@ -28,7 +28,7 @@ public final class LicensingRepository: LicensingGateway {
     private var cancellables = Set<AnyCancellable>()
 
     #if DEBUG
-        private let featureFlagsGateway: FeatureFlagsGateway?
+        private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase?
     #endif
 
     // MARK: - UserDefaults Keys
@@ -54,8 +54,8 @@ public final class LicensingRepository: LicensingGateway {
     // MARK: - Initialization
 
     #if DEBUG
-        public init(featureFlagsGateway: FeatureFlagsGateway? = nil) {
-            self.featureFlagsGateway = featureFlagsGateway
+        public init(getFeatureFlagsUseCase: GetFeatureFlagsUseCase? = nil) {
+            self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
             initializeLicenseStatus()
             startPeriodicValidation()
             setupFeatureFlagObservation()
@@ -73,8 +73,8 @@ public final class LicensingRepository: LicensingGateway {
     private func initializeLicenseStatus() {
         #if DEBUG
             // Check for mock license first
-            if let featureFlagsGateway {
-                let flags = featureFlagsGateway.currentFeatureFlags
+            if let getFeatureFlagsUseCase {
+                let flags = getFeatureFlagsUseCase.execute().blockingFirst()
                 if flags.mockActiveLicense {
                     licenseStatusSubject.send(.licensed)
                     return
@@ -128,10 +128,9 @@ public final class LicensingRepository: LicensingGateway {
     #if DEBUG
         /// Sets up observation of feature flag changes for mock license functionality.
         private func setupFeatureFlagObservation() {
-            guard let featureFlagsGateway else { return }
+            guard let getFeatureFlagsUseCase else { return }
 
-            featureFlagsGateway.featureFlags
-                .receive(on: DispatchQueue.main)
+            getFeatureFlagsUseCase.execute()
                 .sink { [weak self] (flags: FeatureFlags) in
                     guard let self else { return }
 
@@ -152,8 +151,8 @@ public final class LicensingRepository: LicensingGateway {
     public func validateLicense() async -> LicenseStatus {
         #if DEBUG
             // Check for mock license first
-            if let featureFlagsGateway {
-                let flags = featureFlagsGateway.currentFeatureFlags
+            if let getFeatureFlagsUseCase {
+                let flags = getFeatureFlagsUseCase.execute().blockingFirst()
                 if flags.mockActiveLicense {
                     return .licensed
                 }

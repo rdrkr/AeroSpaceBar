@@ -134,9 +134,6 @@ class SettingsViewModel: ObservableObject {
     /// The current AeroSpace version (if available).
     @Published var aeroSpaceVersion: String?
 
-    /// The duration of animations in seconds.
-    @Published var animationDuration: Double
-
     // MARK: - Navigation History
 
     /// The default page to return to when resetting navigation.
@@ -171,6 +168,9 @@ class SettingsViewModel: ObservableObject {
 
     /// The forward history for forward navigation.
     @Published var forwardHistory: [AnyNavigationPage] = []
+
+    /// Stored scroll position for groups view restoration
+    @Published var groupsScrollPosition: Int?
 
     /// The current feature flags configuration.
     private var featureFlags: FeatureFlags?
@@ -242,7 +242,6 @@ class SettingsViewModel: ObservableObject {
     private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
     private let setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
-    private let getAnimationDurationUseCase: GetAnimationDurationUseCase
 
     // MARK: - Spaces Use Cases
 
@@ -294,7 +293,6 @@ class SettingsViewModel: ObservableObject {
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get optimized performance enabled setting.
     ///   - setOptimizedPerformanceEnabledUseCase: Use case to set optimized performance enabled setting.
     ///   - getFeatureFlagsUseCase: Use case to get feature flags.
-    ///   - getAnimationDurationUseCase: Use case for getting animation duration.
     ///   - getSpacesVisualConfigUseCase: Use case to get spaces visual config.
     ///   - setSpacesVisualConfigUseCase: Use case to set spaces visual config.
     ///   - getSpacesAppearanceModeUseCase: Use case to get spaces appearance mode.
@@ -327,7 +325,6 @@ class SettingsViewModel: ObservableObject {
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-        getAnimationDurationUseCase: GetAnimationDurationUseCase,
         getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
         setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
@@ -365,7 +362,6 @@ class SettingsViewModel: ObservableObject {
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
         self.setOptimizedPerformanceEnabledUseCase = setOptimizedPerformanceEnabledUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
-        self.getAnimationDurationUseCase = getAnimationDurationUseCase
 
         // Initialize Spaces Use Cases
         self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
@@ -392,7 +388,6 @@ class SettingsViewModel: ObservableObject {
         logLevel = getLogLevelUseCase.execute().blockingFirst()
         enablePerformanceMetrics = getEnablePerformanceMetricsUseCase.execute().blockingFirst()
         isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
-        animationDuration = getAnimationDurationUseCase.execute().blockingFirst()
 
         // Load consolidated visual configurations
         spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
@@ -614,17 +609,12 @@ class SettingsViewModel: ObservableObject {
             .store(in: &cancellables)
 
         getFeatureFlagsUseCase.execute()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] featureFlags in
                 if self?.featureFlags != featureFlags {
                     self?.updateAvailableOptions(with: featureFlags)
                     self?.featureFlags = featureFlags
                 }
             }
-            .store(in: &cancellables)
-
-        getAnimationDurationUseCase.execute()
-            .assign(to: \.animationDuration, on: self)
             .store(in: &cancellables)
 
         // Subscribe to consolidated spaces visual configuration changes
@@ -759,5 +749,21 @@ class SettingsViewModel: ObservableObject {
             }
             isNavigatingProgrammatically = false
         }
+    }
+
+    // MARK: - Scroll Position Management
+
+    /// Store the scroll position for the groups view
+    func storeGroupsScrollPosition(groupId: Int) {
+        Logger.debug("Storing groups scroll position for group \(groupId)")
+        groupsScrollPosition = groupId
+    }
+
+    /// Retrieve and clear the stored groups scroll position
+    func consumeGroupsScrollPosition() -> Int? {
+        let position = groupsScrollPosition
+        Logger.debug("Consuming groups scroll position: \(position?.description ?? "nil")")
+        groupsScrollPosition = nil
+        return position
     }
 }

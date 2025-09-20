@@ -32,21 +32,6 @@ struct SpacesView: View {
         viewModel.widgetState.spaces
     }
 
-    /// Computed property for animation duration
-    private var animationDuration: Double {
-        viewModel.animationDuration
-    }
-
-    /// Computed property for widget spacing
-    private var widgetSpacing: Double {
-        viewModel.widgetSpacing
-    }
-
-    /// Computed property for menu bar horizontal padding
-    private var menuBarHorizontalPadding: Double {
-        viewModel.menuBarHorizontalPadding
-    }
-
     /// Computed property for menu bar height
     private var menuBarHeight: Double {
         viewModel.menuBarHeight
@@ -65,8 +50,10 @@ struct SpacesView: View {
     /// Whether the view should be hidden based on globe key + mouse hover combination, menu bar visibility, or
     /// AeroSpace status
     private var shouldHideView: Bool {
-        !viewModel.isSpacesEnabled || (isMouseHovering && viewModel.isGlobeKeyPressed) || !viewModel
-            .isMenuBarVisible || !viewModel.isAeroSpaceRunning
+        !viewModel.isSpacesEnabled ||
+            (isMouseHovering && viewModel.isGlobeKeyPressed) ||
+            !viewModel.isMenuBarVisible ||
+            !viewModel.isAeroSpaceRunning
     }
 
     /// The body of the spaces view.
@@ -74,22 +61,17 @@ struct SpacesView: View {
     /// This view creates a horizontal layout of spaces with their associated windows,
     /// using the captured desktop wallpaper as background.
     var body: some View {
-        HStack(spacing: widgetSpacing) {
+        HStack(spacing: ConfigurationDefaults.widgetSpacing) {
             ZStack(alignment: .leading) {
                 // Use captured desktop wallpaper as background
                 if let originalWallpaper = wallpaper {
                     Group {
                         WallpaperBackgroundView(
-                            wallpaper: originalWallpaper,
-                            menuBarHorizontalPadding: menuBarHorizontalPadding
+                            wallpaper: originalWallpaper
                         )
 
                         SpacesContainerView(
                             spaces: spaces,
-                            widgetSpacing: widgetSpacing,
-                            animationDuration: animationDuration,
-                            menuBarVerticalPadding: viewModel.menuBarVerticalPadding,
-                            windowIconSize: viewModel.windowIconSize,
                             showWindowTitles: showWindowTitles,
                             focusWindowOnClick: viewModel.focusWindowOnClick,
                             visualConfiguration: viewModel.globalSpacesVisualConfig,
@@ -103,11 +85,11 @@ struct SpacesView: View {
                         .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
                         .tag("spaces-container")
                     }
-                    .spaceCornerRadius(cornerRadius)
+                    .cornerRadius(cornerRadius)
                     .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
-                    .animation(.smooth(duration: animationDuration), value: isWallpaperVisible)
-                    .animation(.smooth(duration: animationDuration), value: shouldHideView)
-                    .animation(.smooth(duration: animationDuration), value: viewModel.isMenuBarVisible)
+                    .animation(.themeSmoothFast, value: isWallpaperVisible)
+                    .animation(.themeSmoothFast, value: shouldHideView)
+                    .animation(.themeSmoothFast, value: viewModel.isMenuBarVisible)
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set
@@ -118,15 +100,9 @@ struct SpacesView: View {
             }
             .tag("spaces-content-zstack")
         }
-        .animation(
-            .smooth(duration: animationDuration),
-            value: showWindowTitles
-        )
-        .animation(
-            .smooth(duration: animationDuration),
-            value: spaces
-        )
-        .padding(.leading, menuBarHorizontalPadding)
+        .animation(.themeEaseInOutFast, value: showWindowTitles)
+        .animation(.themeEaseInOutFast, value: spaces)
+        .padding(.leading, ConfigurationDefaults.menuBarHorizontalPadding)
         .onHover { hovering in
             isMouseHovering = hovering
         }
@@ -152,7 +128,8 @@ struct SpacesView: View {
             else if oldState.wallpaper != newState.wallpaper, isWallpaperVisible {
                 isWallpaperVisible = false
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+                Task { @MainActor in
+                    try await Task.sleep(for: .seconds(0.2))
                     isWallpaperVisible = true
                 }
             }

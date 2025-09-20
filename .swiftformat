@@ -53,6 +53,9 @@
 # Swift version
 --swiftversion 6.2
 
+# Redundant
+--redundant-async always
+
 # rules
 --disable preferForLoop
 --disable redundantInternal
@@ -64,6 +67,7 @@
 --enable consecutiveSpaces
 --enable docCommentsBeforeModifiers
 --enable duplicateImports
+--enable redundantAsync
 --enable leadingDelimiters
 --enable linebreakAtEndOfFile
 --enable privateStateVariables

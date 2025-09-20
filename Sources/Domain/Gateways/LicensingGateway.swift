@@ -21,19 +21,14 @@ public protocol LicensingGateway {
     /// - Returns: The license information if successful
     func activateLicense(_ licenseKey: String) async throws -> LicenseInfo
 
-    /// Deactivates the current license.
     func deactivateLicense() async
 
-    /// Creates the checkout URL for the presentation layer to handle
-    /// - Returns: The Paddle checkout URL
     func createCheckoutURL() -> URL
 
     /// Handles successful checkout completion
     /// - Parameter licenseKey: The license key from the successful checkout
     func handleCheckoutSuccess(licenseKey: String) async
 
-    /// Gets the number of trial days remaining.
-    /// - Returns: Days remaining in trial, or nil if not in trial
     func getTrialDaysRemaining() -> Int?
 
     /// Starts the trial period.

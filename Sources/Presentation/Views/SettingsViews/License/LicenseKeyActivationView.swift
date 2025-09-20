@@ -63,19 +63,12 @@ struct LicenseKeyActivationView: View {
                     .textFieldStyle(.roundedBorder)
                     .environment(\.layoutDirection, .leftToRight)
                     .autocorrectionDisabled()
-                    .transition(.asymmetric(
-                        insertion: AnyTransition.opacity
-                            .combined(with: AnyTransition.scale(scale: 0.95))
-                            .combined(with: AnyTransition.move(edge: .top)),
-                        removal: AnyTransition.opacity.combined(with: AnyTransition.move(edge: .top))
-                    ))
 
                     if let error = activationError {
                         Text(error)
                             .font(.caption)
                             .foregroundStyle(.red)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
                     HStack {
@@ -94,12 +87,11 @@ struct LicenseKeyActivationView: View {
                         .buttonStyle(.borderedProminent)
                         .disabled(licenseKeyInput.isEmpty || isActivating)
                     }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
                 .padding(.top, 8)
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: showingActivation)
+        .animation(.themeEaseInOutFast, value: showingActivation)
     }
 }
 

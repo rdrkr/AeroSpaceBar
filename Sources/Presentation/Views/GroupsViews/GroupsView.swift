@@ -17,29 +17,9 @@ struct GroupsView: View {
 
     // MARK: - Computed Properties
 
-    /// Computed property for menu bar apps to avoid repeated access
-    private var menuBarApps: [MenuBarApp] {
-        viewModel.menuBarApps
-    }
-
-    /// Computed property for group configuration to avoid repeated access
-    private var groups: [Domain.Group] {
-        viewModel.groups
-    }
-
     /// Whether the view should be shown
     private var shouldShowView: Bool {
-        viewModel.isGroupsFeatureEnabled && viewModel.showGroups && !menuBarApps.isEmpty
-    }
-
-    /// Animation duration for UI transitions
-    private var animationDuration: Double {
-        viewModel.animationDuration
-    }
-
-    /// Widget spacing for UI layout
-    private var widgetSpacing: Double {
-        viewModel.widgetSpacing
+        viewModel.isGroupsFeatureEnabled && viewModel.showGroups && !viewModel.menuBarApps.isEmpty
     }
 
     /// The body of the groups view.
@@ -49,23 +29,20 @@ struct GroupsView: View {
     var body: some View {
         GeometryReader { _ in
             // Display grouped apps with their group styling
-            ForEach(groups, id: \.id) { group in
+            ForEach(viewModel.groups, id: \.id) { group in
                 GroupView(
                     group: group,
-                    menuBarApps: menuBarApps,
-                    animationDuration: animationDuration,
-                    widgetSpacing: widgetSpacing,
-                    menuBarVerticalPadding: viewModel.menuBarVerticalPadding,
-                    windowIconSize: viewModel.windowIconSize,
+                    menuBarApps: viewModel.menuBarApps,
                     appearanceMode: viewModel.groupsAppearanceMode,
                     globalVisualConfiguration: viewModel.globalGroupsVisualConfig,
                     spaceVisualConfiguration: viewModel.globalSpacesVisualConfig
                 )
             }
         }
+        .animation(.themeEaseInOutFast, value: viewModel.groups.map(\.id))
         .ignoresSafeArea()
         .opacity(shouldShowView ? 1.0 : 0.0)
-        .animation(.smooth(duration: animationDuration), value: shouldShowView)
+        .animation(.themeEaseInOutFast, value: shouldShowView)
         .tag("groups-container")
     }
 }

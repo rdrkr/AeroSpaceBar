@@ -31,7 +31,6 @@ struct LicenseStatusSection: View {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
                     // Show masked license key for licensed users
@@ -49,7 +48,6 @@ struct LicenseStatusSection: View {
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.top, 2)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
 
@@ -58,11 +56,10 @@ struct LicenseStatusSection: View {
                 if case .validating = licenseStatus {
                     ProgressView()
                         .scaleEffect(0.8)
-                        .transition(.opacity.combined(with: .scale))
                 }
             }
             .padding(.vertical, 4)
-            .animation(.easeInOut(duration: 0.3), value: String(describing: licenseStatus))
+            .animation(.themeEaseInOutFast, value: licenseStatus)
         }
     }
 

@@ -96,11 +96,11 @@ struct ProfileSection: View {
                                     saveProfile()
                                 }
                             }
-                            .transition(.opacity.combined(with: .scale))
                         } else {
                             Button {
                                 isEditingProfile = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                Task { @MainActor in
+                                    try await Task.sleep(for: .milliseconds(100))
                                     isNameFieldFocused = true
                                 }
                             } label: {
@@ -117,7 +117,6 @@ struct ProfileSection: View {
                                 }
                             }
                             .buttonStyle(.plain)
-                            .transition(.opacity.combined(with: .scale))
                         }
 
                         Text(LocalizedStringResource("Licensed User"))
@@ -136,7 +135,7 @@ struct ProfileSection: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.3), value: isEditingProfile)
+                .animation(.themeEaseInOutFast, value: isEditingProfile)
             }
         }
         .frame(maxWidth: .infinity)

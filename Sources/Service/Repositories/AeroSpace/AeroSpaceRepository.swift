@@ -53,9 +53,6 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Cancellables for publisher subscriptions.
     private var cancellables: Set<AnyCancellable> = []
 
-    /// A dedicated dispatch queue for AeroSpace operations.
-    private let queue = DispatchQueue(label: "com.aerospacebar.spaces", qos: .userInitiated)
-
     // MARK: - Publisher Subjects
 
     private let spacesWithWindowsSubject = CurrentValueSubject<[Space], Never>([])
@@ -114,7 +111,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         }
 
         if success == true {
-            await reloadAeroSpaceConfig()
+            reloadAeroSpaceConfig()
             Logger.info("Successfully configured AeroSpace configuration", category: Logger.config)
 
         } else {
@@ -123,7 +120,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     }
 
     /// Reloads the AeroSpace configuration.
-    private func reloadAeroSpaceConfig() async {
+    private func reloadAeroSpaceConfig() {
         let executablePath = aeroSpaceExecutable
         guard !executablePath.isEmpty else {
             Logger.warning("Cannot reload AeroSpace config: executable path not set", category: Logger.config)
@@ -265,21 +262,14 @@ public final class AeroSpaceRepository: SpacesGateway {
         do {
             let executablePath = aeroSpaceExecutable
             let showEmptySpacesValue = showEmptySpaces
-            let spaces = try await withCheckedThrowingContinuation { continuation in
-                queue.async {
-                    do {
-                        let spaces = try self.fetchSpacesWithWindows(
-                            executablePath: executablePath,
-                            showEmptySpaces: showEmptySpacesValue
-                        )
-                        continuation.resume(returning: spaces)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
+            let spaces = try await Task.detached(priority: .userInitiated) {
+                try self.fetchSpacesWithWindows(
+                    executablePath: executablePath,
+                    showEmptySpaces: showEmptySpacesValue
+                )
+            }.value
 
-            let spacesWithIcons = await loadIconsForWindows(in: spaces)
+            let spacesWithIcons = loadIconsForWindows(in: spaces)
             let isRunning = isAeroSpaceRunning()
 
             Task { @MainActor in
@@ -304,30 +294,27 @@ public final class AeroSpaceRepository: SpacesGateway {
         Logger.beginInterval("Focus Space Operation", id: Logger.SignpostID.spaceFocus)
 
         let executablePath = aeroSpaceExecutable
-        return try await withCheckedThrowingContinuation { continuation in
-            queue.async {
-                do {
-                    let cli = AeroSpaceCLIClient(executablePath: executablePath)
-                    _ = try cli.execute(arguments: ["workspace", spaceId])
-                    Logger.endInterval("Focus Space Operation", id: Logger.SignpostID.spaceFocus)
+        try await Task.detached(priority: .userInitiated) {
+            do {
+                let cli = AeroSpaceCLIClient(executablePath: executablePath)
+                _ = try cli.execute(arguments: ["workspace", spaceId])
+                Logger.endInterval("Focus Space Operation", id: Logger.SignpostID.spaceFocus)
 
-                    Logger.info(
-                        "Successfully focused space",
-                        category: Logger.spaces,
-                        metadata: ["spaceId": spaceId]
-                    )
-                    continuation.resume()
-                } catch {
-                    Logger.error(
-                        "Failed to focus space",
-                        error: error,
-                        category: Logger.spaces,
-                        metadata: ["spaceId": spaceId]
-                    )
-                    continuation.resume(throwing: error)
-                }
+                Logger.info(
+                    "Successfully focused space",
+                    category: Logger.spaces,
+                    metadata: ["spaceId": spaceId]
+                )
+            } catch {
+                Logger.error(
+                    "Failed to focus space",
+                    error: error,
+                    category: Logger.spaces,
+                    metadata: ["spaceId": spaceId]
+                )
+                throw error
             }
-        }
+        }.value
     }
 
     /// Focuses a specific window.
@@ -340,30 +327,27 @@ public final class AeroSpaceRepository: SpacesGateway {
         Logger.beginInterval("Focus Window Operation", id: Logger.SignpostID.windowFocus)
 
         let executablePath = aeroSpaceExecutable
-        return try await withCheckedThrowingContinuation { continuation in
-            queue.async {
-                do {
-                    let cli = AeroSpaceCLIClient(executablePath: executablePath)
-                    _ = try cli.execute(arguments: ["focus", "--window-id", windowId])
-                    Logger.endInterval("Focus Window Operation", id: Logger.SignpostID.windowFocus)
+        try await Task.detached(priority: .userInitiated) {
+            do {
+                let cli = AeroSpaceCLIClient(executablePath: executablePath)
+                _ = try cli.execute(arguments: ["focus", "--window-id", windowId])
+                Logger.endInterval("Focus Window Operation", id: Logger.SignpostID.windowFocus)
 
-                    Logger.info(
-                        "Successfully focused window",
-                        category: Logger.spaces,
-                        metadata: ["windowId": windowId]
-                    )
-                    continuation.resume()
-                } catch {
-                    Logger.error(
-                        "Failed to focus window",
-                        error: error,
-                        category: Logger.spaces,
-                        metadata: ["windowId": windowId]
-                    )
-                    continuation.resume(throwing: error)
-                }
+                Logger.info(
+                    "Successfully focused window",
+                    category: Logger.spaces,
+                    metadata: ["windowId": windowId]
+                )
+            } catch {
+                Logger.error(
+                    "Failed to focus window",
+                    error: error,
+                    category: Logger.spaces,
+                    metadata: ["windowId": windowId]
+                )
+                throw error
             }
-        }
+        }.value
     }
 
     /// Starts AeroSpace if it's not currently running.
@@ -572,7 +556,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Loads icons for all windows in the given spaces.
     /// - Parameter spaces: The spaces containing windows that need icons loaded
     /// - Returns: The spaces with icons loaded for their windows
-    private func loadIconsForWindows(in spaces: [Space]) async -> [Space] {
+    private func loadIconsForWindows(in spaces: [Space]) -> [Space] {
         var updatedSpaces = spaces
 
         updatedSpaces.indices.forEach { spaceIndex in

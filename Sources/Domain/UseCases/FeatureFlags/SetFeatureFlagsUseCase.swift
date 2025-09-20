@@ -19,12 +19,12 @@ public final class SetFeatureFlagsUseCase {
 
     /// Executes the use case to set feature flags.
     /// - Parameter flags: The new feature flags configuration to store
-    public func execute(_ flags: FeatureFlags) async {
-        await gateway.setFeatureFlags(flags)
+    public func execute(flags: FeatureFlags) {
+        gateway.setFeatureFlags(flags)
     }
 
     /// Resets all feature flags to their default values.
-    public func resetToDefaults() async {
-        await gateway.resetToDefaults()
+    public func resetToDefaults() {
+        gateway.resetToDefaults()
     }
 }
