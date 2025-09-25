@@ -7,6 +7,9 @@ import SwiftUI
 /// This allows individual group configurations to be part of the main navigation system,
 /// enabling the navigation buttons to work across both main settings pages and group details.
 struct GroupNavigationPage: NavigationPage {
+    /// A prefix to the name of this type of navigation page.
+    static let namePrefix: String = "Group "
+
     /// The index of the group in the list of groups.
     let index: Int
 
@@ -14,8 +17,13 @@ struct GroupNavigationPage: NavigationPage {
     var id: Int { index }
 
     /// The localized display name for this navigation page.
-    var name: LocalizedStringResource {
-        LocalizedStringResource("Group \(id + 1)", comment: "Title for group detail page")
+    var name: String {
+        String(
+            localized: LocalizedStringResource(
+                "\(GroupNavigationPage.namePrefix)\(id + 1)",
+                comment: "Title for group detail page"
+            )
+        )
     }
 
     /// The SF Symbol name to display in the sidebar.

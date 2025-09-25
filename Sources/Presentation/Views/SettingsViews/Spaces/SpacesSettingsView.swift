@@ -12,10 +12,10 @@ struct SpacesSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: String(localized: navigationOption.name),
+            navigationTitle: navigationOption.name,
             style: .compact,
             icon: navigationOption.icon,
-            title: String(localized: navigationOption.name),
+            title: navigationOption.name,
             subtitle: String(
                 localized: LocalizedStringResource(
                     "Fine-tune how spaces look and behave: opacity, blur, titles, and more."

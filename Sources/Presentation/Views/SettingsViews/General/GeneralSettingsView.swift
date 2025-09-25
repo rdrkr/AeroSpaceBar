@@ -19,12 +19,12 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: String(localized: navigationOption.name),
+            navigationTitle: navigationOption.name,
             style: .intro,
             icon: AnyView(Image(nsImage: NSApplication.shared.applicationIconImage)
                 .resizable()
             ),
-            title: String(localized: navigationOption.name),
+            title: navigationOption.name,
             subtitle: String(
                 localized: LocalizedStringResource(
                     """

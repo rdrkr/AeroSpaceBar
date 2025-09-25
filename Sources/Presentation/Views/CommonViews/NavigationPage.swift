@@ -15,7 +15,7 @@ protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     var id: Int { get }
 
     /// The localized display name for this navigation page.
-    var name: LocalizedStringResource { get }
+    var name: String { get }
 
     /// The SF Symbol name to display for this page.
     var symbolName: String { get }
@@ -101,7 +101,7 @@ struct AnyNavigationPage: NavigationPage {
     let id: Int
 
     /// The localized display name for this navigation page.
-    let name: LocalizedStringResource
+    let name: String
 
     /// The SF Symbol name to display in the sidebar.
     let symbolName: String

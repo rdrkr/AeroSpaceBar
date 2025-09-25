@@ -169,8 +169,11 @@ class SettingsViewModel: ObservableObject {
     /// The forward history for forward navigation.
     @Published var forwardHistory: [AnyNavigationPage] = []
 
-    /// Stored scroll position for groups view restoration
-    @Published var groupsScrollPosition: Int?
+    /// Persistent GroupsSettingsView form opacity value
+    @Published var groupSettingsFormOpacity: Double = 1.0
+
+    /// Persistent GroupsSettingsView form should clear its scroll position
+    @Published var clearGroupsSettingsFormScrollPosition: Bool = true
 
     /// The current feature flags configuration.
     private var featureFlags: FeatureFlags?
@@ -479,6 +482,18 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Navigation Methods
 
+    /// Sets programmatically the currently selected navigation page.
+    /// - Parameter targetPage: The page to navigate to
+    private func setSelectedPage(_ targetPage: AnyNavigationPage) {
+        clearGroupsSettingsFormScrollPosition = (targetPage.name == RootNavigationPage.groups.name) &&
+            !(selectedPage.name.starts(with: GroupNavigationPage.namePrefix))
+
+        // Set flag to prevent adding to history during programmatic change
+        isNavigatingProgrammatically = true
+        selectedPage = targetPage
+        isNavigatingProgrammatically = false
+    }
+
     /// Navigates to a specific page and updates history.
     /// - Parameter page: The page to navigate to
     func navigateTo(_ page: AnyNavigationPage) {
@@ -486,13 +501,11 @@ class SettingsViewModel: ObservableObject {
         if navigationHistory.last?.id != selectedPage.id {
             navigationHistory.append(selectedPage)
         }
+
         // Clear forward history when navigating to a new page
         forwardHistory.removeAll()
 
-        // Set flag to prevent adding to history during programmatic change
-        isNavigatingProgrammatically = true
-        selectedPage = page
-        isNavigatingProgrammatically = false
+        setSelectedPage(page)
     }
 
     /// Navigates backward to the previous page in history.
@@ -504,11 +517,7 @@ class SettingsViewModel: ObservableObject {
 
         // Get the previous page and remove it from history
         let previousPage = navigationHistory.removeLast()
-
-        // Set flag to prevent adding to history during programmatic change
-        isNavigatingProgrammatically = true
-        selectedPage = previousPage
-        isNavigatingProgrammatically = false
+        setSelectedPage(previousPage)
     }
 
     /// Navigates forward to the next page in forward history.
@@ -520,11 +529,7 @@ class SettingsViewModel: ObservableObject {
 
         // Get next page from forward history
         let nextPage = forwardHistory.removeLast()
-
-        // Set flag to prevent adding to history during programmatic change
-        isNavigatingProgrammatically = true
-        selectedPage = nextPage
-        isNavigatingProgrammatically = false
+        setSelectedPage(nextPage)
     }
 
     /// Registers a dynamic sub-page to navigation.
@@ -547,9 +552,7 @@ class SettingsViewModel: ObservableObject {
 
         // If the current selected page was removed, navigate back to groups
         if selectedPage.id == pageId {
-            isNavigatingProgrammatically = true
-            selectedPage = AnyNavigationPage(RootNavigationPage.groups)
-            isNavigatingProgrammatically = false
+            setSelectedPage(AnyNavigationPage(RootNavigationPage.groups))
         }
 
         // Clean up history
@@ -565,9 +568,8 @@ class SettingsViewModel: ObservableObject {
     func resetNavigationOnWindowClose() {
         navigationHistory.removeAll()
         forwardHistory.removeAll()
-        isNavigatingProgrammatically = true
-        selectedPage = AnyNavigationPage(SettingsViewModel.defaultPage)
-        isNavigatingProgrammatically = false
+
+        setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
     }
 
     // MARK: - Private Methods
@@ -700,9 +702,7 @@ class SettingsViewModel: ObservableObject {
 
         // Check if current selected page is still available
         if !allAvailablePages.contains(where: { $0.id == selectedPage.id }) {
-            isNavigatingProgrammatically = true
-            selectedPage = AnyNavigationPage(SettingsViewModel.defaultPage)
-            isNavigatingProgrammatically = false
+            setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
         }
 
         // Clean up navigation history to remove disabled pages
@@ -737,33 +737,15 @@ class SettingsViewModel: ObservableObject {
 
         // If the currently selected page matches the predicate, navigate back to a safe page
         if predicate(selectedPage) {
-            isNavigatingProgrammatically = true
             // Try to navigate to the parent page if available, otherwise go to default
             if
                 let parentPage = selectedPage.parentPage,
                 rootPages.contains(where: { AnyNavigationPage($0).id == parentPage.id })
             {
-                selectedPage = AnyNavigationPage(parentPage)
+                setSelectedPage(AnyNavigationPage(parentPage))
             } else {
-                selectedPage = AnyNavigationPage(SettingsViewModel.defaultPage)
+                setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
             }
-            isNavigatingProgrammatically = false
         }
-    }
-
-    // MARK: - Scroll Position Management
-
-    /// Store the scroll position for the groups view
-    func storeGroupsScrollPosition(groupId: Int) {
-        Logger.debug("Storing groups scroll position for group \(groupId)")
-        groupsScrollPosition = groupId
-    }
-
-    /// Retrieve and clear the stored groups scroll position
-    func consumeGroupsScrollPosition() -> Int? {
-        let position = groupsScrollPosition
-        Logger.debug("Consuming groups scroll position: \(position?.description ?? "nil")")
-        groupsScrollPosition = nil
-        return position
     }
 }

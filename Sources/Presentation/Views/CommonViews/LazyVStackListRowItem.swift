@@ -10,11 +10,8 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     /// The item entity to display in this row.
     let item: Item
 
-    /// The index of this item in the list (0-based).
-    let itemIndex: Int
-
-    /// The total number of items, used for layout optimization.
-    let numberOfItems: Int
+    /// All items in the list, used for position-based layout logic.
+    let allItems: [Item]
 
     /// ViewBuilder that creates the content to display for this item.
     let content: (Item) -> any View
@@ -41,12 +38,34 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     /// Whether the row is currently being pressed, used for visual feedback.
     @State private var isPressed = false
 
+    /// Environment access to the LazyVStackList context for scroll position management
+    @Environment(\.lazyVStackListContext) private var listContext
+
+    /// The index of this item in the list (computed from item ID)
+    private var itemIndex: Int {
+        allItems.firstIndex(where: { $0.id == item.id }) ?? 0
+    }
+
+    /// The total number of items in the list
+    private var numberOfItems: Int {
+        allItems.count
+    }
+
+    /// Whether this is the first item in the list
+    private var isFirstItem: Bool {
+        allItems.first?.id == item.id
+    }
+
+    /// Whether this is the last item in the list
+    private var isLastItem: Bool {
+        allItems.last?.id == item.id
+    }
+
     /// Creates a LazyVStackListRowItem
     ///
     /// - Parameters:
     ///   - item: The item to display in this row
-    ///   - itemIndex: The index of this item in the list (0-based)
-    ///   - numberOfItems: Total number of items for layout optimization
+    ///   - allItems: All items in the list for position-based layout logic
     ///   - content: ViewBuilder that creates the display content for the item
     ///   - createPage: Function that creates a navigation page for the item
     ///   - onRegisterDynamicSubPage: Callback to register navigation pages
@@ -55,8 +74,7 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     ///   - shouldShowDeleteAction: Optional function to control delete action visibility
     public init(
         item: Item,
-        itemIndex: Int,
-        numberOfItems: Int,
+        allItems: [Item],
         @ViewBuilder content: @escaping (Item) -> any View,
         createPage: @escaping (Item) -> Page,
         onRegisterDynamicSubPage: @escaping (Page) -> Void,
@@ -65,8 +83,7 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
         shouldShowDeleteAction: ((Item) -> Bool)? = nil
     ) {
         self.item = item
-        self.itemIndex = itemIndex
-        self.numberOfItems = numberOfItems
+        self.allItems = allItems
         self.content = content
         self.createPage = createPage
         self.onRegisterDynamicSubPage = onRegisterDynamicSubPage
@@ -81,31 +98,30 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     public var body: some View {
         let itemBackground = Color.primary
             .opacity(isPressed ? 0.1 : 0.0)
+            .animation(.themeEaseInOut, value: isPressed)
 
         VStack(spacing: 0) {
-            if itemIndex > 0 {
+            if !isFirstItem {
                 Spacer(minLength: 6)
                 Divider()
             }
 
             // This is a hack to make swipe actions functional when the row is in a LazyVStack.
-            if itemIndex == 0 {
+            if isFirstItem {
                 ZStack {
                     itemBackground
                         .padding(.top, -7)
                         .padding(.bottom, numberOfItems > 1 ? 5 : -2)
-                        .animation(.easeInOut, value: isPressed)
 
                     createItemButton()
                         .padding(.horizontal, 10)
                         .padding(.top, 1)
                         .padding(.bottom, numberOfItems > 1 ? 14 : 6)
                 }
-            } else if itemIndex == numberOfItems - 1 {
+            } else if isLastItem {
                 ZStack {
                     itemBackground
                         .padding(.bottom, -6)
-                        .animation(.easeInOut, value: isPressed)
 
                     List { createItemButton() }
                         .padding(.top, 4)
@@ -115,7 +131,6 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
                 ZStack {
                     itemBackground
                         .padding(.bottom, 5)
-                        .animation(.easeInOut, value: isPressed)
 
                     List { createItemButton() }
                         .padding(.top, 4)
@@ -129,6 +144,7 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
         .onAppear {
             itemPage = createPage(item)
         }
+        .id("\(item.id)")
     }
 
     /// Creates the item button with navigation and press gesture handling
@@ -137,6 +153,9 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     private func createItemButton() -> some View {
         Button(
             action: {
+                // Store scroll position before navigation
+                listContext?.onScrollPositionStore("\(item.id)")
+
                 // Register and navigate to the item page
                 if let page = itemPage {
                     onRegisterDynamicSubPage(page)

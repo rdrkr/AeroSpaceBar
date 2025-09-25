@@ -47,8 +47,11 @@ struct LicenseActionsSection: View {
                         Button {
                             onStartTrial()
                         } label: {
-                            Label(LocalizedStringResource("Start 14-Day Free Trial"), systemImage: "play.circle.fill")
-                                .frame(maxWidth: .infinity)
+                            Label(
+                                LocalizedStringResource("Start 14-Day Free Trial"),
+                                systemImage: "play.circle.fill"
+                            )
+                            .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)

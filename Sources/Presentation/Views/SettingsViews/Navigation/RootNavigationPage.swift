@@ -23,15 +23,30 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     var id: Int { rawValue }
 
     /// The name of the navigation option.
-    var name: LocalizedStringResource {
+    var name: String {
         switch self {
-        case .license: LocalizedStringResource("License", comment: "Title for the License settings section.")
-        case .general: LocalizedStringResource("General", comment: "Title for the General settings section.")
-        case .spaces: LocalizedStringResource("Spaces", comment: "Title for the Spaces settings section.")
-        case .groups: LocalizedStringResource("Groups", comment: "Title for the Groups settings section.")
-        case .advanced: LocalizedStringResource("Advanced", comment: "Title for the Advanced settings section.")
+        case .license: String(
+                localized: LocalizedStringResource("License", comment: "Title for the License settings section.")
+            )
+        case .general: String(
+                localized: LocalizedStringResource("General", comment: "Title for the General settings section.")
+            )
+        case .spaces: String(
+                localized: LocalizedStringResource("Spaces", comment: "Title for the Spaces settings section.")
+            )
+        case .groups: String(
+                localized: LocalizedStringResource("Groups", comment: "Title for the Groups settings section.")
+            )
+        case .advanced: String(
+                localized: LocalizedStringResource("Advanced", comment: "Title for the Advanced settings section.")
+            )
         #if DEBUG
-            case .developer: LocalizedStringResource("Developer", comment: "Title for the Developer settings section.")
+            case .developer: String(
+                    localized: LocalizedStringResource(
+                        "Developer",
+                        comment: "Title for the Developer settings section."
+                    )
+                )
         #endif
         }
     }

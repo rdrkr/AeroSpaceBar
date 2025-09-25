@@ -41,7 +41,9 @@ struct LicenseKeyActivationView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Button {
-                showingActivation.toggle()
+                withAnimation(.themeEaseInOutFast) {
+                    showingActivation.toggle()
+                }
             } label: {
                 Label(buttonTitle, systemImage: "key.fill")
                     .frame(maxWidth: .infinity)
@@ -61,7 +63,6 @@ struct LicenseKeyActivationView: View {
                     }
                     .font(.monospaced(.body)())
                     .textFieldStyle(.roundedBorder)
-                    .environment(\.layoutDirection, .leftToRight)
                     .autocorrectionDisabled()
 
                     if let error = activationError {
@@ -89,6 +90,7 @@ struct LicenseKeyActivationView: View {
                     }
                 }
                 .padding(.top, 8)
+                .opacity(showingActivation ? 1.0 : 0.0)
             }
         }
         .animation(.themeEaseInOutFast, value: showingActivation)

@@ -19,10 +19,10 @@ struct GroupsSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: String(localized: navigationOption.name),
+            navigationTitle: navigationOption.name,
             style: .compact,
             icon: navigationOption.icon,
-            title: String(localized: navigationOption.name),
+            title: navigationOption.name,
             subtitle: String(localized: LocalizedStringResource(
                 """
                 Organize menu bar applications into groups for better visual organization,
@@ -63,43 +63,30 @@ struct GroupsSettingsView: View {
 
                 Section {
                     LazyVStackList(
-                        onScrollProxyAvailable: { scrollToElement in
-                            // Try to scroll when the LazyVStackList appears
-                            if let storedGroupId = settingsViewModel.consumeGroupsScrollPosition() {
-                                scrollToElement("group-\(storedGroupId)")
-                            }
-                        },
-                        content: {
-                            ForEach(groupsViewModel.groups) { group in
-                                LazyVStackListRowItem(
-                                    item: group,
-                                    itemIndex: group.id,
-                                    numberOfItems: groupsViewModel.groups.count,
-                                    content: { group in
-                                        Text(LocalizedStringResource("Group \(group.id + 1)"))
-                                    },
-                                    createPage: { group in
-                                        AnyNavigationPage(GroupNavigationPage(index: group.id))
-                                    },
-                                    onRegisterDynamicSubPage: { groupPage in
-                                        settingsViewModel.registerDynamicSubPage(groupPage)
-                                    },
-                                    onNavigateTo: { groupPage in
-                                        // Store current group ID for scroll restoration
-                                        settingsViewModel.storeGroupsScrollPosition(groupId: groupPage.id)
-                                        settingsViewModel.navigateTo(groupPage)
-                                    },
-                                    onDelete: { groupPage in
-                                        deleteGroup(at: groupPage.id)
-                                    },
-                                    shouldShowDeleteAction: { group in
-                                        group.id > 0 // Groups with id > 0 can be deleted
-                                    }
-                                )
-                                .id("group-\(group.id)")
-                            }
+                        scrollableViewOpacityController: $settingsViewModel.groupSettingsFormOpacity,
+                        clearPreviousScrollPosition: $settingsViewModel.clearGroupsSettingsFormScrollPosition
+                    ) {
+                        ForEach(groupsViewModel.groups) { group in
+                            LazyVStackListRowItem(
+                                item: group,
+                                allItems: groupsViewModel.groups,
+                                content: { group in
+                                    Text(LocalizedStringResource("Group \(group.id + 1)"))
+                                },
+                                createPage: { group in
+                                    AnyNavigationPage(GroupNavigationPage(index: group.id))
+                                },
+                                onRegisterDynamicSubPage: settingsViewModel.registerDynamicSubPage,
+                                onNavigateTo: settingsViewModel.navigateTo,
+                                onDelete: { groupPage in
+                                    deleteGroup(at: groupPage.id)
+                                },
+                                shouldShowDeleteAction: { group in
+                                    group.id > 0 // Groups with id > 0 can be deleted
+                                }
+                            )
                         }
-                    )
+                    }
                 } header: {
                     HStack {
                         Text(LocalizedStringResource("Groups"))
@@ -142,6 +129,7 @@ struct GroupsSettingsView: View {
             .toggleStyle(.switch)
             .tag("groups-show-groups-toggle")
         }
+        .opacity(settingsViewModel.groupSettingsFormOpacity)
         .animation(.themeEaseInOutFast, value: groupsViewModel.showGroups)
         .animation(.themeEaseInOutFast, value: groupsViewModel.groups.isEmpty)
         .animation(.themeEaseInOutFast, value: groupsViewModel.groupsAppearanceMode)
