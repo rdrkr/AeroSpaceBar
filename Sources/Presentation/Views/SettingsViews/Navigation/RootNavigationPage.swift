@@ -65,6 +65,48 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         }
     }
 
+    /// The description/subtitle text for this navigation page.
+    var description: String {
+        switch self {
+        case .license: String(
+                localized: LocalizedStringResource("Manage your license and subscription settings.")
+            )
+        case .general: String(
+                localized: LocalizedStringResource(
+                    """
+                    Manage your overall setup and preferences for AeroSpaceBar, \
+                    such as AeroSpace path and Appearance settings.
+                    """
+                )
+            )
+        case .spaces: String(
+                localized: LocalizedStringResource(
+                    "Fine-tune how spaces look and behave: opacity, blur, titles, and more."
+                )
+            )
+        case .groups: String(
+                localized: LocalizedStringResource(
+                    """
+                    Organize menu bar applications into groups for better visual organization,\
+                    including background, border, opacity and more.
+                    """
+                )
+            )
+        case .advanced: String(
+                localized: LocalizedStringResource(
+                    "Configure advanced behaviors, logging, performance metrics, and reset options."
+                )
+            )
+        #if DEBUG
+            case .developer: String(
+                    localized: LocalizedStringResource(
+                        "Developer settings for feature flags and debugging options."
+                    )
+                )
+        #endif
+        }
+    }
+
     /// The icon for the navigation option.
     @MainActor
     var icon: AnyView {

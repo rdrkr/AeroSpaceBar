@@ -31,6 +31,16 @@ struct GroupNavigationPage: NavigationPage {
         "rectangle.3.group"
     }
 
+    /// The description/subtitle text for this navigation page.
+    var description: String {
+        String(
+            localized: LocalizedStringResource(
+                "Configure the appearance and behavior of this group.",
+                comment: "Description for group detail page"
+            )
+        )
+    }
+
     /// The parent page of the navigation option.
     var parentPage: (any NavigationPage)? { RootNavigationPage.groups }
 

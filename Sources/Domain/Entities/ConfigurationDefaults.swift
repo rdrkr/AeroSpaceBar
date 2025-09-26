@@ -50,13 +50,13 @@ public enum ConfigurationDefaults {
     public static let menuBarVerticalPadding: Double = 1
 
     /// Default horizontal padding for the menu bar interface in points.
-    public static let menuBarHorizontalPadding: Double = 53
+    public static let menuBarHorizontalPadding: Double = 50
 
     /// Default spacing between widgets in the menu bar in points.
     public static let widgetSpacing: Double = 4
 
     /// Default size of window icons in points.
-    public static let windowIconSize: Double = 22.5
+    public static let windowIconSize: Double = 22
 
     /// Default size of settings icons in points.
     public static let settingsIconSmallSize: Double = 13.0

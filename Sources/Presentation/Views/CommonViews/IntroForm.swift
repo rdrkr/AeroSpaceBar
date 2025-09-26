@@ -40,7 +40,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
 
     init(
         navigationTitle: String,
-        style: Style = .intro,
+        style: Style,
         icon: some View,
         title: String,
         subtitle: String,
@@ -57,7 +57,7 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
 
     init(
         navigationTitle: String,
-        style: Style = .intro,
+        style: Style,
         icon: some View,
         title: String,
         subtitle: String,
@@ -69,6 +69,35 @@ struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderConten
         self.icon = AnyView(icon)
         self.title = title
         self.subtitle = subtitle
+        self.content = content
+        self.appendToHeader = appendToHeader
+    }
+
+    init(
+        navigationPage: some NavigationPage,
+        style: Style,
+        @ViewBuilder content: @escaping () -> Content
+    ) where HeaderContent == EmptyView {
+        navigationTitle = navigationPage.name
+        self.style = style
+        icon = navigationPage.icon
+        title = navigationPage.name
+        subtitle = navigationPage.description
+        self.content = content
+        appendToHeader = nil
+    }
+
+    init(
+        navigationPage: some NavigationPage,
+        style: Style,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder appendToHeader: @escaping () -> HeaderContent
+    ) {
+        navigationTitle = navigationPage.name
+        self.style = style
+        icon = navigationPage.icon
+        title = navigationPage.name
+        subtitle = navigationPage.description
         self.content = content
         self.appendToHeader = appendToHeader
     }

@@ -16,15 +16,8 @@
 
         var body: some View {
             IntroForm(
-                navigationTitle: navigationOption.name,
-                style: .compact,
-                icon: navigationOption.icon,
-                title: navigationOption.name,
-                subtitle: String(
-                    localized: LocalizedStringResource(
-                        "Configure feature flags and development settings for testing new functionality."
-                    )
-                )
+                navigationPage: navigationOption,
+                style: .compact
             ) {
                 Section(LocalizedStringResource("Core Features")) {
                     VStack(alignment: .leading) {

@@ -63,6 +63,10 @@ struct LicenseSettingsSidebarItemView: View {
                 .foregroundStyle(controlActiveState == .key ? .secondary : .quaternary)
             }
         }
+        .animation(.themeEaseInOutFast, value: isLicensed)
+        .animation(.themeEaseInOutFast, value: userName)
+        .animation(.themeEaseInOutFast, value: profileImage)
+        .animation(.themeEaseInOutFast, value: controlActiveState)
         .onAppear {
             loadProfile()
         }

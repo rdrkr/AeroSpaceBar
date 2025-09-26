@@ -11,9 +11,6 @@ struct WallpaperBackgroundView: View {
     /// The wallpaper image to display
     let wallpaper: NSImage
 
-    /// The horizontal padding for the menu bar
-    let menuBarHorizontalPadding: Double = 16
-
     // MARK: - Computed Properties
 
     private var screenWidth: Double {
@@ -29,11 +26,11 @@ struct WallpaperBackgroundView: View {
     var body: some View {
         Image(nsImage: wallpaper)
             .frame(
-                width: (screenWidth / 2) - menuBarHorizontalPadding,
+                width: (screenWidth / 2) - ConfigurationDefaults.menuBarHorizontalPadding,
                 height: screenHeight
             )
             .offset(
-                x: (screenWidth / 4) - (menuBarHorizontalPadding / 2),
+                x: (screenWidth / 4) - (ConfigurationDefaults.menuBarHorizontalPadding / 2),
                 y: 0
             )
             .clipped()

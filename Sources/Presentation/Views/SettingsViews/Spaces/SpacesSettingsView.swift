@@ -12,15 +12,8 @@ struct SpacesSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: navigationOption.name,
-            style: .compact,
-            icon: navigationOption.icon,
-            title: navigationOption.name,
-            subtitle: String(
-                localized: LocalizedStringResource(
-                    "Fine-tune how spaces look and behave: opacity, blur, titles, and more."
-                )
-            )
+            navigationPage: navigationOption,
+            style: .compact
         ) {
             Section {
                 SettingsToggle(

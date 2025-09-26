@@ -20,6 +20,9 @@ protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     /// The SF Symbol name to display for this page.
     var symbolName: String { get }
 
+    /// The description/subtitle text for this navigation page.
+    var description: String { get }
+
     /// The parent page of this navigation page, if any.
     var parentPage: (any NavigationPage)? { get }
 
@@ -106,6 +109,9 @@ struct AnyNavigationPage: NavigationPage {
     /// The SF Symbol name to display in the sidebar.
     let symbolName: String
 
+    /// The description/subtitle text for this navigation page.
+    let description: String
+
     /// The parent page of this navigation page, if any.
     let parentPage: (any NavigationPage)?
 
@@ -128,6 +134,7 @@ struct AnyNavigationPage: NavigationPage {
         id = page.id
         name = page.name
         symbolName = page.symbolName
+        description = page.description
         parentPage = page.parentPage
         _viewForPage = { page.viewForPage }
     }

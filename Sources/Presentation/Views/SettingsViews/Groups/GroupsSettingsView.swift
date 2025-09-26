@@ -19,16 +19,8 @@ struct GroupsSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: navigationOption.name,
-            style: .compact,
-            icon: navigationOption.icon,
-            title: navigationOption.name,
-            subtitle: String(localized: LocalizedStringResource(
-                """
-                Organize menu bar applications into groups for better visual organization,
-                including background, border, opacity and more.
-                """
-            ))
+            navigationPage: navigationOption,
+            style: .compact
         ) {
             if groupsViewModel.showGroups {
                 // Appearance Mode Picker Section
@@ -48,6 +40,7 @@ struct GroupsSettingsView: View {
                 } footer: {
                     Text(groupsViewModel.groupsAppearanceMode.description)
                 }
+                .padding(.top, 4)
                 .tag("groups-appearance-mode-section")
 
                 // Global Appearance Configuration Sections (for All Groups and Same as Spaces modes)

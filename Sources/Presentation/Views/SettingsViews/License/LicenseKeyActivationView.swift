@@ -56,12 +56,11 @@ struct LicenseKeyActivationView: View {
                     TextField(
                         text: $licenseKeyInput,
                         prompt: Text(LocalizedStringResource("Enter your license key"))
-                            .font(.body)
-                            .foregroundStyle(.secondary)
                     ) {
                         // Empty label since we're using the prompt parameter
                     }
                     .font(.monospaced(.body)())
+                    .labelsHidden()
                     .textFieldStyle(.roundedBorder)
                     .autocorrectionDisabled()
 
@@ -74,9 +73,11 @@ struct LicenseKeyActivationView: View {
 
                     HStack {
                         Button(LocalizedStringResource("Cancel")) {
-                            showingActivation = false
-                            licenseKeyInput = ""
-                            onClearError()
+                            withAnimation(.themeEaseInOutFast) {
+                                showingActivation = false
+                                licenseKeyInput = ""
+                                onClearError()
+                            }
                         }
                         .buttonStyle(.bordered)
 

@@ -23,15 +23,8 @@ struct AdvancedSettingsView: View {
 
     var body: some View {
         IntroForm(
-            navigationTitle: navigationOption.name,
-            style: .compact,
-            icon: navigationOption.icon,
-            title: navigationOption.name,
-            subtitle: String(
-                localized: LocalizedStringResource(
-                    "Configure advanced behaviors, logging, performance metrics, and reset options."
-                )
-            )
+            navigationPage: navigationOption,
+            style: .compact
         ) {
             Section {
                 SettingsToggle(

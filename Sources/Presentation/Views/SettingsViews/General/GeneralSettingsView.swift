@@ -25,14 +25,7 @@ struct GeneralSettingsView: View {
                 .resizable()
             ),
             title: navigationOption.name,
-            subtitle: String(
-                localized: LocalizedStringResource(
-                    """
-                    Manage your overall setup and preferences for AeroSpaceBar, \
-                    such as AeroSpace path and Appearance settings.
-                    """
-                )
-            )
+            subtitle: navigationOption.description
         ) {
             Section {
                 SettingsToggle(
