@@ -31,12 +31,6 @@ struct LazyVStackList<Content>: View where Content: View {
     /// The currently selected item identifier (optional for non-selection mode)
     @Binding private var selectionIdentifier: ObjectIdentifier?
 
-    /// The parent View opacity value (for non native ScrollView support)
-    @Binding private var scrollableViewOpacityController: Double
-
-    /// Should clear scroll position (for non native ScrollView support)
-    @Binding private var clearPreviousScrollPosition: Bool
-
     /// Content builder that creates the view content
     private let content: () -> Content
 
@@ -56,35 +50,17 @@ struct LazyVStackList<Content>: View where Content: View {
 
     /// Creates a LazyVStackList without selection capability
     /// - Parameters:
-    ///   - scrollableViewOpacityController: Optional binding to the parent View opacity value.
-    ///                                      Useful only when useNativeScrollView is true for a smoother
-    ///                                      transition.
-    ///   - clearPreviousScrollPosition: Optional binding to allow the parent View to signal to reset scroll position.
     ///   - spacing: Spacing between items (defaults to 0)
     ///   - showHoverEffect: Whether to show hover effects (defaults to true)
     ///   - useNativeScrollView: Whether to enable scrolling behavior (defaults to false)
     ///   - content: Content builder that creates the view content
     init(
-        scrollableViewOpacityController: Binding<Double>? = nil,
-        clearPreviousScrollPosition: Binding<Bool>? = nil,
         spacing: CGFloat? = 0,
         showHoverEffect: Bool = false,
         useNativeScrollView: Bool = false,
         @ViewBuilder content: @escaping () -> Content
     ) {
         _selectionIdentifier = .constant(nil)
-
-        if let opacityController = scrollableViewOpacityController, !useNativeScrollView {
-            _scrollableViewOpacityController = opacityController
-        } else {
-            _scrollableViewOpacityController = .constant(1.0)
-        }
-
-        if let clearPosition = clearPreviousScrollPosition, !useNativeScrollView {
-            _clearPreviousScrollPosition = clearPosition
-        } else {
-            _clearPreviousScrollPosition = .constant(true)
-        }
 
         self.content = content
         self.spacing = spacing
@@ -144,12 +120,6 @@ extension SelectionWrapper {
 /// by using ObjectIdentifier as keys to differentiate between different selection types.
 @MainActor private var selectionStorage: [ObjectIdentifier: SelectionWrapper] = [:]
 
-/// Private storage for scroll positions, keyed by storage identifier
-///
-/// This global storage maintains scroll positions across LazyVStackList instances
-/// by using ObjectIdentifier as keys to differentiate between different list instances.
-@MainActor private var scrollPositionStorage: [ObjectIdentifier: String] = [:]
-
 extension LazyVStackList {
     /// The currently selected item for this LazyVStackList instance
     ///
@@ -160,7 +130,10 @@ extension LazyVStackList {
     var selection: Any? {
         guard
             let identifier = selectionIdentifier,
-            let wrapper = selectionStorage[identifier] else { return nil }
+            let wrapper = selectionStorage[identifier]
+        else {
+            return nil
+        }
 
         return wrapper.getValue()
     }
@@ -175,10 +148,6 @@ extension LazyVStackList {
     /// - Parameters:
     ///   - selection: Binding to the currently selected item. When an item is selected,
     ///                this binding will be updated with the new selection.
-    ///   - scrollableViewOpacityController: Optional binding to the parent View opacity value.
-    ///                                      Useful only when useNativeScrollView is true for a smoother
-    ///                                      transition.
-    ///   - clearPreviousScrollPosition: Optional binding to allow the parent View to signal to reset scroll position.
     ///   - spacing: Spacing between items in points. Defaults to 0.
     ///   - showHoverEffect: Whether to show hover effects when items are hovered.
     ///                      Defaults to false for consistent behavior.
@@ -187,8 +156,6 @@ extension LazyVStackList {
     ///   - content: ViewBuilder that creates the view content containing selectable items.
     init<SelectionValue>(
         selection: Binding<SelectionValue?>,
-        scrollableViewOpacityController: Binding<Double>? = nil,
-        clearPreviousScrollPosition: Binding<Bool>? = nil,
         spacing: CGFloat? = 0,
         showHoverEffect: Bool = false,
         useNativeScrollView: Bool = true,
@@ -206,18 +173,6 @@ extension LazyVStackList {
         )
         _selectionIdentifier = .constant(identifier)
 
-        if let opacityController = scrollableViewOpacityController, !useNativeScrollView {
-            _scrollableViewOpacityController = opacityController
-        } else {
-            _scrollableViewOpacityController = .constant(1.0)
-        }
-
-        if let clearPosition = clearPreviousScrollPosition, !useNativeScrollView {
-            _clearPreviousScrollPosition = clearPosition
-        } else {
-            _clearPreviousScrollPosition = .constant(true)
-        }
-
         self.spacing = spacing
         self.showHoverEffect = showHoverEffect
         self.useNativeScrollView = useNativeScrollView
@@ -230,85 +185,37 @@ extension LazyVStackList {
     /// and automatic scroll restoration capabilities. It uses a ScrollViewReader to enable
     /// programmatic scrolling and automatically restores the last known scroll position.
     var body: some View {
-        ScrollViewReader { proxy in
-            ConditionalScrollView(isEnabled: useNativeScrollView) {
-                LazyVStack(spacing: spacing) {
-                    content()
-                }
-                .padding(.horizontal, 10)
-                .environment(\.lazyVStackListContext, SelectionContext(
-                    selectedItem: selectionEnabled ? selection : nil,
-                    showHoverEffect: showHoverEffect,
-                    selectionEnabled: selectionEnabled,
-                    onSelectionChange: { newValue in
-                        if
-                            selectionEnabled,
-                            let identifier = selectionIdentifier,
-                            let wrapper = selectionStorage[identifier]
-                        {
-                            wrapper.setValue(newValue)
-                        }
-                    },
-                    onScrollPositionStore: { elementId in
-                        storeScrollPosition(elementId: elementId)
+        ConditionalScrollView(isEnabled: useNativeScrollView) {
+            LazyVStack(spacing: spacing) {
+                content()
+            }
+            .padding(.horizontal, 10)
+            .environment(\.lazyVStackListContext, SelectionContext(
+                selectedItem: selectionEnabled ? selection : nil,
+                showHoverEffect: showHoverEffect,
+                selectionEnabled: selectionEnabled,
+                onSelectionChange: { newValue in
+                    if
+                        selectionEnabled,
+                        let identifier = selectionIdentifier,
+                        let wrapper = selectionStorage[identifier]
+                    {
+                        wrapper.setValue(newValue)
                     }
-                ))
-            }
-            .onAppear {
-                if clearPreviousScrollPosition {
-                    scrollPositionStorage.removeValue(forKey: selectionIdentifier ?? ObjectIdentifier(Self.self))
-                } else {
-                    restoreScrollPosition(scrollTo: proxy.scrollTo)
                 }
-
-                Task {
-                    try await Task.sleep(for: .milliseconds(15))
-                    scrollableViewOpacityController = 1.0
-                }
-            }
-            .onDisappear {
-                scrollableViewOpacityController = 0.0
-            }
+            ))
         }
-    }
-
-    /// Stores the scroll position for the current list instance
-    /// - Parameter elementId: The element ID to store as the current scroll position
-    private func storeScrollPosition(elementId: String) {
-        // Use selectionIdentifier if available, otherwise create a unique key for this list instance
-        let key = selectionIdentifier ?? ObjectIdentifier(Self.self)
-        scrollPositionStorage[key] = elementId
-    }
-
-    /// Returns the current scroll position identifier.
-    private func getScrollPosition() -> String? {
-        let key = selectionIdentifier ?? ObjectIdentifier(Self.self)
-
-        if scrollPositionStorage.keys.contains(key) {
-            return scrollPositionStorage[key]
-        }
-
-        return nil
-    }
-
-    /// Restores the stored scroll position using the scroll proxy
-    /// - Parameter scrollTo: The scroll function from ScrollViewReader for programmatic scrolling
-    private func restoreScrollPosition(scrollTo: @escaping (String, UnitPoint?) -> Void) {
-        let key = selectionIdentifier ?? ObjectIdentifier(Self.self)
-        // Use selectionIdentifier if available, otherwise create a unique key for this list instance
-        guard let storedElementId = scrollPositionStorage[key] else { return }
-
-        scrollTo(storedElementId, UnitPoint.top)
     }
 }
 
 // MARK: - Environment Support
 
-/// Context for sharing selection state and scroll management through the SwiftUI environment
+/// Context for sharing selection state management through the SwiftUI environment
 ///
 /// This context is passed down to child views through the environment system,
 /// allowing LazyVStackNavigationLink components to access selection state and callbacks.
-struct SelectionContext: @unchecked Sendable {
+@MainActor
+struct SelectionContext {
     /// The currently selected item, if any
     let selectedItem: Any?
 
@@ -319,10 +226,7 @@ struct SelectionContext: @unchecked Sendable {
     let selectionEnabled: Bool
 
     /// Callback invoked when selection changes, receives the newly selected item
-    let onSelectionChange: (Any) -> Void
-
-    /// Callback invoked to store scroll position, receives the element ID
-    let onScrollPositionStore: (String) -> Void
+    let onSelectionChange: @MainActor (Any) -> Void
 }
 
 /// Environment key for passing selection context through the SwiftUI environment

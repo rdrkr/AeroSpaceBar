@@ -169,12 +169,6 @@ class SettingsViewModel: ObservableObject {
     /// The forward history for forward navigation.
     @Published var forwardHistory: [AnyNavigationPage] = []
 
-    /// Persistent GroupsSettingsView form opacity value
-    @Published var groupSettingsFormOpacity: Double = 1.0
-
-    /// Persistent GroupsSettingsView form should clear its scroll position
-    @Published var clearGroupsSettingsFormScrollPosition: Bool = true
-
     /// The current feature flags configuration.
     private var featureFlags: FeatureFlags?
 
@@ -485,9 +479,6 @@ class SettingsViewModel: ObservableObject {
     /// Sets programmatically the currently selected navigation page.
     /// - Parameter targetPage: The page to navigate to
     private func setSelectedPage(_ targetPage: AnyNavigationPage) {
-        clearGroupsSettingsFormScrollPosition = (targetPage.name == RootNavigationPage.groups.name) &&
-            !(selectedPage.name.starts(with: GroupNavigationPage.namePrefix))
-
         // Set flag to prevent adding to history during programmatic change
         isNavigatingProgrammatically = true
         selectedPage = targetPage

@@ -38,9 +38,6 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     /// Whether the row is currently being pressed, used for visual feedback.
     @State private var isPressed = false
 
-    /// Environment access to the LazyVStackList context for scroll position management
-    @Environment(\.lazyVStackListContext) private var listContext
-
     /// The index of this item in the list (computed from item ID)
     private var itemIndex: Int {
         allItems.firstIndex(where: { $0.id == item.id }) ?? 0
@@ -153,9 +150,6 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     private func createItemButton() -> some View {
         Button(
             action: {
-                // Store scroll position before navigation
-                listContext?.onScrollPositionStore("\(item.id)")
-
                 // Register and navigate to the item page
                 if let page = itemPage {
                     onRegisterDynamicSubPage(page)

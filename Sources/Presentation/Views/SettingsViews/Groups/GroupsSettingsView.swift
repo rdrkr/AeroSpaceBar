@@ -62,10 +62,7 @@ struct GroupsSettingsView: View {
                 }
 
                 Section {
-                    LazyVStackList(
-                        scrollableViewOpacityController: $settingsViewModel.groupSettingsFormOpacity,
-                        clearPreviousScrollPosition: $settingsViewModel.clearGroupsSettingsFormScrollPosition
-                    ) {
+                    LazyVStackList {
                         ForEach(groupsViewModel.groups) { group in
                             LazyVStackListRowItem(
                                 item: group,
@@ -129,7 +126,6 @@ struct GroupsSettingsView: View {
             .toggleStyle(.switch)
             .tag("groups-show-groups-toggle")
         }
-        .opacity(settingsViewModel.groupSettingsFormOpacity)
         .animation(.themeEaseInOutFast, value: groupsViewModel.showGroups)
         .animation(.themeEaseInOutFast, value: groupsViewModel.groups.isEmpty)
         .animation(.themeEaseInOutFast, value: groupsViewModel.groupsAppearanceMode)
