@@ -31,6 +31,12 @@ struct GroupNavigationPage: NavigationPage {
         "rectangle.3.group"
     }
 
+    /// The page icon view to display for this page.
+    @MainActor
+    var icon: AnyView {
+        AnyView(defaultIcon)
+    }
+
     /// The description/subtitle text for this navigation page.
     var description: String {
         String(
@@ -39,6 +45,13 @@ struct GroupNavigationPage: NavigationPage {
                 comment: "Description for group detail page"
             )
         )
+    }
+
+    /// A view builder that returns the sidebar item view for this navigation page.
+    @MainActor
+    @ViewBuilder
+    var viewForSidebar: AnyView {
+        AnyView(defaultViewForSidebar(icon))
     }
 
     /// The parent page of the navigation option.

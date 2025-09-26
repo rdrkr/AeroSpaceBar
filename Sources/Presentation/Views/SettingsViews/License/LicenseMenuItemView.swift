@@ -7,141 +7,89 @@ import SwiftUI
 /// Menu item view that displays licensing status and provides access to license actions.
 ///
 /// This view presents a compact summary of the current license status in the application menu,
-/// including an icon, title, and optional subtitle. Tapping the item opens the detailed
-/// license status window for further actions.
+/// with a capsule-shaped button design that adapts to different license states. Tapping the item
+/// opens the settings window and navigates directly to the license settings page.
 struct LicenseMenuItemView: View {
-    /// The licensing view model that provides license status and actions.
-    @EnvironmentObject var viewModel: LicensingViewModel
+    /// Environment action to open the settings window.
+    @Environment(\.openSettings) private var openSettings
 
-    /// Whether the license status detail window is currently shown.
-    @State private var showingLicenseWindow = false
+    /// Environment action to dismiss the current modal presentation.
+    @Environment(\.dismiss) var dismiss
+
+    /// The current license information containing status and metadata.
+    @Binding private var licenseInfo: LicenseInfo
+
+    /// Creates a new license menu item view.
+    ///
+    /// - Parameter licenseInfo: A binding to the current license information
+    ///   that will be used to determine the display text and behavior.
+    init(licenseInfo: Binding<LicenseInfo>) {
+        _licenseInfo = licenseInfo
+    }
 
     var body: some View {
-        Button {
-            showingLicenseWindow = true
-        } label: {
-            HStack {
-                Image(systemName: licenseStatusIcon)
-                    .foregroundStyle(licenseStatusColor)
-                    .frame(width: 16)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(licenseStatusTitle)
-                        .font(.body)
-
-                    if let subtitle = licenseStatusSubtitle {
-                        Text(subtitle)
-                            .font(.caption)
-                    }
+        HStack {
+            Button {
+                openLicenseSettings()
+            } label: {
+                if let title = licenseStatusTitle {
+                    Text(title)
+                        .secondaryText()
+                        .frame(maxWidth: .infinity)
                 }
-
-                Spacer()
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
         }
-        .buttonStyle(.plain)
-        .sheet(isPresented: $showingLicenseWindow) {
-            LicenseStatusView(viewModel: viewModel)
+        .buttonBorderShape(.capsule)
+        .padding(.vertical, 4)
+        .padding(.horizontal, 10)
+    }
+
+    // MARK: - Actions
+
+    /// Opens the settings window and navigates to the license page.
+    ///
+    /// This method performs a coordinated action to both open the settings window
+    /// and ensure that the license page is displayed when the window appears.
+    /// It uses a notification-based approach to communicate the navigation intent
+    /// to the settings view.
+    ///
+    /// ## Process
+    /// 1. Posts a notification to trigger license page navigation
+    /// 2. Waits briefly to ensure the notification is processed
+    /// 3. Opens the settings window using the environment action
+    ///
+    /// - Note: The small delay ensures proper coordination between the notification
+    ///         and the settings window opening sequence.
+    private func openLicenseSettings() {
+        Task {
+            // Post notification to navigate to license page when settings opens
+            NotificationCenter.default.post(name: .navigateToLicensePage, object: nil)
+            try await Task.sleep(for: .milliseconds(60))
+            openSettings()
+            dismiss()
         }
     }
 
     // MARK: - Computed Properties
 
-    /// Returns the appropriate SF Symbol icon name for the current license status.
-    private var licenseStatusIcon: String {
-        switch viewModel.licenseStatus {
-        case .licensed:
-            "checkmark.shield.fill"
-        case .trial:
-            "clock.badge.checkmark"
-        case .expired:
-            "exclamationmark.shield.fill"
-        case .validating:
-            "hourglass"
-        case .unknown:
-            "questionmark.circle"
-        @unknown default:
-            "questionmark.circle"
-        }
-    }
-
-    /// Returns the appropriate color for the current license status.
-    private var licenseStatusColor: Color {
-        switch viewModel.licenseStatus {
-        case .licensed:
-            .green
-        case .trial:
-            .blue
-        case .expired:
-            .red
-        case .validating:
-            .orange
-        case .unknown:
-            .gray
-        @unknown default:
-            .gray
-        }
-    }
-
     /// Returns a localized title string for the current license status.
-    private var licenseStatusTitle: LocalizedStringResource {
-        switch viewModel.licenseStatus {
-        case .licensed:
-            "Licensed"
+    private var licenseStatusTitle: LocalizedStringResource? {
+        switch licenseInfo.licenseStatus {
         case let .trial(daysRemaining):
             "Trial - \(daysRemaining) days left"
         case .expired:
-            "Trial Expired"
-        case .validating:
-            "Validating License"
+            "Trial Expired - Purchase to continue"
         case .unknown:
             "Start Trial"
-        @unknown default:
-            "Unknown"
-        }
-    }
-
-    /// Returns a localized subtitle string for the current license status, if applicable.
-    private var licenseStatusSubtitle: LocalizedStringResource? {
-        switch viewModel.licenseStatus {
-        case .licensed:
-            "Thank you for your support!"
-
-        case let .trial(daysRemaining):
-            if daysRemaining <= 3 {
-                "Purchase to continue"
-            } else {
-                nil
-            }
-
-        case .expired:
-            "Purchase license to continue"
-
-        case .validating:
-            "Please wait..."
-
-        case .unknown:
-            "14-day free trial available"
-
-        @unknown default:
+        default:
             nil
         }
     }
 }
 
-// MARK: - Preview
+// MARK: - Notification Names
 
-#Preview {
-    let gateway = LicensingRepository()
-    LicenseMenuItemView()
-        .environmentObject(LicensingViewModel(
-            getLicenseStatusUseCase: GetLicenseStatusUseCase(licensingGateway: gateway),
-            activateLicenseUseCase: ActivateLicenseUseCase(licensingGateway: gateway),
-            openCheckoutUseCase: OpenCheckoutUseCase(licensingGateway: gateway),
-            startTrialUseCase: StartTrialUseCase(licensingGateway: gateway),
-            deactivateLicenseUseCase: DeactivateLicenseUseCase(licensingGateway: gateway),
-            getFeatureFlagsUseCase: GetFeatureFlagsUseCase(gateway: FeatureFlagsRepository())
-        ))
-        .frame(width: 200)
+extension Notification.Name {
+    /// Notification sent when the license settings should be opened.
+    static let navigateToLicensePage = Notification.Name("navigateToLicensePage")
 }

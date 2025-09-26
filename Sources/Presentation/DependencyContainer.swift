@@ -75,6 +75,7 @@ final class DependencyContainer {
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
         setOptimizedPerformanceEnabledUseCase: makeSetOptimizedPerformanceEnabledUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
+        getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
         getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase(),
         setSpacesVisualConfigUseCase: makeSetSpacesVisualConfigUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
@@ -106,14 +107,16 @@ final class DependencyContainer {
         getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
     )
 
-    /// The LicensingViewModel instance.
-    private lazy var licensingViewModel: LicensingViewModel = .init(
-        getLicenseStatusUseCase: makeGetLicenseStatusUseCase(),
+    /// The LicenseViewModel instance.
+    private lazy var licenseViewModel: LicenseViewModel = .init(
+        getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
         activateLicenseUseCase: makeActivateLicenseUseCase(),
         openCheckoutUseCase: makeOpenCheckoutUseCase(),
         startTrialUseCase: makeStartTrialUseCase(),
         deactivateLicenseUseCase: makeDeactivateLicenseUseCase(),
-        getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase()
+        getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
+        setUserNameUseCase: makeSetUserNameUseCase(),
+        setProfileImageDataUseCase: makeSetProfileImageDataUseCase()
     )
 
     /// The GroupsViewModel instance.
@@ -130,27 +133,29 @@ final class DependencyContainer {
         getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
     )
 
-    /// The licensing gateway for managing application licensing.
-    #if DEBUG
-        private lazy var licensingGateway: LicensingGateway = LicensingRepository(
-            getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase()
-        )
-    #else
-        private lazy var licensingGateway: LicensingGateway = LicensingRepository()
-    #endif
+    /// The license gateway for managing application license.
+    private lazy var licenseGateway: LicenseGateway = LicenseRepository()
 
     /// The feature flags gateway for managing development feature toggles.
     ///
     /// This gateway is only available in debug builds and provides access to
     /// feature flags for controlling experimental and development features.
-    private lazy var featureFlagsGateway: FeatureFlagsGateway = FeatureFlagsRepository()
+    private lazy var featureFlagsGateway: FeatureFlagsGateway = FeatureFlagsRepository(
+        getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
+        getEnableLicensingUseCase: makeGetEnableLicensingUseCase()
+    )
 
     #if DEBUG
         /// The DeveloperSettingsViewModel instance for managing developer settings.
         private lazy var developerSettingsViewModel: DeveloperSettingsViewModel = .init(
             getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
             setFeatureFlagsUseCase: makeSetFeatureFlagsUseCase(),
-            deactivateLicenseUseCase: makeDeactivateLicenseUseCase()
+            getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
+            setEnableLicensingUseCase: makeSetEnableLicensingUseCase(),
+            getMockActiveLicenseUseCase: makeGetMockActiveLicenseUseCase(),
+            setMockActiveLicenseUseCase: makeSetMockActiveLicenseUseCase(),
+            getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
+            resetLicenseFeatureFlagsUseCase: makeResetLicenseFeatureFlagsUseCase()
         )
     #endif
 
@@ -180,10 +185,10 @@ final class DependencyContainer {
         groupsViewModel
     }
 
-    /// Gets the licensing view model instance.
-    /// - Returns: The licensing view model instance
-    func getLicensingViewModel() -> LicensingViewModel {
-        licensingViewModel
+    /// Gets the license view model instance.
+    /// - Returns: The license view model instance
+    func getLicenseViewModel() -> LicenseViewModel {
+        licenseViewModel
     }
 
     // MARK: - Spaces Use Cases
@@ -455,36 +460,82 @@ final class DependencyContainer {
         GetFeatureFlagsUseCase(gateway: featureFlagsGateway)
     }
 
-    // MARK: - Licensing Use Cases
+    // MARK: - License Feature Flags Use Cases
 
-    /// Creates a new GetLicenseStatusUseCase instance.
-    /// - Returns: A new GetLicenseStatusUseCase instance
-    func makeGetLicenseStatusUseCase() -> GetLicenseStatusUseCase {
-        GetLicenseStatusUseCase(licensingGateway: licensingGateway)
+    /// Creates a new GetEnableLicensingUseCase instance.
+    /// - Returns: A new GetEnableLicensingUseCase instance
+    func makeGetEnableLicensingUseCase() -> GetEnableLicensingUseCase {
+        GetEnableLicensingUseCase(gateway: licenseGateway)
+    }
+
+    /// Creates a new SetEnableLicensingUseCase instance.
+    /// - Returns: A new SetEnableLicensingUseCase instance
+    func makeSetEnableLicensingUseCase() -> SetEnableLicensingUseCase {
+        SetEnableLicensingUseCase(gateway: licenseGateway)
+    }
+
+    #if DEBUG
+        /// Creates a new GetMockActiveLicenseUseCase instance (DEBUG builds only).
+        /// - Returns: A new GetMockActiveLicenseUseCase instance
+        func makeGetMockActiveLicenseUseCase() -> GetMockActiveLicenseUseCase {
+            GetMockActiveLicenseUseCase(gateway: licenseGateway)
+        }
+
+        /// Creates a new SetMockActiveLicenseUseCase instance (DEBUG builds only).
+        /// - Returns: A new SetMockActiveLicenseUseCase instance
+        func makeSetMockActiveLicenseUseCase() -> SetMockActiveLicenseUseCase {
+            SetMockActiveLicenseUseCase(gateway: licenseGateway)
+        }
+    #endif
+
+    /// Creates a new ResetLicenseFeatureFlagsUseCase instance.
+    /// - Returns: A new ResetLicenseFeatureFlagsUseCase instance
+    func makeResetLicenseFeatureFlagsUseCase() -> ResetLicenseFeatureFlagsUseCase {
+        ResetLicenseFeatureFlagsUseCase(gateway: licenseGateway)
+    }
+
+    // MARK: - License Use Cases
+
+    /// Creates a new GetLicenseInfoUseCase instance.
+    /// - Returns: A new GetLicenseInfoUseCase instance
+    func makeGetLicenseInfoUseCase() -> GetLicenseInfoUseCase {
+        GetLicenseInfoUseCase(licenseGateway: licenseGateway)
     }
 
     /// Creates a new ActivateLicenseUseCase instance.
     /// - Returns: A new ActivateLicenseUseCase instance
     func makeActivateLicenseUseCase() -> ActivateLicenseUseCase {
-        ActivateLicenseUseCase(licensingGateway: licensingGateway)
+        ActivateLicenseUseCase(licenseGateway: licenseGateway)
     }
 
     /// Creates a new OpenCheckoutUseCase instance.
     /// - Returns: A new OpenCheckoutUseCase instance
     func makeOpenCheckoutUseCase() -> OpenCheckoutUseCase {
-        OpenCheckoutUseCase(licensingGateway: licensingGateway)
+        OpenCheckoutUseCase(licenseGateway: licenseGateway)
     }
 
     /// Creates a new StartTrialUseCase instance.
     /// - Returns: A new StartTrialUseCase instance
     func makeStartTrialUseCase() -> StartTrialUseCase {
-        StartTrialUseCase(licensingGateway: licensingGateway)
+        StartTrialUseCase(licenseGateway: licenseGateway)
     }
 
     /// Creates a new DeactivateLicenseUseCase instance.
     /// - Returns: A new DeactivateLicenseUseCase instance
     func makeDeactivateLicenseUseCase() -> DeactivateLicenseUseCase {
-        DeactivateLicenseUseCase(licensingGateway: licensingGateway)
+        DeactivateLicenseUseCase(licenseGateway: licenseGateway)
+    }
+
+    /// Creates a new SetUserNameUseCase instance.
+    /// - Returns: A new SetUserNameUseCase instance
+    func makeSetUserNameUseCase() -> SetUserNameUseCase {
+        SetUserNameUseCase(licenseGateway: licenseGateway)
+    }
+
+    /// Creates a new SetProfileImageDataUseCase instance.
+    /// - Returns: A new SetProfileImageDataUseCase instance
+    func makeSetProfileImageDataUseCase() -> SetProfileImageDataUseCase {
+        SetProfileImageDataUseCase(licenseGateway: licenseGateway)
     }
 
     #if DEBUG

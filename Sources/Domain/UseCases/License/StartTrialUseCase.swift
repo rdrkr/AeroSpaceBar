@@ -5,16 +5,16 @@ import Foundation
 /// Use case for starting the trial period.
 @MainActor
 public final class StartTrialUseCase {
-    private let licensingGateway: LicensingGateway
+    private let licenseGateway: LicenseGateway
 
     /// Initializes the use case with the required gateway.
-    /// - Parameter licensingGateway: The licensing gateway to use
-    public init(licensingGateway: LicensingGateway) {
-        self.licensingGateway = licensingGateway
+    /// - Parameter licenseGateway: The license gateway to use
+    public init(licenseGateway: LicenseGateway) {
+        self.licenseGateway = licenseGateway
     }
 
     /// Executes the use case to start the trial period.
     public func execute() {
-        licensingGateway.startTrial()
+        licenseGateway.startTrial()
     }
 }

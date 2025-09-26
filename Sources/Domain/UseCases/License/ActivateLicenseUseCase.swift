@@ -5,18 +5,18 @@ import Foundation
 /// Use case for activating a license key.
 @MainActor
 public final class ActivateLicenseUseCase {
-    private let licensingGateway: LicensingGateway
+    private let licenseGateway: LicenseGateway
 
     /// Initializes the use case with the required gateway.
-    /// - Parameter licensingGateway: The licensing gateway to use
-    public init(licensingGateway: LicensingGateway) {
-        self.licensingGateway = licensingGateway
+    /// - Parameter licenseGateway: The license gateway to use
+    public init(licenseGateway: LicenseGateway) {
+        self.licenseGateway = licenseGateway
     }
 
     /// Executes the use case to activate a license.
     /// - Parameter licenseKey: The license key to activate
     /// - Returns: The license information if successful
     public func execute(licenseKey: String) async throws -> LicenseInfo {
-        try await licensingGateway.activateLicense(licenseKey)
+        try await licenseGateway.activateLicense(licenseKey)
     }
 }

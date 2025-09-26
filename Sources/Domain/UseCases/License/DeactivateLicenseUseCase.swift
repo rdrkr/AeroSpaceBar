@@ -5,16 +5,16 @@ import Foundation
 /// Use case for deactivating the current license.
 @MainActor
 public final class DeactivateLicenseUseCase {
-    private let licensingGateway: LicensingGateway
+    private let licenseGateway: LicenseGateway
 
     /// Initializes the use case with the required gateway.
-    /// - Parameter licensingGateway: The licensing gateway to use
-    public init(licensingGateway: LicensingGateway) {
-        self.licensingGateway = licensingGateway
+    /// - Parameter licenseGateway: The license gateway to use
+    public init(licenseGateway: LicenseGateway) {
+        self.licenseGateway = licenseGateway
     }
 
     /// Executes the use case to deactivate the current license.
     public func execute() async {
-        await licensingGateway.deactivateLicense()
+        await licenseGateway.deactivateLicense()
     }
 }

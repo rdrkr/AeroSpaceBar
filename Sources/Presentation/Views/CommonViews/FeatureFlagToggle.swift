@@ -14,10 +14,16 @@
         /// The description text explaining what the feature flag does
         let description: String
 
-        /// The binding to the boolean value that controls the feature flag state
-        @Binding var isEnabled: Bool
+        /// The current enabled state
+        let isEnabled: Bool
 
-        /// Creates a new feature flag toggle.
+        /// Whether the toggle is disabled
+        let isDisabled: Bool
+
+        /// The action to perform when the toggle state changes
+        let onToggle: (Bool) -> Void
+
+        /// Creates a new feature flag toggle with a binding.
         /// - Parameters:
         ///   - title: The title text for the feature flag
         ///   - description: The description text explaining what the feature flag does
@@ -25,21 +31,55 @@
         init(
             title: String,
             description: String,
-            isEnabled: Binding<Bool>
+            isEnabled: Binding<Bool>,
+            isDisabled: Bool = false
         ) {
             self.title = title
             self.description = description
-            _isEnabled = isEnabled
+            self.isEnabled = isEnabled.wrappedValue
+            self.isDisabled = isDisabled
+            onToggle = { newValue in
+                isEnabled.wrappedValue = newValue
+            }
+        }
+
+        /// Creates a new feature flag toggle with an action closure.
+        /// - Parameters:
+        ///   - title: The title text for the feature flag
+        ///   - description: The description text explaining what the feature flag does
+        ///   - isEnabled: The current enabled state
+        ///   - onToggle: The action to perform when the toggle state changes
+        init(
+            title: String,
+            description: String,
+            isEnabled: Bool,
+            isDisabled: Bool = false,
+            onToggle: @escaping (Bool) -> Void
+        ) {
+            self.title = title
+            self.description = description
+            self.isEnabled = isEnabled
+            self.isDisabled = isDisabled
+            self.onToggle = onToggle
         }
 
         var body: some View {
             VStack(alignment: .leading) {
-                Toggle(isOn: $isEnabled) {
+                Toggle(isOn: Binding(
+                    get: { isEnabled },
+                    set: { newValue in
+                        if !isDisabled {
+                            onToggle(newValue)
+                        }
+                    }
+                )) {
                     Text(LocalizedStringResource(stringLiteral: title))
                         .font(.body)
+                        .foregroundColor(isDisabled ? .secondary : .primary)
                         .tag("feature-flag-toggle-title")
                 }
                 .toggleStyle(.switch)
+                .disabled(isDisabled)
                 .tag("feature-flag-toggle-switch")
 
                 Text(LocalizedStringResource(stringLiteral: description))

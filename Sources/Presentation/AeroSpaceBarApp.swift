@@ -16,28 +16,19 @@ struct AeroSpaceBarApp: App {
     /// This creates no scenes since the main interface
     /// is displayed in the menu bar panel rather than a traditional window.
     var body: some Scene {
-        #if DEBUG
-            WindowGroup {
-                SettingsView()
-                    .environmentObject(DependencyContainer.shared.getSettingsViewModel())
-                    .environmentObject(DependencyContainer.shared.getGroupsViewModel())
-                    .environmentObject(DependencyContainer.shared.getLicensingViewModel())
-            }
-            .windowResizability(.contentMinSize)
-        #endif
-
         MenuBarExtra {
             AppMenuView()
-                .environmentObject(DependencyContainer.shared.getLicensingViewModel())
+                .environmentObject(DependencyContainer.shared.getLicenseViewModel())
         } label: {
             Image("AppGlyph")
         }
+        .menuBarExtraStyle(.window)
 
         Settings {
             SettingsView()
                 .environmentObject(DependencyContainer.shared.getSettingsViewModel())
                 .environmentObject(DependencyContainer.shared.getGroupsViewModel())
-                .environmentObject(DependencyContainer.shared.getLicensingViewModel())
+                .environmentObject(DependencyContainer.shared.getLicenseViewModel())
         }
     }
 }

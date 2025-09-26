@@ -14,6 +14,9 @@ struct SpacesView: View {
     /// The spaces ViewModel for managing spaces data and interactions.
     @EnvironmentObject private var viewModel: SpacesViewModel
 
+    /// Standard open settings view action.
+    @Environment(\.openSettings) private var openSettings
+
     /// Whether the wallpaper should be visible (faded in).
     @State private var isWallpaperVisible = false
 
@@ -108,6 +111,11 @@ struct SpacesView: View {
         }
         .onChange(of: viewModel.widgetState) { oldWidgetState, newWidgetState in
             handleWidgetStateChange(oldState: oldWidgetState, newState: newWidgetState)
+        }
+        .onAppear {
+            #if DEBUG
+                openSettings()
+            #endif
         }
         .tag("spaces-main-view")
     }

@@ -12,17 +12,26 @@ struct ProfileSection: View {
     /// Whether the user has an active license.
     let isLicensed: Bool
 
-    /// The user's display name.
-    @Binding var userName: String
+    /// Callback to set the user's display name.
+    let onSetUserName: (String) -> Void
 
-    /// The user's profile image.
-    @Binding var profileImage: NSImage?
+    /// Callback to set the user's profile image.
+    let onSetProfileImage: (NSImage?) -> Void
+
+    /// The current user name from the license info.
+    let userName: String
+
+    /// The current profile image from the license info.
+    let profileImage: NSImage?
 
     /// Whether the user is currently editing their profile name.
     @State private var isEditingProfile = false
 
     /// Focus state for the name text field.
     @FocusState private var isNameFieldFocused: Bool
+
+    /// The temporary user name while editing.
+    @State private var editingUserName = ""
 
     var body: some View {
         Section { } header: {
@@ -72,7 +81,7 @@ struct ProfileSection: View {
                     if isLicensed {
                         if isEditingProfile {
                             TextField(
-                                text: $userName,
+                                text: $editingUserName,
                                 prompt: Text(LocalizedStringResource("Enter your name"))
                                     .font(.title2.bold())
                                     .foregroundStyle(.secondary)
@@ -98,6 +107,7 @@ struct ProfileSection: View {
                             }
                         } else {
                             Button {
+                                editingUserName = userName
                                 isEditingProfile = true
                                 Task { @MainActor in
                                     try await Task.sleep(for: .milliseconds(100))
@@ -141,17 +151,10 @@ struct ProfileSection: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 10)
         .onAppear {
-            loadProfile()
+            editingUserName = userName
         }
-        .onChange(of: isLicensed) { _, newValue in
-            if !newValue {
-                // Clear profile data when license status changes to unlicensed
-                userName = ""
-                profileImage = nil
-            } else {
-                // Reload profile data when license becomes active
-                loadProfile()
-            }
+        .onChange(of: userName) { _, newValue in
+            editingUserName = newValue
         }
     }
 
@@ -166,54 +169,32 @@ struct ProfileSection: View {
 
         if panel.runModal() == .OK, let url = panel.url {
             if let image = NSImage(contentsOf: url) {
-                profileImage = image
-                saveProfile()
+                onSetProfileImage(image)
             }
         }
     }
 
-    /// Loads saved profile data from UserDefaults.
-    private func loadProfile() {
-        // Load saved profile data from UserDefaults
-        userName = UserDefaults.standard.string(forKey: UserDefaultsKeys.profileUserName.rawValue) ?? ""
-
-        if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.profileImageData.rawValue) {
-            profileImage = NSImage(data: imageData)
-        }
-    }
-
-    /// Saves the current profile data to UserDefaults.
+    /// Saves the current profile data.
     private func saveProfile() {
         isEditingProfile = false
         isNameFieldFocused = false
-
-        // Save profile data to UserDefaults
-        UserDefaults.standard.set(userName, forKey: UserDefaultsKeys.profileUserName.rawValue)
-
-        if
-            let profileImage,
-            let imageData = profileImage.tiffRepresentation
-        {
-            UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.profileImageData.rawValue)
-        }
+        onSetUserName(editingUserName)
     }
 
     /// Cancels profile editing without saving.
     private func cancelEditing() {
         isEditingProfile = false
         isNameFieldFocused = false
-        // Reload the original value
-        loadProfile()
+        editingUserName = userName
     }
 }
 
 #Preview {
-    @Previewable @State var userName = "John Doe"
-    @Previewable @State var profileImage: NSImage?
-
-    return ProfileSection(
+    ProfileSection(
         isLicensed: true,
-        userName: $userName,
-        profileImage: $profileImage
+        onSetUserName: { _ in },
+        onSetProfileImage: { _ in },
+        userName: "John Doe",
+        profileImage: nil
     )
 }

@@ -3,38 +3,41 @@
 import Foundation
 
 /// License information from Paddle.
-public struct LicenseInfo {
+public struct LicenseInfo: Codable, Equatable, Sendable {
     /// The license key.
     public let licenseKey: String
 
-    /// The customer email associated with the license.
-    public let customerEmail: String
+    /// The current license status.
+    public let licenseStatus: LicenseStatus
+
+    /// The user's display name.
+    public let userName: String
+
+    /// The user's profile image data.
+    public let profileImageData: Data?
 
     /// Whether the license is active.
-    public let isActive: Bool
-
-    /// The product ID from Paddle.
-    public let productId: String
-
-    /// The transaction ID from Paddle.
-    public let transactionId: String?
-
-    /// The expiration date (if applicable).
-    public let expirationDate: Date?
+    public var isActive: Bool {
+        switch licenseStatus {
+        case .licensed,
+             .trial:
+            true
+        case .expired,
+             .validating,
+             .unknown:
+            false
+        }
+    }
 
     public init(
-        licenseKey: String,
-        customerEmail: String,
-        isActive: Bool,
-        productId: String,
-        transactionId: String? = nil,
-        expirationDate: Date? = nil
+        licenseKey: String = "",
+        licenseStatus: LicenseStatus = .unknown,
+        userName: String = "",
+        profileImageData: Data? = nil
     ) {
         self.licenseKey = licenseKey
-        self.customerEmail = customerEmail
-        self.isActive = isActive
-        self.productId = productId
-        self.transactionId = transactionId
-        self.expirationDate = expirationDate
+        self.licenseStatus = licenseStatus
+        self.userName = userName
+        self.profileImageData = profileImageData
     }
 }

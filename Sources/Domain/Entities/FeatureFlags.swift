@@ -1,11 +1,13 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
+internal import ModifiedCopy
 
 /// Represents feature flags for development and experimental features.
 ///
 /// This struct defines feature flags that can be toggled during development
 /// to enable or disable specific functionality. Only available in debug builds.
+@CopyableCombi
 public struct FeatureFlags: Equatable, Sendable {
     // MARK: - Core Features
 
@@ -18,35 +20,16 @@ public struct FeatureFlags: Equatable, Sendable {
     /// Whether to show advanced settings in the preferences.
     public var enableAdvancedSettings: Bool
 
-    /// Whether to enable licensing features and restrictions.
-    public var enableLicensing: Bool
-
-    #if DEBUG
-        /// Whether to mock an active license for development testing.
-        public var mockActiveLicense: Bool
-    #endif
-
     // MARK: - Convenience Methods
 
     /// Creates feature flags with default values.
     /// - Returns: FeatureFlags with all default values
     public static func defaultFlags() -> FeatureFlags {
-        #if DEBUG
-            FeatureFlags(
-                enableGroups: FeatureFlagDefaults.enableGroups,
-                enableSpaces: FeatureFlagDefaults.enableSpaces,
-                enableAdvancedSettings: FeatureFlagDefaults.enableAdvancedSettings,
-                enableLicensing: FeatureFlagDefaults.enableLicensing,
-                mockActiveLicense: FeatureFlagDefaults.mockActiveLicense
-            )
-        #else
-            FeatureFlags(
-                enableGroups: FeatureFlagDefaults.enableGroups,
-                enableSpaces: FeatureFlagDefaults.enableSpaces,
-                enableAdvancedSettings: FeatureFlagDefaults.enableAdvancedSettings,
-                enableLicensing: FeatureFlagDefaults.enableLicensing
-            )
-        #endif
+        FeatureFlags(
+            enableGroups: FeatureFlagDefaults.enableGroups,
+            enableSpaces: FeatureFlagDefaults.enableSpaces,
+            enableAdvancedSettings: FeatureFlagDefaults.enableAdvancedSettings
+        )
     }
 }
 
@@ -72,21 +55,9 @@ public struct FeatureFlags: Equatable, Sendable {
             }
 
             if enableAdvancedSettings {
-                result += "- Advanced Settings ✅\n"
+                result += "- Advanced Settings ✅"
             } else {
-                result += "- Advanced Settings ❌\n"
-            }
-
-            if enableLicensing {
-                result += "- Licensing ✅\n"
-            } else {
-                result += "- Licensing ❌\n"
-            }
-
-            if mockActiveLicense {
-                result += "- Mock Active License ✅"
-            } else {
-                result += "- Mock Active License ❌"
+                result += "- Advanced Settings ❌"
             }
 
             return result

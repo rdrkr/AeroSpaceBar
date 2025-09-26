@@ -1,7 +1,7 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 /// Represents the current license status of the application.
-public enum LicenseStatus: Equatable, Sendable {
+public enum LicenseStatus: Equatable, Sendable, Codable {
     /// The application is in trial mode with remaining days.
     case trial(daysRemaining: Int)
 

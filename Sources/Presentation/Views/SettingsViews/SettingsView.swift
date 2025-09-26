@@ -111,6 +111,11 @@ struct SettingsView: View {
         .onDisappear {
             viewModel.resetNavigationOnWindowClose()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToLicensePage)) { _ in
+            Task {
+                viewModel.navigateTo(AnyNavigationPage(RootNavigationPage.license))
+            }
+        }
         .animation(.themeEaseInOutFast, value: viewModel.rootPages)
         .tag("settings-view")
     }
@@ -151,5 +156,5 @@ struct SettingsView: View {
     SettingsView()
         .environmentObject(DependencyContainer.shared.getSettingsViewModel())
         .environmentObject(DependencyContainer.shared.getGroupsViewModel())
-        .environmentObject(DependencyContainer.shared.getLicensingViewModel())
+        .environmentObject(DependencyContainer.shared.getLicenseViewModel())
 }

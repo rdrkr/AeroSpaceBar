@@ -17,11 +17,15 @@ protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     /// The localized display name for this navigation page.
     var name: String { get }
 
+    /// The description/subtitle text for this navigation page.
+    var description: String { get }
+
     /// The SF Symbol name to display for this page.
     var symbolName: String { get }
 
-    /// The description/subtitle text for this navigation page.
-    var description: String { get }
+    /// The page icon view to display for this page.
+    @MainActor
+    var icon: AnyView { get }
 
     /// The parent page of this navigation page, if any.
     var parentPage: (any NavigationPage)? { get }
@@ -31,6 +35,11 @@ protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     @MainActor
     @ViewBuilder
     var viewForPage: PageView { get }
+
+    /// A view builder that returns the sidebar item view for this navigation page.
+    @MainActor
+    @ViewBuilder
+    var viewForSidebar: AnyView { get }
 }
 
 /// Default protocol implementations.
@@ -71,12 +80,6 @@ extension NavigationPage {
         }
     }
 
-    /// The page icon view to display for this page.
-    @MainActor
-    var icon: AnyView {
-        AnyView(defaultIcon)
-    }
-
     /// A default internal view builder that returns the sidebar item view for this navigation page.
     @MainActor
     @ViewBuilder
@@ -89,13 +92,6 @@ extension NavigationPage {
             Text(name).font(.callout)
         }
     }
-
-    /// A view builder that returns the sidebar item view for this navigation page.
-    @MainActor
-    @ViewBuilder
-    var viewForSidebar: some View {
-        defaultViewForSidebar(AnyView(icon))
-    }
 }
 
 /// A type-erased wrapper for NavigationPage that allows storing different page types together.
@@ -106,11 +102,17 @@ struct AnyNavigationPage: NavigationPage {
     /// The localized display name for this navigation page.
     let name: String
 
+    /// The description/subtitle text for this navigation page.
+    let description: String
+
     /// The SF Symbol name to display in the sidebar.
     let symbolName: String
 
-    /// The description/subtitle text for this navigation page.
-    let description: String
+    /// The page icon view to display for this page.
+    @MainActor
+    var icon: AnyView {
+        AnyView(defaultIcon)
+    }
 
     /// The parent page of this navigation page, if any.
     let parentPage: (any NavigationPage)?
@@ -125,6 +127,13 @@ struct AnyNavigationPage: NavigationPage {
     @ViewBuilder
     var viewForPage: PageView {
         _viewForPage()
+    }
+
+    /// A view builder that returns the sidebar item view for this navigation page.
+    @MainActor
+    @ViewBuilder
+    var viewForSidebar: AnyView {
+        AnyView(defaultViewForSidebar(AnyView(icon)))
     }
 
     /// Initializes an AnyNavigationPage with a concrete NavigationPage.

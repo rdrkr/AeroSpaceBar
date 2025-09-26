@@ -170,7 +170,10 @@ class SettingsViewModel: ObservableObject {
     @Published var forwardHistory: [AnyNavigationPage] = []
 
     /// The current feature flags configuration.
-    private var featureFlags: FeatureFlags?
+    private var featureFlags: FeatureFlags
+
+    /// Whether licensing features are enabled.
+    private var enableLicensing: Bool = false
 
     /// Flag to track when we're updating selectedPage programmatically to avoid adding to history
     private var isNavigatingProgrammatically: Bool = false
@@ -239,6 +242,7 @@ class SettingsViewModel: ObservableObject {
     private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
     private let setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
+    private let getEnableLicensingUseCase: GetEnableLicensingUseCase
 
     // MARK: - Spaces Use Cases
 
@@ -290,6 +294,7 @@ class SettingsViewModel: ObservableObject {
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get optimized performance enabled setting.
     ///   - setOptimizedPerformanceEnabledUseCase: Use case to set optimized performance enabled setting.
     ///   - getFeatureFlagsUseCase: Use case to get feature flags.
+    ///   - getEnableLicensingUseCase: Use case to get enableLicensing feature flag.
     ///   - getSpacesVisualConfigUseCase: Use case to get spaces visual config.
     ///   - setSpacesVisualConfigUseCase: Use case to set spaces visual config.
     ///   - getSpacesAppearanceModeUseCase: Use case to get spaces appearance mode.
@@ -322,6 +327,7 @@ class SettingsViewModel: ObservableObject {
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
+        getEnableLicensingUseCase: GetEnableLicensingUseCase,
         getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
         setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
@@ -359,6 +365,7 @@ class SettingsViewModel: ObservableObject {
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
         self.setOptimizedPerformanceEnabledUseCase = setOptimizedPerformanceEnabledUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
+        self.getEnableLicensingUseCase = getEnableLicensingUseCase
 
         // Initialize Spaces Use Cases
         self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
@@ -385,6 +392,8 @@ class SettingsViewModel: ObservableObject {
         logLevel = getLogLevelUseCase.execute().blockingFirst()
         enablePerformanceMetrics = getEnablePerformanceMetricsUseCase.execute().blockingFirst()
         isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
+        featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
+        enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
 
         // Load consolidated visual configurations
         spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
@@ -395,6 +404,7 @@ class SettingsViewModel: ObservableObject {
         globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
+        updateAvailableOptions(with: featureFlags)
         setupReactiveSubscriptions()
     }
 
@@ -610,6 +620,17 @@ class SettingsViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
+        getEnableLicensingUseCase.execute()
+            .sink { [weak self] enableLicensing in
+                if self?.enableLicensing != enableLicensing {
+                    self?.enableLicensing = enableLicensing
+                    if let featureFlags = self?.featureFlags {
+                        self?.updateAvailableOptions(with: featureFlags)
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
         // Subscribe to consolidated spaces visual configuration changes
         getSpacesVisualConfigUseCase.execute()
             .assign(to: \.spacesVisualConfig, on: self)
@@ -645,7 +666,7 @@ class SettingsViewModel: ObservableObject {
         rootPages = RootNavigationPage.allCases.filter { option in
             switch option {
             case .license:
-                featureFlags.enableLicensing
+                enableLicensing
             case .general:
                 true // General is always available
             case .spaces:

@@ -25,13 +25,13 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/WilhelmOks/ModifiedCopyMacro.git", from: "2.1.2"),
         .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.6.0")
     ],
     targets: [
         .executableTarget(
             name: "AeroSpaceBar",
             dependencies: [
-                .target(name: "AppIntents"),
                 .target(name: "Service")
             ],
             path: "Sources/Presentation",
@@ -45,32 +45,40 @@ let package = Package(
                 .process("Resources/Localizable.xcstrings")
             ],
             swiftSettings: [
-                .treatAllWarnings(as: .error)
-                    .strictMemorySafety()
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ],
+            linkerSettings: [
+                .linkedFramework("AppIntents")
             ]
         ),
         .target(
             name: "Domain",
             dependencies: [
-                .target(name: "AppIntents")
+                .product(name: "ModifiedCopyMacro", package: "ModifiedCopyMacro")
             ],
             path: "Sources/Domain",
             swiftSettings: [
-                .treatAllWarnings(as: .error)
-                    .strictMemorySafety()
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ],
+            linkerSettings: [
+                .linkedFramework("AppIntents")
             ]
         ),
         .target(
             name: "Service",
             dependencies: [
-                .target(name: "AppIntents"),
                 .target(name: "Domain"),
                 .product(name: "TOMLKit", package: "TOMLKit")
             ],
             path: "Sources/Service",
             swiftSettings: [
-                .treatAllWarnings(as: .error)
-                    .strictMemorySafety()
+                .treatAllWarnings(as: .error),
+                .strictMemorySafety()
+            ],
+            linkerSettings: [
+                .linkedFramework("AppIntents")
             ]
         ),
         .testTarget(

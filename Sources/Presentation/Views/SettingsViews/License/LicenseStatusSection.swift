@@ -12,7 +12,7 @@ struct LicenseStatusSection: View {
     let licenseStatus: LicenseStatus
 
     /// The masked license key for display purposes, if available.
-    let maskedLicenseKey: String?
+    let licenseKey: String?
 
     var body: some View {
         Section {
@@ -31,23 +31,6 @@ struct LicenseStatusSection: View {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                    }
-
-                    // Show masked license key for licensed users
-                    if
-                        case .licensed = licenseStatus,
-                        let maskedKey = maskedLicenseKey
-                    {
-                        HStack {
-                            Text(LocalizedStringResource("License Key:"))
-                                .font(.caption)
-                                .fontWeight(.medium)
-                            Spacer()
-                            Text(maskedKey)
-                                .font(.system(.caption, design: .monospaced))
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.top, 2)
                     }
                 }
 
@@ -151,17 +134,17 @@ struct LicenseStatusSection: View {
     VStack(spacing: 20) {
         LicenseStatusSection(
             licenseStatus: .licensed,
-            maskedLicenseKey: "ABCD****WXYZ"
+            licenseKey: "ABCD****WXYZ"
         )
 
         LicenseStatusSection(
             licenseStatus: .trial(daysRemaining: 5),
-            maskedLicenseKey: nil
+            licenseKey: nil
         )
 
         LicenseStatusSection(
             licenseStatus: .unknown,
-            maskedLicenseKey: nil
+            licenseKey: nil
         )
     }
     .padding()

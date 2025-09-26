@@ -32,6 +32,6 @@ public enum FeatureFlagDefaults {
     #if DEBUG
         /// Default state for mocking an active license.
         /// Set to false by default, can be enabled for testing licensed features.
-        public static let mockActiveLicense: Bool = false
+        public static let mockActiveLicense: Bool = true
     #endif
 }

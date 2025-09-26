@@ -28,7 +28,9 @@
                                     "Show/hide the Spaces feature in the menu bar and settings."
                                 )
                             ),
-                            isEnabled: $viewModel.featureFlags.enableSpaces
+                            isEnabled: viewModel.featureFlags.enableSpaces,
+                            isDisabled: viewModel.areFeatureFlagsDisabled,
+                            onToggle: viewModel.setEnableSpaces
                         )
 
                         FeatureFlagToggle(
@@ -38,7 +40,9 @@
                                     "Show/hide the Groups feature in the menu bar and settings."
                                 )
                             ),
-                            isEnabled: $viewModel.featureFlags.enableGroups
+                            isEnabled: viewModel.featureFlags.enableGroups,
+                            isDisabled: viewModel.areFeatureFlagsDisabled,
+                            onToggle: viewModel.setEnableGroups
                         )
 
                         FeatureFlagToggle(
@@ -46,7 +50,9 @@
                             description: String(
                                 localized: LocalizedStringResource("Show/hide the Advanced Settings section.")
                             ),
-                            isEnabled: $viewModel.featureFlags.enableAdvancedSettings
+                            isEnabled: viewModel.featureFlags.enableAdvancedSettings,
+                            isDisabled: viewModel.areFeatureFlagsDisabled,
+                            onToggle: viewModel.setEnableAdvancedSettings
                         )
                     }
                 }
@@ -61,10 +67,11 @@
                                     "Show/hide licensing features, trial periods, and purchase options."
                                 )
                             ),
-                            isEnabled: $viewModel.featureFlags.enableLicensing
+                            isEnabled: viewModel.enableLicensing,
+                            onToggle: viewModel.setEnableLicensing
                         )
 
-                        if viewModel.featureFlags.enableLicensing {
+                        if viewModel.enableLicensing {
                             FeatureFlagToggle(
                                 title: String(localized: LocalizedStringResource("Mock Active License")),
                                 description: String(
@@ -72,7 +79,8 @@
                                         "Mock an active license for development testing without a real license."
                                     )
                                 ),
-                                isEnabled: $viewModel.featureFlags.mockActiveLicense
+                                isEnabled: viewModel.mockActiveLicense,
+                                onToggle: viewModel.setMockActiveLicense
                             )
                         }
                     }
@@ -83,17 +91,13 @@
                     SettingsDestructiveButton(
                         title: LocalizedStringResource("Reset to Defaults"),
                         description: LocalizedStringResource("Reset all feature flags to their default values."),
-                        action: {
-                            Task {
-                                await viewModel.resetToDefaults()
-                            }
-                        }
+                        action: viewModel.resetToDefaults
                     )
                     .tag("developer-reset-button")
                 }
                 .tag("developer-actions-section")
             }
-            .animation(.themeEaseInOutFast, value: viewModel.featureFlags.enableLicensing)
+            .animation(.themeEaseInOutFast, value: viewModel.enableLicensing)
             .tag("developer-settings-view")
         }
     }

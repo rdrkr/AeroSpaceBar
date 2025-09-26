@@ -22,6 +22,7 @@
 		1A494BDB2E73E5BD00187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
 		1A494BDD2E73E5C200187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
 		1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
+		1A4A143D2E87B55700A4B997 /* ModifiedCopy in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4A143C2E87B55700A4B997 /* ModifiedCopy */; };
 		1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1AAFCE8A2E7404D6001948FD /* TOMLKit */; };
 /* End PBXBuildFile section */
 
@@ -126,7 +127,7 @@
 				Presentation/Resources/Localizable.xcstrings,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
-				Presentation/ViewModels/LicensingViewModel.swift,
+				Presentation/ViewModels/LicenseViewModel.swift,
 				Presentation/ViewModels/SettingsViewModel.swift,
 				Presentation/ViewModels/SpacesViewModel.swift,
 				Presentation/Views/AboutView.swift,
@@ -160,7 +161,6 @@
 				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
 				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
 				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
-				Presentation/Views/SettingsViews/License/LicenseStatusView.swift,
 				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
@@ -186,7 +186,7 @@
 				Presentation/Resources/Localizable.xcstrings,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
-				Presentation/ViewModels/LicensingViewModel.swift,
+				Presentation/ViewModels/LicenseViewModel.swift,
 				Presentation/ViewModels/SettingsViewModel.swift,
 				Presentation/ViewModels/SpacesViewModel.swift,
 				Presentation/Views/AboutView.swift,
@@ -220,7 +220,6 @@
 				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
 				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
 				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
-				Presentation/Views/SettingsViews/License/LicenseStatusView.swift,
 				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
@@ -237,7 +236,7 @@
 				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
 				Service/Repositories/ConfigurationRepository.swift,
 				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/LicensingRepository.swift,
+				Service/Repositories/LicenseRepository.swift,
 				Service/Repositories/SystemMenuBarRepository.swift,
 			);
 			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
@@ -336,7 +335,7 @@
 			);
 			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
 		};
-		1A5A333E2E7B127A00CFD22F /* Exceptions for "Sources" folder in "Service" target */ = {
+		1A4A11DA2E86E4E100A4B997 /* Exceptions for "Sources" folder in "Service" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Service/Network/AeroSpaceCLIClient.swift,
@@ -345,7 +344,7 @@
 				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
 				Service/Repositories/ConfigurationRepository.swift,
 				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/LicensingRepository.swift,
+				Service/Repositories/LicenseRepository.swift,
 				Service/Repositories/SystemMenuBarRepository.swift,
 			);
 			target = 1A493DE32E73D9F000187B3E /* Service */;
@@ -358,7 +357,7 @@
 			exceptions = (
 				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
 				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
-				1A5A333E2E7B127A00CFD22F /* Exceptions for "Sources" folder in "Service" target */,
+				1A4A11DA2E86E4E100A4B997 /* Exceptions for "Sources" folder in "Service" target */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -382,6 +381,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A4A143D2E87B55700A4B997 /* ModifiedCopy in Frameworks */,
 				1A0011AB2E7E9FDA0005683F /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,6 +514,7 @@
 			);
 			name = Domain;
 			packageProductDependencies = (
+				1A4A143C2E87B55700A4B997 /* ModifiedCopy */,
 			);
 			productName = Domain;
 			productReference = 1A493CFC2E73D9CF00187B3E /* Domain.framework */;
@@ -693,6 +694,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */,
+				1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -1578,6 +1580,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WilhelmOks/ModifiedCopyMacro.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
 		1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LebJe/TOMLKit";
@@ -1589,6 +1599,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A4A143C2E87B55700A4B997 /* ModifiedCopy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */;
+			productName = ModifiedCopy;
+		};
 		1AAFCE8A2E7404D6001948FD /* TOMLKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */;

@@ -125,15 +125,18 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
 
     /// The view for the sidebar item.
     @MainActor
-    var viewForSidebar: some View {
-        Group {
-            switch self {
-            case .license:
-                LicenseSettingsSidebarItemView()
-            default:
-                defaultViewForSidebar(icon)
+    @ViewBuilder
+    var viewForSidebar: AnyView {
+        AnyView(
+            Group {
+                switch self {
+                case .license:
+                    LicenseSettingsSidebarItemView()
+                default:
+                    defaultViewForSidebar(icon)
+                }
             }
-        }
+        )
     }
 
     /// A view builder that the split view uses to show a view for the selected navigation option.

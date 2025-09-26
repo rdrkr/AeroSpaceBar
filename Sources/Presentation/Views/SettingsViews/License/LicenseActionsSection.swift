@@ -14,6 +14,9 @@ struct LicenseActionsSection: View {
     /// The current license status.
     let licenseStatus: LicenseStatus
 
+    /// The current license key (for display when licensed).
+    let licenseKey: String
+
     /// The license key input text.
     @Binding var licenseKeyInput: String
 
@@ -82,6 +85,7 @@ struct LicenseActionsSection: View {
                     // License Key Activation
                     LicenseKeyActivationView(
                         licenseStatus: licenseStatus,
+                        licenseKey: licenseKey,
                         licenseKeyInput: $licenseKeyInput,
                         isActivating: isActivating,
                         activationError: activationError,
@@ -114,6 +118,7 @@ struct LicenseActionsSection: View {
         LicenseActionsSection(
             enableLicensing: true,
             licenseStatus: .unknown,
+            licenseKey: "",
             licenseKeyInput: $licenseKeyInput,
             isActivating: false,
             activationError: nil,
@@ -127,6 +132,7 @@ struct LicenseActionsSection: View {
         LicenseActionsSection(
             enableLicensing: true,
             licenseStatus: .licensed,
+            licenseKey: "ABCD-EFGH-IJKL-MNOP",
             licenseKeyInput: $licenseKeyInput,
             isActivating: false,
             activationError: nil,
@@ -140,6 +146,7 @@ struct LicenseActionsSection: View {
         LicenseActionsSection(
             enableLicensing: true,
             licenseStatus: .trial(daysRemaining: 5),
+            licenseKey: "",
             licenseKeyInput: $licenseKeyInput,
             isActivating: false,
             activationError: nil,
