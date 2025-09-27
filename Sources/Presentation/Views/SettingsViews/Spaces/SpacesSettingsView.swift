@@ -5,38 +5,50 @@ import SwiftUI
 
 /// Displays spaces-related settings: space opacity, space blur radius, window titles, and more.
 struct SpacesSettingsView: View {
-    @EnvironmentObject private var viewModel: SettingsViewModel
+    /// The settings view model
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
 
-    /// The associated navigation page
-    private let navigationOption: RootNavigationPage = .spaces
+    /// The spaces view model
+    @EnvironmentObject private var spacesViewModel: SpacesViewModel
 
     var body: some View {
-        IntroForm(
-            navigationPage: navigationOption,
-            style: .compact
-        ) {
-            Section {
-                SettingsToggle(
-                    title: LocalizedStringResource("Show Window Title"),
-                    description: LocalizedStringResource("Display window title next to icons in the widget."),
-                    isOn: $viewModel.showWindowTitles
-                )
+        VisualSettingsContainerView(
+            navigationPage: .spaces,
+            appearanceMode: $spacesViewModel.spacesAppearanceMode,
+            entities: $spacesViewModel.allSpaces,
+            globalVisualConfig: $spacesViewModel.globalSpacesVisualConfig,
+            createNavigationPage: { (space: Domain.Space) in
+                AnyNavigationPage(SpaceNavigationPage(spaceId: space.id))
+            },
+            onRegisterDynamicSubPage: settingsViewModel.registerDynamicSubPage,
+            onNavigateTo: settingsViewModel.navigateTo,
+            onResetEntities: {
+                Task {
+                    await spacesViewModel.resetSpacesToDefaults()
+                }
+            },
+            shouldShowEntitiesList: {
+                spacesViewModel.spacesAppearanceMode == .perSpace
+            },
+            prepend: {
+                Section {
+                    SettingsToggle(
+                        title: LocalizedStringResource("Show Window Title"),
+                        description: LocalizedStringResource("Display window title next to icons in the widget."),
+                        isOn: $spacesViewModel.showWindowTitles
+                    )
 
-                SettingsToggle(
-                    title: LocalizedStringResource("Show Empty Spaces"),
-                    description: LocalizedStringResource("Display spaces that contain no windows in the interface."),
-                    isOn: $viewModel.showEmptySpaces
-                )
-                .tag("advanced-show-empty-spaces-toggle")
+                    SettingsToggle(
+                        title: LocalizedStringResource("Show Empty Spaces"),
+                        description: LocalizedStringResource(
+                            "Display spaces that contain no windows in the interface."
+                        ),
+                        isOn: $spacesViewModel.showEmptySpaces
+                    )
+                    .tag("advanced-show-empty-spaces-toggle")
+                }
             }
-
-            VisualSettingsView(
-                entityPrefix: LocalizedStringResource("Space"),
-                visualConfig: $viewModel.globalSpacesVisualConfig,
-                defaultConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
-                tagPrefix: "space"
-            )
-        }
+        )
     }
 }
 

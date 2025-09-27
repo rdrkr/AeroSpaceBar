@@ -85,13 +85,10 @@ struct GroupPageView: View {
                 ))
             }
 
-            if groupsViewModel.groupsAppearanceMode == .perApp {
+            if groupsViewModel.groupsAppearanceMode == .perGroup {
                 VisualSettingsView(
-                    entityPrefix: LocalizedStringResource("Group"),
-                    visualConfig: group.visualConfig,
-                    defaultConfig: Group.defaultInstance.visualConfig,
-                    tagPrefix: "group",
-                    showForegroundSection: false
+                    metadata: Domain.Group.metadata,
+                    visualConfig: group.visualConfig
                 )
             }
 

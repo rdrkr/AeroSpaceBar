@@ -197,7 +197,7 @@ private struct WindowHoverBackground: View {
         isFocused: true,
         workspace: "1",
         appIcon: nil,
-        visualConfig: VisualContainer(
+        visualConfig: VisualProperties(
             backgroundTintColor: .clear,
             backgroundOpacity: 0.0,
             backgroundBlurRadius: 0.0,

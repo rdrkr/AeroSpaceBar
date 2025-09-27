@@ -19,7 +19,7 @@ public final class SetSpacesVisualConfigUseCase {
 
     /// Executes the use case to set the spaces configuration.
     /// - Parameter value: The new spaces configuration value to set
-    public func execute(value: [VisualContainer]) async {
+    public func execute(value: [VisualProperties]) async {
         await configurationGateway.setSpacesVisualConfig(value)
     }
 }

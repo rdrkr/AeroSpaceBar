@@ -46,7 +46,7 @@ struct HoverState: ViewModifier {
 /// Focus state modifier for spaces
 struct SpaceFocusState: ViewModifier {
     let isFocused: Bool
-    let visualConfig: VisualContainer
+    let visualConfig: VisualProperties
     let widgetSpacing: Double = ConfigurationDefaults.widgetSpacing
 
     func body(content: Content) -> some View {
@@ -260,7 +260,7 @@ struct SettingsFormStyle: ViewModifier {
 
 /// Visual container configuration modifier for applying consolidated visual styling
 struct VisualContainerConfigurationModifier: ViewModifier {
-    let configuration: VisualContainer
+    let configuration: VisualProperties
     let applyBackground: Bool
     let applyBorder: Bool
     let applyForeground: Bool
@@ -276,7 +276,7 @@ struct VisualContainerConfigurationModifier: ViewModifier {
 
 /// Conditional background modifier
 private struct ConditionalBackground: ViewModifier {
-    let configuration: VisualContainer
+    let configuration: VisualProperties
     let applyBackground: Bool
 
     func body(content: Content) -> some View {
@@ -294,7 +294,7 @@ private struct ConditionalBackground: ViewModifier {
 
 /// Conditional border modifier
 private struct ConditionalBorder: ViewModifier {
-    let configuration: VisualContainer
+    let configuration: VisualProperties
     let applyBorder: Bool
 
     func body(content: Content) -> some View {
@@ -314,7 +314,7 @@ private struct ConditionalBorder: ViewModifier {
 
 /// Conditional foreground modifier
 private struct ConditionalForeground: ViewModifier {
-    let configuration: VisualContainer
+    let configuration: VisualProperties
     let applyForeground: Bool
 
     func body(content: Content) -> some View {
@@ -347,7 +347,7 @@ extension View {
     /// Apply space focus state modifier
     func spaceFocusState(
         _ isFocused: Bool,
-        visualConfig: VisualContainer
+        visualConfig: VisualProperties
     ) -> some View {
         modifier(
             SpaceFocusState(
@@ -405,7 +405,7 @@ extension View {
 
     /// Apply visual container configuration styling
     func visualContainerConfiguration(
-        _ configuration: VisualContainer,
+        _ configuration: VisualProperties,
         applyBackground: Bool = true,
         applyBorder: Bool = true,
         applyForeground: Bool = true

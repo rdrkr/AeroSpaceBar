@@ -46,11 +46,24 @@ final class GroupsViewModel: ObservableObject {
         }
     }
 
+    /// The current spaces appearance mode (used to restrict groups appearance mode).
+    @Published var spacesAppearanceMode: SpacesAppearanceMode
+
+    /// Returns the available groups appearance modes based on the current spaces appearance mode.
+    /// When spaces are in per-space mode, match-spaces option is not available.
+    @Published var availableGroupsAppearanceModes: [GroupsAppearanceMode]
+
     /// Consolidated global groups visual configuration.
-    @Published var globalGroupsVisualConfig: VisualContainer
+    @Published var globalGroupsVisualConfig: VisualProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalGroupsVisualConfigUseCase.execute(value: globalGroupsVisualConfig)
+            }
+        }
+    }
 
     /// Consolidated global space visual configuration.
-    @Published var globalSpacesVisualConfig: VisualContainer
+    @Published var globalSpacesVisualConfig: VisualProperties
 
     // MARK: - Dependencies
 
@@ -62,11 +75,20 @@ final class GroupsViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
     private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
+    private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
     private let getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase
+    private let setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
     private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
+
+    // MARK: - Private Constants
+
+    /// All cases of GroupsAppearanceMode without matchSpaces.
+    private static let restrictedGroupsAppearanceMode = GroupsAppearanceMode.allCases.filter {
+        $0 != .matchSpaces
+    }
 
     // MARK: - Initialization
 
@@ -80,6 +102,7 @@ final class GroupsViewModel: ObservableObject {
     ///   - getFeatureFlagsUseCase: The use case for getting feature flags
     ///   - getGroupsAppearanceModeUseCase: The use case for getting groups appearance mode
     ///   - setGroupsAppearanceModeUseCase: The use case for setting groups appearance mode
+    ///   - getSpacesAppearanceModeUseCase: The use case for getting spaces appearance mode
     ///   - getGlobalGroupsVisualConfigUseCase: The use case for getting global groups visual configuration
     ///   - getGlobalSpacesVisualConfigUseCase: The use case for getting global space visual configuration
     init(
@@ -91,7 +114,9 @@ final class GroupsViewModel: ObservableObject {
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
         setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
+        getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
         getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase,
+        setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase,
         getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
@@ -102,7 +127,9 @@ final class GroupsViewModel: ObservableObject {
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
         self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
+        self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
         self.getGlobalGroupsVisualConfigUseCase = getGlobalGroupsVisualConfigUseCase
+        self.setGlobalGroupsVisualConfigUseCase = setGlobalGroupsVisualConfigUseCase
         self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
 
         // Initialize with current values
@@ -110,15 +137,33 @@ final class GroupsViewModel: ObservableObject {
         groups = getGroupsUseCase.execute().blockingFirst()
         menuBarApps = getMenuBarAppsUseCase.execute().blockingFirst()
         isGroupsFeatureEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableGroups
+        spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
         groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
         globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
         globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
 
-        // Setup reactive subscriptions
+        availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
+        if spacesAppearanceMode == .perSpace {
+            availableGroupsAppearanceModes = GroupsViewModel.restrictedGroupsAppearanceMode
+        }
+
         setupReactiveSubscriptions()
     }
 
     // MARK: - Public Methods
+
+    /// Validates and potentially restricts the groups appearance mode based on spaces appearance mode.
+    /// When spaces are in per-space mode, groups cannot use "Match to Spaces" mode.
+    /// - Parameter proposedMode: The desired groups appearance mode
+    /// - Returns: The validated appearance mode (fallback to .allGroups if restricted)
+    private func validateGroupsAppearanceMode(_ proposedMode: GroupsAppearanceMode) -> GroupsAppearanceMode {
+        // If spaces are in per-space mode, restrict groups to .allGroups or .perGroup only
+        if spacesAppearanceMode == .perSpace, proposedMode == .matchSpaces {
+            return .allGroups // Fallback to all groups mode
+        }
+
+        return proposedMode
+    }
 
     /// Finds ranges of apps that are not assigned to any group.
     /// - Parameter totalApps: The total number of menu bar apps
@@ -174,11 +219,9 @@ final class GroupsViewModel: ObservableObject {
 
     /// Adds a new group by splitting existing groups to make room.
     /// Group 1 always gives up its last app, other groups shift left, new group takes the max position.
-    /// - Returns: True if a group was added, false if no space is available
-    @discardableResult
-    func addNewGroup() -> Bool {
+    func addNewGroup() {
         let totalApps = menuBarApps.count
-        guard totalApps > 0, groups.count < totalApps else { return false }
+        guard totalApps > 0, groups.count < totalApps else { return }
 
         // Find first unassigned app
         let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
@@ -196,16 +239,16 @@ final class GroupsViewModel: ObservableObject {
             groups.append(newGroup)
             normalizeGroupsConfiguration()
 
-            return true
+            return
         } else {
             // Priority 2: Fallback - take app from first group (original behavior)
-            guard !groups.isEmpty else { return false }
+            guard !groups.isEmpty else { return }
 
             // Sort to ensure we get the rightmost group (lowest startIndex)
             normalizeGroupsConfiguration()
             let rightmostGroup = groups[0]
             let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
-            guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return false }
+            guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return }
 
             // Reduce rightmost group by 1 app
             groups[0].endIndex = rightmostGroupEndIndex - 1
@@ -218,8 +261,6 @@ final class GroupsViewModel: ObservableObject {
             // Add to array and normalize
             groups.append(newGroup)
             normalizeGroupsConfiguration()
-
-            return true
         }
     }
 
@@ -234,14 +275,11 @@ final class GroupsViewModel: ObservableObject {
         normalizeGroupsConfiguration()
     }
 
-    /// Resets the group configuration to default values from ConfigurationDefaults.
-    func resetGroupsToDefaults() {
-        Task { @MainActor in
-            // Update local state first to ensure immediate UI update
-            groups = ConfigurationDefaults.groups
-            // Then persist the change
-            await setGroupsUseCase.execute(value: ConfigurationDefaults.groups)
-        }
+    /// Resets the groups configuration to default values from ConfigurationDefaults.
+    func resetGroupsToDefaults() async {
+        await setGroupsUseCase.execute(value: ConfigurationDefaults.groups)
+        await setGroupsAppearanceModeUseCase.execute(mode: ConfigurationDefaults.groupsAppearanceMode)
+        await setGlobalGroupsVisualConfigUseCase.execute(value: ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
     }
 
     /// Determines if more groups can be added.
@@ -366,15 +404,41 @@ final class GroupsViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-
-        // Subscribe to groups appearance mode changes
-        getGroupsAppearanceModeUseCase.execute()
-            .assign(to: \.groupsAppearanceMode, on: self)
-            .store(in: &cancellables)
     }
 
     /// Setup subscriptions for groups global appearance configuration changes
     private func setupGroupsAppearanceSubscriptions() {
+        // Subscribe to groups appearance mode changes
+        getGroupsAppearanceModeUseCase.execute()
+            .assign(to: \.groupsAppearanceMode, on: self)
+            .store(in: &cancellables)
+
+        // Subscribe to spaces appearance mode changes
+        getSpacesAppearanceModeUseCase.execute()
+            .sink { [weak self] spacesAppearanceMode in
+                guard let self else { return }
+
+                // If spaces switched to per-space mode and groups are in matchSpaces mode,
+                // automatically switch groups to allGroups mode
+                if
+                    spacesAppearanceMode == .perSpace,
+                    availableGroupsAppearanceModes != GroupsViewModel.restrictedGroupsAppearanceMode
+                {
+                    availableGroupsAppearanceModes = GroupsViewModel.restrictedGroupsAppearanceMode
+
+                    if !availableGroupsAppearanceModes.contains(groupsAppearanceMode) {
+                        groupsAppearanceMode = .allGroups
+                    }
+                } else {
+                    availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
+                }
+
+                if self.spacesAppearanceMode != spacesAppearanceMode {
+                    self.spacesAppearanceMode = spacesAppearanceMode
+                }
+            }
+            .store(in: &cancellables)
+
         getGlobalGroupsVisualConfigUseCase.execute()
             .assign(to: \.globalGroupsVisualConfig, on: self)
             .store(in: &cancellables)

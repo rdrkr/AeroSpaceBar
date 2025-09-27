@@ -44,13 +44,13 @@ public protocol ConfigurationGateway {
     // MARK: - UI Configuration Publishers
 
     /// Publisher that emits spaces configuration updates.
-    var spacesVisualConfigPublisher: AnyPublisher<[VisualContainer], Never> { get }
+    var spacesVisualConfigPublisher: AnyPublisher<[VisualProperties], Never> { get }
 
     /// Publisher that emits spaces appearance mode updates.
     var spacesAppearanceModePublisher: AnyPublisher<SpacesAppearanceMode, Never> { get }
 
     /// Publisher that emits global space visual configuration updates.
-    var globalSpacesVisualConfigPublisher: AnyPublisher<VisualContainer, Never> { get }
+    var globalSpacesVisualConfigPublisher: AnyPublisher<VisualProperties, Never> { get }
 
     /// Publisher that emits group configuration updates.
     var groupsPublisher: AnyPublisher<[Domain.Group], Never> { get }
@@ -59,7 +59,7 @@ public protocol ConfigurationGateway {
     var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> { get }
 
     /// Publisher that emits global groups visual configuration updates.
-    var globalGroupsVisualConfigPublisher: AnyPublisher<VisualContainer, Never> { get }
+    var globalGroupsVisualConfigPublisher: AnyPublisher<VisualProperties, Never> { get }
 
     // MARK: - Async Setters (trigger updates via publishers)
 
@@ -81,17 +81,17 @@ public protocol ConfigurationGateway {
 
     // MARK: - UI Configuration Async Setters
 
-    func setSpacesVisualConfig(_ value: [VisualContainer]) async
+    func setSpacesVisualConfig(_ value: [VisualProperties]) async
 
     func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) async
 
-    func setGlobalGroupsVisualConfig(_ value: VisualContainer) async
+    func setGlobalGroupsVisualConfig(_ value: VisualProperties) async
 
     func setGroups(_ value: [Domain.Group]) async
 
     func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async
 
-    func setGlobalSpacesVisualConfig(_ value: VisualContainer) async
+    func setGlobalSpacesVisualConfig(_ value: VisualProperties) async
 
     // MARK: - AeroSpace Configuration Management
 

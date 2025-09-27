@@ -11,6 +11,7 @@ import SwiftUI
 /// - AeroSpace path
 /// - Appearance settings
 struct GeneralSettingsView: View {
+    /// The settings view model
     @EnvironmentObject private var viewModel: SettingsViewModel
     @State private var launchAtLoginUpdateTask: Task<Void, Never>?
 

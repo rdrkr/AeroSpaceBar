@@ -15,10 +15,10 @@ struct GroupView: View {
     let appearanceMode: GroupsAppearanceMode
 
     /// The visual configuration for global groups appearance mode.
-    let globalVisualConfiguration: VisualContainer
+    let globalVisualConfiguration: VisualProperties
 
     /// The visual configuration for match spaces appearance mode.
-    let spaceVisualConfiguration: VisualContainer
+    let spaceVisualConfiguration: VisualProperties
 
     /// The apps in this group that are currently visible (based on group range)
     private var groupApps: [MenuBarApp] {
@@ -34,9 +34,9 @@ struct GroupView: View {
     // MARK: - Appearance Properties
 
     /// The visual configuration based on the current appearance mode
-    private var currentVisualConfiguration: VisualContainer {
+    private var currentVisualConfiguration: VisualProperties {
         switch appearanceMode {
-        case .perApp:
+        case .perGroup:
             // For per-app mode, use the group's visual configuration
             group.visualConfig
 

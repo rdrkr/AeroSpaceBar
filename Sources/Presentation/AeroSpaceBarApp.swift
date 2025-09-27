@@ -27,6 +27,7 @@ struct AeroSpaceBarApp: App {
         Settings {
             SettingsView()
                 .environmentObject(DependencyContainer.shared.getSettingsViewModel())
+                .environmentObject(DependencyContainer.shared.getSpacesViewModel())
                 .environmentObject(DependencyContainer.shared.getGroupsViewModel())
                 .environmentObject(DependencyContainer.shared.getLicenseViewModel())
         }

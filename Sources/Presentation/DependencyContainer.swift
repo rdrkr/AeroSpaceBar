@@ -31,7 +31,7 @@ final class DependencyContainer {
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         getAeroSpaceConfigPathUseCase: makeGetAeroSpaceConfigPathUseCase(),
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
-        getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase()
+        getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase()
     )
 
     /// The configuration gateway for managing application settings.
@@ -56,12 +56,6 @@ final class DependencyContainer {
 
     /// The SettingsViewModel instance.
     private lazy var settingsViewModel: SettingsViewModel = .init(
-        getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
-        setFocusWindowOnClickUseCase: makeSetFocusWindowOnClickUseCase(),
-        getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase(),
-        setShowEmptySpacesUseCase: makeSetShowEmptySpacesUseCase(),
-        getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
-        setShowWindowTitlesUseCase: makeSetShowWindowTitlesUseCase(),
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         setAeroSpacePathUseCase: makeSetAeroSpaceCustomPathUseCase(),
@@ -75,19 +69,7 @@ final class DependencyContainer {
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
         setOptimizedPerformanceEnabledUseCase: makeSetOptimizedPerformanceEnabledUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
-        getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
-        getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase(),
-        setSpacesVisualConfigUseCase: makeSetSpacesVisualConfigUseCase(),
-        getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
-        setSpacesAppearanceModeUseCase: makeSetSpacesAppearanceModeUseCase(),
-        getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase(),
-        setGlobalSpacesVisualConfigUseCase: makeSetGlobalSpacesVisualConfigUseCase(),
-        getGroupsUseCase: makeGetGroupsUseCase(),
-        setGroupsUseCase: makeSetGroupsUseCase(),
-        getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
-        setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
-        getGlobalGroupsVisualConfigUseCase: makeGetGlobalGroupsVisualConfigUseCase(),
-        setGlobalGroupsVisualConfigUseCase: makeSetGlobalGroupsVisualConfigUseCase()
+        getEnableLicensingUseCase: makeGetEnableLicensingUseCase()
     )
 
     /// The SpacesViewModel instance.
@@ -98,13 +80,21 @@ final class DependencyContainer {
         getAeroSpaceStatusUseCase: makeGetAeroSpaceStatusUseCase(),
         startAeroSpaceUseCase: makeStartAeroSpaceUseCase(),
         getShowWindowTitlesUseCase: makeGetShowWindowTitlesUseCase(),
+        setShowWindowTitlesUseCase: makeSetShowWindowTitlesUseCase(),
         getFocusWindowOnClickUseCase: makeGetFocusWindowOnClickUseCase(),
+        setFocusWindowOnClickUseCase: makeSetFocusWindowOnClickUseCase(),
+        getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase(),
+        setShowEmptySpacesUseCase: makeSetShowEmptySpacesUseCase(),
         getWallpaperUseCase: makeGetWallpaperUseCase(),
         getMenuBarVisibilityUseCase: makeGetMenuBarVisibilityUseCase(),
         getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
-        getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
+        setSpacesAppearanceModeUseCase: makeSetSpacesAppearanceModeUseCase(),
+        getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase(),
+        setGlobalSpacesVisualConfigUseCase: makeSetGlobalSpacesVisualConfigUseCase(),
+        getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase(),
+        setSpacesVisualConfigUseCase: makeSetSpacesVisualConfigUseCase()
     )
 
     /// The LicenseViewModel instance.
@@ -129,7 +119,9 @@ final class DependencyContainer {
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
         setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
+        getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
         getGlobalGroupsVisualConfigUseCase: makeGetGlobalGroupsVisualConfigUseCase(),
+        setGlobalGroupsVisualConfigUseCase: makeSetGlobalGroupsVisualConfigUseCase(),
         getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
     )
 

@@ -65,7 +65,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Subjects
 
-    private let spacesVisualConfigSubject = CurrentValueSubject<[VisualContainer], Never>(
+    private let spacesVisualConfigSubject = CurrentValueSubject<[VisualProperties], Never>(
         ConfigurationDefaults.spacesVisualConfiguration
     )
 
@@ -73,7 +73,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.spacesAppearanceMode
     )
 
-    private let globalSpacesVisualConfigSubject = CurrentValueSubject<VisualContainer, Never>(
+    private let globalSpacesVisualConfigSubject = CurrentValueSubject<VisualProperties, Never>(
         ConfigurationDefaults.defaultSpaceVisualConfig
     )
 
@@ -85,7 +85,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.groupsAppearanceMode
     )
 
-    private let globalGroupsVisualConfigSubject = CurrentValueSubject<VisualContainer, Never>(
+    private let globalGroupsVisualConfigSubject = CurrentValueSubject<VisualProperties, Never>(
         ConfigurationDefaults.defaultGroupsGlobalVisualConfig
     )
 
@@ -129,11 +129,11 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Publishers
 
-    public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualContainer, Never> {
+    public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualProperties, Never> {
         globalSpacesVisualConfigSubject.eraseToAnyPublisher()
     }
 
-    public var spacesVisualConfigPublisher: AnyPublisher<[VisualContainer], Never> {
+    public var spacesVisualConfigPublisher: AnyPublisher<[VisualProperties], Never> {
         spacesVisualConfigSubject.eraseToAnyPublisher()
     }
 
@@ -149,7 +149,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         groupsAppearanceModeSubject.eraseToAnyPublisher()
     }
 
-    public var globalGroupsVisualConfigPublisher: AnyPublisher<VisualContainer, Never> {
+    public var globalGroupsVisualConfigPublisher: AnyPublisher<VisualProperties, Never> {
         globalGroupsVisualConfigSubject.eraseToAnyPublisher()
     }
 
@@ -213,7 +213,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Load UI configuration settings from UserDefaults.
     private func loadUIConfigurationSettings() {
-        let spacesVisualConfigurationWrapper: CollectionWrapper<VisualContainer>? = loadStructFromTOML(
+        let spacesVisualConfigurationWrapper: CollectionWrapper<VisualProperties>? = loadStructFromTOML(
             configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue
         )
         let spacesVisualConfiguration = spacesVisualConfigurationWrapper?.items ?? spacesVisualConfigSubject.value
@@ -341,12 +341,12 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Sets the vertical padding for the menu bar interface in points.
 
     /// Sets the spaces configuration and emits update.
-    public func setSpacesVisualConfig(_ value: [VisualContainer]) {
+    public func setSpacesVisualConfig(_ value: [VisualProperties]) {
         if value == spacesVisualConfigSubject.value { return }
 
         saveStructToTOML(
             configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue,
-            data: value
+            data: CollectionWrapper(items: value)
         )
 
         spacesVisualConfigSubject.send(value)
@@ -361,7 +361,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the global space visual configuration and emits update.
-    public func setGlobalSpacesVisualConfig(_ value: VisualContainer) {
+    public func setGlobalSpacesVisualConfig(_ value: VisualProperties) {
         if value == globalSpacesVisualConfigSubject.value { return }
 
         saveStructToTOML(
@@ -393,7 +393,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
     }
 
     /// Sets the global groups visual configuration and emits update.
-    public func setGlobalGroupsVisualConfig(_ value: VisualContainer) {
+    public func setGlobalGroupsVisualConfig(_ value: VisualProperties) {
         if value == globalGroupsVisualConfigSubject.value { return }
 
         saveStructToTOML(

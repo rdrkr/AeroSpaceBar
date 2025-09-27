@@ -1,24 +1,12 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-import AppKit
 import SwiftUI
-
-// MARK: - Visual Configuration Protocols
-
-/// Protocol for entities that have visual configuration capabilities.
-public protocol VisualConfigurable: Identifiable, Codable, Equatable, Hashable, Sendable {
-    /// The title of the container.
-    var title: String { get set }
-
-    /// The visual configuration for the container.
-    var visualConfig: VisualContainer { get set }
-}
 
 /// A consolidated structure containing all visual configuration properties for container UI elements.
 ///
 /// This struct encapsulates common visual properties used across groups, spaces, and other container components
 /// to eliminate code duplication and provide a consistent visual configuration system.
-public struct VisualContainer: Codable, Equatable, Hashable, Sendable {
+public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
     // MARK: - Background Properties
 
     /// The background tint color.
@@ -181,7 +169,7 @@ public struct VisualContainer: Codable, Equatable, Hashable, Sendable {
 
     // MARK: - Hashable Implementation
 
-    public static func == (lhs: VisualContainer, rhs: VisualContainer) -> Bool {
+    public static func == (lhs: VisualProperties, rhs: VisualProperties) -> Bool {
         lhs.backgroundTintColor.toHex() == rhs.backgroundTintColor.toHex() &&
             lhs.backgroundOpacity == rhs.backgroundOpacity &&
             lhs.backgroundBlurRadius == rhs.backgroundBlurRadius &&

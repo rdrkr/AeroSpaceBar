@@ -291,6 +291,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 window.isControlCenterWindow &&
                     window.isOnScreen &&
                     window.layer >= kCGMainMenuWindowLevel &&
+                    window.frame.origin.y == 0.0 && // ignore views which are non in menubar (e.g. notifications).
                     CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
             }
 

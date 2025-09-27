@@ -3,33 +3,33 @@
 import Domain
 import SwiftUI
 
-/// A navigation page that represents a specific group detail view.
+/// A navigation page that represents a specific space detail view.
 ///
-/// This allows individual group configurations to be part of the main navigation system,
-/// enabling the navigation buttons to work across both main settings pages and group details.
-struct GroupNavigationPage: NavigationPage {
+/// This allows individual space configurations to be part of the main navigation system,
+/// enabling the navigation buttons to work across both main settings pages and space details.
+struct SpaceNavigationPage: NavigationPage {
     /// A prefix to the name of this type of navigation page.
-    static let namePrefix: String = "Group "
+    static let namePrefix: String = "Space "
 
-    /// The index of the group in the list of groups.
-    let index: Int
+    /// The ID of the space.
+    let spaceId: String
 
-    /// The unique identifier for this navigation page which is the group index.
-    var id: Int { index }
+    /// The unique identifier for this navigation page which is the space ID hash.
+    var id: Int { spaceId.hashValue }
 
     /// The localized display name for this navigation page.
     var name: String {
         String(
             localized: LocalizedStringResource(
-                "\(GroupNavigationPage.namePrefix)\(id + 1)",
-                comment: "Title for group detail page"
+                "\(SpaceNavigationPage.namePrefix)\(spaceId)",
+                comment: "Title for space detail page"
             )
         )
     }
 
     /// The SF Symbol name to display in the sidebar.
     var symbolName: String {
-        "rectangle.3.group"
+        "square.3.layers.3d.top.filled"
     }
 
     /// The page icon view to display for this page.
@@ -42,8 +42,8 @@ struct GroupNavigationPage: NavigationPage {
     var description: String {
         String(
             localized: LocalizedStringResource(
-                "Configure the appearance and behavior of this group.",
-                comment: "Description for group detail page"
+                "Configure the appearance and behavior of this space.",
+                comment: "Description for space detail page"
             )
         )
     }
@@ -56,22 +56,22 @@ struct GroupNavigationPage: NavigationPage {
     }
 
     /// The parent page of the navigation option.
-    var parentPage: (any NavigationPage)? { RootNavigationPage.groups }
+    var parentPage: (any NavigationPage)? { RootNavigationPage.spaces }
 
     /// A view builder that returns the view for this navigation page.
     @MainActor
     @ViewBuilder
     var viewForPage: PageView {
-        PageView(GroupPageView(id: id))
+        PageView(SpacePageView(spaceId: spaceId))
     }
 
     /// Hashes the essential components of this navigation page.
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(spaceId)
     }
 
-    /// Returns a Boolean value indicating whether two group detail navigation pages are equal.
-    static func == (lhs: GroupNavigationPage, rhs: GroupNavigationPage) -> Bool {
-        lhs.id == rhs.id
+    /// Returns a Boolean value indicating whether two space detail navigation pages are equal.
+    static func == (lhs: SpaceNavigationPage, rhs: SpaceNavigationPage) -> Bool {
+        lhs.spaceId == rhs.spaceId
     }
 }

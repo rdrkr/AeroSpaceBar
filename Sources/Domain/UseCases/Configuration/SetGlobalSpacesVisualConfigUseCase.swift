@@ -19,7 +19,7 @@ public final class SetGlobalSpacesVisualConfigUseCase {
 
     /// Executes the use case to set the global space visual configuration.
     /// - Parameter value: The new global space visual configuration value to set
-    public func execute(value: VisualContainer) async {
+    public func execute(value: VisualProperties) async {
         await configurationGateway.setGlobalSpacesVisualConfig(value)
     }
 }

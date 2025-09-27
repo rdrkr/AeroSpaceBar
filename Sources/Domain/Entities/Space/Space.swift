@@ -7,7 +7,34 @@ import SwiftUI
 ///
 /// This struct contains information about a workspace including its identifier,
 /// focus state, associated windows, and visual configuration.
-public struct Space: VisualConfigurable {
+public struct Space: VisualContainer {
+    public typealias AppearanceMode = SpacesAppearanceMode
+    /// The metadata configuration for Space entities.
+    public static let metadata = VisualContainerMetadata(
+        entityName: String(localized: LocalizedStringResource("Space")),
+        entityNamePlural: String(localized: LocalizedStringResource("Spaces")),
+        tagPrefix: "spaces",
+        canAddEntities: false,
+        canDeleteEntities: false,
+        showForegroundSection: true,
+        defaultGlobalVisualConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
+        canDeleteEntity: { _ in false }, // Spaces cannot be deleted
+        footerText: String(localized: LocalizedStringResource(
+            "Spaces cannot be deleted or added manually - they are managed by AeroSpace."
+        )),
+        resetAlertTitle: String(localized: LocalizedStringResource("Reset Spaces")),
+        resetAlertMessage: String(localized: LocalizedStringResource(
+            """
+            Are you sure you want to reset all spaces to their default configuration? \
+            This action cannot be undone.
+            """
+        )),
+        resetButtonTitle: String(localized: LocalizedStringResource("Reset Spaces")),
+        resetButtonDescription: String(localized: LocalizedStringResource(
+            "Reset all spaces to their default configuration."
+        ))
+    )
+
     /// The unique identifier for the space.
     public var id: String
 
@@ -24,7 +51,7 @@ public struct Space: VisualConfigurable {
     public var windows: [Window]
 
     /// The visual configuration for the space container.
-    public var visualConfig: VisualContainer
+    public var visualConfig: VisualProperties
 
     /// Coding keys for JSON serialization.
     public enum CodingKeys: String, CodingKey {
@@ -42,7 +69,7 @@ public struct Space: VisualConfigurable {
         id: String,
         isFocused: Bool = false,
         windows: [Window] = [],
-        visualConfig: VisualContainer = ConfigurationDefaults.defaultSpaceVisualConfig
+        visualConfig: VisualProperties = ConfigurationDefaults.defaultSpaceVisualConfig
     ) {
         self.id = id
         self.isFocused = isFocused
@@ -58,7 +85,7 @@ public struct Space: VisualConfigurable {
 
         id = try container.decode(String.self, forKey: .id)
         visualConfig = try container.decodeIfPresent(
-            VisualContainer.self, forKey: .visualConfig
+            VisualProperties.self, forKey: .visualConfig
         ) ?? ConfigurationDefaults.defaultSpaceVisualConfig
         isFocused = false
         windows = []

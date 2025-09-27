@@ -62,7 +62,7 @@ public enum ConfigurationDefaults {
     public static let settingsIconSmallSize: Double = 13.0
 
     /// Default visual configuration for space elements.
-    public static let defaultSpaceVisualConfig: VisualContainer = .init(
+    public static let defaultSpaceVisualConfig: VisualProperties = .init(
         backgroundTintColor: .white,
         backgroundOpacity: 0.2,
         backgroundBlurRadius: 0.0,
@@ -74,7 +74,7 @@ public enum ConfigurationDefaults {
     )
 
     /// Default space configuration for organizing spaces.
-    public static let spacesVisualConfiguration: [VisualContainer] = []
+    public static let spacesVisualConfiguration: [VisualProperties] = []
 
     /// Default spaces appearance mode.
     public static let spacesAppearanceMode: SpacesAppearanceMode = .allSpaces
@@ -86,7 +86,7 @@ public enum ConfigurationDefaults {
     public static let groupsAppearanceMode: GroupsAppearanceMode = .matchSpaces
 
     /// Default global visual configuration for all groups.
-    public static let defaultGroupsGlobalVisualConfig: VisualContainer = .init(
+    public static let defaultGroupsGlobalVisualConfig: VisualProperties = .init(
         backgroundTintColor: defaultSpaceVisualConfig.backgroundTintColor,
         backgroundOpacity: min(defaultSpaceVisualConfig.backgroundOpacity, 0.2),
         backgroundBlurRadius: defaultSpaceVisualConfig.backgroundBlurRadius,

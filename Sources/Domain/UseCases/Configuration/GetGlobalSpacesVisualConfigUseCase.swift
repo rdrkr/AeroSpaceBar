@@ -21,7 +21,7 @@ public final class GetGlobalSpacesVisualConfigUseCase {
 
     /// Executes the use case to get the global space visual configuration.
     /// - Returns: A publisher that emits the current global space visual configuration
-    public func execute() -> AnyPublisher<VisualContainer, Never> {
+    public func execute() -> AnyPublisher<VisualProperties, Never> {
         configurationGateway.globalSpacesVisualConfigPublisher
     }
 }

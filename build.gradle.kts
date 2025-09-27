@@ -71,7 +71,7 @@ tasks.register<Exec>("buildDebug") {
     description = "Build the project in Debug configuration"
     dependsOn("check")
     doFirst {
-        println("⚒️ Running Debug build...")
+        println("⚒️ Building Debug...")
     }
     commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Debug", "build")
     parseOutputForErrors()
@@ -82,7 +82,7 @@ tasks.register<Exec>("buildRelease") {
     group = buildGroup
     description = "Build the project in Release configuration"
     doFirst {
-        println("⚒️ Running Release build...")
+        println("⚒️ Building Release...")
     }
     commandLine("xcodebuild", "-project", xcodeProject, "-scheme", xcodeScheme, "-configuration", "Release", "build")
     parseOutputForErrors()

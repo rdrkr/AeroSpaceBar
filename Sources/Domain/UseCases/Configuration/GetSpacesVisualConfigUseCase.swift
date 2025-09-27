@@ -21,7 +21,7 @@ public final class GetSpacesVisualConfigUseCase {
 
     /// Executes the use case to get the spaces configuration.
     /// - Returns: A publisher that emits the current spaces configuration
-    public func execute() -> AnyPublisher<[VisualContainer], Never> {
+    public func execute() -> AnyPublisher<[VisualProperties], Never> {
         configurationGateway.spacesVisualConfigPublisher
     }
 }

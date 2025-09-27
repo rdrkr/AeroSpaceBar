@@ -17,8 +17,11 @@ struct SpacesContainerView: View {
     /// Whether window clicking functionality is enabled.
     let focusWindowOnClick: Bool
 
-    /// The visual configuration for space containers.
-    let visualConfiguration: VisualContainer
+    /// The appearance mode for spaces visual configuration.
+    let appearanceMode: SpacesAppearanceMode
+
+    /// The global visual configuration (used when appearanceMode is .allSpaces).
+    let globalVisualConfiguration: VisualProperties
 
     /// Callback invoked when the user wants to switch to a space.
     /// - Parameters:
@@ -35,13 +38,14 @@ struct SpacesContainerView: View {
     /// The body of the spaces container view.
     /// - Returns: A horizontal stack containing all space views with proper parameters
     var body: some View {
-        HStack(spacing: -ConfigurationDefaults.widgetSpacing - (visualConfiguration.borderWidth * 2)) {
+        HStack(spacing: -ConfigurationDefaults.widgetSpacing - (spacingVisualConfig.borderWidth * 2)) {
             ForEach(spaces) { space in
                 SpaceView(
                     space: space,
                     showWindowTitles: showWindowTitles,
                     focusWindowOnClick: focusWindowOnClick,
-                    visualConfiguration: visualConfiguration,
+                    appearanceMode: appearanceMode,
+                    globalVisualConfiguration: globalVisualConfiguration,
                     onSwitchToSpace: onSwitchToSpace,
                     onSwitchToWindow: onSwitchToWindow
                 )
@@ -49,6 +53,21 @@ struct SpacesContainerView: View {
             }
         }
         .tag("spaces-container")
+    }
+
+    // MARK: - Helper Methods
+
+    /// Returns the visual configuration to use for spacing calculations.
+    /// Uses global configuration when in .allSpaces mode, or the focused space's configuration in .perSpace mode.
+    private var spacingVisualConfig: VisualProperties {
+        switch appearanceMode {
+        case .allSpaces:
+            globalVisualConfiguration
+        case .perSpace:
+            spaces.first(where: \.isFocused)?.visualConfig ?? globalVisualConfiguration
+        @unknown default:
+            globalVisualConfiguration
+        }
     }
 }
 
@@ -63,7 +82,8 @@ struct SpacesContainerView: View {
         spaces: spaces,
         showWindowTitles: true,
         focusWindowOnClick: true,
-        visualConfiguration: VisualContainer(
+        appearanceMode: .allSpaces,
+        globalVisualConfiguration: VisualProperties(
             backgroundTintColor: .blue,
             backgroundOpacity: 0.2,
             backgroundBlurRadius: 8.0,

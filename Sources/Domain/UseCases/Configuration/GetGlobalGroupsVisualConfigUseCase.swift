@@ -21,7 +21,7 @@ public final class GetGlobalGroupsVisualConfigUseCase {
 
     /// Executes the use case to get the global groups visual configuration.
     /// - Returns: A publisher that emits the current global groups visual configuration
-    public func execute() -> AnyPublisher<VisualContainer, Never> {
+    public func execute() -> AnyPublisher<VisualProperties, Never> {
         configurationGateway.globalGroupsVisualConfigPublisher
     }
 }

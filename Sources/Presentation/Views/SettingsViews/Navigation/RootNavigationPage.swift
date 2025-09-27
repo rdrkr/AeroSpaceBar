@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 /// An enumeration of navigation options for the settings interface.

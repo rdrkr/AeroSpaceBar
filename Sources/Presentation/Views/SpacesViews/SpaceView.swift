@@ -18,8 +18,11 @@ struct SpaceView: View {
     /// Whether window clicking functionality is enabled.
     let focusWindowOnClick: Bool
 
-    /// The visual configuration for the space container.
-    let visualConfiguration: VisualContainer
+    /// The appearance mode determining which styling properties to use.
+    let appearanceMode: SpacesAppearanceMode
+
+    /// The global visual configuration (used when appearanceMode is .allSpaces).
+    let globalVisualConfiguration: VisualProperties
 
     /// Callback invoked when the user wants to switch to a space.
     /// - Parameters:
@@ -36,6 +39,18 @@ struct SpaceView: View {
 
     // MARK: - Computed Properties
 
+    /// The visual configuration based on the current appearance mode.
+    private var currentVisualConfiguration: VisualProperties {
+        switch appearanceMode {
+        case .allSpaces:
+            globalVisualConfiguration
+        case .perSpace:
+            space.visualConfig
+        @unknown default:
+            globalVisualConfiguration
+        }
+    }
+
     /// Computed property for focus state to avoid repeated calculations.
     /// - Returns: True if any window in the space is focused or the space itself is focused
     private var isFocused: Bool {
@@ -49,7 +64,7 @@ struct SpaceView: View {
     private var spaceHeight: Double {
         ConfigurationDefaults.windowIconSize +
             (ConfigurationDefaults.menuBarVerticalPadding * 2) +
-            (visualConfiguration.borderWidth * 2)
+            (currentVisualConfiguration.borderWidth * 2)
     }
 
     // MARK: - Body
@@ -64,7 +79,7 @@ struct SpaceView: View {
 
             Text(space.title)
                 .font(.headline)
-                .foregroundColor(visualConfiguration.foregroundColor)
+                .foregroundColor(currentVisualConfiguration.foregroundColor)
                 .frame(minWidth: 15)
                 .fixedSize(horizontal: true, vertical: false)
                 .textShadow()
@@ -79,8 +94,8 @@ struct SpaceView: View {
                         space: space,
                         showWindowTitles: showWindowTitles,
                         focusWindowOnClick: focusWindowOnClick,
-                        spaceForegroundColor: visualConfiguration.foregroundColor,
-                        spaceBackgroundTintColor: visualConfiguration.backgroundTintColor,
+                        spaceForegroundColor: currentVisualConfiguration.foregroundColor,
+                        spaceBackgroundTintColor: currentVisualConfiguration.backgroundTintColor,
                         onSwitchToSpace: onSwitchToSpace,
                         onSwitchToWindow: onSwitchToWindow
                     )
@@ -94,9 +109,9 @@ struct SpaceView: View {
         .frame(height: spaceHeight)
         .spaceFocusState(
             isFocused,
-            visualConfig: visualConfiguration
+            visualConfig: currentVisualConfiguration
         )
-        .cornerRadius(visualConfiguration.cornerRadius)
+        .cornerRadius(currentVisualConfiguration.cornerRadius)
         .standardShadow()
         .transition(.blurReplace)
         .conditionalInteraction(
@@ -119,7 +134,8 @@ struct SpaceView: View {
         ),
         showWindowTitles: true,
         focusWindowOnClick: true,
-        visualConfiguration: VisualContainer(
+        appearanceMode: .allSpaces,
+        globalVisualConfiguration: VisualProperties(
             backgroundTintColor: .blue,
             backgroundOpacity: 0.2,
             backgroundBlurRadius: 8.0,

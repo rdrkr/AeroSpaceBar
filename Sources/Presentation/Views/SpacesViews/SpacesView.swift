@@ -27,12 +27,12 @@ struct SpacesView: View {
 
     /// Computed property for wallpaper to avoid repeated access
     private var wallpaper: NSImage? {
-        viewModel.widgetState.wallpaper
+        viewModel.wallpaper
     }
 
     /// Computed property for spaces to avoid repeated access
     private var spaces: [Space] {
-        viewModel.widgetState.spaces
+        viewModel.spaces
     }
 
     /// Computed property for menu bar height
@@ -77,7 +77,8 @@ struct SpacesView: View {
                             spaces: spaces,
                             showWindowTitles: showWindowTitles,
                             focusWindowOnClick: viewModel.focusWindowOnClick,
-                            visualConfiguration: viewModel.globalSpacesVisualConfig,
+                            appearanceMode: viewModel.spacesAppearanceMode,
+                            globalVisualConfiguration: viewModel.globalSpacesVisualConfig,
                             onSwitchToSpace: { space, needWindowFocus in
                                 viewModel.switchToSpace(space, needWindowFocus: needWindowFocus)
                             },
@@ -109,8 +110,11 @@ struct SpacesView: View {
         .onHover { hovering in
             isMouseHovering = hovering
         }
-        .onChange(of: viewModel.widgetState) { oldWidgetState, newWidgetState in
-            handleWidgetStateChange(oldState: oldWidgetState, newState: newWidgetState)
+        .onChange(of: viewModel.wallpaper) { _, newWallpaper in
+            handleWallpaperChange(wallpaper: newWallpaper, spaces: viewModel.spaces)
+        }
+        .onChange(of: viewModel.spaces) { _, newSpaces in
+            handleWallpaperChange(wallpaper: viewModel.wallpaper, spaces: newSpaces)
         }
         .onAppear {
             #if DEBUG
@@ -122,24 +126,15 @@ struct SpacesView: View {
 
     // MARK: - Private Methods
 
-    /// Handles widget state changes to manage wallpaper visibility
-    private func handleWidgetStateChange(
-        oldState: SpacesViewModel.WidgetState,
-        newState: SpacesViewModel.WidgetState
+    /// Handles wallpaper and spaces changes to manage wallpaper visibility
+    private func handleWallpaperChange(
+        wallpaper: NSImage?,
+        spaces: [Space]
     ) {
-        if newState.wallpaper != nil, !newState.spaces.isEmpty {
+        if wallpaper != nil, !spaces.isEmpty {
             // Fade in wallpaper when spaces are available and image is loaded
             if !isWallpaperVisible {
                 isWallpaperVisible = true
-            }
-            // Fade out and back in when image is loaded and spaces are available
-            else if oldState.wallpaper != newState.wallpaper, isWallpaperVisible {
-                isWallpaperVisible = false
-
-                Task { @MainActor in
-                    try await Task.sleep(for: .seconds(0.2))
-                    isWallpaperVisible = true
-                }
             }
         }
     }

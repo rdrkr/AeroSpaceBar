@@ -7,7 +7,34 @@ import Foundation
 ///
 /// This struct contains information about a window including its identifier,
 /// title, associated application, focus state, workspace assignment, and visual configuration.
-public struct Window: VisualConfigurable {
+public struct Window: VisualContainer {
+    public typealias AppearanceMode = WindowsAppearanceMode
+    /// The metadata configuration for Window entities.
+    public static let metadata = VisualContainerMetadata(
+        entityName: String(localized: LocalizedStringResource("Window")),
+        entityNamePlural: String(localized: LocalizedStringResource("Windows")),
+        tagPrefix: "windows",
+        canAddEntities: false,
+        canDeleteEntities: false,
+        showForegroundSection: true,
+        defaultGlobalVisualConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
+        canDeleteEntity: { _ in false }, // Windows cannot be deleted manually
+        footerText: String(localized: LocalizedStringResource(
+            "Windows are managed by the system and cannot be deleted manually."
+        )),
+        resetAlertTitle: String(localized: LocalizedStringResource("Reset Windows")),
+        resetAlertMessage: String(localized: LocalizedStringResource(
+            """
+            Are you sure you want to reset all window configurations to their defaults? \
+            This action cannot be undone.
+            """
+        )),
+        resetButtonTitle: String(localized: LocalizedStringResource("Reset Windows")),
+        resetButtonDescription: String(localized: LocalizedStringResource(
+            "Reset all window configurations to their defaults."
+        ))
+    )
+
     /// The unique identifier for the window.
     public let id: Int
 
@@ -30,7 +57,7 @@ public struct Window: VisualConfigurable {
     public var appIcon: NSImage?
 
     /// The visual configuration for the window container.
-    public var visualConfig: VisualContainer
+    public var visualConfig: VisualProperties
 
     /// Coding keys for JSON serialization.
     public enum CodingKeys: String, CodingKey {
@@ -57,7 +84,7 @@ public struct Window: VisualConfigurable {
         isFocused: Bool = false,
         workspace: String?,
         appIcon: NSImage? = nil,
-        visualConfig: VisualContainer
+        visualConfig: VisualProperties
     ) {
         self.id = id
         self.title = title
@@ -79,7 +106,7 @@ public struct Window: VisualConfigurable {
         appName = try container.decode(String.self, forKey: .appName)
         workspace = try container.decode(String.self, forKey: .workspace)
         visualConfig = try container.decodeIfPresent(
-            VisualContainer.self, forKey: .visualConfig
+            VisualProperties.self, forKey: .visualConfig
         ) ?? ConfigurationDefaults.defaultSpaceVisualConfig
         isFocused = false
         appIcon = nil // appIcon is not encoded/decoded as NSImage doesn't conform to Codable

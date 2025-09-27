@@ -116,6 +116,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1A3D2D6B2E885248005F2FDC /* Exceptions for "Sources" folder in "Service" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Service/Network/AeroSpaceCLIClient.swift,
+				Service/Network/IconCache.swift,
+				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
+				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
+				Service/Repositories/ConfigurationRepository.swift,
+				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/LicenseRepository.swift,
+				Service/Repositories/SystemMenuBarRepository.swift,
+			);
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+		};
 		1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -136,7 +150,6 @@
 				Presentation/Views/CommonViews/IntroForm.swift,
 				Presentation/Views/CommonViews/LazyVStackList.swift,
 				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
-				Presentation/Views/CommonViews/NavigationPage.swift,
 				Presentation/Views/CommonViews/SettingsColorPicker.swift,
 				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
 				Presentation/Views/CommonViews/SettingsSlider.swift,
@@ -144,6 +157,7 @@
 				Presentation/Views/CommonViews/StickySlider.swift,
 				Presentation/Views/CommonViews/Theme.swift,
 				Presentation/Views/CommonViews/ViewModifiers.swift,
+				Presentation/Views/CommonViews/VisualSettingsContainerView.swift,
 				Presentation/Views/CommonViews/VisualSettingsView.swift,
 				Presentation/Views/GroupsViews/GroupsView.swift,
 				Presentation/Views/GroupsViews/GroupView.swift,
@@ -164,7 +178,9 @@
 				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
+				Presentation/Views/SettingsViews/Navigation/SpaceNavigationPage.swift,
 				Presentation/Views/SettingsViews/SettingsView.swift,
+				Presentation/Views/SettingsViews/Spaces/SpacePageView.swift,
 				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
 				Presentation/Views/SpacesViews/SpacesContainerView.swift,
 				Presentation/Views/SpacesViews/SpacesView.swift,
@@ -195,7 +211,6 @@
 				Presentation/Views/CommonViews/IntroForm.swift,
 				Presentation/Views/CommonViews/LazyVStackList.swift,
 				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
-				Presentation/Views/CommonViews/NavigationPage.swift,
 				Presentation/Views/CommonViews/SettingsColorPicker.swift,
 				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
 				Presentation/Views/CommonViews/SettingsSlider.swift,
@@ -203,6 +218,7 @@
 				Presentation/Views/CommonViews/StickySlider.swift,
 				Presentation/Views/CommonViews/Theme.swift,
 				Presentation/Views/CommonViews/ViewModifiers.swift,
+				Presentation/Views/CommonViews/VisualSettingsContainerView.swift,
 				Presentation/Views/CommonViews/VisualSettingsView.swift,
 				Presentation/Views/GroupsViews/GroupsView.swift,
 				Presentation/Views/GroupsViews/GroupView.swift,
@@ -223,7 +239,9 @@
 				Presentation/Views/SettingsViews/License/ProfileSection.swift,
 				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
 				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
+				Presentation/Views/SettingsViews/Navigation/SpaceNavigationPage.swift,
 				Presentation/Views/SettingsViews/SettingsView.swift,
+				Presentation/Views/SettingsViews/Spaces/SpacePageView.swift,
 				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
 				Presentation/Views/SpacesViews/SpacesContainerView.swift,
 				Presentation/Views/SpacesViews/SpacesView.swift,
@@ -335,20 +353,6 @@
 			);
 			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
 		};
-		1A4A11DA2E86E4E100A4B997 /* Exceptions for "Sources" folder in "Service" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Service/Network/AeroSpaceCLIClient.swift,
-				Service/Network/IconCache.swift,
-				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
-				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
-				Service/Repositories/ConfigurationRepository.swift,
-				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/LicenseRepository.swift,
-				Service/Repositories/SystemMenuBarRepository.swift,
-			);
-			target = 1A493DE32E73D9F000187B3E /* Service */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -357,7 +361,7 @@
 			exceptions = (
 				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
 				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
-				1A4A11DA2E86E4E100A4B997 /* Exceptions for "Sources" folder in "Service" target */,
+				1A3D2D6B2E885248005F2FDC /* Exceptions for "Sources" folder in "Service" target */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

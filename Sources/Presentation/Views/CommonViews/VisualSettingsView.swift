@@ -3,51 +3,27 @@
 import Domain
 import SwiftUI
 
-/// A reusable view for configuring visual properties of VisualConfigurable entities.
+/// A reusable view for configuring visual properties of VisualContainer entities.
 ///
 /// This view provides standardized sections for configuring background, border, foreground,
-/// and geometry properties of any entity that conforms to VisualConfigurable.
+/// and geometry properties of any entity that conforms to VisualContainer.
 struct VisualSettingsView: View {
-    /// The prefix used for localized strings and tags.
-    let entityPrefix: LocalizedStringResource
+    /// The metadata configuration for the visual container entity.
+    let metadata: VisualContainerMetadata
 
     /// The binding to the visual configuration being edited.
-    let visualConfig: Binding<VisualContainer>
-
-    /// The default visual configuration for reset values and range limits.
-    let defaultConfig: VisualContainer
-
-    /// Optional tag prefix for UI testing and identification.
-    let tagPrefix: String?
-
-    /// Whether to show the foreground color section.
-    let showForegroundSection: Bool
-
-    /// Whether to show the geometry section.
-    let showGeometrySection: Bool
+    let visualConfig: Binding<VisualProperties>
 
     /// Initializes the visual settings view with the provided configuration.
     /// - Parameters:
-    ///   - entityPrefix: The prefix used for localized strings
+    ///   - metadata: The metadata configuration for the visual container entity
     ///   - visualConfig: Binding to the visual configuration being edited
-    ///   - defaultConfig: Default configuration for reset values and limits
-    ///   - tagPrefix: Optional tag prefix for UI testing
-    ///   - showForegroundSection: Whether to show foreground color section (default: true)
-    ///   - showGeometrySection: Whether to show geometry section (default: true)
     init(
-        entityPrefix: LocalizedStringResource,
-        visualConfig: Binding<VisualContainer>,
-        defaultConfig: VisualContainer,
-        tagPrefix: String? = nil,
-        showForegroundSection: Bool = true,
-        showGeometrySection: Bool = true
+        metadata: VisualContainerMetadata,
+        visualConfig: Binding<VisualProperties>
     ) {
-        self.entityPrefix = entityPrefix
+        self.metadata = metadata
         self.visualConfig = visualConfig
-        self.defaultConfig = defaultConfig
-        self.tagPrefix = tagPrefix
-        self.showForegroundSection = showForegroundSection
-        self.showGeometrySection = showGeometrySection
     }
 
     /// The main body of the visual settings view.
@@ -56,13 +32,11 @@ struct VisualSettingsView: View {
             backgroundSection
             borderSection
 
-            if showForegroundSection {
+            if metadata.showForegroundSection {
                 foregroundSection
             }
 
-            if showGeometrySection {
-                geometrySection
-            }
+            geometrySection
         }
     }
 
@@ -70,11 +44,12 @@ struct VisualSettingsView: View {
 
     /// Background appearance configuration section.
     private var backgroundSection: some View {
-        Section(LocalizedStringResource("\(String(localized: entityPrefix)) Background")) {
+        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Background")) {
             SettingsColorPicker(
                 title: LocalizedStringResource("Tint Color"),
-                description: LocalizedStringResource(
-                    "Choose the background tint color for \(String(localized: entityPrefix).lowercased()) elements."
+                description: LocalizedStringResource(stringLiteral:
+                    "Choose the background tint color for \(metadata.entityName.lowercased()) " +
+                        "elements."
                 ),
                 selectedColor: visualConfig.backgroundTintColor,
                 supportsOpacity: false
@@ -84,11 +59,11 @@ struct VisualSettingsView: View {
             SettingsSlider(
                 value: visualConfig.backgroundOpacity,
                 in: 0.0 ... 1.0,
-                defaultValue: defaultConfig.backgroundOpacity,
+                defaultValue: metadata.defaultGlobalVisualConfig.backgroundOpacity,
                 stickiness: 0.05,
                 label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource(
-                    "Adjust the background opacity of \(String(localized: entityPrefix).lowercased()) elements."
+                helpText: LocalizedStringResource(stringLiteral:
+                    "Adjust the background opacity of \(metadata.entityName.lowercased()) elements."
                 ),
                 displayAsPercentage: true
             )
@@ -97,11 +72,12 @@ struct VisualSettingsView: View {
             SettingsSlider(
                 value: visualConfig.backgroundBlurRadius,
                 in: 0.0 ... 10.0,
-                defaultValue: defaultConfig.backgroundBlurRadius,
+                defaultValue: metadata.defaultGlobalVisualConfig.backgroundBlurRadius,
                 stickiness: 0.5,
                 label: LocalizedStringResource("Blur Radius"),
-                helpText: LocalizedStringResource(
-                    "Adjust the background blur radius of \(String(localized: entityPrefix).lowercased()) elements."
+                helpText: LocalizedStringResource(stringLiteral:
+                    "Adjust the background blur radius of \(metadata.entityName.lowercased())) " +
+                        "elements."
                 ),
                 displayAsPoints: true
             )
@@ -112,11 +88,11 @@ struct VisualSettingsView: View {
 
     /// Border appearance configuration section.
     private var borderSection: some View {
-        Section(LocalizedStringResource("\(String(localized: entityPrefix)) Border")) {
+        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Border")) {
             SettingsColorPicker(
                 title: LocalizedStringResource("Tint Color"),
-                description: LocalizedStringResource(
-                    "Choose the border tint color for \(String(localized: entityPrefix).lowercased()) elements."
+                description: LocalizedStringResource(stringLiteral:
+                    "Choose the border tint color for \(metadata.entityName.lowercased())) elements."
                 ),
                 selectedColor: visualConfig.borderTintColor,
                 supportsOpacity: false
@@ -126,11 +102,11 @@ struct VisualSettingsView: View {
             SettingsSlider(
                 value: visualConfig.borderOpacity,
                 in: 0.0 ... 1.0,
-                defaultValue: defaultConfig.borderOpacity,
+                defaultValue: metadata.defaultGlobalVisualConfig.borderOpacity,
                 stickiness: 0.05,
                 label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource(
-                    "Adjust the border opacity of \(String(localized: entityPrefix).lowercased()) elements."
+                helpText: LocalizedStringResource(stringLiteral:
+                    "Adjust the border opacity of \(metadata.entityName.lowercased())) elements."
                 ),
                 displayAsPercentage: true
             )
@@ -139,11 +115,11 @@ struct VisualSettingsView: View {
             SettingsSlider(
                 value: visualConfig.borderWidth,
                 in: 0.0 ... 5.0,
-                defaultValue: defaultConfig.borderWidth,
+                defaultValue: metadata.defaultGlobalVisualConfig.borderWidth,
                 stickiness: 0.25,
                 label: LocalizedStringResource("Width"),
-                helpText: LocalizedStringResource(
-                    "Adjust the border width of \(String(localized: entityPrefix).lowercased()) elements."
+                helpText: LocalizedStringResource(stringLiteral:
+                    "Adjust the border width of \(metadata.entityName.lowercased())) elements."
                 ),
                 displayAsPoints: true
             )
@@ -154,11 +130,12 @@ struct VisualSettingsView: View {
 
     /// Foreground appearance configuration section.
     private var foregroundSection: some View {
-        Section(LocalizedStringResource("\(String(localized: entityPrefix)) Foreground")) {
+        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Foreground")) {
             SettingsColorPicker(
                 title: LocalizedStringResource("Color"),
-                description: LocalizedStringResource(
-                    "Choose the foreground color for \(String(localized: entityPrefix).lowercased()) text and icons."
+                description: LocalizedStringResource(stringLiteral:
+                    "Choose the foreground color for \(metadata.entityName.lowercased())) " +
+                        "text and icons."
                 ),
                 selectedColor: visualConfig.foregroundColor,
                 supportsOpacity: false
@@ -170,15 +147,15 @@ struct VisualSettingsView: View {
 
     /// Geometry configuration section.
     private var geometrySection: some View {
-        Section(LocalizedStringResource("\(String(localized: entityPrefix)) Geometry")) {
+        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Geometry")) {
             SettingsSlider(
                 value: visualConfig.cornerRadius,
-                in: 0.0 ... defaultConfig.cornerRadius,
-                defaultValue: defaultConfig.cornerRadius,
+                in: 0.0 ... metadata.defaultGlobalVisualConfig.cornerRadius,
+                defaultValue: metadata.defaultGlobalVisualConfig.cornerRadius,
                 stickiness: 1.0,
                 label: LocalizedStringResource("Corner Radius"),
-                helpText: LocalizedStringResource(
-                    "Adjust the corner radius of \(String(localized: entityPrefix).lowercased()) elements."
+                helpText: LocalizedStringResource(stringLiteral:
+                    "Adjust the corner radius of \(metadata.entityName.lowercased())) elements."
                 ),
                 displayAsPoints: true
             )
@@ -193,31 +170,8 @@ struct VisualSettingsView: View {
     /// - Parameter suffix: The suffix to append to the tag
     /// - Returns: A formatted tag string
     private func makeTag(_ suffix: String) -> String {
-        if let prefix = tagPrefix {
-            return "\(prefix)-\(suffix)"
-        }
-        return suffix
+        let prefix = metadata.tagPrefix
+
+        return "\(prefix)-\(suffix)"
     }
-}
-
-// MARK: - Convenience Extensions
-
-#Preview {
-    struct PreviewWrapper: View {
-        @State private var sampleConfig = ConfigurationDefaults.defaultSpaceVisualConfig
-
-        var body: some View {
-            Form {
-                VisualSettingsView(
-                    entityPrefix: LocalizedStringResource("Space"),
-                    visualConfig: $sampleConfig,
-                    defaultConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
-                    tagPrefix: "space"
-                )
-            }
-            .frame(width: 600, height: 500)
-        }
-    }
-
-    return PreviewWrapper()
 }

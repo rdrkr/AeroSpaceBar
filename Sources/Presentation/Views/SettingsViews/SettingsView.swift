@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Domain
 import SwiftUI
 
 /// The main settings view that provides a comprehensive interface for configuring AeroSpaceBar.
@@ -10,7 +11,7 @@ import SwiftUI
 /// - Settings are automatically saved when changed
 /// - Navigation buttons in the toolbar are fully functional
 struct SettingsView: View {
-    /// The settings view models
+    /// The settings view model
     @EnvironmentObject private var viewModel: SettingsViewModel
 
     /// Whether the sidebar is in focus

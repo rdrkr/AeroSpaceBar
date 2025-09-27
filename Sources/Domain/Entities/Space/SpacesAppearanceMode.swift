@@ -3,7 +3,7 @@
 import Foundation
 
 /// Defines how spaces visual appearance is configured
-public enum SpacesAppearanceMode: String, CaseIterable, Codable, Sendable {
+public enum SpacesAppearanceMode: String, AppearanceMode {
     /// Each space has its own appearance configuration
     case perSpace = "per_space"
 
@@ -27,6 +27,16 @@ public enum SpacesAppearanceMode: String, CaseIterable, Codable, Sendable {
             LocalizedStringResource("Configure appearance for each space individually.")
         case .allSpaces:
             LocalizedStringResource("Use the same appearance for all spaces.")
+        }
+    }
+
+    /// Determines whether the global visual configuration should be shown for this mode.
+    public var shouldShowGlobalConfig: Bool {
+        switch self {
+        case .perSpace:
+            false
+        case .allSpaces:
+            true
         }
     }
 }

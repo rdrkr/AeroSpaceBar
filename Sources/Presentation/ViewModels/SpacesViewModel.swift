@@ -12,27 +12,59 @@ import SwiftUI
 /// It runs on the main actor and uses Combine for reactive updates.
 @MainActor
 final class SpacesViewModel: ObservableObject {
-    /// The widget components state.
-    struct WidgetState: Equatable {
-        /// The current desktop wallpaper image.
-        let wallpaper: NSImage?
-
-        /// The list of available spaces with their associated windows.
-        let spaces: [Space]
-    }
-
     /// Whether AeroSpace is currently running on the system.
     @Published var isAeroSpaceRunning: Bool
 
-    /// The current state of the widget.
-    @Published var widgetState: WidgetState
+    /// The current desktop wallpaper image.
+    @Published var wallpaper: NSImage?
+
+    /// The list of all available spaces with their associated windows (including empty spaces).
+    @Published var allSpaces: [Space]
+
+    /// The list of available spaces with their associated windows (filtered based on showEmptySpaces setting).
+    @Published var spaces: [Space]
 
     /// UI configuration properties.
+    @Published var spacesAppearanceMode: SpacesAppearanceMode {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setSpacesAppearanceModeUseCase.execute(value: spacesAppearanceMode)
+            }
+        }
+    }
+
     @Published var menuBarHeight: Double
-    @Published var showWindowTitles: Bool
-    @Published var focusWindowOnClick: Bool
-    @Published var spacesAppearanceMode: SpacesAppearanceMode
-    @Published var globalSpacesVisualConfig: VisualContainer
+    @Published var showWindowTitles: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowWindowTitlesUseCase.execute(value: showWindowTitles)
+            }
+        }
+    }
+
+    @Published var focusWindowOnClick: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setFocusWindowOnClickUseCase.execute(enabled: focusWindowOnClick)
+            }
+        }
+    }
+
+    @Published var showEmptySpaces: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowEmptySpacesUseCase.execute(value: showEmptySpaces)
+            }
+        }
+    }
+
+    @Published var globalSpacesVisualConfig: VisualProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalSpacesVisualConfigUseCase.execute(value: globalSpacesVisualConfig)
+            }
+        }
+    }
 
     /// Whether the globe key is currently being held.
     @Published var isGlobeKeyPressed: Bool = false
@@ -67,7 +99,17 @@ final class SpacesViewModel: ObservableObject {
     private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
+    private let setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase
     private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
+    private let setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase
+    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
+    private let setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
+
+    /// Use cases for Spaces-related UI configuration properties.
+    private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
+    private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
+    private let setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase
+    private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -84,6 +126,7 @@ final class SpacesViewModel: ObservableObject {
     ///   - getWallpaperUseCase: Use case for getting wallpaper image
     ///   - getMenuBarHeightUseCase: Use case for getting menu bar height
     ///   - getSpacesAppearanceModeUseCase: Use case for getting spaces appearance mode
+    ///   - setSpacesAppearanceModeUseCase: Use case for setting spaces appearance mode
     ///   - getGlobalSpacesVisualConfigUseCase: Use case for getting consolidated space visual configuration
     init(
         getSpacesUseCase: GetSpacesUseCase,
@@ -92,13 +135,21 @@ final class SpacesViewModel: ObservableObject {
         getAeroSpaceStatusUseCase: GetAeroSpaceStatusUseCase,
         startAeroSpaceUseCase: StartAeroSpaceUseCase,
         getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
+        setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
         getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
+        setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
+        getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase,
+        setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase,
         getWallpaperUseCase: GetWallpaperUseCase,
         getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
-        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
+        setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase,
+        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase,
+        setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase,
+        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
+        setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -111,24 +162,35 @@ final class SpacesViewModel: ObservableObject {
         self.getWallpaperUseCase = getWallpaperUseCase
         self.getMenuBarVisibilityUseCase = getMenuBarVisibilityUseCase
         self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
+        self.setShowWindowTitlesUseCase = setShowWindowTitlesUseCase
         self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
+        self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
+        self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
+        self.setShowEmptySpacesUseCase = setShowEmptySpacesUseCase
 
         // Initialize UI configuration use cases
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
+        self.setGlobalSpacesVisualConfigUseCase = setGlobalSpacesVisualConfigUseCase
         self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
+        self.setSpacesAppearanceModeUseCase = setSpacesAppearanceModeUseCase
+        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
+        self.setSpacesVisualConfigUseCase = setSpacesVisualConfigUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
-        widgetState = WidgetState(
-            wallpaper: getWallpaperUseCase.execute().blockingFirst(),
-            spaces: getSpacesUseCase.execute().blockingFirst()
-        )
+        wallpaper = getWallpaperUseCase.execute().blockingFirst()
+
+        let initialSpaces = getSpacesUseCase.execute().blockingFirst()
+        allSpaces = initialSpaces
+        let initialShowEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
+        spaces = initialShowEmptySpaces ? initialSpaces : initialSpaces.filter { !$0.windows.isEmpty }
 
         menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
+        showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
         isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
         isSpacesEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableSpaces
         spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
@@ -206,14 +268,21 @@ final class SpacesViewModel: ObservableObject {
             .assign(to: \.isAeroSpaceRunning, on: self)
             .store(in: &cancellables)
 
-        // Monitor wallpaper and spaces changes
+        // Monitor wallpaper changes
         getWallpaperUseCase.execute()
-            .combineLatest(getSpacesUseCase.execute())
-            .sink { [weak self] wallpaper, spaces in
-                let sortedSpaces = spaces.sorted {
+            .assign(to: \.wallpaper, on: self)
+            .store(in: &cancellables)
+
+        // Monitor spaces changes
+        getSpacesUseCase.execute()
+            .sink { [weak self] allSpacesData in
+                let sortedAllSpaces = allSpacesData.sorted {
                     $0.id < $1.id
                 }
-                self?.widgetState = WidgetState(wallpaper: wallpaper, spaces: sortedSpaces)
+                self?.allSpaces = sortedAllSpaces
+
+                // Update filtered spaces based on showEmptySpaces setting
+                self?.updateFilteredSpaces()
             }
             .store(in: &cancellables)
 
@@ -228,6 +297,13 @@ final class SpacesViewModel: ObservableObject {
 
         getFocusWindowOnClickUseCase.execute()
             .assign(to: \.focusWindowOnClick, on: self)
+            .store(in: &cancellables)
+
+        getShowEmptySpacesUseCase.execute()
+            .sink { [weak self] showEmpty in
+                self?.showEmptySpaces = showEmpty
+                self?.updateFilteredSpaces()
+            }
             .store(in: &cancellables)
 
         // Monitor system menu bar visibility changes
@@ -279,6 +355,47 @@ final class SpacesViewModel: ObservableObject {
         } catch {
             Logger.error("Error focusing window", error: error, category: Logger.spaces)
         }
+    }
+
+    /// Updates a specific space's visual configuration.
+    ///
+    /// This method updates the visual configuration for a space at the specified ID.
+    /// It modifies the local spaces array and persists the changes via the configuration use case.
+    /// - Parameters:
+    ///   - spaceId: The ID of the space to update
+    ///   - visualConfig: The new visual configuration for the space
+    func updateSpaceVisualConfig(spaceId: String, visualConfig: VisualProperties) {
+        // Update the local spaces array
+        if let index = spaces.firstIndex(where: { $0.id == spaceId }) {
+            spaces[index].visualConfig = visualConfig
+
+            // Persist the changes using the use case
+            Task { @MainActor in
+                let allSpaceVisualConfigs = spaces.map(\.visualConfig)
+                await setSpacesVisualConfigUseCase.execute(value: allSpaceVisualConfigs)
+            }
+        }
+    }
+
+    /// Resets all spaces-related settings to their default values.
+    ///
+    /// This method resets spaces visual configurations, appearance mode, and related UI settings
+    /// to their default values as defined in ConfigurationDefaults.
+    func resetSpacesToDefaults() async {
+        await setSpacesVisualConfigUseCase.execute(value: ConfigurationDefaults.spacesVisualConfiguration)
+        await setGlobalSpacesVisualConfigUseCase.execute(value: ConfigurationDefaults.defaultSpaceVisualConfig)
+        await setSpacesAppearanceModeUseCase.execute(value: ConfigurationDefaults.spacesAppearanceMode)
+        await setShowWindowTitlesUseCase.execute(value: ConfigurationDefaults.showWindowTitles)
+        await setShowEmptySpacesUseCase.execute(value: ConfigurationDefaults.showEmptySpaces)
+        await setFocusWindowOnClickUseCase.execute(enabled: ConfigurationDefaults.focusWindowOnClick)
+    }
+
+    /// Updates the filtered spaces list based on the showEmptySpaces setting.
+    ///
+    /// This method filters the allSpaces array based on the showEmptySpaces setting
+    /// and updates the spaces property accordingly.
+    private func updateFilteredSpaces() {
+        spaces = showEmptySpaces ? allSpaces : allSpaces.filter { !$0.windows.isEmpty }
     }
 
     // MARK: - Globe Key Monitoring

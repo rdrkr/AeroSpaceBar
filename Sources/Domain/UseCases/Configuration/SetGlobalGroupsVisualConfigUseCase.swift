@@ -19,7 +19,7 @@ public final class SetGlobalGroupsVisualConfigUseCase {
 
     /// Executes the use case to set the global groups visual configuration.
     /// - Parameter value: The new global groups visual configuration value to set
-    public func execute(value: VisualContainer) async {
+    public func execute(value: VisualProperties) async {
         await configurationGateway.setGlobalGroupsVisualConfig(value)
     }
 }

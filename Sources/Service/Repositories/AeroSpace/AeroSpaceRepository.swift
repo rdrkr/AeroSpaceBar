@@ -35,8 +35,8 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Use case for getting the optimized performance enabled setting.
     private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
 
-    /// Use case for getting the show empty spaces setting.
-    private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
+    /// Use case for getting the spaces visual configuration.
+    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
 
     /// Cached AeroSpace executable path.
     private var aeroSpaceExecutable: String
@@ -44,8 +44,8 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Whether optimized performance is enabled.
     private var optimizedPerformanceEnabled: Bool
 
-    /// Whether to show empty spaces in the interface.
-    private var showEmptySpaces: Bool
+    /// Cached spaces visual configuration.
+    private var spacesVisualConfig: [VisualProperties]
 
     /// Task for window focus monitoring.
     private var windowFocusMonitoringTask: Task<Void, Never>?
@@ -74,23 +74,23 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///   - getAeroSpacePathUseCase: Use case to resolve AeroSpace binary path dynamically
     ///   - getAeroSpaceConfigPathUseCase: Use case to get the AeroSpace configuration file path
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get the optimized performance enabled setting
-    ///   - getShowEmptySpacesUseCase: Use case to get the show empty spaces setting
+    ///   - getSpacesVisualConfigUseCase: Use case to get the spaces visual configuration
     public init(
         iconCache: IconCache,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase,
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
-        getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
+        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
     ) {
         self.iconCache = iconCache
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
         self.getAeroSpaceConfigPathUseCase = getAeroSpaceConfigPathUseCase
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
-        self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
+        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
 
         aeroSpaceExecutable = getAeroSpacePathUseCase.execute().blockingFirst()
         optimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
-        showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
+        spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
 
         setupUseCaseObservers()
         configureWindowFocusMonitoring()
@@ -242,16 +242,20 @@ public final class AeroSpaceRepository: SpacesGateway {
 
         getOptimizedPerformanceEnabledUseCase.execute()
             .sink { [weak self] enabled in
-                self?.optimizedPerformanceEnabled = enabled
-                self?.configureWindowFocusMonitoring()
+                if self?.optimizedPerformanceEnabled != enabled {
+                    self?.optimizedPerformanceEnabled = enabled
+                    self?.configureWindowFocusMonitoring()
+                }
             }
             .store(in: &cancellables)
 
-        getShowEmptySpacesUseCase.execute()
-            .sink { [weak self] showEmpty in
-                self?.showEmptySpaces = showEmpty
-                Task { @MainActor in
-                    await self?.updateSpacesData()
+        getSpacesVisualConfigUseCase.execute()
+            .sink { [weak self] visualConfig in
+                if self?.spacesVisualConfig != visualConfig {
+                    self?.spacesVisualConfig = visualConfig
+                    Task { @MainActor in
+                        await self?.updateSpacesData()
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -261,19 +265,16 @@ public final class AeroSpaceRepository: SpacesGateway {
     private func updateSpacesData() async {
         do {
             let executablePath = aeroSpaceExecutable
-            let showEmptySpacesValue = showEmptySpaces
             let spaces = try await Task.detached(priority: .userInitiated) {
-                try self.fetchSpacesWithWindows(
-                    executablePath: executablePath,
-                    showEmptySpaces: showEmptySpacesValue
-                )
+                try self.fetchSpacesWithWindows(executablePath: executablePath)
             }.value
 
             let spacesWithIcons = loadIconsForWindows(in: spaces)
+            let spacesWithVisualConfig = applyVisualConfigurationToSpaces(spacesWithIcons)
             let isRunning = isAeroSpaceRunning()
 
             Task { @MainActor in
-                spacesWithWindowsSubject.send(spacesWithIcons)
+                spacesWithWindowsSubject.send(spacesWithVisualConfig)
                 aeroSpaceRunningSubject.send(isRunning)
             }
 
@@ -406,9 +407,9 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///
     /// This method coordinates the fetching of spaces, windows, and focus information
     /// and builds the complete spaces data structure.
-    /// - Returns: An array of spaces with their associated windows
+    /// - Returns: An array of all spaces with their associated windows (including empty spaces)
     /// - Throws: AppError if any operation fails
-    private nonisolated func fetchSpacesWithWindows(executablePath: String, showEmptySpaces: Bool) throws -> [Space] {
+    private nonisolated func fetchSpacesWithWindows(executablePath: String) throws -> [Space] {
         guard isAeroSpaceRunning() else {
             throw AppError.aeroSpaceNotRunning
         }
@@ -422,8 +423,7 @@ public final class AeroSpaceRepository: SpacesGateway {
             spaces: spaces,
             windows: windows,
             focusedSpace: focusedSpace,
-            focusedWindow: focusedWindow,
-            showEmptySpaces: showEmptySpaces
+            focusedWindow: focusedWindow
         )
     }
 
@@ -436,14 +436,13 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///   - windows: The raw windows data
     ///   - focusedSpace: The currently focused space
     ///   - focusedWindow: The currently focused window
-    /// - Returns: An array of spaces with their associated windows
+    /// - Returns: An array of all spaces with their associated windows (including empty spaces)
     /// - Throws: SpacesError if the operation fails
     private nonisolated func buildSpacesWithWindows(
         spaces: [Space],
         windows: [Window],
         focusedSpace: Space?,
-        focusedWindow: Window?,
-        showEmptySpaces: Bool
+        focusedWindow: Window?
     ) throws -> [Space] {
         // Update focused state for spaces
         var updatedSpaces = spaces
@@ -484,7 +483,7 @@ public final class AeroSpaceRepository: SpacesGateway {
             resultSpaces[index].windows.sort { $0.id < $1.id }
         }
 
-        return showEmptySpaces ? resultSpaces : resultSpaces.filter { !$0.windows.isEmpty }
+        return resultSpaces
     }
 
     /// Fetches all spaces from AeroSpace.
@@ -568,6 +567,36 @@ public final class AeroSpaceRepository: SpacesGateway {
         }
 
         return updatedSpaces
+    }
+
+    /// Applies visual configuration to spaces by matching sorted space IDs with visual properties.
+    /// Since VisualProperties don't contain space IDs, we sort spaces consistently by ID
+    /// and apply configurations in that sorted order for more stable mapping.
+    /// - Parameter spaces: The spaces to apply visual configuration to
+    /// - Returns: The spaces with their visual properties updated
+    private func applyVisualConfigurationToSpaces(_ spaces: [Space]) -> [Space] {
+        let visualConfigValue = spacesVisualConfig
+
+        // Sort spaces by ID for consistent ordering
+        var sortedSpaces = spaces.sorted { $0.id < $1.id }
+
+        // Apply visual configurations in sorted order
+        sortedSpaces.indices.forEach { spaceIndex in
+            // Apply visual configuration if available for this sorted index
+            if spaceIndex < visualConfigValue.count {
+                sortedSpaces[spaceIndex].visualConfig = visualConfigValue[spaceIndex]
+            }
+        }
+
+        // Restore original order by sorting back to input order
+        let originalOrder = spaces.enumerated().map { index, space in (space.id, index) }
+        let orderMap = Dictionary(uniqueKeysWithValues: originalOrder)
+
+        return sortedSpaces.sorted { space1, space2 in
+            let index1 = orderMap[space1.id] ?? 0
+            let index2 = orderMap[space2.id] ?? 0
+            return index1 < index2
+        }
     }
 
     // Add this new method that does the heavy work off-main

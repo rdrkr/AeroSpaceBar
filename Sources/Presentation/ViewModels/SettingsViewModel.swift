@@ -12,35 +12,6 @@ import SwiftUI
 /// overall settings operations like loading, saving, and resetting all settings.
 @MainActor
 class SettingsViewModel: ObservableObject {
-    // MARK: - Display Properties
-
-    /// Whether to immediately focus a window when clicking on it.
-    @Published var focusWindowOnClick: Bool {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setFocusWindowOnClickUseCase.execute(enabled: focusWindowOnClick)
-            }
-        }
-    }
-
-    /// Whether to show empty spaces in the interface.
-    @Published var showEmptySpaces: Bool {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setShowEmptySpacesUseCase.execute(value: showEmptySpaces)
-            }
-        }
-    }
-
-    /// Whether to show window titles in the interface.
-    @Published var showWindowTitles: Bool {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setShowWindowTitlesUseCase.execute(value: showWindowTitles)
-            }
-        }
-    }
-
     // MARK: - AeroSpace Properties
 
     /// The absolute path to the AeroSpace CLI binary.
@@ -75,58 +46,6 @@ class SettingsViewModel: ObservableObject {
         didSet {
             Task.detached(priority: .utility) { [self] in
                 await setOptimizedPerformanceEnabledUseCase.execute(value: isOptimizedPerformanceEnabled)
-            }
-        }
-    }
-
-    // MARK: - Spaces Appearance Properties
-
-    @Published var spacesVisualConfig: [VisualContainer] {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpacesVisualConfigUseCase.execute(value: spacesVisualConfig)
-            }
-        }
-    }
-
-    @Published var spacesAppearanceMode: SpacesAppearanceMode {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setSpacesAppearanceModeUseCase.execute(value: spacesAppearanceMode)
-            }
-        }
-    }
-
-    @Published var globalSpacesVisualConfig: VisualContainer {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGlobalSpacesVisualConfigUseCase.execute(value: globalSpacesVisualConfig)
-            }
-        }
-    }
-
-    // MARK: - Groups Appearance Properties
-
-    @Published var groups: [Domain.Group] {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsUseCase.execute(value: groups)
-            }
-        }
-    }
-
-    @Published var groupsAppearanceMode: GroupsAppearanceMode {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGroupsAppearanceModeUseCase.execute(mode: groupsAppearanceMode)
-            }
-        }
-    }
-
-    @Published var globalGroupsVisualConfig: VisualContainer {
-        didSet {
-            Task.detached(priority: .utility) { [self] in
-                await setGlobalGroupsVisualConfigUseCase.execute(value: globalGroupsVisualConfig)
             }
         }
     }
@@ -217,13 +136,6 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Display Use Cases
 
-    private let getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase
-    private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
-    private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
-    private let setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase
-    private let getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase
-    private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
-
     // MARK: - System Menu Bar Use Cases
 
     private let getMenuBarAppsUseCase: GetMenuBarAppsUseCase
@@ -244,43 +156,13 @@ class SettingsViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getEnableLicensingUseCase: GetEnableLicensingUseCase
 
-    // MARK: - Spaces Use Cases
-
-    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
-    private let setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
-    private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
-    private let setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase
-    private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
-    private let setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase
-
-    // MARK: - Groups Use Cases
-
-    private let getGroupsUseCase: GetGroupsUseCase
-    private let setGroupsUseCase: SetGroupsUseCase
-    private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
-    private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
-    private let getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase
-    private let setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
-
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
-
-    /// Current space visual configuration for building updates.
-    private var currentSpaceVisualConfig: VisualContainer?
-
-    /// Current groups visual configuration for building updates.
-    private var currentGroupsVisualConfig: VisualContainer?
 
     // MARK: - Initialization
 
     /// Initializes the settings view model with dependencies.
     /// - Parameters:
-    ///   - getFocusWindowOnClickUseCase: Use case to get focus window on click setting.
-    ///   - setFocusWindowOnClickUseCase: Use case to set focus window on click setting.
-    ///   - getShowEmptySpacesUseCase: Use case to get show empty spaces setting.
-    ///   - setShowEmptySpacesUseCase: Use case to set show empty spaces setting.
-    ///   - getShowWindowTitlesUseCase: Use case to get show window titles setting.
-    ///   - setShowWindowTitlesUseCase: Use case to set show window titles setting.
     ///   - getMenuBarAppsUseCase: Use case to get menu bar apps.
     ///   - getAeroSpacePathUseCase: Use case to get AeroSpace path.
     ///   - setAeroSpacePathUseCase: Use case to set AeroSpace path.
@@ -295,25 +177,7 @@ class SettingsViewModel: ObservableObject {
     ///   - setOptimizedPerformanceEnabledUseCase: Use case to set optimized performance enabled setting.
     ///   - getFeatureFlagsUseCase: Use case to get feature flags.
     ///   - getEnableLicensingUseCase: Use case to get enableLicensing feature flag.
-    ///   - getSpacesVisualConfigUseCase: Use case to get spaces visual config.
-    ///   - setSpacesVisualConfigUseCase: Use case to set spaces visual config.
-    ///   - getSpacesAppearanceModeUseCase: Use case to get spaces appearance mode.
-    ///   - setSpacesAppearanceModeUseCase: Use case to set spaces appearance mode.
-    ///   - getGlobalSpacesVisualConfigUseCase: Use case to get global spaces visual config.
-    ///   - setGlobalSpacesVisualConfigUseCase: Use case to set global spaces visual config.
-    ///   - getGroupsUseCase: Use case to get groups.
-    ///   - setGroupsUseCase: Use case to set groups.
-    ///   - getGroupsAppearanceModeUseCase: Use case to get groups appearance mode.
-    ///   - setGroupsAppearanceModeUseCase: Use case to set groups appearance mode.
-    ///   - getGlobalGroupsVisualConfigUseCase: Use case to get global groups visual config.
-    ///   - setGlobalGroupsVisualConfigUseCase: Use case to set global groups visual config.
     init(
-        getFocusWindowOnClickUseCase: GetFocusWindowOnClickUseCase,
-        setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
-        getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase,
-        setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase,
-        getShowWindowTitlesUseCase: GetShowWindowTitlesUseCase,
-        setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         setAeroSpacePathUseCase: SetAeroSpacePathUseCase,
@@ -327,28 +191,8 @@ class SettingsViewModel: ObservableObject {
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-        getEnableLicensingUseCase: GetEnableLicensingUseCase,
-        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
-        setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase,
-        getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
-        setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase,
-        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase,
-        setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase,
-        getGroupsUseCase: GetGroupsUseCase,
-        setGroupsUseCase: SetGroupsUseCase,
-        getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
-        setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
-        getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase,
-        setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
+        getEnableLicensingUseCase: GetEnableLicensingUseCase
     ) {
-        // Initialize Display Use Cases
-        self.getFocusWindowOnClickUseCase = getFocusWindowOnClickUseCase
-        self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
-        self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
-        self.setShowEmptySpacesUseCase = setShowEmptySpacesUseCase
-        self.getShowWindowTitlesUseCase = getShowWindowTitlesUseCase
-        self.setShowWindowTitlesUseCase = setShowWindowTitlesUseCase
-
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
 
@@ -367,26 +211,7 @@ class SettingsViewModel: ObservableObject {
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getEnableLicensingUseCase = getEnableLicensingUseCase
 
-        // Initialize Spaces Use Cases
-        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
-        self.setSpacesVisualConfigUseCase = setSpacesVisualConfigUseCase
-        self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
-        self.setSpacesAppearanceModeUseCase = setSpacesAppearanceModeUseCase
-        self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
-        self.setGlobalSpacesVisualConfigUseCase = setGlobalSpacesVisualConfigUseCase
-
-        // Initialize Groups Use Cases
-        self.getGroupsUseCase = getGroupsUseCase
-        self.setGroupsUseCase = setGroupsUseCase
-        self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
-        self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
-        self.getGlobalGroupsVisualConfigUseCase = getGlobalGroupsVisualConfigUseCase
-        self.setGlobalGroupsVisualConfigUseCase = setGlobalGroupsVisualConfigUseCase
-
         // Load initial values from use cases
-        focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
-        showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
-        showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
         aeroSpaceVersion = getAeroSpaceVersionUseCase.execute().blockingFirst()
         logLevel = getLogLevelUseCase.execute().blockingFirst()
@@ -394,14 +219,6 @@ class SettingsViewModel: ObservableObject {
         isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
         featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
         enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
-
-        // Load consolidated visual configurations
-        spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
-        spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
-        globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
-        groups = getGroupsUseCase.execute().blockingFirst()
-        groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
-        globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         updateAvailableOptions(with: featureFlags)
@@ -475,7 +292,7 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Public Methods
 
     /// Resets all settings to their default values.
-    func resetAllSettings() async {
+    func resetSettingsToDefaults() async {
         await resetConfigurationUseCase.execute()
     }
 
@@ -579,18 +396,6 @@ class SettingsViewModel: ObservableObject {
     private func setupReactiveSubscriptions() {
         // Monitor configuration changes
 
-        getFocusWindowOnClickUseCase.execute()
-            .assign(to: \.focusWindowOnClick, on: self)
-            .store(in: &cancellables)
-
-        getShowEmptySpacesUseCase.execute()
-            .assign(to: \.showEmptySpaces, on: self)
-            .store(in: &cancellables)
-
-        getShowWindowTitlesUseCase.execute()
-            .assign(to: \.showWindowTitles, on: self)
-            .store(in: &cancellables)
-
         getAeroSpacePathUseCase.execute()
             .assign(to: \.aeroSpacePath, on: self)
             .store(in: &cancellables)
@@ -629,32 +434,6 @@ class SettingsViewModel: ObservableObject {
                     }
                 }
             }
-            .store(in: &cancellables)
-
-        // Subscribe to consolidated spaces visual configuration changes
-        getSpacesVisualConfigUseCase.execute()
-            .assign(to: \.spacesVisualConfig, on: self)
-            .store(in: &cancellables)
-
-        getSpacesAppearanceModeUseCase.execute()
-            .assign(to: \.spacesAppearanceMode, on: self)
-            .store(in: &cancellables)
-
-        getGlobalSpacesVisualConfigUseCase.execute()
-            .assign(to: \.globalSpacesVisualConfig, on: self)
-            .store(in: &cancellables)
-
-        // Subscribe to consolidated groups visual configuration changes
-        getGroupsUseCase.execute()
-            .assign(to: \.groups, on: self)
-            .store(in: &cancellables)
-
-        getGroupsAppearanceModeUseCase.execute()
-            .assign(to: \.groupsAppearanceMode, on: self)
-            .store(in: &cancellables)
-
-        getGlobalGroupsVisualConfigUseCase.execute()
-            .assign(to: \.globalGroupsVisualConfig, on: self)
             .store(in: &cancellables)
     }
 

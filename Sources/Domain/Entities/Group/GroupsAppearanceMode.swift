@@ -3,9 +3,9 @@
 import Foundation
 
 /// Defines how groups visual appearance is configured
-public enum GroupsAppearanceMode: String, CaseIterable, Codable, Sendable {
+public enum GroupsAppearanceMode: String, AppearanceMode {
     /// Each group has its own appearance configuration
-    case perApp = "per_app"
+    case perGroup = "per_group"
 
     /// All groups share the same appearance configuration
     case allGroups = "all_groups"
@@ -16,8 +16,8 @@ public enum GroupsAppearanceMode: String, CaseIterable, Codable, Sendable {
     /// Display name for the mode
     public var displayName: LocalizedStringResource {
         switch self {
-        case .perApp:
-            LocalizedStringResource("Per App")
+        case .perGroup:
+            LocalizedStringResource("Per Group")
         case .allGroups:
             LocalizedStringResource("All Groups")
         case .matchSpaces:
@@ -28,12 +28,24 @@ public enum GroupsAppearanceMode: String, CaseIterable, Codable, Sendable {
     /// Description for the mode
     public var description: LocalizedStringResource {
         switch self {
-        case .perApp:
+        case .perGroup:
             LocalizedStringResource("Configure appearance for each group individually.")
         case .allGroups:
             LocalizedStringResource("Use the same appearance for all groups.")
         case .matchSpaces:
             LocalizedStringResource("Use the same appearance as spaces.")
+        }
+    }
+
+    /// Determines whether the global visual configuration should be shown for this mode.
+    public var shouldShowGlobalConfig: Bool {
+        switch self {
+        case .perGroup:
+            false
+        case .allGroups:
+            true
+        case .matchSpaces:
+            false
         }
     }
 }

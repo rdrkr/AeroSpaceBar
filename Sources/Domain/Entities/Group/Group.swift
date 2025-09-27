@@ -2,10 +2,44 @@
 
 import SwiftUI
 
-/// Note: Hashable conformance is possible because VisualContainer now provides a custom Hashable implementation based
+/// Note: Hashable conformance is possible because VisualProperties now provides a custom Hashable implementation based
 /// on color hex strings.
 /// Configuration for a group of menu bar applications.
-public struct Group: VisualConfigurable {
+public struct Group: VisualContainer {
+    public typealias AppearanceMode = GroupsAppearanceMode
+    /// The metadata configuration for Group entities.
+    public static let metadata = VisualContainerMetadata(
+        entityName: String(localized: LocalizedStringResource("Group")),
+        entityNamePlural: String(localized: LocalizedStringResource("Groups")),
+        tagPrefix: "groups",
+        canAddEntities: true,
+        canDeleteEntities: true,
+        showForegroundSection: false,
+        defaultGlobalVisualConfig: ConfigurationDefaults.defaultGroupsGlobalVisualConfig,
+        canDeleteEntity: { entity in
+            guard let group = entity as? Group else { return false }
+
+            return group.id > 0 // Groups with id > 0 can be deleted
+        },
+        footerText: String(localized: LocalizedStringResource(
+            """
+            Delete a group and its configuration by swipe, or by clicking the
+            group's delete button available in its configuration.
+            """
+        )),
+        resetAlertTitle: String(localized: LocalizedStringResource("Reset Groups")),
+        resetAlertMessage: String(localized: LocalizedStringResource(
+            """
+            Are you sure you want to reset all groups to their default configuration? \
+            This action cannot be undone.
+            """
+        )),
+        resetButtonTitle: String(localized: LocalizedStringResource("Reset Groups")),
+        resetButtonDescription: String(localized: LocalizedStringResource(
+            "Reset all groups to their default configuration."
+        ))
+    )
+
     /// The unique identifier for the group.
     public var id: Int
 
@@ -19,7 +53,7 @@ public struct Group: VisualConfigurable {
     public var endIndex: Int
 
     /// The visual configuration for the group container.
-    public var visualConfig: VisualContainer
+    public var visualConfig: VisualProperties
 
     /// The range of indices that this group covers.
     public var range: ClosedRange<Int> {
@@ -47,7 +81,7 @@ public struct Group: VisualConfigurable {
         title: String,
         startIndex: Int,
         endIndex: Int,
-        visualConfig: VisualContainer
+        visualConfig: VisualProperties
     ) {
         self.id = id
         self.title = title
@@ -67,7 +101,7 @@ public struct Group: VisualConfigurable {
         startIndex = try container.decode(Int.self, forKey: .startIndex)
         endIndex = try container.decode(Int.self, forKey: .endIndex)
         visualConfig = try container.decodeIfPresent(
-            VisualContainer.self, forKey: .visualConfig
+            VisualProperties.self, forKey: .visualConfig
         ) ?? ConfigurationDefaults.defaultGroupsGlobalVisualConfig
     }
 
