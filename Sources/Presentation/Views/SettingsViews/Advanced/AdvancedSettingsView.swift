@@ -2,6 +2,7 @@
 
 import Domain
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Displays advanced application settings including behavior controls and development options.
 ///
@@ -28,6 +29,14 @@ struct AdvancedSettingsView: View {
     /// Determines if advanced settings are enabled based on feature flags.
     private var isAdvancedSettingsEnabled: Bool {
         viewModel.rootPages.contains(.advanced)
+    }
+
+    /// Handles config file path submission when user presses enter or leaves focus.
+    private func handleConfigFilePathSubmission() {
+        let trimmedPath = viewModel.configFilePath.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedPath.isEmpty {
+            viewModel.configFilePath = ConfigurationDefaults.configFilePath
+        }
     }
 
     /// The main view content displaying advanced settings sections including behavior controls,
@@ -79,6 +88,86 @@ struct AdvancedSettingsView: View {
                 .tag("advanced-optimized-performance-toggle")
             }
             .tag("advanced-diagnostics-section")
+
+            Section {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(LocalizedStringResource("Path"))
+                            .tag("advanced-config-path-label")
+
+                        TextField(
+                            String(localized: LocalizedStringResource("Path")),
+                            text: $viewModel.configFilePath
+                        )
+                        .labelsHidden()
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit {
+                            handleConfigFilePathSubmission()
+                        }
+                        .onChange(of: viewModel.configFilePath) { _, newValue in
+                            // Detect if field was cleared and reset to default
+                            if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                viewModel.configFilePath = ConfigurationDefaults.configFilePath
+                            }
+                        }
+                        .tag("advanced-config-path-textfield")
+
+                        Button(LocalizedStringResource("Browse…")) {
+                            let panel = NSSavePanel()
+                            panel.canCreateDirectories = true
+                            panel.nameFieldStringValue = "aerospacebar.toml"
+                            if let tomlType = UTType(filenameExtension: "toml") {
+                                panel.allowedContentTypes = [tomlType]
+                            }
+                            if panel.runModal() == .OK, let url = panel.url {
+                                viewModel.configFilePath = url.path
+                            }
+                        }
+                        .tag("advanced-config-browse-button")
+                    }
+
+                    if let error = viewModel.configFilePathValidationError {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.orange)
+                                .tag("advanced-config-path-error-icon")
+                            Text(error)
+                                .secondaryText()
+                                .tag("advanced-config-path-error-text")
+                        }
+                        .tag("advanced-config-path-error-container")
+                    }
+
+                    Text(
+                        LocalizedStringResource(
+                            "Path to the configuration file. This file stores all your settings in TOML format."
+                        )
+                    )
+                    .secondaryText()
+                    .tag("advanced-config-path-help-text")
+
+                    Spacer(minLength: 8)
+
+                    Button(LocalizedStringResource("Open Configuration File…")) {
+                        Task.detached(priority: .utility) {
+                            await viewModel.openConfigFile()
+                        }
+                    }
+                    .tag("advanced-open-config-button")
+                }
+                .tag("advanced-config-file-section")
+            } header: {
+                Text(LocalizedStringResource("Configuration File"))
+            } footer: {
+                Text(
+                    LocalizedStringResource(
+                        stringLiteral: "Configuration file changes are automatically reloaded " +
+                            "while this settings window is open. You can edit the TOML file " +
+                            "externally and see changes reflected immediately."
+                    )
+                )
+            }
+            .tag("advanced-config-section")
 
             Section(LocalizedStringResource("Reset")) {
                 SettingsDestructiveButton(

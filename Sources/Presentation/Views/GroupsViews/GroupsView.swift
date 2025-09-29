@@ -43,6 +43,7 @@ struct GroupsView: View {
         .ignoresSafeArea()
         .opacity(shouldShowView ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)
+        .animation(.themeEaseInOutFast, value: viewModel.groupsAppearanceMode)
         .tag("groups-container")
     }
 }

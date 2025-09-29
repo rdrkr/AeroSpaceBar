@@ -58,7 +58,7 @@ public enum Logger {
     // MARK: - Configuration
 
     /// Global log level configuration (persisted in UserDefaults)
-    /// Current log level. Can be changed at runtime.
+    /// Current log level. Can be changed at runtime and synchronized with TOML config.
     public static var logLevel: Level {
         get {
             if
@@ -67,7 +67,7 @@ public enum Logger {
             {
                 return level
             }
-            return .info
+            return ConfigurationDefaults.logLevel
         }
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: UserDefaultsKeys.logLevel.rawValue)
@@ -77,8 +77,15 @@ public enum Logger {
 
     /// Whether to enable performance metrics
     static var enablePerformanceMetrics: Bool {
-        get { UserDefaults.standard.bool(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) }
-        set { UserDefaults.standard.set(newValue, forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) }
+        get {
+            if UserDefaults.standard.object(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) != nil {
+                return UserDefaults.standard.bool(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue)
+            }
+            return ConfigurationDefaults.enablePerformanceMetrics
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue)
+        }
     }
 
     // MARK: - Log Categories

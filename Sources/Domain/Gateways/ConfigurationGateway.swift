@@ -41,6 +41,9 @@ public protocol ConfigurationGateway {
     /// Publisher that emits AeroSpace version updates.
     var currentAeroSpaceVersionPublisher: AnyPublisher<String?, Never> { get }
 
+    /// Publisher that emits config file path updates.
+    var configFilePathPublisher: AnyPublisher<String, Never> { get }
+
     // MARK: - UI Configuration Publishers
 
     /// Publisher that emits spaces configuration updates.
@@ -79,6 +82,8 @@ public protocol ConfigurationGateway {
 
     func setLogLevel(_ level: Logger.Level) async
 
+    func setConfigFilePath(_ path: String) async
+
     // MARK: - UI Configuration Async Setters
 
     func setSpacesVisualConfig(_ value: [VisualProperties]) async
@@ -98,6 +103,10 @@ public protocol ConfigurationGateway {
     func openAeroSpaceConfig() async
 
     func getAeroSpaceConfigPath() async -> URL
+
+    func getConfigFilePath() -> String
+
+    func openConfigFile() async
 
     // MARK: - Configuration Management
 

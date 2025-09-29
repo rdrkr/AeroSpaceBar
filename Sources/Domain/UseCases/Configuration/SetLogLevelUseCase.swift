@@ -25,7 +25,7 @@ public final class SetLogLevelUseCase {
         // Update the configuration through the gateway
         await configurationGateway.setLogLevel(finalValue)
 
-        // Synchronize with Logger's performance metrics setting
+        // Synchronize with Logger's level setting
         Logger.logLevel = finalValue
     }
 }

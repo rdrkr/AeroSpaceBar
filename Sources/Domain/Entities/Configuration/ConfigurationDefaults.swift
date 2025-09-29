@@ -20,8 +20,10 @@ public enum ConfigurationDefaults {
     /// Whether to show window titles by default.
     public static let showWindowTitles = true
 
-    /// Default AeroSpace binary path (empty string means auto-detection).
-    public static let aeroSpacePath = ""
+    /// Default configuration file path.
+    public static var configFilePath: String {
+        NSHomeDirectory() + "/.config/aerospacebar/aerospacebar.toml"
+    }
 
     /// Whether to focus a window when clicking on it by default.
     public static let focusWindowOnClick = true

@@ -53,6 +53,15 @@ class SettingsViewModel: ObservableObject {
     /// The current AeroSpace version (if available).
     @Published var aeroSpaceVersion: String?
 
+    /// The path to the configuration file.
+    @Published var configFilePath: String {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setConfigFilePathUseCase.execute(value: configFilePath)
+            }
+        }
+    }
+
     // MARK: - Navigation History
 
     /// The default page to return to when resetting navigation.
@@ -155,6 +164,9 @@ class SettingsViewModel: ObservableObject {
     private let setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getEnableLicensingUseCase: GetEnableLicensingUseCase
+    private let getConfigFilePathUseCase: GetConfigFilePathUseCase
+    private let setConfigFilePathUseCase: SetConfigFilePathUseCase
+    private let openConfigFileUseCase: OpenConfigFileUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -177,6 +189,9 @@ class SettingsViewModel: ObservableObject {
     ///   - setOptimizedPerformanceEnabledUseCase: Use case to set optimized performance enabled setting.
     ///   - getFeatureFlagsUseCase: Use case to get feature flags.
     ///   - getEnableLicensingUseCase: Use case to get enableLicensing feature flag.
+    ///   - getConfigFilePathUseCase: Use case to get config file path.
+    ///   - setConfigFilePathUseCase: Use case to set config file path.
+    ///   - openConfigFileUseCase: Use case to open config file.
     init(
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
@@ -191,7 +206,10 @@ class SettingsViewModel: ObservableObject {
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
         setOptimizedPerformanceEnabledUseCase: SetOptimizedPerformanceEnabledUseCase,
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
-        getEnableLicensingUseCase: GetEnableLicensingUseCase
+        getEnableLicensingUseCase: GetEnableLicensingUseCase,
+        getConfigFilePathUseCase: GetConfigFilePathUseCase,
+        setConfigFilePathUseCase: SetConfigFilePathUseCase,
+        openConfigFileUseCase: OpenConfigFileUseCase
     ) {
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
@@ -210,6 +228,9 @@ class SettingsViewModel: ObservableObject {
         self.setOptimizedPerformanceEnabledUseCase = setOptimizedPerformanceEnabledUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
         self.getEnableLicensingUseCase = getEnableLicensingUseCase
+        self.getConfigFilePathUseCase = getConfigFilePathUseCase
+        self.setConfigFilePathUseCase = setConfigFilePathUseCase
+        self.openConfigFileUseCase = openConfigFileUseCase
 
         // Load initial values from use cases
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
@@ -219,6 +240,7 @@ class SettingsViewModel: ObservableObject {
         isOptimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
         featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
         enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
+        configFilePath = getConfigFilePathUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         updateAvailableOptions(with: featureFlags)
@@ -244,6 +266,41 @@ class SettingsViewModel: ObservableObject {
 
         if !fileManager.isExecutableFile(atPath: customPath) {
             return "File is not executable"
+        }
+
+        return nil
+    }
+
+    /// Config file path validation error message.
+    var configFilePathValidationError: String? {
+        let configPath = configFilePath
+
+        // If path is empty, that's not valid for config files
+        if configPath.isEmpty {
+            return "Configuration file path cannot be empty"
+        }
+
+        // Check if the parent directory exists or can be created
+        let url = URL(fileURLWithPath: configPath)
+        let parentDirectory = url.deletingLastPathComponent()
+
+        if !FileManager.default.fileExists(atPath: parentDirectory.path) {
+            // Try to create the directory to see if it's valid
+            do {
+                try FileManager.default.createDirectory(at: parentDirectory, withIntermediateDirectories: true)
+            } catch {
+                return "Cannot create parent directory: \\(parentDirectory.path)"
+            }
+        }
+
+        // Check if file exists and is readable/writable, or if it can be created
+        if FileManager.default.fileExists(atPath: configPath) {
+            if !FileManager.default.isReadableFile(atPath: configPath) {
+                return "File is not readable"
+            }
+            if !FileManager.default.isWritableFile(atPath: configPath) {
+                return "File is not writable"
+            }
         }
 
         return nil
@@ -299,6 +356,11 @@ class SettingsViewModel: ObservableObject {
     /// Opens the AeroSpace configuration file.
     func openAeroSpaceConfig() async {
         await openAeroSpaceConfigUseCase.execute()
+    }
+
+    /// Opens the configuration file.
+    func openConfigFile() async {
+        await openConfigFileUseCase.execute()
     }
 
     // MARK: - Navigation Methods
@@ -434,6 +496,10 @@ class SettingsViewModel: ObservableObject {
                     }
                 }
             }
+            .store(in: &cancellables)
+
+        getConfigFilePathUseCase.execute()
+            .assign(to: \.configFilePath, on: self)
             .store(in: &cancellables)
     }
 

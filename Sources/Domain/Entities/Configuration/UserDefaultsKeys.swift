@@ -2,33 +2,15 @@
 
 import Foundation
 
-/// Centralized UserDefaults key management for the AeroSpaceBar application.
+/// Minimal UserDefaults key management for Logger configuration.
 ///
-/// This enum provides a single source of truth for all UserDefaults keys used
-/// throughout the application. It ensures consistent naming conventions and
-/// makes it easy to track and manage all persisted settings.
+/// This enum provides UserDefaults keys specifically for Logger configuration
+/// to avoid co-dependencies. Logger needs to access settings without depending
+/// on ConfigurationRepository to prevent circular dependencies.
 ///
-/// All keys follow the pattern: `com.aerospacebar.preferences.{category}.{setting}`
-/// to maintain consistency and avoid conflicts.
+/// All keys follow the pattern: `com.aerospacebar.preferences.{setting}`
 public enum UserDefaultsKeys: String, CaseIterable {
-    // MARK: - General Preferences
-
-    /// Whether to show window titles in the interface.
-    case showWindowTitles = "com.aerospacebar.preferences.showWindowTitles"
-
-    /// Whether to focus a window immediately when clicking on it.
-    case focusWindowOnClick = "com.aerospacebar.preferences.focusWindowOnClick"
-
-    /// Whether to show empty spaces in the interface.
-    case showEmptySpaces = "com.aerospacebar.preferences.showEmptySpaces"
-
-    /// Whether to show groups in the interface.
-    case showGroups = "com.aerospacebar.preferences.showGroups"
-
-    /// Whether to launch the application at login.
-    case launchAtLogin = "com.aerospacebar.preferences.launchAtLogin"
-
-    // MARK: - Logging Preferences
+    // MARK: - Logger Configuration
 
     /// The current log level for application logging.
     case logLevel = "com.aerospacebar.preferences.logLevel"
@@ -36,42 +18,8 @@ public enum UserDefaultsKeys: String, CaseIterable {
     /// Whether to enable performance metrics collection and logging.
     case enablePerformanceMetrics = "com.aerospacebar.preferences.enablePerformanceMetrics"
 
-    /// Whether to enable optimized performance behavior.
-    case isOptimizedPerformanceEnabled = "com.aerospacebar.preferences.isOptimizedPerformanceEnabled"
+    // MARK: - System Integration (kept for bootstrap)
 
-    // MARK: - AeroSpace Integration
-
-    /// Source of AeroSpace installation to use: homebrew or
-    case aeroSpaceInstallSource = "com.aerospacebar.preferences.aeroSpaceInstallSource"
-
-    /// Custom absolute path to the AeroSpace binary (used when source == .custom)
-    case aeroSpaceCustomPath = "com.aerospacebar.preferences.aeroSpaceCustomPath"
-
-    // MARK: - UI Configuration Preferences
-
-    /// The spaces configuration for organizing spaces.
-    case spacesVisualConfiguration = "com.aerospacebar.preferences.spacesVisualConfiguration"
-
-    /// The spaces appearance mode (per space, all spaces).
-    case spacesAppearanceMode = "com.aerospacebar.preferences.spacesAppearanceMode"
-
-    /// The global visual configuration for space elements.
-    case globalSpacesVisualConfig = "com.aerospacebar.preferences.globalSpacesVisualConfig"
-
-    /// The group configuration for organizing menu bar applications.
-    case groups = "com.aerospacebar.preferences.ui.groups"
-
-    /// The groups appearance mode (per app, all groups, same as spaces).
-    case groupsAppearanceMode = "com.aerospacebar.preferences.ui.groupsAppearanceMode"
-
-    /// The global visual configuration for all groups.
-    case globalGroupsVisualConfig = "com.aerospacebar.preferences.ui.globalGroupsVisualConfig"
-
-    // MARK: - Profile Preferences
-
-    /// The user's display name for their profile.
-    case profileUserName = "com.aerospacebar.profile.userName"
-
-    /// The user's profile image data.
-    case profileImageData = "com.aerospacebar.profile.imageData"
+    /// The path to the configuration file (stored in UserDefaults to bootstrap TOML loading).
+    case configFilePath = "com.aerospacebar.preferences.configFilePath"
 }

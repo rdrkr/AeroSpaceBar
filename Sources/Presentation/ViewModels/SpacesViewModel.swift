@@ -366,14 +366,16 @@ final class SpacesViewModel: ObservableObject {
     ///   - visualConfig: The new visual configuration for the space
     func updateSpaceVisualConfig(spaceId: String, visualConfig: VisualProperties) {
         // Update the local spaces array
-        if let index = spaces.firstIndex(where: { $0.id == spaceId }) {
-            spaces[index].visualConfig = visualConfig
+        if let index = allSpaces.firstIndex(where: { $0.id == spaceId }) {
+            allSpaces[index].visualConfig = visualConfig
 
             // Persist the changes using the use case
             Task { @MainActor in
-                let allSpaceVisualConfigs = spaces.map(\.visualConfig)
+                let allSpaceVisualConfigs = allSpaces.map(\.visualConfig)
                 await setSpacesVisualConfigUseCase.execute(value: allSpaceVisualConfigs)
             }
+
+            updateFilteredSpaces()
         }
     }
 

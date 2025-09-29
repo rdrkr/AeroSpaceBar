@@ -94,6 +94,7 @@ struct SpacesView: View {
                     .animation(.themeSmoothFast, value: isWallpaperVisible)
                     .animation(.themeSmoothFast, value: shouldHideView)
                     .animation(.themeSmoothFast, value: viewModel.isMenuBarVisible)
+                    .animation(.themeSmoothFast, value: viewModel.spacesAppearanceMode)
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set

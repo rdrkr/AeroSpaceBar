@@ -1,8 +1,10 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import AppKit
+internal import AsyncFileMonitor
 import Combine
 import Domain
+import Foundation
 import SwiftUI
 internal import TOMLKit
 
@@ -18,6 +20,12 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Cancellables for publisher subscriptions.
     private var cancellables = Set<AnyCancellable>()
 
+    /// File monitor for watching configuration file changes.
+    private var fileMonitor: Task<Void, Never>?
+
+    /// Flag to prevent recursive updates during file monitoring.
+    private var isUpdatingFromFile = false
+
     /// Subject for showing window titles.
     private let showWindowTitlesSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showWindowTitles
@@ -25,7 +33,12 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Subject for AeroSpace path.
     private let aeroSpacePathSubject = CurrentValueSubject<String, Never>(
-        ConfigurationDefaults.aeroSpacePath
+        ""
+    )
+
+    /// Subject for config file path.
+    private let configFilePathSubject = CurrentValueSubject<String, Never>(
+        ConfigurationDefaults.configFilePath
     )
 
     /// Subject for current AeroSpace version.
@@ -127,6 +140,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
         logLevelSubject.eraseToAnyPublisher()
     }
 
+    public var configFilePathPublisher: AnyPublisher<String, Never> {
+        configFilePathSubject.eraseToAnyPublisher()
+    }
+
     // MARK: - UI Configuration Publishers
 
     public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualProperties, Never> {
@@ -153,187 +170,285 @@ public final class ConfigurationRepository: ConfigurationGateway {
         globalGroupsVisualConfigSubject.eraseToAnyPublisher()
     }
 
+    private var advancedSettings: AdvancedSettings<RequiredMode> {
+        get {
+            AdvancedSettings<RequiredMode>(
+                focusWindowOnClick: focusWindowOnClickSubject.value,
+                enablePerformanceMetrics: enablePerformanceMetricsSubject.value,
+                isOptimizedPerformanceEnabled: isOptimizedPerformanceEnabledSubject.value,
+                logLevel: logLevelSubject.value.rawValue
+            )
+        }
+
+        set {
+            focusWindowOnClickSubject.send(newValue.focusWindowOnClick)
+            enablePerformanceMetricsSubject.send(newValue.enablePerformanceMetrics)
+            isOptimizedPerformanceEnabledSubject.send(newValue.isOptimizedPerformanceEnabled)
+            logLevelSubject.send(
+                Logger.Level.allCases.first(
+                    where: { $0.rawValue == newValue.logLevel }
+                ) ?? ConfigurationDefaults.logLevel
+            )
+        }
+    }
+
+    private var generalSettings: GeneralSettings<RequiredMode> {
+        get {
+            GeneralSettings<RequiredMode>(
+                showWindowTitles: showWindowTitlesSubject.value,
+                aeroSpacePath: aeroSpacePathSubject.value
+            )
+        }
+
+        set {
+            showWindowTitlesSubject.send(newValue.showWindowTitles)
+            aeroSpacePathSubject.send(newValue.aeroSpacePath)
+        }
+    }
+
+    private var groupsSettings: GroupsSettings<RequiredMode> {
+        get {
+            GroupsSettings<RequiredMode>(
+                showGroups: showGroupsSubject.value,
+                groups: groupsSubject.value,
+                groupsAppearanceMode: groupsAppearanceModeSubject.value.rawValue,
+                globalGroupsVisualConfig: globalGroupsVisualConfigSubject.value
+            )
+        }
+
+        set {
+            showGroupsSubject.send(newValue.showGroups)
+            groupsSubject.send(newValue.groups)
+            groupsAppearanceModeSubject.send(
+                GroupsAppearanceMode.allCases.first(
+                    where: { $0.rawValue == newValue.groupsAppearanceMode }
+                ) ?? ConfigurationDefaults.groupsAppearanceMode
+            )
+            globalGroupsVisualConfigSubject.send(newValue.globalGroupsVisualConfig)
+        }
+    }
+
+    private var spacesSettings: SpacesSettings<RequiredMode> {
+        get {
+            SpacesSettings<RequiredMode>(
+                showEmptySpaces: showEmptySpacesSubject.value,
+                spacesVisualConfig: spacesVisualConfigSubject.value,
+                spacesAppearanceMode: spacesAppearanceModeSubject.value.rawValue,
+                globalSpacesVisualConfig: globalSpacesVisualConfigSubject.value
+            )
+        }
+
+        set {
+            showEmptySpacesSubject.send(newValue.showEmptySpaces)
+            spacesVisualConfigSubject.send(newValue.spacesVisualConfig)
+            spacesAppearanceModeSubject.send(
+                SpacesAppearanceMode.allCases.first(
+                    where: { $0.rawValue == newValue.spacesAppearanceMode }
+                ) ?? ConfigurationDefaults.spacesAppearanceMode
+            )
+        }
+    }
+
+    private var configurationData: ConfigurationData<RequiredMode> {
+        get {
+            ConfigurationData(
+                general: generalSettings,
+                spaces: spacesSettings,
+                groups: groupsSettings,
+                advanced: advancedSettings
+            )
+        }
+
+        set {
+            generalSettings = newValue.general
+            spacesSettings = newValue.spaces
+            groupsSettings = newValue.groups
+            advancedSettings = newValue.advanced
+        }
+    }
+
     /// Initializer for the configuration gateway.
     public init() {
-        // Setup observers for the configuration repository
         setupObservers()
 
-        // Initialize with current values from UserDefaults
-        loadInitialValues()
+        loadInitialAeroSpaceConfiguration()
+        loadApplicationSettings()
+
+        // Setup file monitoring
+        setupFileMonitoring()
+    }
+
+    deinit {
+        fileMonitor?.cancel()
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Private Helper Methods
 
-    /// Load initial values from UserDefaults and emit to subjects.
-    private func loadInitialValues() {
-        loadApplicationSettings()
-        loadUIConfigurationSettings()
-    }
-
-    /// Load application settings from UserDefaults.
-    private func loadApplicationSettings() {
-        // Load boolean settings with proper default fallback
-        let showTitles = UserDefaults.standard.object(forKey: UserDefaultsKeys.showWindowTitles.rawValue) as? Bool
-            ?? showWindowTitlesSubject.value
-        showWindowTitlesSubject.send(showTitles)
-
-        // Load AeroSpace path with validation and auto-detection
+    /// Load initial configuration values and emit to subjects.
+    /// This includes checking paths and setting up default configurations.
+    private func loadInitialAeroSpaceConfiguration() {
+        // Set AeroSpace path using auto-detection
         let resolvedPath = resolveAeroSpacePath()
         aeroSpacePathSubject.send(resolvedPath)
-
-        let focusWindowOnClick = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.focusWindowOnClick.rawValue) as? Bool
-            ?? focusWindowOnClickSubject.value
-        focusWindowOnClickSubject.send(focusWindowOnClick)
-
-        let showEmptySpaces = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.showEmptySpaces.rawValue) as? Bool
-            ?? showEmptySpacesSubject.value
-        showEmptySpacesSubject.send(showEmptySpaces)
-
-        let showGroups = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.showGroups.rawValue) as? Bool
-            ?? showGroupsSubject.value
-        showGroupsSubject.send(showGroups)
-
-        let enablePerformanceMetrics = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue) as? Bool
-            ?? enablePerformanceMetricsSubject.value
-        enablePerformanceMetricsSubject.send(enablePerformanceMetrics)
-
-        let isOptimizedPerformanceEnabled = UserDefaults.standard
-            .object(forKey: UserDefaultsKeys.isOptimizedPerformanceEnabled.rawValue) as? Bool
-            ?? isOptimizedPerformanceEnabledSubject.value
-        isOptimizedPerformanceEnabledSubject.send(isOptimizedPerformanceEnabled)
-
-        let logLevelRaw = UserDefaults.standard.string(forKey: UserDefaultsKeys.logLevel.rawValue)
-        let logLevel = Logger.Level(rawValue: logLevelRaw ?? "") ?? logLevelSubject.value
-        logLevelSubject.send(logLevel)
     }
 
-    /// Load UI configuration settings from UserDefaults.
+    /// Load application settings from TOML configuration.
+    private func loadApplicationSettings() {
+        // Load config file path from UserDefaults (needed to bootstrap TOML loading)
+        let configPath = UserDefaults.standard.string(forKey: UserDefaultsKeys.configFilePath.rawValue)
+            ?? ConfigurationDefaults.configFilePath
+        configFilePathSubject.send(configPath)
+
+        // Load configuration from TOML file
+        loadUIConfigurationSettings()
+        ensureConfigurationFileExists()
+
+        Task {
+            loadConfigurationFromFile()
+        }
+    }
+
+    /// Load UI configuration settings with defaults fallback.
     private func loadUIConfigurationSettings() {
-        let spacesVisualConfigurationWrapper: CollectionWrapper<VisualProperties>? = loadStructFromTOML(
-            configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue
-        )
-        let spacesVisualConfiguration = spacesVisualConfigurationWrapper?.items ?? spacesVisualConfigSubject.value
-        spacesVisualConfigSubject.send(spacesVisualConfiguration)
-
-        let spacesAppearanceMode = loadSpacesAppearanceMode() ?? spacesAppearanceModeSubject.value
-        spacesAppearanceModeSubject.send(spacesAppearanceMode)
-
-        let globalSpacesVisualConfig = loadStructFromTOML(
-            configKey: UserDefaultsKeys.globalSpacesVisualConfig.rawValue
-        ) ?? globalSpacesVisualConfigSubject.value
-        globalSpacesVisualConfigSubject.send(globalSpacesVisualConfig)
-
-        let groupsWrapper: CollectionWrapper<Domain.Group>? = loadStructFromTOML(
-            configKey: UserDefaultsKeys.groups.rawValue
-        )
-        let groups = groupsWrapper?.items ?? groupsSubject.value
-        groupsSubject.send(groups)
-
-        let groupsAppearanceMode = loadGroupsAppearanceMode() ?? groupsAppearanceModeSubject.value
-        groupsAppearanceModeSubject.send(groupsAppearanceMode)
-
-        let globalGroupsVisualConfig = loadStructFromTOML(
-            configKey: UserDefaultsKeys.globalGroupsVisualConfig.rawValue
-        ) ?? globalGroupsVisualConfigSubject.value
-        globalGroupsVisualConfigSubject.send(globalGroupsVisualConfig)
+        // Initialize with defaults - TOML file loading will override these if present
+        spacesVisualConfigSubject.send(ConfigurationDefaults.spacesVisualConfiguration)
+        spacesAppearanceModeSubject.send(ConfigurationDefaults.spacesAppearanceMode)
+        globalSpacesVisualConfigSubject.send(ConfigurationDefaults.defaultSpaceVisualConfig)
+        groupsSubject.send(ConfigurationDefaults.groups)
+        groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
+        globalGroupsVisualConfigSubject.send(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
     /// - Returns: A valid AeroSpace path or empty string if not found
     private func resolveAeroSpacePath() -> String {
-        if
-            let storedPath = UserDefaults.standard.string(forKey: UserDefaultsKeys.aeroSpaceCustomPath.rawValue),
-            !storedPath.isEmpty
-        {
-            if FileManager.default.isExecutableFile(atPath: storedPath) {
-                Logger.info("Using stored AeroSpace path: \(storedPath)", category: Logger.config)
-                return storedPath
-            }
-        }
-
+        let defaultPath = "/opt/homebrew/bin/aerospace"
         let candidates = [
-            "/opt/homebrew/bin/aerospace",
+            defaultPath,
             "/usr/local/bin/aerospace"
         ]
 
         for candidate in candidates where FileManager.default.isExecutableFile(atPath: candidate) {
-            UserDefaults.standard.set(candidate, forKey: UserDefaultsKeys.aeroSpaceCustomPath.rawValue)
             Logger.info("Auto-detected AeroSpace at: \(candidate)", category: Logger.config)
             return candidate
         }
 
         Logger.info("No AeroSpace executable found, using default path", category: Logger.config)
-        return ConfigurationDefaults.aeroSpacePath
+        return defaultPath
     }
 
     /// Sets whether to show window titles and emits update.
     public func setShowWindowTitles(_ value: Bool) {
         if value == showWindowTitlesSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showWindowTitles.rawValue)
+        Logger.debug(
+            "setShowWindowTitles(\(value)) called, isUpdatingFromFile: \(isUpdatingFromFile)",
+            category: Logger.config
+        )
         showWindowTitlesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                Logger.debug("Saving configuration to file after setShowWindowTitles", category: Logger.config)
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the AeroSpace path and emits update.
     public func setAeroSpacePath(_ path: String) {
         if path == aeroSpacePathSubject.value { return }
 
-        UserDefaults.standard.set(path, forKey: UserDefaultsKeys.aeroSpaceCustomPath.rawValue)
-
         let resolvedPath = path.isEmpty ? resolveAeroSpacePath() : path
         aeroSpacePathSubject.send(resolvedPath)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets whether to focus window on click and emits update.
     public func setFocusWindowOnClick(_ value: Bool) {
         if value == focusWindowOnClickSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.focusWindowOnClick.rawValue)
         focusWindowOnClickSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets whether to show empty spaces and emits update.
     public func setShowEmptySpaces(_ value: Bool) {
         if value == showEmptySpacesSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showEmptySpaces.rawValue)
         showEmptySpacesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets whether to show groups and emits update.
     public func setShowGroups(_ value: Bool) {
         if value == showGroupsSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.showGroups.rawValue)
         showGroupsSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets whether performance metrics are enabled and emits update.
     public func setEnablePerformanceMetrics(_ value: Bool) {
         if value == enablePerformanceMetricsSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.enablePerformanceMetrics.rawValue)
         enablePerformanceMetricsSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets whether optimized performance is enabled and emits update.
     public func setIsOptimizedPerformanceEnabled(_ value: Bool) {
         if value == isOptimizedPerformanceEnabledSubject.value { return }
 
-        UserDefaults.standard.set(value, forKey: UserDefaultsKeys.isOptimizedPerformanceEnabled.rawValue)
         isOptimizedPerformanceEnabledSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the log level and emits update.
     public func setLogLevel(_ level: Logger.Level) {
         if level == logLevelSubject.value { return }
 
-        UserDefaults.standard.set(level.rawValue, forKey: UserDefaultsKeys.logLevel.rawValue)
         logLevelSubject.send(level)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the config file path and emits update.
+    public func setConfigFilePath(_ path: String) {
+        if path == configFilePathSubject.value { return }
+
+        UserDefaults.standard.set(path, forKey: UserDefaultsKeys.configFilePath.rawValue)
+        configFilePathSubject.send(path)
+
+        // Restart file monitoring with new path
+        setupFileMonitoring()
     }
 
     // MARK: - UI Configuration Async Setters
@@ -344,64 +459,72 @@ public final class ConfigurationRepository: ConfigurationGateway {
     public func setSpacesVisualConfig(_ value: [VisualProperties]) {
         if value == spacesVisualConfigSubject.value { return }
 
-        saveStructToTOML(
-            configKey: UserDefaultsKeys.spacesVisualConfiguration.rawValue,
-            data: CollectionWrapper(items: value)
-        )
-
         spacesVisualConfigSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the spaces appearance mode and emits update.
     public func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) {
         if value == spacesAppearanceModeSubject.value { return }
 
-        UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.spacesAppearanceMode.rawValue)
         spacesAppearanceModeSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the global space visual configuration and emits update.
     public func setGlobalSpacesVisualConfig(_ value: VisualProperties) {
         if value == globalSpacesVisualConfigSubject.value { return }
 
-        saveStructToTOML(
-            configKey: UserDefaultsKeys.globalSpacesVisualConfig.rawValue,
-            data: value
-        )
-
         globalSpacesVisualConfigSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the group configuration for menu bar applications and emits update.
     public func setGroups(_ value: [Domain.Group]) {
         if value == groupsSubject.value { return }
 
-        saveStructToTOML(
-            configKey: UserDefaultsKeys.groups.rawValue,
-            data: CollectionWrapper(items: value)
-        )
-
         groupsSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the groups appearance mode and emits update.
     public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) {
         if value == groupsAppearanceModeSubject.value { return }
 
-        UserDefaults.standard.set(value.rawValue, forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue)
         groupsAppearanceModeSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     /// Sets the global groups visual configuration and emits update.
     public func setGlobalGroupsVisualConfig(_ value: VisualProperties) {
         if value == globalGroupsVisualConfigSubject.value { return }
 
-        saveStructToTOML(
-            configKey: UserDefaultsKeys.globalGroupsVisualConfig.rawValue,
-            data: value
-        )
-
         globalGroupsVisualConfigSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
     }
 
     // MARK: - AeroSpace Integration
@@ -480,6 +603,17 @@ public final class ConfigurationRepository: ConfigurationGateway {
         return resolvedURL
     }
 
+    /// Gets the configuration file path.
+    public func getConfigFilePath() -> String {
+        configFilePathSubject.value
+    }
+
+    /// Opens the configuration file.
+    public func openConfigFile() {
+        let configPath = getConfigFilePath()
+        NSWorkspace.shared.open(URL(fileURLWithPath: configPath))
+    }
+
     /// Ask AeroSpace CLI for the effective config path
     private func fetchAeroSpaceConfigPathFromCLI() async -> String? {
         let executablePath = aeroSpacePathSubject.value
@@ -505,101 +639,230 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Resets all configuration settings to their default values.
     public func resetToDefaults() {
-        for item in UserDefaultsKeys.allCases {
-            UserDefaults.standard.removeObject(forKey: item.rawValue)
-        }
+        // Reset all subjects to default values without triggering file saves
+        isUpdatingFromFile = true
 
-        // Reset all subjects to default values
-        setShowWindowTitles(ConfigurationDefaults.showWindowTitles)
-        setAeroSpacePath(ConfigurationDefaults.aeroSpacePath)
-        setFocusWindowOnClick(ConfigurationDefaults.focusWindowOnClick)
-        setShowEmptySpaces(ConfigurationDefaults.showEmptySpaces)
-        setEnablePerformanceMetrics(ConfigurationDefaults.enablePerformanceMetrics)
-        setIsOptimizedPerformanceEnabled(ConfigurationDefaults.isOptimizedPerformanceEnabled)
-        setLogLevel(ConfigurationDefaults.logLevel)
+        setConfigFilePath(ConfigurationDefaults.configFilePath)
+        loadInitialAeroSpaceConfiguration()
+        showWindowTitlesSubject.send(ConfigurationDefaults.showWindowTitles)
+        focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
+        showEmptySpacesSubject.send(ConfigurationDefaults.showEmptySpaces)
+        showGroupsSubject.send(ConfigurationDefaults.showGroups)
+        enablePerformanceMetricsSubject.send(ConfigurationDefaults.enablePerformanceMetrics)
+        isOptimizedPerformanceEnabledSubject.send(ConfigurationDefaults.isOptimizedPerformanceEnabled)
+        logLevelSubject.send(ConfigurationDefaults.logLevel)
 
         // Reset UI configuration subjects
-        setShowGroups(ConfigurationDefaults.showGroups)
+        spacesVisualConfigSubject.send(ConfigurationDefaults.spacesVisualConfiguration)
+        spacesAppearanceModeSubject.send(ConfigurationDefaults.spacesAppearanceMode)
+        globalSpacesVisualConfigSubject.send(ConfigurationDefaults.defaultSpaceVisualConfig)
+        groupsSubject.send(ConfigurationDefaults.groups)
+        groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
+        globalGroupsVisualConfigSubject.send(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
 
-        setSpacesVisualConfig(ConfigurationDefaults.spacesVisualConfiguration)
-        setSpacesAppearanceMode(ConfigurationDefaults.spacesAppearanceMode)
-        setGlobalSpacesVisualConfig(ConfigurationDefaults.defaultSpaceVisualConfig)
-        setGroups(ConfigurationDefaults.groups)
-        setGroupsAppearanceMode(ConfigurationDefaults.groupsAppearanceMode)
-        setGlobalGroupsVisualConfig(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
+        isUpdatingFromFile = false
+
+        // Save the reset configuration to file
+        Task {
+            saveConfigurationToFile()
+        }
 
         Logger.info("Configuration reset to defaults", category: Logger.config)
     }
 
-    /// Loads the groups appearance mode from UserDefaults.
-    /// - Returns: The groups appearance mode if found, nil otherwise
-    private func loadGroupsAppearanceMode() -> GroupsAppearanceMode? {
-        guard let rawValue = UserDefaults.standard.string(forKey: UserDefaultsKeys.groupsAppearanceMode.rawValue) else {
-            return nil
-        }
+    // MARK: - File Management
 
-        return GroupsAppearanceMode(rawValue: rawValue)
+    /// Ensures the configuration file and directory exist.
+    private func ensureConfigurationFileExists() {
+        let configPath = configFilePathSubject.value
+        let url = URL(fileURLWithPath: configPath)
+
+        // Create directory if it doesn't exist
+        let directory = url.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+
+        // Create file if it doesn't exist
+        if !FileManager.default.fileExists(atPath: configPath) {
+            saveConfigurationToFile()
+        }
     }
 
-    /// Loads the spaces appearance mode from UserDefaults.
-    /// - Returns: The spaces appearance mode if found, nil otherwise
-    private func loadSpacesAppearanceMode() -> SpacesAppearanceMode? {
-        guard let rawValue = UserDefaults.standard.string(forKey: UserDefaultsKeys.spacesAppearanceMode.rawValue) else {
-            return nil
-        }
+    /// Sets up file system monitoring for the configuration file.
+    private func setupFileMonitoring() {
+        let configPath = configFilePathSubject.value
+        let url = URL(fileURLWithPath: configPath)
 
-        return SpacesAppearanceMode(rawValue: rawValue)
-    }
+        // Create directory if it doesn't exist
+        let directory = url.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
-    /// Loads a TOML formatted configuration UserDefaults value to a struct.
-    /// - Parameter configKey: The UserDefaults key for the configuration
-    /// - Returns: The configuration struct if found, nil otherwise
-    private func loadStructFromTOML<T: Codable>(configKey: String) -> T? {
-        guard let data = UserDefaults.standard.data(forKey: configKey) else {
-            return nil
-        }
-
-        do {
-            // Convert Data to String for TOML parsing
-            guard let tomlString = String(data: data, encoding: .utf8) else {
-                Logger.warning("Failed to convert Data to String for TOML parsing", category: Logger.config)
-                return nil
+        // Create file if it doesn't exist
+        if !FileManager.default.fileExists(atPath: configPath) {
+            Task {
+                createDefaultConfigFile(at: configPath)
             }
-
-            let decoder = TOMLDecoder()
-            return try decoder.decode(T.self, from: tomlString)
-        } catch {
-            Logger.warning(
-                "Failed to decode \(configKey) from UserDefaults using TOML: \(error)",
-                category: Logger.config
-            )
-            return nil
         }
+
+        // Cancel existing monitor if any
+        fileMonitor?.cancel()
+
+        // Start monitoring using AsyncFileMonitor
+        fileMonitor = Task { @MainActor [weak self] in
+            let eventStream = FolderContentMonitor.makeStream(url: directory, latency: 0.5)
+            for await event in eventStream
+                where event.change.contains(.isFile) &&
+                event.filename == url.lastPathComponent
+            {
+                Logger.debug("Configuration file change detected, triggering reload", category: Logger.config)
+                self?.loadConfigurationFromFile()
+            }
+        }
+
+        Logger.info("Started monitoring configuration file: \(url.path)", category: Logger.config)
     }
 
-    /// Saves a given struct to TOML formatted UserDefaults.
-    /// - Parameter configKey: The UserDefaults key for the configuration
-    /// - Parameter data: The data to save
-    private func saveStructToTOML(configKey: String, data: some Codable) {
+    /// Creates a default configuration file with current settings.
+    private func createDefaultConfigFile(at _: String) {
+        saveConfigurationToFile()
+    }
+
+    /// Loads configuration from the TOML file.
+    private func loadConfigurationFromFile() {
+        Logger.debug("loadConfigurationFromFile() called", category: Logger.config)
+        isUpdatingFromFile = true
+        defer { isUpdatingFromFile = false }
+
+        let configPath = configFilePathSubject.value
+        guard FileManager.default.fileExists(atPath: configPath) else {
+            Logger.info("Config file does not exist, using defaults: \\(configPath)", category: Logger.config)
+            return
+        }
+
         do {
-            let encoder = TOMLEncoder()
-            let tomlString = try encoder.encode(data)
-            guard let data = tomlString.data(using: String.Encoding.utf8) else {
-                Logger.error("Failed to convert TOML string to Data", category: Logger.config)
+            let data = try Data(contentsOf: URL(fileURLWithPath: configPath))
+            guard let tomlString = String(data: data, encoding: .utf8) else {
+                Logger.warning("Failed to read config file as UTF-8: \\(configPath)", category: Logger.config)
                 return
             }
 
-            UserDefaults.standard.set(data, forKey: configKey)
-        } catch {
-            Logger.error(
-                "Failed to encode \(configKey) to UserDefaults using TOML: \(error)",
-                category: Logger.config
+            configurationData = try TOMLDecoder().decode(
+                type: ConfigurationData<OptionalMode>.self,
+                from: tomlString,
+                defaultValue: configurationData
             )
+
+            Logger.info("Configuration loaded from file: \\(configPath)", category: Logger.config)
+        } catch {
+            Logger.warning("Failed to load configuration from file: \\(error)", category: Logger.config)
         }
+    }
+
+    /// Saves current configuration to the TOML file.
+    private func saveConfigurationToFile() {
+        let configPath = configFilePathSubject.value
+        let url = URL(fileURLWithPath: configPath)
+
+        // Create directory if it doesn't exist
+        let directory = url.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+
+        do {
+            let tomlString = try TOMLEncoder().encode(configurationData)
+            let annotatedTomlString = addEnumComments(to: tomlString)
+            try annotatedTomlString.write(to: url, atomically: true, encoding: String.Encoding.utf8)
+            Logger.info("Configuration saved to file: \\(configPath)", category: Logger.config)
+        } catch {
+            Logger.error("Failed to save configuration to file: \\(error)", category: Logger.config)
+        }
+    }
+
+    /// Adds helpful comments to TOML string for enum values and configuration guidance.
+    private func addEnumComments(to tomlString: String) -> String {
+        var annotatedString = tomlString
+
+        // Add header comment
+        let header = """
+        # AeroSpaceBar Configuration File
+        # This file stores all your settings in TOML format.
+        # Changes are automatically saved when modified through the UI.
+        # You can edit this file directly - changes will be reflected immediately.
+
+
+        """
+
+        // Generate enum comments dynamically using generics
+        let enumCommentMappings: [(String, String)] = [
+            ("[spaces]", generateSectionComment(
+                "Spaces appearance mode",
+                for: SpacesAppearanceMode.self,
+                key: "appearance-mode"
+            )),
+            ("[groups]", generateSectionComment(
+                "Groups appearance mode",
+                for: GroupsAppearanceMode.self,
+                key: "appearance-mode"
+            )),
+            ("log-level =", generateEnumComment(for: Logger.Level.self))
+        ]
+
+        for (pattern, comment) in enumCommentMappings {
+            if let range = annotatedString.range(of: pattern) {
+                if pattern.hasPrefix("["), pattern.hasSuffix("]") {
+                    // For section headers, add comment after the section
+                    let endIndex = annotatedString.lineRange(for: range).upperBound
+                    annotatedString.insert(contentsOf: comment + "\n", at: endIndex)
+                } else {
+                    // For regular keys, add comment before the line
+                    let insertIndex = annotatedString.lineRange(for: range).lowerBound
+                    annotatedString.insert(contentsOf: comment + "\n", at: insertIndex)
+                }
+            }
+        }
+
+        return header + annotatedString
+    }
+
+    /// Generates a comment string for an enum type that conforms to CaseIterable and RawRepresentable.
+    /// - Parameter enumType: The enum type to generate comments for
+    /// - Returns: A formatted comment string with all possible enum values
+    private func generateEnumComment<T: CaseIterable & RawRepresentable>(
+        for enumType: T.Type
+    ) -> String where T.RawValue == String {
+        let values = enumType.allCases.map { "\"\($0.rawValue)\"" }.joined(separator: ", ")
+        return "# Supported values: \(values)"
+    }
+
+    /// Generates a section-specific comment for an enum type.
+    /// - Parameters:
+    ///   - description: Description of what the enum controls
+    ///   - enumType: The enum type to generate comments for
+    ///   - key: The TOML key name for this enum
+    /// - Returns: A formatted comment string with description and all possible enum values
+    private func generateSectionComment<T: CaseIterable & RawRepresentable>(
+        _ description: String,
+        for enumType: T.Type,
+        key: String
+    ) -> String where T.RawValue == String {
+        let values = enumType.allCases.map { "\"\($0.rawValue)\"" }.joined(separator: ", ")
+        return "# \(description): \(key) = <value>\n# Supported values: \(values)"
     }
 }
 
-/// Wrapper struct for TOML encoding of array.
-private struct CollectionWrapper<T: Codable>: Codable {
-    let items: [T]
+internal extension TOMLDecoder {
+    /// Specialized decode method that uses the OptionalType protocol decode function.
+    /// - Parameters:
+    ///   - type: The concrete OptionType type
+    ///   - tomlString: The TOML formatted string to decode
+    ///   - defaultValue: The type instance for default values
+    /// - Returns: The decoded type instance
+    func decode<T: OptionalType>(
+        type _: T.Type,
+        from tomlString: String,
+        defaultValue: T.RequiredVariant
+    ) throws -> T.RequiredVariant {
+        try T.decode(
+            from: TOMLDecoder().decode(T.OptionalVariant.self, from: TOMLTable(string: tomlString)),
+            defaultValue: defaultValue
+        )
+    }
 }

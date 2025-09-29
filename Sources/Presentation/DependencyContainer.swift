@@ -69,7 +69,10 @@ final class DependencyContainer {
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
         setOptimizedPerformanceEnabledUseCase: makeSetOptimizedPerformanceEnabledUseCase(),
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
-        getEnableLicensingUseCase: makeGetEnableLicensingUseCase()
+        getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
+        getConfigFilePathUseCase: makeGetConfigFilePathUseCase(),
+        setConfigFilePathUseCase: makeSetConfigFilePathUseCase(),
+        openConfigFileUseCase: makeOpenConfigFileUseCase()
     )
 
     /// The SpacesViewModel instance.
@@ -376,6 +379,24 @@ final class DependencyContainer {
     /// - Returns: A new ResetConfigurationUseCase instance
     func makeResetConfigurationUseCase() -> ResetConfigurationUseCase {
         ResetConfigurationUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetConfigFilePathUseCase instance.
+    /// - Returns: A new GetConfigFilePathUseCase instance
+    func makeGetConfigFilePathUseCase() -> GetConfigFilePathUseCase {
+        GetConfigFilePathUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetConfigFilePathUseCase instance.
+    /// - Returns: A new SetConfigFilePathUseCase instance
+    func makeSetConfigFilePathUseCase() -> SetConfigFilePathUseCase {
+        SetConfigFilePathUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new OpenConfigFileUseCase instance.
+    /// - Returns: A new OpenConfigFileUseCase instance
+    func makeOpenConfigFileUseCase() -> OpenConfigFileUseCase {
+        OpenConfigFileUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - System Use Cases

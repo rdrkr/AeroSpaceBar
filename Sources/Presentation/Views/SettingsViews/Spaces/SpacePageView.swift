@@ -27,7 +27,7 @@ struct SpacePageView: View {
     private var space: Binding<Domain.Space> {
         Binding(
             get: {
-                guard let foundSpace = spacesViewModel.spaces.first(where: { $0.id == spaceId }) else {
+                guard let foundSpace = spacesViewModel.allSpaces.first(where: { $0.id == spaceId }) else {
                     // Return a default space if not found
                     return Domain.Space(
                         id: spaceId,

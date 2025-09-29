@@ -25,6 +25,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", from: "1.0.0"),
         .package(url: "https://github.com/WilhelmOks/ModifiedCopyMacro.git", from: "2.1.2"),
         .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.6.0")
     ],
@@ -55,7 +56,7 @@ let package = Package(
         .target(
             name: "Domain",
             dependencies: [
-                .product(name: "ModifiedCopyMacro", package: "ModifiedCopyMacro")
+                .product(name: "ModifiedCopy", package: "ModifiedCopyMacro")
             ],
             path: "Sources/Domain",
             swiftSettings: [
@@ -70,6 +71,7 @@ let package = Package(
             name: "Service",
             dependencies: [
                 .target(name: "Domain"),
+                .product(name: "AsyncFileMonitor", package: "AsyncFileMonitor"),
                 .product(name: "TOMLKit", package: "TOMLKit")
             ],
             path: "Sources/Service",

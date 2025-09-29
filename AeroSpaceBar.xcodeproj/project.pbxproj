@@ -24,6 +24,9 @@
 		1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
 		1A4A143D2E87B55700A4B997 /* ModifiedCopy in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4A143C2E87B55700A4B997 /* ModifiedCopy */; };
 		1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1AAFCE8A2E7404D6001948FD /* TOMLKit */; };
+		1ADFDD162E8BC41A00D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */; };
+		1ADFDD192E8BC45700D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */; };
+		1ADFDD1C2E8BC4CD00D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -295,7 +298,6 @@
 				DomainTests/EntitiesTests/AppModelsTests.swift,
 				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
 				DomainTests/EntitiesTests/LoggerTests.swift,
-				DomainTests/EntitiesTests/UserDefaultsKeysTests.swift,
 				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
 				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
 				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
@@ -333,7 +335,6 @@
 				DomainTests/EntitiesTests/AppModelsTests.swift,
 				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
 				DomainTests/EntitiesTests/LoggerTests.swift,
-				DomainTests/EntitiesTests/UserDefaultsKeysTests.swift,
 				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
 				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
 				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
@@ -405,6 +406,9 @@
 			files = (
 				1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */,
 				1A4941722E73DC5600187B3E /* Domain.framework in Frameworks */,
+				1ADFDD1C2E8BC4CD00D806E2 /* AsyncFileMonitor in Frameworks */,
+				1ADFDD162E8BC41A00D806E2 /* AsyncFileMonitor in Frameworks */,
+				1ADFDD192E8BC45700D806E2 /* AsyncFileMonitor in Frameworks */,
 				1A0011AA2E7E9FD20005683F /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -562,6 +566,9 @@
 			name = Service;
 			packageProductDependencies = (
 				1AAFCE8A2E7404D6001948FD /* TOMLKit */,
+				1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */,
+				1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */,
+				1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */,
 			);
 			productName = Service;
 			productReference = 1A493DE42E73D9F000187B3E /* Service.framework */;
@@ -699,6 +706,7 @@
 			packageReferences = (
 				1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */,
 				1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */,
+				1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -1600,6 +1608,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rdrkr/AsyncFileMonitor.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1612,6 +1628,19 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */;
 			productName = TOMLKit;
+		};
+		1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AsyncFileMonitor;
+		};
+		1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AsyncFileMonitor;
+		};
+		1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */;
+			productName = AsyncFileMonitor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

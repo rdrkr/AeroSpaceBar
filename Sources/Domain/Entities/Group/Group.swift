@@ -44,7 +44,10 @@ public struct Group: VisualContainer {
     public var id: Int
 
     /// The Group title name
-    public var title: String
+    public var title: String {
+        get { String(id) }
+        set { id = Int(newValue) ?? id }
+    }
 
     /// The start index of the group in the list of apps (inclusive).
     public var startIndex: Int
@@ -63,7 +66,6 @@ public struct Group: VisualContainer {
     /// Coding keys for TOML serialization
     private enum CodingKeys: String, CodingKey, CaseIterable {
         case id
-        case title
         case startIndex = "start-index"
         case endIndex = "end-index"
         case visualConfig = "visual-config"
@@ -72,19 +74,16 @@ public struct Group: VisualContainer {
     /// Standard initializer for creating GroupConfiguration instances
     /// - Parameters:
     ///   - id: The unique identifier for the group
-    ///   - title: The title of the group
     ///   - startIndex: The start index of the group in the list of apps (inclusive)
     ///   - endIndex: The end index of the group in the list of apps (inclusive)
     ///   - visualConfig: The visual configuration for the group container
     public init(
         id: Int,
-        title: String,
         startIndex: Int,
         endIndex: Int,
         visualConfig: VisualProperties
     ) {
         self.id = id
-        self.title = title
         self.startIndex = startIndex
         self.endIndex = endIndex
         self.visualConfig = visualConfig
@@ -97,7 +96,6 @@ public struct Group: VisualContainer {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decode(Int.self, forKey: .id)
-        title = try container.decode(String.self, forKey: .title)
         startIndex = try container.decode(Int.self, forKey: .startIndex)
         endIndex = try container.decode(Int.self, forKey: .endIndex)
         visualConfig = try container.decodeIfPresent(
@@ -112,7 +110,6 @@ public struct Group: VisualContainer {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
-        try container.encode(title, forKey: .title)
         try container.encode(startIndex, forKey: .startIndex)
         try container.encode(endIndex, forKey: .endIndex)
         try container.encode(visualConfig, forKey: .visualConfig)
@@ -143,7 +140,6 @@ public struct Group: VisualContainer {
     /// A default group configuration
     public static let defaultInstance: Group = .init(
         id: 0,
-        title: "0",
         startIndex: 1,
         endIndex: allAppsIndicatorIndex,
         visualConfig: ConfigurationDefaults.defaultGroupsGlobalVisualConfig
