@@ -11,32 +11,51 @@ struct VisualSettingsView: View {
     /// The metadata configuration for the visual container entity.
     let metadata: VisualContainerMetadata
 
-    /// The binding to the visual configuration being edited.
-    let visualConfig: Binding<VisualProperties>
+    /// The current theme mode.
+    let themeMode: ThemeMode
 
-    /// Initializes the visual settings view with the provided configuration.
-    /// - Parameters:
-    ///   - metadata: The metadata configuration for the visual container entity
-    ///   - visualConfig: Binding to the visual configuration being edited
-    init(
-        metadata: VisualContainerMetadata,
-        visualConfig: Binding<VisualProperties>
-    ) {
-        self.metadata = metadata
-        self.visualConfig = visualConfig
+    /// The binding to the color properties being edited.
+    let colorProperties: Binding<ColorProperties>
+
+    /// The binding to the geometric properties being edited.
+    let geometricProperties: Binding<GeometricProperties>
+
+    /// The binding to the effect properties being edited.
+    let effectProperties: Binding<EffectProperties>
+
+    /// The default geometric properties for the entity.
+    private var defaultGeometricProperties: GeometricProperties {
+        if themeMode.isColorCustomizable {
+            metadata.defaultGlobalGeometricProperties
+        } else {
+            metadata.defaultThemeGeometricProperties
+        }
+    }
+
+    /// The default effect properties for the entity.
+    private var defaultEffectProperties: EffectProperties {
+        if themeMode.isColorCustomizable {
+            metadata.defaultGlobalEffectProperties
+        } else {
+            metadata.defaultThemeEffectProperties
+        }
     }
 
     /// The main body of the visual settings view.
     var body: some View {
         Group {
-            backgroundSection
-            borderSection
+            if themeMode.isColorCustomizable || themeMode.isEffectCustomizable {
+                backgroundSection
+                borderSection
+            }
 
-            if metadata.showForegroundSection {
+            if metadata.showForegroundSection, themeMode.isColorCustomizable {
                 foregroundSection
             }
 
-            geometrySection
+            if themeMode.isGeometryCustomizable {
+                geometrySection
+            }
         }
     }
 
@@ -45,43 +64,49 @@ struct VisualSettingsView: View {
     /// Background appearance configuration section.
     private var backgroundSection: some View {
         Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Background")) {
-            SettingsColorPicker(
-                title: LocalizedStringResource("Tint Color"),
-                description: LocalizedStringResource(stringLiteral:
-                    "Choose the background tint color for \(metadata.entityName.lowercased()) " +
-                        "elements."
-                ),
-                selectedColor: visualConfig.backgroundTintColor,
-                supportsOpacity: false
-            )
-            .tag(makeTag("background-tint-color"))
+            if themeMode.isColorCustomizable {
+                SettingsColorPicker(
+                    title: LocalizedStringResource("Tint Color"),
+                    description: LocalizedStringResource(stringLiteral:
+                        "Choose the background tint color for \(metadata.entityName.lowercased()) " +
+                            "elements."
+                    ),
+                    selectedColor: colorProperties.backgroundTintColor,
+                    supportsOpacity: false
+                )
+                .tag(makeTag("background-tint-color"))
+            }
 
-            SettingsSlider(
-                value: visualConfig.backgroundOpacity,
-                in: 0.0 ... 1.0,
-                defaultValue: metadata.defaultGlobalVisualConfig.backgroundOpacity,
-                stickiness: 0.05,
-                label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource(stringLiteral:
-                    "Adjust the background opacity of \(metadata.entityName.lowercased()) elements."
-                ),
-                displayAsPercentage: true
-            )
-            .tag(makeTag("background-opacity"))
+            if themeMode.isEffectCustomizable {
+                SettingsSlider(
+                    value: effectProperties.backgroundOpacity,
+                    in: 0.0 ... 1.0,
+                    defaultValue: defaultEffectProperties.backgroundOpacity,
+                    stickiness: 0.05,
+                    label: LocalizedStringResource("Opacity"),
+                    helpText: LocalizedStringResource(stringLiteral:
+                        "Adjust the background opacity of \(metadata.entityName.lowercased()) elements."
+                    ),
+                    displayAsPercentage: true
+                )
+                .tag(makeTag("background-opacity"))
+            }
 
-            SettingsSlider(
-                value: visualConfig.backgroundBlurRadius,
-                in: 0.0 ... 10.0,
-                defaultValue: metadata.defaultGlobalVisualConfig.backgroundBlurRadius,
-                stickiness: 0.5,
-                label: LocalizedStringResource("Blur Radius"),
-                helpText: LocalizedStringResource(stringLiteral:
-                    "Adjust the background blur radius of \(metadata.entityName.lowercased())) " +
-                        "elements."
-                ),
-                displayAsPoints: true
-            )
-            .tag(makeTag("background-blur-radius"))
+            if themeMode.isColorCustomizable {
+                SettingsSlider(
+                    value: effectProperties.backgroundBlurRadius,
+                    in: 0.0 ... 10.0,
+                    defaultValue: defaultEffectProperties.backgroundBlurRadius,
+                    stickiness: 0.5,
+                    label: LocalizedStringResource("Blur Radius"),
+                    helpText: LocalizedStringResource(stringLiteral:
+                        "Adjust the background blur radius of \(metadata.entityName.lowercased())) " +
+                            "elements."
+                    ),
+                    displayAsPoints: true
+                )
+                .tag(makeTag("background-blur-radius"))
+            }
         }
         .tag(makeTag("background-section"))
     }
@@ -89,41 +114,32 @@ struct VisualSettingsView: View {
     /// Border appearance configuration section.
     private var borderSection: some View {
         Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Border")) {
-            SettingsColorPicker(
-                title: LocalizedStringResource("Tint Color"),
-                description: LocalizedStringResource(stringLiteral:
-                    "Choose the border tint color for \(metadata.entityName.lowercased())) elements."
-                ),
-                selectedColor: visualConfig.borderTintColor,
-                supportsOpacity: false
-            )
-            .tag(makeTag("border-tint-color"))
+            if themeMode.isColorCustomizable {
+                SettingsColorPicker(
+                    title: LocalizedStringResource("Tint Color"),
+                    description: LocalizedStringResource(stringLiteral:
+                        "Choose the border tint color for \(metadata.entityName.lowercased())) elements."
+                    ),
+                    selectedColor: colorProperties.borderTintColor,
+                    supportsOpacity: false
+                )
+                .tag(makeTag("border-tint-color"))
+            }
 
-            SettingsSlider(
-                value: visualConfig.borderOpacity,
-                in: 0.0 ... 1.0,
-                defaultValue: metadata.defaultGlobalVisualConfig.borderOpacity,
-                stickiness: 0.05,
-                label: LocalizedStringResource("Opacity"),
-                helpText: LocalizedStringResource(stringLiteral:
-                    "Adjust the border opacity of \(metadata.entityName.lowercased())) elements."
-                ),
-                displayAsPercentage: true
-            )
-            .tag(makeTag("border-opacity"))
-
-            SettingsSlider(
-                value: visualConfig.borderWidth,
-                in: 0.0 ... 5.0,
-                defaultValue: metadata.defaultGlobalVisualConfig.borderWidth,
-                stickiness: 0.25,
-                label: LocalizedStringResource("Width"),
-                helpText: LocalizedStringResource(stringLiteral:
-                    "Adjust the border width of \(metadata.entityName.lowercased())) elements."
-                ),
-                displayAsPoints: true
-            )
-            .tag(makeTag("border-width"))
+            if themeMode.isEffectCustomizable {
+                SettingsSlider(
+                    value: effectProperties.borderOpacity,
+                    in: 0.0 ... 1.0,
+                    defaultValue: defaultEffectProperties.borderOpacity,
+                    stickiness: 0.05,
+                    label: LocalizedStringResource("Opacity"),
+                    helpText: LocalizedStringResource(stringLiteral:
+                        "Adjust the border opacity of \(metadata.entityName.lowercased())) elements."
+                    ),
+                    displayAsPercentage: true
+                )
+                .tag(makeTag("border-opacity"))
+            }
         }
         .tag(makeTag("border-section"))
     }
@@ -137,7 +153,7 @@ struct VisualSettingsView: View {
                     "Choose the foreground color for \(metadata.entityName.lowercased())) " +
                         "text and icons."
                 ),
-                selectedColor: visualConfig.foregroundColor,
+                selectedColor: colorProperties.foregroundColor,
                 supportsOpacity: false
             )
             .tag(makeTag("foreground-color"))
@@ -145,21 +161,13 @@ struct VisualSettingsView: View {
         .tag(makeTag("foreground-section"))
     }
 
-    /// Geometry configuration section.
     private var geometrySection: some View {
-        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Geometry")) {
-            SettingsSlider(
-                value: visualConfig.cornerRadius,
-                in: 0.0 ... metadata.defaultGlobalVisualConfig.cornerRadius,
-                defaultValue: metadata.defaultGlobalVisualConfig.cornerRadius,
-                stickiness: 1.0,
-                label: LocalizedStringResource("Corner Radius"),
-                helpText: LocalizedStringResource(stringLiteral:
-                    "Adjust the corner radius of \(metadata.entityName.lowercased())) elements."
-                ),
-                displayAsPoints: true
+        Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Shape")) {
+            GeometrySettingsView(
+                entityName: metadata.entityName,
+                geometricProperties: geometricProperties,
+                defaultGeometricProperties: defaultGeometricProperties
             )
-            .tag(makeTag("corner-radius"))
         }
         .tag(makeTag("geometry-section"))
     }

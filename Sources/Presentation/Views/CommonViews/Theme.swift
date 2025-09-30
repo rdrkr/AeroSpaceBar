@@ -98,6 +98,9 @@ extension Animation {
     /// Smooth animation with default duration.
     static let themeSmooth: Animation = .smooth(duration: 0.3)
 
+    /// Fast smooth animation for immediate interactions.
+    static let themeSmoothFastest: Animation = .smooth(duration: 0.05)
+
     /// Fast smooth animation for quick interactions.
     static let themeSmoothFast: Animation = .smooth(duration: 0.15)
 
@@ -106,6 +109,9 @@ extension Animation {
 
     /// Easing animation with default duration.
     static let themeEaseInOut: Animation = .easeInOut(duration: 0.3)
+
+    /// Fast easing animation for immediate interactions.
+    static let themeEaseInOutFastest: Animation = .easeInOut(duration: 0.05)
 
     /// Fast easing animation for quick interactions.
     static let themeEaseInOutFast: Animation = .easeInOut(duration: 0.15)

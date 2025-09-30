@@ -5,10 +5,10 @@ import Foundation
 /// Defines how spaces visual appearance is configured
 public enum SpacesAppearanceMode: String, AppearanceMode {
     /// Each space has its own appearance configuration
-    case perSpace = "per_space"
+    case perSpace = "per-space"
 
     /// All spaces share the same appearance configuration
-    case allSpaces = "all_spaces"
+    case allSpaces = "all-spaces"
 
     /// Display name for the mode
     public var displayName: LocalizedStringResource {
@@ -30,13 +30,11 @@ public enum SpacesAppearanceMode: String, AppearanceMode {
         }
     }
 
-    /// Determines whether the global visual configuration should be shown for this mode.
+    /// Determines whether the global color properties should be shown for this mode.
     public var shouldShowGlobalConfig: Bool {
         switch self {
-        case .perSpace:
-            false
-        case .allSpaces:
-            true
+        case .perSpace: false
+        case .allSpaces: true
         }
     }
 }

@@ -18,7 +18,11 @@ struct GroupsSettingsView: View {
             appearanceMode: $groupsViewModel.groupsAppearanceMode,
             availableAppearanceModes: $groupsViewModel.availableGroupsAppearanceModes,
             entities: $groupsViewModel.groups,
-            globalVisualConfig: $groupsViewModel.globalGroupsVisualConfig,
+            globalColorProperties: $groupsViewModel.globalGroupsColorProperties,
+            globalGeometricProperties: $groupsViewModel.globalGroupsGeometricProperties,
+            globalEffectProperties: $groupsViewModel.globalGroupsEffectProperties,
+            themeMode: groupsViewModel.themeMode,
+            themePresetColorProperties: $groupsViewModel.themePresetColorProperties,
             createNavigationPage: { group in
                 AnyNavigationPage(GroupNavigationPage(index: group.id))
             },
@@ -57,7 +61,11 @@ struct GroupsSettingsView: View {
 
         // Reset groups configuration and visual settings via GroupsViewModel
         Task {
-            await groupsViewModel.resetGroupsToDefaults()
+            withAnimation(.themeEaseInOutFast) {
+                Task {
+                    await groupsViewModel.resetGroupsToDefaults()
+                }
+            }
         }
     }
 }

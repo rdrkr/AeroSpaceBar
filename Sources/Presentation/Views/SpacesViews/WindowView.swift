@@ -197,14 +197,9 @@ private struct WindowHoverBackground: View {
         isFocused: true,
         workspace: "1",
         appIcon: nil,
-        visualConfig: VisualProperties(
+        colorProperties: ColorProperties(
             backgroundTintColor: .clear,
-            backgroundOpacity: 0.0,
-            backgroundBlurRadius: 0.0,
             borderTintColor: .white,
-            borderOpacity: 0.3,
-            borderWidth: 1.0,
-            cornerRadius: 8.0,
             foregroundColor: .primary
         )
     )

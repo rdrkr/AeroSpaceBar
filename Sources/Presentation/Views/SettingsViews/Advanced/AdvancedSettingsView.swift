@@ -186,9 +186,13 @@ struct AdvancedSettingsView: View {
             Button(LocalizedStringResource("Cancel"), role: .cancel) { }
             Button(LocalizedStringResource("Reset"), role: .destructive) {
                 Task {
-                    await viewModel.resetSettingsToDefaults()
-                    await spacesViewModel.resetSpacesToDefaults()
-                    await groupsViewModel.resetGroupsToDefaults()
+                    withAnimation(.themeEaseInOutFast) {
+                        Task {
+                            await viewModel.resetSettingsToDefaults()
+                            await spacesViewModel.resetSpacesToDefaults()
+                            await groupsViewModel.resetGroupsToDefaults()
+                        }
+                    }
                 }
             }
         } message: {

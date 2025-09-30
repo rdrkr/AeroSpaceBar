@@ -62,6 +62,29 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
+    /// The current theme mode.
+    @Published var themeMode: ThemeMode {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setThemeModeUseCase.execute(value: themeMode)
+            }
+        }
+    }
+
+    /// Returns all available theme modes (those where isAvailable == true).
+    var availableThemeModes: [ThemeMode] {
+        ThemeMode.allCases.filter(\.isAvailable)
+    }
+
+    /// The current theme preset.
+    @Published var themePresetColorProperties: ThemePresetColorProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setThemePresetColorPropertiesUseCase.execute(value: themePresetColorProperties)
+            }
+        }
+    }
+
     // MARK: - Navigation History
 
     /// The default page to return to when resetting navigation.
@@ -167,6 +190,10 @@ class SettingsViewModel: ObservableObject {
     private let getConfigFilePathUseCase: GetConfigFilePathUseCase
     private let setConfigFilePathUseCase: SetConfigFilePathUseCase
     private let openConfigFileUseCase: OpenConfigFileUseCase
+    private let getThemeModeUseCase: GetThemeModeUseCase
+    private let setThemeModeUseCase: SetThemeModeUseCase
+    private let getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase
+    private let setThemePresetColorPropertiesUseCase: SetThemePresetColorPropertiesUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -192,6 +219,10 @@ class SettingsViewModel: ObservableObject {
     ///   - getConfigFilePathUseCase: Use case to get config file path.
     ///   - setConfigFilePathUseCase: Use case to set config file path.
     ///   - openConfigFileUseCase: Use case to open config file.
+    ///   - getThemeModeUseCase: Use case to get theme mode.
+    ///   - setThemeModeUseCase: Use case to set theme mode.
+    ///   - getThemePresetColorPropertiesUseCase: Use case to get theme preset.
+    ///   - setThemePresetColorPropertiesUseCase: Use case to set theme preset.
     init(
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
@@ -209,7 +240,11 @@ class SettingsViewModel: ObservableObject {
         getEnableLicensingUseCase: GetEnableLicensingUseCase,
         getConfigFilePathUseCase: GetConfigFilePathUseCase,
         setConfigFilePathUseCase: SetConfigFilePathUseCase,
-        openConfigFileUseCase: OpenConfigFileUseCase
+        openConfigFileUseCase: OpenConfigFileUseCase,
+        getThemeModeUseCase: GetThemeModeUseCase,
+        setThemeModeUseCase: SetThemeModeUseCase,
+        getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase,
+        setThemePresetColorPropertiesUseCase: SetThemePresetColorPropertiesUseCase
     ) {
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
@@ -231,6 +266,10 @@ class SettingsViewModel: ObservableObject {
         self.getConfigFilePathUseCase = getConfigFilePathUseCase
         self.setConfigFilePathUseCase = setConfigFilePathUseCase
         self.openConfigFileUseCase = openConfigFileUseCase
+        self.getThemeModeUseCase = getThemeModeUseCase
+        self.setThemeModeUseCase = setThemeModeUseCase
+        self.getThemePresetColorPropertiesUseCase = getThemePresetColorPropertiesUseCase
+        self.setThemePresetColorPropertiesUseCase = setThemePresetColorPropertiesUseCase
 
         // Load initial values from use cases
         aeroSpacePath = getAeroSpacePathUseCase.execute().blockingFirst()
@@ -241,6 +280,8 @@ class SettingsViewModel: ObservableObject {
         featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
         enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
         configFilePath = getConfigFilePathUseCase.execute().blockingFirst()
+        themeMode = getThemeModeUseCase.execute().blockingFirst()
+        themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
 
         // Setup reactive subscriptions
         updateAvailableOptions(with: featureFlags)
@@ -500,6 +541,14 @@ class SettingsViewModel: ObservableObject {
 
         getConfigFilePathUseCase.execute()
             .assign(to: \.configFilePath, on: self)
+            .store(in: &cancellables)
+
+        getThemeModeUseCase.execute()
+            .assign(to: \.themeMode, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetColorPropertiesUseCase.execute()
+            .assign(to: \.themePresetColorProperties, on: self)
             .store(in: &cancellables)
     }
 

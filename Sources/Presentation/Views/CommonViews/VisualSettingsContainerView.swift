@@ -26,11 +26,29 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
     /// The list of entities.
     @Binding var entities: [Entity]
 
-    /// The global visual configuration.
-    @Binding var globalVisualConfig: VisualProperties
+    /// The global color properties.
+    @Binding var globalColorProperties: ColorProperties
+
+    /// The global geometric properties.
+    @Binding var globalGeometricProperties: GeometricProperties
+
+    /// The global effect properties.
+    @Binding var globalEffectProperties: EffectProperties
+
+    /// The current theme preset.
+    @Binding var themePresetColorProperties: ThemePresetColorProperties
+
+    /// The theme preset geometry properties.
+    @OptionalBinding var themePresetGeometricProperties: GeometricProperties?
+
+    /// The theme preset effect properties.
+    @OptionalBinding var themePresetEffectProperties: EffectProperties?
 
     /// Whether to show the reset confirmation dialog.
     @State private var showingResetConfirmation = false
+
+    /// The current theme mode.
+    let themeMode: ThemeMode
 
     // MARK: - Callbacks
 
@@ -79,7 +97,12 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
     ///   - isFeatureEnabled: Whether the feature is enabled
     ///   - appearanceMode: The current appearance mode
     ///   - entities: The list of entities
-    ///   - globalVisualConfig: The global visual configuration
+    ///   - globalColorProperties: The global color properties
+    ///   - globalGeometricProperties: The global geometric properties
+    ///   - themeMode: The current theme mode
+    ///   - themePresetColorProperties: The current theme preset
+    ///   - themePresetGeometricProperties: The current theme preset geometric properties
+    ///   - themePresetEffectProperties: The current theme preset effect properties
     ///   - createNavigationPage: Callback to create a navigation page for an entity
     ///   - onRegisterDynamicSubPage: Callback to register a dynamic sub page
     ///   - onNavigateTo: Callback to navigate to a page
@@ -97,7 +120,13 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
         appearanceMode: Binding<Entity.AppearanceMode>,
         availableAppearanceModes: Binding<[Entity.AppearanceMode]>? = nil,
         entities: Binding<[Entity]>,
-        globalVisualConfig: Binding<VisualProperties>,
+        globalColorProperties: Binding<ColorProperties>,
+        globalGeometricProperties: Binding<GeometricProperties>,
+        globalEffectProperties: Binding<EffectProperties>,
+        themeMode: ThemeMode,
+        themePresetColorProperties: Binding<ThemePresetColorProperties>,
+        themePresetGeometricProperties: Binding<GeometricProperties>? = nil,
+        themePresetEffectProperties: Binding<EffectProperties>? = nil,
         createNavigationPage: @escaping (Entity) -> AnyNavigationPage,
         onRegisterDynamicSubPage: @escaping @MainActor (AnyNavigationPage) -> Void,
         onNavigateTo: @escaping @MainActor (AnyNavigationPage) -> Void,
@@ -116,8 +145,14 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
         _availableAppearanceModes = OptionalBinding(availableAppearanceModes)
         _appearanceMode = appearanceMode
         _entities = entities
-        _globalVisualConfig = globalVisualConfig
+        _globalColorProperties = globalColorProperties
+        _globalGeometricProperties = globalGeometricProperties
+        _globalEffectProperties = globalEffectProperties
+        _themePresetColorProperties = themePresetColorProperties
+        _themePresetGeometricProperties = OptionalBinding(themePresetGeometricProperties)
+        _themePresetEffectProperties = OptionalBinding(themePresetEffectProperties)
 
+        self.themeMode = themeMode
         self.createNavigationPage = createNavigationPage
         self.onRegisterDynamicSubPage = onRegisterDynamicSubPage
         self.onNavigateTo = onNavigateTo
@@ -146,16 +181,20 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
             if isFeatureEnabled != false {
                 appearanceModeSection
 
-                if appearanceMode.shouldShowGlobalConfig {
-                    globalVisualConfigSection
+                let isPresetModeController = themePresetGeometricProperties != nil &&
+                    themePresetEffectProperties != nil &&
+                    !themeMode.isColorCustomizable
+
+                if appearanceMode.shouldShowGlobalConfig || isPresetModeController {
+                    visualSettingsSection
                 }
 
                 if shouldShowEntitiesList?() != false {
                     entitiesListSection
-                }
 
-                if !entities.isEmpty {
-                    resetSection
+                    if !entities.isEmpty {
+                        resetSection
+                    }
                 }
             }
 
@@ -175,6 +214,7 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
         .animation(.themeEaseInOutFast, value: entities.isEmpty)
         .animation(.themeEaseInOutFast, value: appearanceMode)
         .animation(.themeEaseInOutFast, value: entities)
+        .animation(.themeEaseInOutFast, value: themeMode)
         .onChange(of: isFeatureEnabled) { _, newValue in
             if newValue == false {
                 handleFeatureDisabled()
@@ -203,7 +243,7 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
             let appearanceModeCases = availableAppearanceModes ?? Array(Entity.AppearanceMode.allCases)
 
             Picker(
-                LocalizedStringResource("Configuration"),
+                LocalizedStringResource("Mode"),
                 selection: $appearanceMode
             ) {
                 ForEach(appearanceModeCases, id: \.self) { mode in
@@ -211,20 +251,84 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
                 }
             }
             .pickerStyle(.segmented)
+            .disabled(!themeMode.isColorCustomizable)
         } header: {
-            Text(LocalizedStringResource("Appearance Mode"))
+            Text(LocalizedStringResource("Appearance"))
         } footer: {
-            Text(appearanceMode.description)
+            if themeMode.isColorCustomizable {
+                Text(appearanceMode.description)
+            } else {
+                Text(
+                    LocalizedStringResource(
+                        """
+                        Appearance mode is set to \(themePresetColorProperties.displayName) and can be modified \
+                        in the General settings when Theme Mode is set to Custom.
+                        """
+                    )
+                )
+            }
         }
         .padding(.top, 4)
         .tag("\(metadata.tagPrefix)-appearance-mode-section")
     }
 
-    /// Global visual configuration section.
-    private var globalVisualConfigSection: some View {
+    /// Global color properties section.
+    private var visualSettingsSection: some View {
         VisualSettingsView(
             metadata: Entity.metadata,
-            visualConfig: $globalVisualConfig
+            themeMode: themeMode,
+            colorProperties: Binding<ColorProperties>(
+                get: {
+                    if themeMode.isColorCustomizable {
+                        globalColorProperties
+                    } else {
+                        themePresetColorProperties.colorProperties
+                    }
+                },
+                set: { newValue in
+                    if themeMode.isColorCustomizable {
+                        globalColorProperties = newValue
+                    }
+                }
+            ),
+            geometricProperties: Binding<GeometricProperties>(
+                get: {
+                    if
+                        !themeMode.isColorCustomizable,
+                        let geometry = themePresetGeometricProperties
+                    {
+                        geometry
+                    } else {
+                        globalGeometricProperties
+                    }
+                },
+                set: { newValue in
+                    if themeMode.isColorCustomizable {
+                        globalGeometricProperties = newValue
+                    } else {
+                        themePresetGeometricProperties = newValue
+                    }
+                }
+            ),
+            effectProperties: Binding<EffectProperties>(
+                get: {
+                    if
+                        !themeMode.isColorCustomizable,
+                        let effect = themePresetEffectProperties
+                    {
+                        effect
+                    } else {
+                        globalEffectProperties
+                    }
+                },
+                set: { newValue in
+                    if themeMode.isColorCustomizable {
+                        globalEffectProperties = newValue
+                    } else {
+                        themePresetEffectProperties = newValue
+                    }
+                }
+            )
         )
     }
 
@@ -349,7 +453,12 @@ extension VisualSettingsContainerView where AppendContent == EmptyView {
     ///   - isFeatureEnabled: Whether the feature is enabled
     ///   - appearanceMode: The current appearance mode
     ///   - entities: The list of entities
-    ///   - globalVisualConfig: The global visual configuration
+    ///   - globalColorProperties: The global color properties
+    ///   - globalGeometricProperties: The global geometric properties
+    ///   - themeMode: The current theme mode
+    ///   - themePresetColorProperties: The current theme preset
+    ///   - themePresetGeometricProperties: The current theme preset geometric properties
+    ///   - themePresetEffectProperties: The current theme preset effect properties
     ///   - createNavigationPage: Callback to create a navigation page for an entity
     ///   - onRegisterDynamicSubPage: Callback to register a dynamic sub page
     ///   - onNavigateTo: Callback to navigate to a page
@@ -366,7 +475,13 @@ extension VisualSettingsContainerView where AppendContent == EmptyView {
         appearanceMode: Binding<Entity.AppearanceMode>,
         availableAppearanceModes: Binding<[Entity.AppearanceMode]>? = nil,
         entities: Binding<[Entity]>,
-        globalVisualConfig: Binding<VisualProperties>,
+        globalColorProperties: Binding<ColorProperties>,
+        globalGeometricProperties: Binding<GeometricProperties>,
+        globalEffectProperties: Binding<EffectProperties>,
+        themeMode: ThemeMode,
+        themePresetColorProperties: Binding<ThemePresetColorProperties>,
+        themePresetGeometricProperties: Binding<GeometricProperties>? = nil,
+        themePresetEffectProperties: Binding<EffectProperties>? = nil,
         createNavigationPage: @escaping (Entity) -> AnyNavigationPage,
         onRegisterDynamicSubPage: @escaping @MainActor (AnyNavigationPage) -> Void,
         onNavigateTo: @escaping @MainActor (AnyNavigationPage) -> Void,
@@ -384,7 +499,13 @@ extension VisualSettingsContainerView where AppendContent == EmptyView {
             appearanceMode: appearanceMode,
             availableAppearanceModes: availableAppearanceModes,
             entities: entities,
-            globalVisualConfig: globalVisualConfig,
+            globalColorProperties: globalColorProperties,
+            globalGeometricProperties: globalGeometricProperties,
+            globalEffectProperties: globalEffectProperties,
+            themeMode: themeMode,
+            themePresetColorProperties: themePresetColorProperties,
+            themePresetGeometricProperties: themePresetGeometricProperties,
+            themePresetEffectProperties: themePresetEffectProperties,
             createNavigationPage: createNavigationPage,
             onRegisterDynamicSubPage: onRegisterDynamicSubPage,
             onNavigateTo: onNavigateTo,
@@ -408,7 +529,12 @@ extension VisualSettingsContainerView where PrependContent == EmptyView {
     ///   - isFeatureEnabled: Whether the feature is enabled
     ///   - appearanceMode: The current appearance mode
     ///   - entities: The list of entities
-    ///   - globalVisualConfig: The global visual configuration
+    ///   - globalColorProperties: The global color properties
+    ///   - globalGeometricProperties: The global geometric properties
+    ///   - themeMode: The current theme mode
+    ///   - themePresetColorProperties: The current theme preset
+    ///   - themePresetGeometricProperties: The current theme preset geometric properties
+    ///   - themePresetEffectProperties: The current theme preset effect properties
     ///   - createNavigationPage: Callback to create a navigation page for an entity
     ///   - onRegisterDynamicSubPage: Callback to register a dynamic sub page
     ///   - onNavigateTo: Callback to navigate to a page
@@ -425,7 +551,13 @@ extension VisualSettingsContainerView where PrependContent == EmptyView {
         appearanceMode: Binding<Entity.AppearanceMode>,
         availableAppearanceModes: Binding<[Entity.AppearanceMode]>? = nil,
         entities: Binding<[Entity]>,
-        globalVisualConfig: Binding<VisualProperties>,
+        globalColorProperties: Binding<ColorProperties>,
+        globalGeometricProperties: Binding<GeometricProperties>,
+        globalEffectProperties: Binding<EffectProperties>,
+        themeMode: ThemeMode,
+        themePresetColorProperties: Binding<ThemePresetColorProperties>,
+        themePresetGeometricProperties: Binding<GeometricProperties>? = nil,
+        themePresetEffectProperties: Binding<EffectProperties>? = nil,
         createNavigationPage: @escaping (Entity) -> AnyNavigationPage,
         onRegisterDynamicSubPage: @escaping @MainActor (AnyNavigationPage) -> Void,
         onNavigateTo: @escaping @MainActor (AnyNavigationPage) -> Void,
@@ -443,7 +575,13 @@ extension VisualSettingsContainerView where PrependContent == EmptyView {
             appearanceMode: appearanceMode,
             availableAppearanceModes: availableAppearanceModes,
             entities: entities,
-            globalVisualConfig: globalVisualConfig,
+            globalColorProperties: globalColorProperties,
+            globalGeometricProperties: globalGeometricProperties,
+            globalEffectProperties: globalEffectProperties,
+            themeMode: themeMode,
+            themePresetColorProperties: themePresetColorProperties,
+            themePresetGeometricProperties: themePresetGeometricProperties,
+            themePresetEffectProperties: themePresetEffectProperties,
             createNavigationPage: createNavigationPage,
             onRegisterDynamicSubPage: onRegisterDynamicSubPage,
             onNavigateTo: onNavigateTo,
@@ -467,7 +605,12 @@ extension VisualSettingsContainerView where PrependContent == EmptyView, AppendC
     ///   - isFeatureEnabled: Whether the feature is enabled
     ///   - appearanceMode: The current appearance mode
     ///   - entities: The list of entities
-    ///   - globalVisualConfig: The global visual configuration
+    ///   - globalColorProperties: The global color properties
+    ///   - globalGeometricProperties: The global geometric properties
+    ///   - themeMode: The current theme mode
+    ///   - themePresetColorProperties: The current theme preset
+    ///   - themePresetGeometricProperties: The current theme preset geometric properties
+    ///   - themePresetEffectProperties: The current theme preset effect properties
     ///   - createNavigationPage: Callback to create a navigation page for an entity
     ///   - onRegisterDynamicSubPage: Callback to register a dynamic sub page
     ///   - onNavigateTo: Callback to navigate to a page
@@ -483,7 +626,13 @@ extension VisualSettingsContainerView where PrependContent == EmptyView, AppendC
         appearanceMode: Binding<Entity.AppearanceMode>,
         availableAppearanceModes: Binding<[Entity.AppearanceMode]>? = nil,
         entities: Binding<[Entity]>,
-        globalVisualConfig: Binding<VisualProperties>,
+        globalColorProperties: Binding<ColorProperties>,
+        globalGeometricProperties: Binding<GeometricProperties>,
+        globalEffectProperties: Binding<EffectProperties>,
+        themeMode: ThemeMode,
+        themePresetColorProperties: Binding<ThemePresetColorProperties>,
+        themePresetGeometricProperties: Binding<GeometricProperties>? = nil,
+        themePresetEffectProperties: Binding<EffectProperties>? = nil,
         createNavigationPage: @escaping (Entity) -> AnyNavigationPage,
         onRegisterDynamicSubPage: @escaping @MainActor (AnyNavigationPage) -> Void,
         onNavigateTo: @escaping @MainActor (AnyNavigationPage) -> Void,
@@ -500,7 +649,13 @@ extension VisualSettingsContainerView where PrependContent == EmptyView, AppendC
             appearanceMode: appearanceMode,
             availableAppearanceModes: availableAppearanceModes,
             entities: entities,
-            globalVisualConfig: globalVisualConfig,
+            globalColorProperties: globalColorProperties,
+            globalGeometricProperties: globalGeometricProperties,
+            globalEffectProperties: globalEffectProperties,
+            themeMode: themeMode,
+            themePresetColorProperties: themePresetColorProperties,
+            themePresetGeometricProperties: themePresetGeometricProperties,
+            themePresetEffectProperties: themePresetEffectProperties,
             createNavigationPage: createNavigationPage,
             onRegisterDynamicSubPage: onRegisterDynamicSubPage,
             onNavigateTo: onNavigateTo,

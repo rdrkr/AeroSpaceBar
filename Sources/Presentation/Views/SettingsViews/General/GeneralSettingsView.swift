@@ -1,6 +1,7 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Combine
+import Domain
 import SwiftUI
 
 /// Displays general application settings including display options and appearance settings.
@@ -16,7 +17,12 @@ struct GeneralSettingsView: View {
     @State private var launchAtLoginUpdateTask: Task<Void, Never>?
 
     /// The associated navigation page
-    let navigationOption: RootNavigationPage = .general
+    private let navigationOption: RootNavigationPage = .general
+
+    /// Whether or not to show the theme preset picker
+    private var shouldShowThemePresetColorProperties: Bool {
+        viewModel.themeMode == .preset
+    }
 
     var body: some View {
         IntroForm(
@@ -53,6 +59,48 @@ struct GeneralSettingsView: View {
                 }
             }
             .tag("general-launch-section")
+
+            Section {
+                Picker(
+                    LocalizedStringResource("Mode"),
+                    selection: $viewModel.themeMode
+                ) {
+                    ForEach(ThemeMode.allCases, id: \.self) { mode in
+                        Text(mode.rawValue.capitalized)
+                            .selectionDisabled(!mode.isAvailable)
+                            .tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .tag("general-theme-mode-picker")
+
+                if shouldShowThemePresetColorProperties {
+                    Picker(
+                        LocalizedStringResource("Theme"),
+                        selection: $viewModel.themePresetColorProperties
+                    ) {
+                        ForEach(ThemePresetColorProperties.allCases, id: \.self) { preset in
+                            Text(preset.displayName).tag(preset)
+                        }
+                    }
+                    .tag("general-theme-preset-picker")
+                }
+            } header: {
+                Text(LocalizedStringResource("Appearance"))
+            } footer: {
+                Text(
+                    LocalizedStringResource(
+                        """
+                        Appearance and style of spaces and groups.
+                        - Liquid Glass (macOS 26+ Only).
+                        - Preset color themes.
+                        - Custom colors of your choosing for Spaces and Groups.
+                        """
+                    )
+                )
+                .tag("theme-picker-description")
+            }
+            .tag("general-appearance-mode-section")
 
             Section(LocalizedStringResource("AeroSpace")) {
                 VStack(alignment: .leading) {
@@ -176,6 +224,7 @@ struct GeneralSettingsView: View {
             }
             .tag("general-tips-section")
         }
+        .animation(.themeEaseInOutFast, value: shouldShowThemePresetColorProperties)
         .tag("general-settings-view")
     }
 }

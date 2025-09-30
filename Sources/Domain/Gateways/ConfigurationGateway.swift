@@ -47,13 +47,25 @@ public protocol ConfigurationGateway {
     // MARK: - UI Configuration Publishers
 
     /// Publisher that emits spaces configuration updates.
-    var spacesVisualConfigPublisher: AnyPublisher<[VisualProperties], Never> { get }
+    var spacesColorPropertiesPublisher: AnyPublisher<[ColorProperties], Never> { get }
+
+    /// Publisher that emits spaces geometric properties updates.
+    var spacesGeometricPropertiesPublisher: AnyPublisher<[GeometricProperties], Never> { get }
+
+    /// Publisher that emits spaces effect properties updates.
+    var spacesEffectPropertiesPublisher: AnyPublisher<[EffectProperties], Never> { get }
 
     /// Publisher that emits spaces appearance mode updates.
     var spacesAppearanceModePublisher: AnyPublisher<SpacesAppearanceMode, Never> { get }
 
-    /// Publisher that emits global space visual configuration updates.
-    var globalSpacesVisualConfigPublisher: AnyPublisher<VisualProperties, Never> { get }
+    /// Publisher that emits global space color properties updates.
+    var globalSpacesColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> { get }
+
+    /// Publisher that emits global space geometric properties updates.
+    var globalSpacesGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> { get }
+
+    /// Publisher that emits global space effect properties updates.
+    var globalSpacesEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
 
     /// Publisher that emits group configuration updates.
     var groupsPublisher: AnyPublisher<[Domain.Group], Never> { get }
@@ -61,8 +73,26 @@ public protocol ConfigurationGateway {
     /// Publisher that emits groups appearance mode updates.
     var groupsAppearanceModePublisher: AnyPublisher<GroupsAppearanceMode, Never> { get }
 
-    /// Publisher that emits global groups visual configuration updates.
-    var globalGroupsVisualConfigPublisher: AnyPublisher<VisualProperties, Never> { get }
+    /// Publisher that emits global groups color properties updates.
+    var globalGroupsColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> { get }
+
+    /// Publisher that emits global groups geometric properties updates.
+    var globalGroupsGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> { get }
+
+    /// Publisher that emits global groups effect properties updates.
+    var globalGroupsEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
+
+    /// Publisher that emits theme mode updates.
+    var themeModePublisher: AnyPublisher<ThemeMode, Never> { get }
+
+    /// Publisher that emits theme preset updates.
+    var themePresetColorPropertiesPublisher: AnyPublisher<ThemePresetColorProperties, Never> { get }
+
+    /// Publisher that emits theme preset geometric properties updates.
+    var themePresetGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> { get }
+
+    /// Publisher that emits theme preset effect properties updates.
+    var themePresetEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
 
     // MARK: - Async Setters (trigger updates via publishers)
 
@@ -86,17 +116,37 @@ public protocol ConfigurationGateway {
 
     // MARK: - UI Configuration Async Setters
 
-    func setSpacesVisualConfig(_ value: [VisualProperties]) async
+    func setSpacesColorProperties(_ value: [ColorProperties]) async
+
+    func setSpacesGeometricProperties(_ value: [GeometricProperties]) async
+
+    func setSpacesEffectProperties(_ value: [EffectProperties]) async
 
     func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) async
 
-    func setGlobalGroupsVisualConfig(_ value: VisualProperties) async
+    func setGlobalGroupsColorProperties(_ value: ColorProperties) async
 
     func setGroups(_ value: [Domain.Group]) async
 
     func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) async
 
-    func setGlobalSpacesVisualConfig(_ value: VisualProperties) async
+    func setGlobalSpacesColorProperties(_ value: ColorProperties) async
+
+    func setGlobalSpacesGeometricProperties(_ value: GeometricProperties) async
+
+    func setGlobalSpacesEffectProperties(_ value: EffectProperties) async
+
+    func setGlobalGroupsGeometricProperties(_ value: GeometricProperties) async
+
+    func setGlobalGroupsEffectProperties(_ value: EffectProperties) async
+
+    func setThemeMode(_ value: ThemeMode) async
+
+    func setThemePresetColorProperties(_ value: ThemePresetColorProperties) async
+
+    func setThemePresetGeometricProperties(_ value: GeometricProperties) async
+
+    func setThemePresetEffectProperties(_ value: EffectProperties) async
 
     // MARK: - AeroSpace Configuration Management
 

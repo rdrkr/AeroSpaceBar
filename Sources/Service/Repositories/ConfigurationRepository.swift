@@ -26,6 +26,12 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Flag to prevent recursive updates during file monitoring.
     private var isUpdatingFromFile = false
 
+    /// Timestamp of last save operation to prevent loading immediately after save.
+    private var lastSaveTimestamp: Date?
+
+    /// Time interval to ignore file changes after a save (in seconds).
+    private let saveDebounceInterval: TimeInterval = 1.0
+
     /// Subject for showing window titles.
     private let showWindowTitlesSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showWindowTitles
@@ -78,16 +84,32 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Subjects
 
-    private let spacesVisualConfigSubject = CurrentValueSubject<[VisualProperties], Never>(
-        ConfigurationDefaults.spacesVisualConfiguration
+    private let spacesColorPropertiesSubject = CurrentValueSubject<[ColorProperties], Never>(
+        ConfigurationDefaults.spacesColorProperties
+    )
+
+    private let spacesGeometricPropertiesSubject = CurrentValueSubject<[GeometricProperties], Never>(
+        ConfigurationDefaults.spacesGeometricProperties
+    )
+
+    private let spacesEffectPropertiesSubject = CurrentValueSubject<[EffectProperties], Never>(
+        ConfigurationDefaults.spacesEffectProperties
     )
 
     private let spacesAppearanceModeSubject = CurrentValueSubject<SpacesAppearanceMode, Never>(
         ConfigurationDefaults.spacesAppearanceMode
     )
 
-    private let globalSpacesVisualConfigSubject = CurrentValueSubject<VisualProperties, Never>(
-        ConfigurationDefaults.defaultSpaceVisualConfig
+    private let globalSpacesColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.spaceColorProperties
+    )
+
+    private let globalSpacesGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.spaceGeometricProperties
+    )
+
+    private let globalSpacesEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.spaceEffectProperties
     )
 
     private let groupsSubject = CurrentValueSubject<[Domain.Group], Never>(
@@ -98,8 +120,32 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.groupsAppearanceMode
     )
 
-    private let globalGroupsVisualConfigSubject = CurrentValueSubject<VisualProperties, Never>(
-        ConfigurationDefaults.defaultGroupsGlobalVisualConfig
+    private let globalGroupsColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.groupsGlobalColorProperties
+    )
+
+    private let globalGroupsGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.groupsGlobalGeometricProperties
+    )
+
+    private let globalGroupsEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.groupsGlobalEffectProperties
+    )
+
+    private let themeModeSubject = CurrentValueSubject<ThemeMode, Never>(
+        ConfigurationDefaults.themeMode
+    )
+
+    private let themePresetColorPropertiesSubject = CurrentValueSubject<ThemePresetColorProperties, Never>(
+        ConfigurationDefaults.themePresetColorProperties
+    )
+
+    private let themePresetGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.themePresetGeometricProperties
+    )
+
+    private let themePresetEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.themePresetEffectProperties
     )
 
     // MARK: - Publishers
@@ -146,12 +192,28 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Publishers
 
-    public var globalSpacesVisualConfigPublisher: AnyPublisher<VisualProperties, Never> {
-        globalSpacesVisualConfigSubject.eraseToAnyPublisher()
+    public var globalSpacesColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        globalSpacesColorPropertiesSubject.eraseToAnyPublisher()
     }
 
-    public var spacesVisualConfigPublisher: AnyPublisher<[VisualProperties], Never> {
-        spacesVisualConfigSubject.eraseToAnyPublisher()
+    public var globalSpacesGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        globalSpacesGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var globalSpacesEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        globalSpacesEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var spacesColorPropertiesPublisher: AnyPublisher<[ColorProperties], Never> {
+        spacesColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var spacesGeometricPropertiesPublisher: AnyPublisher<[GeometricProperties], Never> {
+        spacesGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var spacesEffectPropertiesPublisher: AnyPublisher<[EffectProperties], Never> {
+        spacesEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
     public var spacesAppearanceModePublisher: AnyPublisher<SpacesAppearanceMode, Never> {
@@ -166,8 +228,32 @@ public final class ConfigurationRepository: ConfigurationGateway {
         groupsAppearanceModeSubject.eraseToAnyPublisher()
     }
 
-    public var globalGroupsVisualConfigPublisher: AnyPublisher<VisualProperties, Never> {
-        globalGroupsVisualConfigSubject.eraseToAnyPublisher()
+    public var globalGroupsColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        globalGroupsColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var globalGroupsGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        globalGroupsGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var globalGroupsEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        globalGroupsEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var themeModePublisher: AnyPublisher<ThemeMode, Never> {
+        themeModeSubject.eraseToAnyPublisher()
+    }
+
+    public var themePresetColorPropertiesPublisher: AnyPublisher<ThemePresetColorProperties, Never> {
+        themePresetColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var themePresetGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        themePresetGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var themePresetEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        themePresetEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
     private var advancedSettings: AdvancedSettings<RequiredMode> {
@@ -196,13 +282,21 @@ public final class ConfigurationRepository: ConfigurationGateway {
         get {
             GeneralSettings<RequiredMode>(
                 showWindowTitles: showWindowTitlesSubject.value,
-                aeroSpacePath: aeroSpacePathSubject.value
+                aeroSpacePath: aeroSpacePathSubject.value,
+                themeMode: themeModeSubject.value,
+                themePresetColorProperties: themePresetColorPropertiesSubject.value,
+                themePresetGeometricProperties: themePresetGeometricPropertiesSubject.value,
+                themePresetEffectProperties: themePresetEffectPropertiesSubject.value
             )
         }
 
         set {
             showWindowTitlesSubject.send(newValue.showWindowTitles)
             aeroSpacePathSubject.send(newValue.aeroSpacePath)
+            themeModeSubject.send(newValue.themeMode)
+            themePresetColorPropertiesSubject.send(newValue.themePresetColorProperties)
+            themePresetGeometricPropertiesSubject.send(newValue.themePresetGeometricProperties)
+            themePresetEffectPropertiesSubject.send(newValue.themePresetEffectProperties)
         }
     }
 
@@ -212,7 +306,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
                 showGroups: showGroupsSubject.value,
                 groups: groupsSubject.value,
                 groupsAppearanceMode: groupsAppearanceModeSubject.value.rawValue,
-                globalGroupsVisualConfig: globalGroupsVisualConfigSubject.value
+                globalGroupsColorProperties: globalGroupsColorPropertiesSubject.value,
+                globalGroupsGeometricProperties: globalGroupsGeometricPropertiesSubject.value,
+                globalGroupsEffectProperties: globalGroupsEffectPropertiesSubject.value
             )
         }
 
@@ -224,7 +320,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
                     where: { $0.rawValue == newValue.groupsAppearanceMode }
                 ) ?? ConfigurationDefaults.groupsAppearanceMode
             )
-            globalGroupsVisualConfigSubject.send(newValue.globalGroupsVisualConfig)
+            globalGroupsColorPropertiesSubject.send(newValue.globalGroupsColorProperties)
+            globalGroupsGeometricPropertiesSubject.send(newValue.globalGroupsGeometricProperties)
+            globalGroupsEffectPropertiesSubject.send(newValue.globalGroupsEffectProperties)
         }
     }
 
@@ -232,20 +330,29 @@ public final class ConfigurationRepository: ConfigurationGateway {
         get {
             SpacesSettings<RequiredMode>(
                 showEmptySpaces: showEmptySpacesSubject.value,
-                spacesVisualConfig: spacesVisualConfigSubject.value,
+                spacesColorProperties: spacesColorPropertiesSubject.value,
+                spacesGeometricProperties: spacesGeometricPropertiesSubject.value,
+                spacesEffectProperties: spacesEffectPropertiesSubject.value,
                 spacesAppearanceMode: spacesAppearanceModeSubject.value.rawValue,
-                globalSpacesVisualConfig: globalSpacesVisualConfigSubject.value
+                globalSpacesColorProperties: globalSpacesColorPropertiesSubject.value,
+                globalSpacesGeometricProperties: globalSpacesGeometricPropertiesSubject.value,
+                globalSpacesEffectProperties: globalSpacesEffectPropertiesSubject.value
             )
         }
 
         set {
             showEmptySpacesSubject.send(newValue.showEmptySpaces)
-            spacesVisualConfigSubject.send(newValue.spacesVisualConfig)
+            spacesColorPropertiesSubject.send(newValue.spacesColorProperties)
+            spacesGeometricPropertiesSubject.send(newValue.spacesGeometricProperties)
+            spacesEffectPropertiesSubject.send(newValue.spacesEffectProperties)
             spacesAppearanceModeSubject.send(
                 SpacesAppearanceMode.allCases.first(
                     where: { $0.rawValue == newValue.spacesAppearanceMode }
                 ) ?? ConfigurationDefaults.spacesAppearanceMode
             )
+            globalSpacesColorPropertiesSubject.send(newValue.globalSpacesColorProperties)
+            globalSpacesGeometricPropertiesSubject.send(newValue.globalSpacesGeometricProperties)
+            globalSpacesEffectPropertiesSubject.send(newValue.globalSpacesEffectProperties)
         }
     }
 
@@ -312,12 +419,22 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Load UI configuration settings with defaults fallback.
     private func loadUIConfigurationSettings() {
         // Initialize with defaults - TOML file loading will override these if present
-        spacesVisualConfigSubject.send(ConfigurationDefaults.spacesVisualConfiguration)
+        spacesColorPropertiesSubject.send(ConfigurationDefaults.spacesColorProperties)
+        spacesGeometricPropertiesSubject.send(ConfigurationDefaults.spacesGeometricProperties)
+        spacesEffectPropertiesSubject.send(ConfigurationDefaults.spacesEffectProperties)
         spacesAppearanceModeSubject.send(ConfigurationDefaults.spacesAppearanceMode)
-        globalSpacesVisualConfigSubject.send(ConfigurationDefaults.defaultSpaceVisualConfig)
+        globalSpacesColorPropertiesSubject.send(ConfigurationDefaults.spaceColorProperties)
+        globalSpacesGeometricPropertiesSubject.send(ConfigurationDefaults.spaceGeometricProperties)
+        globalSpacesEffectPropertiesSubject.send(ConfigurationDefaults.spaceEffectProperties)
         groupsSubject.send(ConfigurationDefaults.groups)
         groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
-        globalGroupsVisualConfigSubject.send(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
+        globalGroupsColorPropertiesSubject.send(ConfigurationDefaults.groupsGlobalColorProperties)
+        globalGroupsGeometricPropertiesSubject.send(ConfigurationDefaults.groupsGlobalGeometricProperties)
+        globalGroupsEffectPropertiesSubject.send(ConfigurationDefaults.groupsGlobalEffectProperties)
+        themeModeSubject.send(ConfigurationDefaults.themeMode)
+        themePresetColorPropertiesSubject.send(ConfigurationDefaults.themePresetColorProperties)
+        themePresetGeometricPropertiesSubject.send(ConfigurationDefaults.themePresetGeometricProperties)
+        themePresetEffectPropertiesSubject.send(ConfigurationDefaults.themePresetEffectProperties)
     }
 
     /// Resolves the AeroSpace path following the expected initialization logic.
@@ -456,10 +573,34 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Sets the vertical padding for the menu bar interface in points.
 
     /// Sets the spaces configuration and emits update.
-    public func setSpacesVisualConfig(_ value: [VisualProperties]) {
-        if value == spacesVisualConfigSubject.value { return }
+    public func setSpacesColorProperties(_ value: [ColorProperties]) {
+        if value == spacesColorPropertiesSubject.value { return }
 
-        spacesVisualConfigSubject.send(value)
+        spacesColorPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the spaces geometric properties and emits update.
+    public func setSpacesGeometricProperties(_ value: [GeometricProperties]) {
+        if value == spacesGeometricPropertiesSubject.value { return }
+
+        spacesGeometricPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the spaces effect properties and emits update.
+    public func setSpacesEffectProperties(_ value: [EffectProperties]) {
+        if value == spacesEffectPropertiesSubject.value { return }
+
+        spacesEffectPropertiesSubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -479,11 +620,35 @@ public final class ConfigurationRepository: ConfigurationGateway {
         }
     }
 
-    /// Sets the global space visual configuration and emits update.
-    public func setGlobalSpacesVisualConfig(_ value: VisualProperties) {
-        if value == globalSpacesVisualConfigSubject.value { return }
+    /// Sets the global space color properties and emits update.
+    public func setGlobalSpacesColorProperties(_ value: ColorProperties) {
+        if value == globalSpacesColorPropertiesSubject.value { return }
 
-        globalSpacesVisualConfigSubject.send(value)
+        globalSpacesColorPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the global space geometric properties and emits update.
+    public func setGlobalSpacesGeometricProperties(_ value: GeometricProperties) {
+        if value == globalSpacesGeometricPropertiesSubject.value { return }
+
+        globalSpacesGeometricPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the global space effect properties and emits update.
+    public func setGlobalSpacesEffectProperties(_ value: EffectProperties) {
+        if value == globalSpacesEffectPropertiesSubject.value { return }
+
+        globalSpacesEffectPropertiesSubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -515,11 +680,83 @@ public final class ConfigurationRepository: ConfigurationGateway {
         }
     }
 
-    /// Sets the global groups visual configuration and emits update.
-    public func setGlobalGroupsVisualConfig(_ value: VisualProperties) {
-        if value == globalGroupsVisualConfigSubject.value { return }
+    /// Sets the global groups color properties and emits update.
+    public func setGlobalGroupsColorProperties(_ value: ColorProperties) {
+        if value == globalGroupsColorPropertiesSubject.value { return }
 
-        globalGroupsVisualConfigSubject.send(value)
+        globalGroupsColorPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the global groups geometric properties and emits update.
+    public func setGlobalGroupsGeometricProperties(_ value: GeometricProperties) {
+        if value == globalGroupsGeometricPropertiesSubject.value { return }
+
+        globalGroupsGeometricPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the global groups effect properties and emits update.
+    public func setGlobalGroupsEffectProperties(_ value: EffectProperties) {
+        if value == globalGroupsEffectPropertiesSubject.value { return }
+
+        globalGroupsEffectPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the theme mode and emits update.
+    public func setThemeMode(_ value: ThemeMode) {
+        if value == themeModeSubject.value { return }
+
+        themeModeSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the theme preset and emits update.
+    public func setThemePresetColorProperties(_ value: ThemePresetColorProperties) {
+        if value == themePresetColorPropertiesSubject.value { return }
+
+        themePresetColorPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the theme preset geometric properties and emits update.
+    public func setThemePresetGeometricProperties(_ value: GeometricProperties) {
+        if value == themePresetGeometricPropertiesSubject.value { return }
+
+        themePresetGeometricPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the theme preset effect properties and emits update.
+    public func setThemePresetEffectProperties(_ value: EffectProperties) {
+        if value == themePresetEffectPropertiesSubject.value { return }
+
+        themePresetEffectPropertiesSubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -533,8 +770,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
     private func setupObservers() {
         aeroSpacePathPublisher
             .sink { [weak self] path in
-                let version = self?.getAeroSpaceVersion(at: path)
-                self?.currentAeroSpaceVersionSubject.send(version)
+                Task { @MainActor [weak self] in
+                    let version = await self?.getAeroSpaceVersion(at: path)
+                    self?.currentAeroSpaceVersionSubject.send(version)
+                }
             }
             .store(in: &cancellables)
     }
@@ -542,46 +781,60 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Gets the version of the AeroSpace binary at the specified path.
     /// - Parameter path: The path to check for AeroSpace version
     /// - Returns: The version string if found, nil otherwise
-    private func getAeroSpaceVersion(at path: String) -> String? {
+    private func getAeroSpaceVersion(at path: String) async -> String? {
         if path.isEmpty { return nil }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = ["--version"]
+        return await withCheckedContinuation { continuation in
+            Task.detached {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: path)
+                process.arguments = ["--version"]
 
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = pipe
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
 
-        do {
-            try process.run()
-            process.waitUntilExit()
+                do {
+                    try process.run()
+                    process.waitUntilExit()
 
-            if process.terminationStatus == 0 {
-                let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-                    // Extract just the CLI client version from the first line
-                    let lines = output.components(separatedBy: .newlines)
-                    if let firstLine = lines.first {
-                        // Look for "aerospace CLI client version: " and extract what follows
-                        let prefix = "aerospace CLI client version: "
-                        if firstLine.hasPrefix(prefix) {
-                            let fullVersion = String(firstLine.dropFirst(prefix.count))
-                            // Extract only the version number (before the SHA)
-                            let components = fullVersion.components(separatedBy: " ")
-                            if let versionNumber = components.first {
-                                Logger.info("AeroSpace version detected: \(versionNumber)", category: Logger.config)
-                                return versionNumber
+                    if process.terminationStatus == 0 {
+                        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                        if
+                            let output = String(data: data, encoding: .utf8)?
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+                        {
+                            // Extract just the CLI client version from the first line
+                            let lines = output.components(separatedBy: .newlines)
+                            if let firstLine = lines.first {
+                                // Look for "aerospace CLI client version: " and extract what follows
+                                let prefix = "aerospace CLI client version: "
+                                if firstLine.hasPrefix(prefix) {
+                                    let fullVersion = String(firstLine.dropFirst(prefix.count))
+                                    // Extract only the version number (before the SHA)
+                                    let components = fullVersion.components(separatedBy: " ")
+                                    if let versionNumber = components.first {
+                                        Logger.info(
+                                            "AeroSpace version detected: \(versionNumber)",
+                                            category: Logger.config
+                                        )
+                                        continuation.resume(returning: versionNumber)
+                                        return
+                                    }
+                                }
                             }
                         }
                     }
+                } catch {
+                    Logger.warning(
+                        "Failed to get AeroSpace version: \(error.localizedDescription)",
+                        category: Logger.config
+                    )
                 }
-            }
-        } catch {
-            Logger.warning("Failed to get AeroSpace version: \(error.localizedDescription)", category: Logger.config)
-        }
 
-        return nil
+                continuation.resume(returning: nil)
+            }
+        }
     }
 
     /// Opens the AeroSpace configuration file.
@@ -653,12 +906,22 @@ public final class ConfigurationRepository: ConfigurationGateway {
         logLevelSubject.send(ConfigurationDefaults.logLevel)
 
         // Reset UI configuration subjects
-        spacesVisualConfigSubject.send(ConfigurationDefaults.spacesVisualConfiguration)
+        spacesColorPropertiesSubject.send(ConfigurationDefaults.spacesColorProperties)
+        spacesGeometricPropertiesSubject.send(ConfigurationDefaults.spacesGeometricProperties)
+        spacesEffectPropertiesSubject.send(ConfigurationDefaults.spacesEffectProperties)
         spacesAppearanceModeSubject.send(ConfigurationDefaults.spacesAppearanceMode)
-        globalSpacesVisualConfigSubject.send(ConfigurationDefaults.defaultSpaceVisualConfig)
+        globalSpacesColorPropertiesSubject.send(ConfigurationDefaults.spaceColorProperties)
+        globalSpacesGeometricPropertiesSubject.send(ConfigurationDefaults.spaceGeometricProperties)
+        globalSpacesEffectPropertiesSubject.send(ConfigurationDefaults.spaceEffectProperties)
         groupsSubject.send(ConfigurationDefaults.groups)
         groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
-        globalGroupsVisualConfigSubject.send(ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
+        globalGroupsColorPropertiesSubject.send(ConfigurationDefaults.groupsGlobalColorProperties)
+        globalGroupsGeometricPropertiesSubject.send(ConfigurationDefaults.groupsGlobalGeometricProperties)
+        globalGroupsEffectPropertiesSubject.send(ConfigurationDefaults.groupsGlobalEffectProperties)
+        themeModeSubject.send(ConfigurationDefaults.themeMode)
+        themePresetColorPropertiesSubject.send(ConfigurationDefaults.themePresetColorProperties)
+        themePresetGeometricPropertiesSubject.send(ConfigurationDefaults.themePresetGeometricProperties)
+        themePresetEffectPropertiesSubject.send(ConfigurationDefaults.themePresetEffectProperties)
 
         isUpdatingFromFile = false
 
@@ -728,51 +991,95 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Loads configuration from the TOML file.
     private func loadConfigurationFromFile() {
-        Logger.debug("loadConfigurationFromFile() called", category: Logger.config)
-        isUpdatingFromFile = true
-        defer { isUpdatingFromFile = false }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
 
-        let configPath = configFilePathSubject.value
-        guard FileManager.default.fileExists(atPath: configPath) else {
-            Logger.info("Config file does not exist, using defaults: \\(configPath)", category: Logger.config)
-            return
-        }
-
-        do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: configPath))
-            guard let tomlString = String(data: data, encoding: .utf8) else {
-                Logger.warning("Failed to read config file as UTF-8: \\(configPath)", category: Logger.config)
+            // Check if we recently saved - if so, ignore this load to prevent feedback loop
+            if
+                let lastSave = lastSaveTimestamp,
+                Date().timeIntervalSince(lastSave) < saveDebounceInterval
+            {
+                Logger.debug(
+                    "Ignoring file load - recent save detected (debouncing)",
+                    category: Logger.config
+                )
                 return
             }
 
-            configurationData = try TOMLDecoder().decode(
-                type: ConfigurationData<OptionalMode>.self,
-                from: tomlString,
-                defaultValue: configurationData
-            )
+            Logger.debug("loadConfigurationFromFile() called", category: Logger.config)
+            isUpdatingFromFile = true
+            defer { isUpdatingFromFile = false }
 
-            Logger.info("Configuration loaded from file: \\(configPath)", category: Logger.config)
-        } catch {
-            Logger.warning("Failed to load configuration from file: \\(error)", category: Logger.config)
+            let configPath = configFilePathSubject.value
+
+            let fileExists = await Task.detached {
+                FileManager.default.fileExists(atPath: configPath)
+            }
+            .value
+
+            guard fileExists else {
+                Logger.info("Config file does not exist, using defaults: \\(configPath)", category: Logger.config)
+                return
+            }
+
+            do {
+                let data = try await Task.detached {
+                    try Data(contentsOf: URL(fileURLWithPath: configPath))
+                }
+                .value
+
+                guard let tomlString = String(data: data, encoding: .utf8) else {
+                    Logger.warning("Failed to read config file as UTF-8: \\(configPath)", category: Logger.config)
+                    return
+                }
+
+                configurationData = try TOMLDecoder().decode(
+                    type: ConfigurationData<OptionalMode>.self,
+                    from: tomlString,
+                    defaultValue: configurationData
+                )
+
+                Logger.info("Configuration loaded from file: \\(configPath)", category: Logger.config)
+            } catch {
+                Logger.warning("Failed to load configuration from file: \\(error)", category: Logger.config)
+            }
         }
     }
 
     /// Saves current configuration to the TOML file.
     private func saveConfigurationToFile() {
-        let configPath = configFilePathSubject.value
-        let url = URL(fileURLWithPath: configPath)
+        Task { @MainActor [weak self] in
+            guard let self else { return }
 
-        // Create directory if it doesn't exist
-        let directory = url.deletingLastPathComponent()
-        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            // Update timestamp to debounce subsequent loads
+            lastSaveTimestamp = Date()
 
-        do {
-            let tomlString = try TOMLEncoder().encode(configurationData)
-            let annotatedTomlString = addEnumComments(to: tomlString)
-            try annotatedTomlString.write(to: url, atomically: true, encoding: String.Encoding.utf8)
-            Logger.info("Configuration saved to file: \\(configPath)", category: Logger.config)
-        } catch {
-            Logger.error("Failed to save configuration to file: \\(error)", category: Logger.config)
+            let configPath = configFilePathSubject.value
+            let url = URL(fileURLWithPath: configPath)
+            let directory = url.deletingLastPathComponent()
+            let configData = configurationData
+
+            do {
+                // Create directory if needed
+                try await Task.detached {
+                    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                }
+                .value
+
+                // Encode and annotate
+                let tomlString = try TOMLEncoder().encode(configData)
+                let annotatedTomlString = addEnumComments(to: tomlString)
+
+                // Write file
+                try await Task.detached {
+                    try annotatedTomlString.write(to: url, atomically: true, encoding: String.Encoding.utf8)
+                }
+                .value
+
+                Logger.info("Configuration saved to file: \\(configPath)", category: Logger.config)
+            } catch {
+                Logger.error("Failed to save configuration to file: \\(error)", category: Logger.config)
+            }
         }
     }
 

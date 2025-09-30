@@ -5,7 +5,7 @@ import Foundation
 /// Groups-related configuration settings with generic optionality support.
 ///
 /// This structure manages settings for application group display, group definitions,
-/// and visual configuration. Groups allow organizing applications into logical
+/// and color properties. Groups allow organizing applications into logical
 /// collections in the menu bar interface. Supports both optional and required
 /// field variants through the `OptionalTypeMapping` protocol for flexible
 /// TOML parsing and runtime usage.
@@ -14,7 +14,9 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     Mode.BoolType: Codable,
     Mode.GroupArrayType: Codable,
     Mode.StringType: Codable,
-    Mode.VisualPropertiesType: Codable
+    Mode.ColorPropertiesType: Codable,
+    Mode.GeometricPropertiesType: Codable,
+    Mode.EffectPropertiesType: Codable
 {
     /// Type alias for the optional variant used during TOML decoding.
     public typealias OptionalVariant = GroupsSettings<OptionalMode>
@@ -47,7 +49,21 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     /// These properties serve as defaults for all groups unless
     /// overridden by individual group configurations. Includes
     /// settings like colors, fonts, spacing, and other visual attributes.
-    public let globalGroupsVisualConfig: Mode.VisualPropertiesType
+    public let globalGroupsColorProperties: Mode.ColorPropertiesType
+
+    /// Global geometric properties applied to all groups.
+    ///
+    /// These properties serve as defaults for all groups unless
+    /// overridden by individual group configurations. Includes
+    /// settings like corner radius and border width.
+    public let globalGroupsGeometricProperties: Mode.GeometricPropertiesType
+
+    /// Global effect properties applied to all groups.
+    ///
+    /// These properties serve as defaults for all groups unless
+    /// overridden by individual group configurations. Includes
+    /// settings like opacity and blur radius.
+    public let globalGroupsEffectProperties: Mode.EffectPropertiesType
 
     /// Initializes a new GroupsSettings instance.
     ///
@@ -55,24 +71,32 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     ///   - showGroups: Whether to display groups in the menu bar interface
     ///   - groups: Array of group definitions for organizing applications
     ///   - groupsAppearanceMode: The appearance mode for groups display
-    ///   - globalGroupsVisualConfig: Global visual properties for all groups
+    ///   - globalGroupsColorProperties: Global visual properties for all groups
+    ///   - globalGroupsGeometricProperties: Global geometric properties for all groups
+    ///   - globalGroupsEffectProperties: Global effect properties for all groups
     public init(
         showGroups: Mode.BoolType,
         groups: Mode.GroupArrayType,
         groupsAppearanceMode: Mode.StringType,
-        globalGroupsVisualConfig: Mode.VisualPropertiesType
+        globalGroupsColorProperties: Mode.ColorPropertiesType,
+        globalGroupsGeometricProperties: Mode.GeometricPropertiesType,
+        globalGroupsEffectProperties: Mode.EffectPropertiesType
     ) {
         self.showGroups = showGroups
         self.groups = groups
         self.groupsAppearanceMode = groupsAppearanceMode
-        self.globalGroupsVisualConfig = globalGroupsVisualConfig
+        self.globalGroupsColorProperties = globalGroupsColorProperties
+        self.globalGroupsGeometricProperties = globalGroupsGeometricProperties
+        self.globalGroupsEffectProperties = globalGroupsEffectProperties
     }
 
     enum CodingKeys: String, CodingKey {
         case showGroups = "show-groups"
         case groups
         case groupsAppearanceMode = "appearance-mode"
-        case globalGroupsVisualConfig = "global-visual-config"
+        case globalGroupsColorProperties = "global-visual-config"
+        case globalGroupsGeometricProperties = "global-geometric-config"
+        case globalGroupsEffectProperties = "global-effect-config"
     }
 
     /// Decodes optional settings and merges with required defaults.
@@ -94,7 +118,12 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
             showGroups: decodedValue.showGroups ?? defaultValue.showGroups,
             groups: decodedValue.groups ?? defaultValue.groups,
             groupsAppearanceMode: decodedValue.groupsAppearanceMode ?? defaultValue.groupsAppearanceMode,
-            globalGroupsVisualConfig: decodedValue.globalGroupsVisualConfig ?? defaultValue.globalGroupsVisualConfig
+            globalGroupsColorProperties: decodedValue.globalGroupsColorProperties ?? defaultValue
+                .globalGroupsColorProperties,
+            globalGroupsGeometricProperties: decodedValue.globalGroupsGeometricProperties ?? defaultValue
+                .globalGroupsGeometricProperties,
+            globalGroupsEffectProperties: decodedValue.globalGroupsEffectProperties ?? defaultValue
+                .globalGroupsEffectProperties
         )
     }
 }

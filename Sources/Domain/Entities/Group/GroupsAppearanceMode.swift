@@ -5,13 +5,13 @@ import Foundation
 /// Defines how groups visual appearance is configured
 public enum GroupsAppearanceMode: String, AppearanceMode {
     /// Each group has its own appearance configuration
-    case perGroup = "per_group"
+    case perGroup = "per-group"
 
     /// All groups share the same appearance configuration
-    case allGroups = "all_groups"
+    case allGroups = "all-groups"
 
     /// Groups use the same appearance as spaces
-    case matchSpaces = "match_spaces"
+    case matchSpaces = "match-spaces"
 
     /// Display name for the mode
     public var displayName: LocalizedStringResource {
@@ -37,7 +37,7 @@ public enum GroupsAppearanceMode: String, AppearanceMode {
         }
     }
 
-    /// Determines whether the global visual configuration should be shown for this mode.
+    /// Determines whether the global color properties should be shown for this mode.
     public var shouldShowGlobalConfig: Bool {
         switch self {
         case .perGroup:

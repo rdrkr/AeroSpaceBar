@@ -33,11 +33,35 @@ public struct VisualContainerMetadata: Sendable {
     /// Whether to show the foreground section in visual settings.
     public let showForegroundSection: Bool
 
-    /// The default global visual configuration for this entity type.
+    /// The default global color properties for this entity type.
     ///
     /// This configuration serves as the fallback values when entities are
     /// created or when global configurations are reset to defaults.
-    public let defaultGlobalVisualConfig: VisualProperties
+    public let defaultGlobalColorProperties: ColorProperties
+
+    /// The default global effect properties for this entity type.
+    ///
+    /// This configuration serves as the fallback values when entities are
+    /// created or when global configurations are reset to defaults.
+    public let defaultGlobalEffectProperties: EffectProperties
+
+    /// The default global geometric properties for this entity type.
+    ///
+    /// This configuration serves as the fallback values when entities are
+    /// created or when global configurations are reset to defaults.
+    public let defaultGlobalGeometricProperties: GeometricProperties
+
+    /// The default theme effect properties for this entity type.
+    ///
+    /// This configuration serves as the fallback values when entities are
+    /// created or when theme configurations are reset to defaults.
+    public let defaultThemeEffectProperties: EffectProperties
+
+    /// The default theme geometric properties for this entity type.
+    ///
+    /// This configuration serves as the fallback values when entities are
+    /// created or when theme configurations are reset to defaults.
+    public let defaultThemeGeometricProperties: GeometricProperties
 
     // MARK: - Entity Validation
 
@@ -83,7 +107,8 @@ public struct VisualContainerMetadata: Sendable {
     ///   - canAddEntities: Whether entities can be added by the user
     ///   - canDeleteEntities: Whether entities can be deleted by the user
     ///   - showForegroundSection: Whether to show the foreground section in visual settings
-    ///   - defaultGlobalVisualConfig: The default global visual configuration for this entity type
+    ///   - defaultGlobalColorProperties: The default global color properties for this entity type
+    ///   - defaultGlobalGeometricProperties: The default global geometric properties for this entity type
     ///   - canDeleteEntity: Function to determine if a specific entity can be deleted
     ///   - footerText: Footer text for the entities list section
     ///   - resetAlertTitle: Title for the reset confirmation alert
@@ -97,7 +122,11 @@ public struct VisualContainerMetadata: Sendable {
         canAddEntities: Bool,
         canDeleteEntities: Bool,
         showForegroundSection: Bool,
-        defaultGlobalVisualConfig: VisualProperties,
+        defaultGlobalColorProperties: ColorProperties,
+        defaultGlobalEffectProperties: EffectProperties,
+        defaultGlobalGeometricProperties: GeometricProperties,
+        defaultThemeGeometricProperties: GeometricProperties = ConfigurationDefaults.themePresetGeometricProperties,
+        defaultThemeEffectProperties: EffectProperties = ConfigurationDefaults.themePresetEffectProperties,
         canDeleteEntity: @escaping @Sendable (any VisualContainer) -> Bool,
         footerText: String,
         resetAlertTitle: String,
@@ -111,7 +140,11 @@ public struct VisualContainerMetadata: Sendable {
         self.canAddEntities = canAddEntities
         self.canDeleteEntities = canDeleteEntities
         self.showForegroundSection = showForegroundSection
-        self.defaultGlobalVisualConfig = defaultGlobalVisualConfig
+        self.defaultGlobalColorProperties = defaultGlobalColorProperties
+        self.defaultGlobalEffectProperties = defaultGlobalEffectProperties
+        self.defaultGlobalGeometricProperties = defaultGlobalGeometricProperties
+        self.defaultThemeGeometricProperties = defaultThemeGeometricProperties
+        self.defaultThemeEffectProperties = defaultThemeEffectProperties
         self.canDeleteEntity = canDeleteEntity
         self.footerText = footerText
         self.resetAlertTitle = resetAlertTitle

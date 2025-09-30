@@ -95,7 +95,7 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     public var body: some View {
         let itemBackground = Color.primary
             .opacity(isPressed ? 0.1 : 0.0)
-            .animation(.themeEaseInOut, value: isPressed)
+            .animation(.themeSmoothFastest, value: isPressed)
 
         VStack(spacing: 0) {
             if !isFirstItem {
@@ -166,7 +166,7 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
                 .contentShape(.rect)
             }
         )
-        .buttonStyle(.plain)
+        .buttonStyle(NoEffectButtonStyle())
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
@@ -190,9 +190,20 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
                         deleteAction(page)
                     }
                 } label: {
-                    Label(LocalizedStringResource("Delete"), systemImage: "trash")
+                    VStack {
+                        Label(LocalizedStringResource("Delete"), systemImage: "trash")
+                        Text(LocalizedStringResource("Delete")).secondaryText()
+                    }
                 }
             }
         }
+    }
+}
+
+/// A button style that applies no visual effects when pressed.
+private struct NoEffectButtonStyle: ButtonStyle {
+    /// Creates the button body without any press effects.
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
     }
 }

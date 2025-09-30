@@ -18,7 +18,10 @@ struct SpacesView: View {
     @Environment(\.openSettings) private var openSettings
 
     /// Whether the wallpaper should be visible (faded in).
-    @State private var isWallpaperVisible = false
+    @State private var monitoredWallpaperVisibility = false
+
+    /// Whether the wallpaper should be monitored for visibility changes.
+    @State private var shouldMonitorWallpaperVisibility = true
 
     /// Whether the mouse is currently over the SpacesView.
     @State private var isMouseHovering = false
@@ -42,7 +45,7 @@ struct SpacesView: View {
 
     /// Computed property for window corner radius
     private var cornerRadius: Double {
-        viewModel.globalSpacesVisualConfig.cornerRadius
+        viewModel.globalSpacesGeometricProperties.cornerRadius
     }
 
     /// Computed property for whether to show window titles
@@ -57,6 +60,11 @@ struct SpacesView: View {
             (isMouseHovering && viewModel.isGlobeKeyPressed) ||
             !viewModel.isMenuBarVisible ||
             !viewModel.isAeroSpaceRunning
+    }
+
+    /// Whether the wallpaper should be visible (faded in)
+    private var isWallpaperVisible: Bool {
+        shouldMonitorWallpaperVisibility ? monitoredWallpaperVisibility : true
     }
 
     /// The body of the spaces view.
@@ -78,23 +86,21 @@ struct SpacesView: View {
                             showWindowTitles: showWindowTitles,
                             focusWindowOnClick: viewModel.focusWindowOnClick,
                             appearanceMode: viewModel.spacesAppearanceMode,
-                            globalVisualConfiguration: viewModel.globalSpacesVisualConfig,
-                            onSwitchToSpace: { space, needWindowFocus in
-                                viewModel.switchToSpace(space, needWindowFocus: needWindowFocus)
-                            },
-                            onSwitchToWindow: { window in
-                                viewModel.switchToWindow(window)
-                            }
+                            globalColorProperties: viewModel.globalSpacesColorProperties,
+                            globalGeometricProperties: viewModel.globalSpacesGeometricProperties,
+                            globalEffectProperties: viewModel.globalSpacesEffectProperties,
+                            themeMode: viewModel.themeMode,
+                            themePresetColorProperties: viewModel.themePresetColorProperties,
+                            themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+                            themePresetEffectProperties: viewModel.themePresetEffectProperties,
+                            onSwitchToSpace: viewModel.switchToSpace,
+                            onSwitchToWindow: viewModel.switchToWindow
                         )
                         .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
                         .tag("spaces-container")
                     }
                     .cornerRadius(cornerRadius)
                     .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
-                    .animation(.themeSmoothFast, value: isWallpaperVisible)
-                    .animation(.themeSmoothFast, value: shouldHideView)
-                    .animation(.themeSmoothFast, value: viewModel.isMenuBarVisible)
-                    .animation(.themeSmoothFast, value: viewModel.spacesAppearanceMode)
                     .tag("spaces-wallpaper-group")
                 } else {
                     // Default background when no wallpaper is set
@@ -105,17 +111,31 @@ struct SpacesView: View {
             }
             .tag("spaces-content-zstack")
         }
+        .animation(.themeEaseInOutFast, value: shouldMonitorWallpaperVisibility)
+        .animation(.themeEaseInOutFast, value: monitoredWallpaperVisibility)
+        .animation(.themeEaseInOutFast, value: shouldHideView)
+        .animation(.themeEaseInOutFast, value: viewModel.isMenuBarVisible)
+        .animation(.themeEaseInOutFast, value: viewModel.spacesAppearanceMode)
+        .animation(.themeEaseInOutFast, value: viewModel.themeMode)
         .animation(.themeEaseInOutFast, value: showWindowTitles)
         .animation(.themeEaseInOutFast, value: spaces)
         .padding(.leading, ConfigurationDefaults.menuBarHorizontalPadding)
         .onHover { hovering in
             isMouseHovering = hovering
         }
-        .onChange(of: viewModel.wallpaper) { _, newWallpaper in
-            handleWallpaperChange(wallpaper: newWallpaper, spaces: viewModel.spaces)
+        .onChange(of: viewModel.wallpaper) { oldWallpaper, newWallpaper in
+            handleWallpaperChange(
+                oldWallpaper: oldWallpaper,
+                newWallpaper: newWallpaper,
+                spaces: viewModel.spaces
+            )
         }
         .onChange(of: viewModel.spaces) { _, newSpaces in
-            handleWallpaperChange(wallpaper: viewModel.wallpaper, spaces: newSpaces)
+            handleWallpaperChange(
+                oldWallpaper: viewModel.wallpaper,
+                newWallpaper: viewModel.wallpaper,
+                spaces: newSpaces
+            )
         }
         .onAppear {
             #if DEBUG
@@ -129,13 +149,25 @@ struct SpacesView: View {
 
     /// Handles wallpaper and spaces changes to manage wallpaper visibility
     private func handleWallpaperChange(
-        wallpaper: NSImage?,
+        oldWallpaper: NSImage?,
+        newWallpaper: NSImage?,
         spaces: [Space]
     ) {
-        if wallpaper != nil, !spaces.isEmpty {
+        if newWallpaper != nil, !spaces.isEmpty {
             // Fade in wallpaper when spaces are available and image is loaded
-            if !isWallpaperVisible {
-                isWallpaperVisible = true
+            if !monitoredWallpaperVisibility {
+                monitoredWallpaperVisibility = true
+                // Spaces animation only tracks the first time wallpaper is available.
+                shouldMonitorWallpaperVisibility = false
+            }
+            // Fade out and back in when image is loaded and spaces are available
+            else if oldWallpaper != newWallpaper, monitoredWallpaperVisibility {
+                monitoredWallpaperVisibility = false
+
+                Task { @MainActor in
+                    try await Task.sleep(for: .seconds(0.2))
+                    monitoredWallpaperVisibility = true
+                }
             }
         }
     }

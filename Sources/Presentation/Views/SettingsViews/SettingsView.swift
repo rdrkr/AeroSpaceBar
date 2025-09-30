@@ -105,7 +105,14 @@ struct SettingsView: View {
                 .tag("settings-navigation-split")
             }
         }
-        .frame(width: 720, height: 560)
+        .windowResizeBehavior(.enabled)
+        .frame(
+            minWidth: 720,
+            idealWidth: 720,
+            maxWidth: 720,
+            minHeight: 540,
+            idealHeight: 660
+        )
         .task {
             await configureWindow()
         }

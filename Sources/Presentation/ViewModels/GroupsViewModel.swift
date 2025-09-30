@@ -53,17 +53,53 @@ final class GroupsViewModel: ObservableObject {
     /// When spaces are in per-space mode, match-spaces option is not available.
     @Published var availableGroupsAppearanceModes: [GroupsAppearanceMode]
 
-    /// Consolidated global groups visual configuration.
-    @Published var globalGroupsVisualConfig: VisualProperties {
+    /// Consolidated global groups color properties.
+    @Published var globalGroupsColorProperties: ColorProperties {
         didSet {
             Task.detached(priority: .utility) { [self] in
-                await setGlobalGroupsVisualConfigUseCase.execute(value: globalGroupsVisualConfig)
+                await setGlobalGroupsColorPropertiesUseCase.execute(value: globalGroupsColorProperties)
             }
         }
     }
 
-    /// Consolidated global space visual configuration.
-    @Published var globalSpacesVisualConfig: VisualProperties
+    /// Global geometric properties for groups.
+    @Published var globalGroupsGeometricProperties: GeometricProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalGroupsGeometricPropertiesUseCase.execute(value: globalGroupsGeometricProperties)
+            }
+        }
+    }
+
+    /// Global effect properties for groups.
+    @Published var globalGroupsEffectProperties: EffectProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalGroupsEffectPropertiesUseCase.execute(value: globalGroupsEffectProperties)
+            }
+        }
+    }
+
+    /// Consolidated global space color properties.
+    @Published var globalSpacesColorProperties: ColorProperties
+
+    /// Global geometric properties for spaces.
+    @Published var globalSpacesGeometricProperties: GeometricProperties
+
+    /// Global effect properties for spaces.
+    @Published var globalSpacesEffectProperties: EffectProperties
+
+    /// The current theme mode.
+    @Published var themeMode: ThemeMode
+
+    /// The current theme preset.
+    @Published var themePresetColorProperties: ThemePresetColorProperties
+
+    /// The current theme preset geometric properties.
+    @Published var themePresetGeometricProperties: GeometricProperties
+
+    /// The current theme preset effect properties.
+    @Published var themePresetEffectProperties: EffectProperties
 
     // MARK: - Dependencies
 
@@ -76,9 +112,19 @@ final class GroupsViewModel: ObservableObject {
     private let getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase
     private let setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase
     private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
-    private let getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase
-    private let setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase
-    private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
+    private let getGlobalGroupsColorPropertiesUseCase: GetGlobalGroupsColorPropertiesUseCase
+    private let setGlobalGroupsColorPropertiesUseCase: SetGlobalGroupsColorPropertiesUseCase
+    private let getGlobalGroupsGeometricPropertiesUseCase: GetGlobalGroupsGeometricPropertiesUseCase
+    private let setGlobalGroupsGeometricPropertiesUseCase: SetGlobalGroupsGeometricPropertiesUseCase
+    private let getGlobalGroupsEffectPropertiesUseCase: GetGlobalGroupsEffectPropertiesUseCase
+    private let setGlobalGroupsEffectPropertiesUseCase: SetGlobalGroupsEffectPropertiesUseCase
+    private let getGlobalSpacesColorPropertiesUseCase: GetGlobalSpacesColorPropertiesUseCase
+    private let getGlobalSpacesGeometricPropertiesUseCase: GetGlobalSpacesGeometricPropertiesUseCase
+    private let getGlobalSpacesEffectPropertiesUseCase: GetGlobalSpacesEffectPropertiesUseCase
+    private let getThemeModeUseCase: GetThemeModeUseCase
+    private let getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase
+    private let getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase
+    private let getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -103,8 +149,11 @@ final class GroupsViewModel: ObservableObject {
     ///   - getGroupsAppearanceModeUseCase: The use case for getting groups appearance mode
     ///   - setGroupsAppearanceModeUseCase: The use case for setting groups appearance mode
     ///   - getSpacesAppearanceModeUseCase: The use case for getting spaces appearance mode
-    ///   - getGlobalGroupsVisualConfigUseCase: The use case for getting global groups visual configuration
-    ///   - getGlobalSpacesVisualConfigUseCase: The use case for getting global space visual configuration
+    ///   - getGlobalGroupsColorPropertiesUseCase: The use case for getting global groups color properties
+    ///   - getGlobalSpacesColorPropertiesUseCase: The use case for getting global space color properties
+    ///   - getThemeModeUseCase: The use case for getting theme mode
+    ///   - getThemePresetColorPropertiesUseCase: The use case for getting theme preset
+    ///   - getThemePresetGeometricPropertiesUseCase: The use case for getting theme preset geometric properties
     init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         setShowGroupsUseCase: SetShowGroupsUseCase,
@@ -115,9 +164,19 @@ final class GroupsViewModel: ObservableObject {
         getGroupsAppearanceModeUseCase: GetGroupsAppearanceModeUseCase,
         setGroupsAppearanceModeUseCase: SetGroupsAppearanceModeUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
-        getGlobalGroupsVisualConfigUseCase: GetGlobalGroupsVisualConfigUseCase,
-        setGlobalGroupsVisualConfigUseCase: SetGlobalGroupsVisualConfigUseCase,
-        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
+        getGlobalGroupsColorPropertiesUseCase: GetGlobalGroupsColorPropertiesUseCase,
+        setGlobalGroupsColorPropertiesUseCase: SetGlobalGroupsColorPropertiesUseCase,
+        getGlobalGroupsGeometricPropertiesUseCase: GetGlobalGroupsGeometricPropertiesUseCase,
+        setGlobalGroupsGeometricPropertiesUseCase: SetGlobalGroupsGeometricPropertiesUseCase,
+        getGlobalGroupsEffectPropertiesUseCase: GetGlobalGroupsEffectPropertiesUseCase,
+        setGlobalGroupsEffectPropertiesUseCase: SetGlobalGroupsEffectPropertiesUseCase,
+        getGlobalSpacesColorPropertiesUseCase: GetGlobalSpacesColorPropertiesUseCase,
+        getGlobalSpacesGeometricPropertiesUseCase: GetGlobalSpacesGeometricPropertiesUseCase,
+        getGlobalSpacesEffectPropertiesUseCase: GetGlobalSpacesEffectPropertiesUseCase,
+        getThemeModeUseCase: GetThemeModeUseCase,
+        getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase,
+        getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase,
+        getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.setShowGroupsUseCase = setShowGroupsUseCase
@@ -128,9 +187,19 @@ final class GroupsViewModel: ObservableObject {
         self.getGroupsAppearanceModeUseCase = getGroupsAppearanceModeUseCase
         self.setGroupsAppearanceModeUseCase = setGroupsAppearanceModeUseCase
         self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
-        self.getGlobalGroupsVisualConfigUseCase = getGlobalGroupsVisualConfigUseCase
-        self.setGlobalGroupsVisualConfigUseCase = setGlobalGroupsVisualConfigUseCase
-        self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
+        self.getGlobalGroupsColorPropertiesUseCase = getGlobalGroupsColorPropertiesUseCase
+        self.setGlobalGroupsColorPropertiesUseCase = setGlobalGroupsColorPropertiesUseCase
+        self.getGlobalGroupsGeometricPropertiesUseCase = getGlobalGroupsGeometricPropertiesUseCase
+        self.setGlobalGroupsGeometricPropertiesUseCase = setGlobalGroupsGeometricPropertiesUseCase
+        self.getGlobalGroupsEffectPropertiesUseCase = getGlobalGroupsEffectPropertiesUseCase
+        self.setGlobalGroupsEffectPropertiesUseCase = setGlobalGroupsEffectPropertiesUseCase
+        self.getGlobalSpacesColorPropertiesUseCase = getGlobalSpacesColorPropertiesUseCase
+        self.getGlobalSpacesGeometricPropertiesUseCase = getGlobalSpacesGeometricPropertiesUseCase
+        self.getGlobalSpacesEffectPropertiesUseCase = getGlobalSpacesEffectPropertiesUseCase
+        self.getThemeModeUseCase = getThemeModeUseCase
+        self.getThemePresetColorPropertiesUseCase = getThemePresetColorPropertiesUseCase
+        self.getThemePresetGeometricPropertiesUseCase = getThemePresetGeometricPropertiesUseCase
+        self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
@@ -139,8 +208,16 @@ final class GroupsViewModel: ObservableObject {
         isGroupsFeatureEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableGroups
         spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
         groupsAppearanceMode = getGroupsAppearanceModeUseCase.execute().blockingFirst()
-        globalGroupsVisualConfig = getGlobalGroupsVisualConfigUseCase.execute().blockingFirst()
-        globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
+        globalGroupsColorProperties = getGlobalGroupsColorPropertiesUseCase.execute().blockingFirst()
+        globalGroupsGeometricProperties = getGlobalGroupsGeometricPropertiesUseCase.execute().blockingFirst()
+        globalGroupsEffectProperties = getGlobalGroupsEffectPropertiesUseCase.execute().blockingFirst()
+        globalSpacesColorProperties = getGlobalSpacesColorPropertiesUseCase.execute().blockingFirst()
+        globalSpacesGeometricProperties = getGlobalSpacesGeometricPropertiesUseCase.execute().blockingFirst()
+        globalSpacesEffectProperties = getGlobalSpacesEffectPropertiesUseCase.execute().blockingFirst()
+        themeMode = getThemeModeUseCase.execute().blockingFirst()
+        themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
+        themePresetGeometricProperties = getThemePresetGeometricPropertiesUseCase.execute().blockingFirst()
+        themePresetEffectProperties = getThemePresetEffectPropertiesUseCase.execute().blockingFirst()
 
         availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
         if spacesAppearanceMode == .perSpace {
@@ -279,7 +356,16 @@ final class GroupsViewModel: ObservableObject {
     func resetGroupsToDefaults() async {
         await setGroupsUseCase.execute(value: ConfigurationDefaults.groups)
         await setGroupsAppearanceModeUseCase.execute(mode: ConfigurationDefaults.groupsAppearanceMode)
-        await setGlobalGroupsVisualConfigUseCase.execute(value: ConfigurationDefaults.defaultGroupsGlobalVisualConfig)
+
+        await setGlobalGroupsColorPropertiesUseCase.execute(
+            value: ConfigurationDefaults.groupsGlobalColorProperties
+        )
+        await setGlobalGroupsGeometricPropertiesUseCase.execute(
+            value: ConfigurationDefaults.groupsGlobalGeometricProperties
+        )
+        await setGlobalGroupsEffectPropertiesUseCase.execute(
+            value: ConfigurationDefaults.groupsGlobalEffectProperties
+        )
     }
 
     /// Determines if more groups can be added.
@@ -439,12 +525,44 @@ final class GroupsViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        getGlobalGroupsVisualConfigUseCase.execute()
-            .assign(to: \.globalGroupsVisualConfig, on: self)
+        getGlobalGroupsColorPropertiesUseCase.execute()
+            .assign(to: \.globalGroupsColorProperties, on: self)
             .store(in: &cancellables)
 
-        getGlobalSpacesVisualConfigUseCase.execute()
-            .assign(to: \.globalSpacesVisualConfig, on: self)
+        getGlobalGroupsGeometricPropertiesUseCase.execute()
+            .assign(to: \.globalGroupsGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalGroupsEffectPropertiesUseCase.execute()
+            .assign(to: \.globalGroupsEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesColorPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesGeometricPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesEffectPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemeModeUseCase.execute()
+            .assign(to: \.themeMode, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetColorPropertiesUseCase.execute()
+            .assign(to: \.themePresetColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetGeometricPropertiesUseCase.execute()
+            .assign(to: \.themePresetGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetEffectPropertiesUseCase.execute()
+            .assign(to: \.themePresetEffectProperties, on: self)
             .store(in: &cancellables)
     }
 

@@ -119,20 +119,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1A3D2D6B2E885248005F2FDC /* Exceptions for "Sources" folder in "Service" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Service/Network/AeroSpaceCLIClient.swift,
-				Service/Network/IconCache.swift,
-				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
-				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
-				Service/Repositories/ConfigurationRepository.swift,
-				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/LicenseRepository.swift,
-				Service/Repositories/SystemMenuBarRepository.swift,
-			);
-			target = 1A493DE32E73D9F000187B3E /* Service */;
-		};
 		1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -142,6 +128,7 @@
 				Presentation/DependencyContainer.swift,
 				Presentation/Resources/Assets.xcassets,
 				Presentation/Resources/Localizable.xcstrings,
+				Presentation/ViewModels/AppViewModel.swift,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
 				Presentation/ViewModels/LicenseViewModel.swift,
@@ -150,6 +137,7 @@
 				Presentation/Views/AboutView.swift,
 				Presentation/Views/AppMenuView.swift,
 				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
+				Presentation/Views/CommonViews/GeometrySettingsView.swift,
 				Presentation/Views/CommonViews/IntroForm.swift,
 				Presentation/Views/CommonViews/LazyVStackList.swift,
 				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
@@ -203,6 +191,7 @@
 				Presentation/Info.plist,
 				Presentation/Resources/Assets.xcassets,
 				Presentation/Resources/Localizable.xcstrings,
+				Presentation/ViewModels/AppViewModel.swift,
 				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
 				Presentation/ViewModels/GroupsViewModel.swift,
 				Presentation/ViewModels/LicenseViewModel.swift,
@@ -211,6 +200,7 @@
 				Presentation/Views/AboutView.swift,
 				Presentation/Views/AppMenuView.swift,
 				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
+				Presentation/Views/CommonViews/GeometrySettingsView.swift,
 				Presentation/Views/CommonViews/IntroForm.swift,
 				Presentation/Views/CommonViews/LazyVStackList.swift,
 				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
@@ -257,6 +247,7 @@
 				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
 				Service/Repositories/ConfigurationRepository.swift,
 				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/KeyboardShortcutsRepository.swift,
 				Service/Repositories/LicenseRepository.swift,
 				Service/Repositories/SystemMenuBarRepository.swift,
 			);
@@ -354,6 +345,21 @@
 			);
 			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
 		};
+		1ADFDF632E8CEE3400D806E2 /* Exceptions for "Sources" folder in "Service" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Service/Network/AeroSpaceCLIClient.swift,
+				Service/Network/IconCache.swift,
+				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
+				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
+				Service/Repositories/ConfigurationRepository.swift,
+				Service/Repositories/FeatureFlagsRepository.swift,
+				Service/Repositories/KeyboardShortcutsRepository.swift,
+				Service/Repositories/LicenseRepository.swift,
+				Service/Repositories/SystemMenuBarRepository.swift,
+			);
+			target = 1A493DE32E73D9F000187B3E /* Service */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -362,7 +368,7 @@
 			exceptions = (
 				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
 				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
-				1A3D2D6B2E885248005F2FDC /* Exceptions for "Sources" folder in "Service" target */,
+				1ADFDF632E8CEE3400D806E2 /* Exceptions for "Sources" folder in "Service" target */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

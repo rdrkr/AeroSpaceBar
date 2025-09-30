@@ -20,15 +20,36 @@ public protocol OptionalTypeMapping: Codable {
     /// Associated type for string values (String for required, String? for optional).
     associatedtype StringType
 
-    /// Associated type for visual properties arrays ([VisualProperties] for required, [VisualProperties]? for
+    /// Associated type for theme mode (ThemeMode for required, ThemeMode? for optional).
+    associatedtype ThemeModeType: Codable
+
+    /// Associated type for theme preset (ThemePresetColorProperties for required, ThemePresetColorProperties? for
     /// optional).
-    associatedtype VisualPropertiesArrayType
+    associatedtype ThemePresetColorPropertiesType: Codable
+
+    /// Associated type for visual properties arrays ([ColorProperties] for required, [ColorProperties]? for
+    /// optional).
+    associatedtype ColorPropertiesArrayType
+
+    /// Associated type for geometric properties arrays ([GeometricProperties] for required, [GeometricProperties]? for
+    /// optional).
+    associatedtype GeometricPropertiesArrayType
+
+    /// Associated type for effect properties arrays ([EffectProperties] for required, [EffectProperties]? for
+    /// optional).
+    associatedtype EffectPropertiesArrayType
 
     /// Associated type for group arrays ([Group] for required, [Group]? for optional).
     associatedtype GroupArrayType
 
-    /// Associated type for visual properties (VisualProperties for required, VisualProperties? for optional).
-    associatedtype VisualPropertiesType
+    /// Associated type for visual properties (ColorProperties for required, ColorProperties? for optional).
+    associatedtype ColorPropertiesType
+
+    /// Associated type for geometric properties (GeometricProperties for required, GeometricProperties? for optional).
+    associatedtype GeometricPropertiesType
+
+    /// Associated type for effect properties (EffectProperties for required, EffectProperties? for optional).
+    associatedtype EffectPropertiesType
 
     /// Associated type for general settings (GeneralSettings<RequiredMode> for required, GeneralSettings<RequiredMode>?
     /// for optional).

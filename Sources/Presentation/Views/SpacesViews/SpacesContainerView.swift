@@ -17,11 +17,29 @@ struct SpacesContainerView: View {
     /// Whether window clicking functionality is enabled.
     let focusWindowOnClick: Bool
 
-    /// The appearance mode for spaces visual configuration.
+    /// The appearance mode for spaces color properties.
     let appearanceMode: SpacesAppearanceMode
 
-    /// The global visual configuration (used when appearanceMode is .allSpaces).
-    let globalVisualConfiguration: VisualProperties
+    /// The global color properties (used when appearanceMode is .allSpaces).
+    let globalColorProperties: ColorProperties
+
+    /// The global geometric properties
+    let globalGeometricProperties: GeometricProperties
+
+    /// The global effect properties
+    let globalEffectProperties: EffectProperties
+
+    /// The theme mode for visual customization.
+    let themeMode: ThemeMode
+
+    /// The selected theme preset.
+    let themePresetColorProperties: ThemePresetColorProperties
+
+    /// The geometric properties for theme preset elements.
+    let themePresetGeometricProperties: GeometricProperties
+
+    /// The effect properties for theme preset elements.
+    let themePresetEffectProperties: EffectProperties
 
     /// Callback invoked when the user wants to switch to a space.
     /// - Parameters:
@@ -38,14 +56,20 @@ struct SpacesContainerView: View {
     /// The body of the spaces container view.
     /// - Returns: A horizontal stack containing all space views with proper parameters
     var body: some View {
-        HStack(spacing: -ConfigurationDefaults.widgetSpacing - (spacingVisualConfig.borderWidth * 2)) {
+        HStack(spacing: -ConfigurationDefaults.widgetSpacing - (spacingGeometricProperties.borderWidth * 2)) {
             ForEach(spaces) { space in
                 SpaceView(
                     space: space,
                     showWindowTitles: showWindowTitles,
                     focusWindowOnClick: focusWindowOnClick,
                     appearanceMode: appearanceMode,
-                    globalVisualConfiguration: globalVisualConfiguration,
+                    globalColorProperties: globalColorProperties,
+                    globalGeometricProperties: globalGeometricProperties,
+                    globalEffectProperties: globalEffectProperties,
+                    themeMode: themeMode,
+                    themePresetColorProperties: themePresetColorProperties,
+                    themePresetGeometricProperties: themePresetGeometricProperties,
+                    themePresetEffectProperties: themePresetEffectProperties,
                     onSwitchToSpace: onSwitchToSpace,
                     onSwitchToWindow: onSwitchToWindow
                 )
@@ -57,16 +81,35 @@ struct SpacesContainerView: View {
 
     // MARK: - Helper Methods
 
-    /// Returns the visual configuration to use for spacing calculations.
+    /// Returns the geometric properties to use for spacing calculations.
     /// Uses global configuration when in .allSpaces mode, or the focused space's configuration in .perSpace mode.
-    private var spacingVisualConfig: VisualProperties {
-        switch appearanceMode {
-        case .allSpaces:
-            globalVisualConfiguration
-        case .perSpace:
-            spaces.first(where: \.isFocused)?.visualConfig ?? globalVisualConfiguration
-        @unknown default:
-            globalVisualConfiguration
+    private var spacingGeometricProperties: GeometricProperties {
+        switch themeMode {
+        case .preset: themePresetGeometricProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .allSpaces: globalGeometricProperties
+
+            case .perSpace:
+                spaces.first(where: \.isFocused)?.geometricProperties ?? ConfigurationDefaults
+                    .spaceGeometricProperties
+
+            default: globalGeometricProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .allSpaces: globalGeometricProperties
+
+            case .perSpace:
+                spaces.first(where: \.isFocused)?.geometricProperties ?? ConfigurationDefaults
+                    .spaceGeometricProperties
+
+            default: globalGeometricProperties
+            }
         }
     }
 }
@@ -83,16 +126,20 @@ struct SpacesContainerView: View {
         showWindowTitles: true,
         focusWindowOnClick: true,
         appearanceMode: .allSpaces,
-        globalVisualConfiguration: VisualProperties(
+        globalColorProperties: ColorProperties(
             backgroundTintColor: .blue,
-            backgroundOpacity: 0.2,
-            backgroundBlurRadius: 8.0,
             borderTintColor: .white,
-            borderOpacity: 0.8,
-            borderWidth: 2.0,
-            cornerRadius: 8.0,
             foregroundColor: .primary
         ),
+        globalGeometricProperties: GeometricProperties(
+            cornerRadius: 14.0,
+            borderWidth: 2.0
+        ),
+        globalEffectProperties: ConfigurationDefaults.spaceEffectProperties,
+        themeMode: .custom,
+        themePresetColorProperties: .catppuccinMocha,
+        themePresetGeometricProperties: ConfigurationDefaults.themePresetGeometricProperties,
+        themePresetEffectProperties: ConfigurationDefaults.themePresetEffectProperties,
         onSwitchToSpace: { _, _ in },
         onSwitchToWindow: { _ in }
     )

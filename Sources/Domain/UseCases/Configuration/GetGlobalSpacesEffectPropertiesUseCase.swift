@@ -2,15 +2,15 @@
 
 import Combine
 
-/// Use case for retrieving spaces configuration.
+/// Use case for retrieving global space effect properties.
 ///
 /// This use case encapsulates the business logic for accessing the
-/// spaces configuration setting through the data layer.
+/// global space effect properties setting through the data layer.
 /// It follows the clean architecture pattern by isolating this
 /// specific business operation.
 @MainActor
-public final class GetSpacesVisualConfigUseCase {
-    /// The configuration gateway for accessing spaces configuration data.
+public final class GetGlobalSpacesEffectPropertiesUseCase {
+    /// The configuration gateway for accessing global space effect properties data.
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the specified configuration gateway.
@@ -19,9 +19,9 @@ public final class GetSpacesVisualConfigUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to get the spaces configuration.
-    /// - Returns: A publisher that emits the current spaces configuration
-    public func execute() -> AnyPublisher<[VisualProperties], Never> {
-        configurationGateway.spacesVisualConfigPublisher
+    /// Executes the use case to get the global space effect properties.
+    /// - Returns: A publisher that emits the current global space effect properties
+    public func execute() -> AnyPublisher<EffectProperties, Never> {
+        configurationGateway.globalSpacesEffectPropertiesPublisher
     }
 }

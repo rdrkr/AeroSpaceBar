@@ -79,7 +79,7 @@ struct MenuItemView: View {
                 Rectangle()
                     .fill(isHovered ? Color.accentColor : Color.clear)
                     .padding(.horizontal, -10)
-                    .cornerRadius(6)
+                    .cornerRadius(10)
             )
         }
         .buttonStyle(.plain)

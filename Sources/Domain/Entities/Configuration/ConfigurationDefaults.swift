@@ -17,7 +17,7 @@ public enum ConfigurationDefaults {
 
     // MARK: - Application Settings
 
-    /// Whether to show window titles by default.
+    /// Whether to show window titles.
     public static let showWindowTitles = true
 
     /// Default configuration file path.
@@ -25,19 +25,19 @@ public enum ConfigurationDefaults {
         NSHomeDirectory() + "/.config/aerospacebar/aerospacebar.toml"
     }
 
-    /// Whether to focus a window when clicking on it by default.
+    /// Whether to focus a window when clicking on it.
     public static let focusWindowOnClick = true
 
-    /// Whether to show empty spaces in the interface by default.
+    /// Whether to show empty spaces in the interface.
     public static let showEmptySpaces = false
 
-    /// Whether to show groups in the interface by default.
+    /// Whether to show groups in the interface.
     public static let showGroups = true
 
-    /// Whether to enable performance metrics collection by default.
+    /// Whether to enable performance metrics collection.
     public static let enablePerformanceMetrics = debugMode
 
-    /// Whether to enable optimized performance behavior by default.
+    /// Whether to enable optimized performance behavior.
     public static let isOptimizedPerformanceEnabled = true
 
     /// Default log level for application logging.
@@ -63,20 +63,34 @@ public enum ConfigurationDefaults {
     /// Default size of settings icons in points.
     public static let settingsIconSmallSize: Double = 13.0
 
-    /// Default visual configuration for space elements.
-    public static let defaultSpaceVisualConfig: VisualProperties = .init(
+    /// Default color properties for space elements.
+    public static let spaceColorProperties: ColorProperties = .init(
         backgroundTintColor: .white,
-        backgroundOpacity: 0.2,
-        backgroundBlurRadius: 0.0,
         borderTintColor: .white,
-        borderOpacity: 0.0,
-        borderWidth: 0.0,
-        cornerRadius: 14,
         foregroundColor: .white
     )
 
+    /// Default geometric properties for space elements.
+    public static let spaceGeometricProperties: GeometricProperties = .init(
+        cornerRadius: 14,
+        borderWidth: 0.0
+    )
+
+    /// Default effect properties for space elements.
+    public static let spaceEffectProperties: EffectProperties = .init(
+        backgroundOpacity: 0.2,
+        backgroundBlurRadius: 0.0,
+        borderOpacity: 0.8
+    )
+
     /// Default space configuration for organizing spaces.
-    public static let spacesVisualConfiguration: [VisualProperties] = []
+    public static let spacesColorProperties: [ColorProperties] = []
+
+    /// Default geometric configuration for organizing spaces.
+    public static let spacesGeometricProperties: [GeometricProperties] = []
+
+    /// Default effect configuration for organizing spaces.
+    public static let spacesEffectProperties: [EffectProperties] = []
 
     /// Default spaces appearance mode.
     public static let spacesAppearanceMode: SpacesAppearanceMode = .allSpaces
@@ -87,15 +101,42 @@ public enum ConfigurationDefaults {
     /// Default groups appearance mode.
     public static let groupsAppearanceMode: GroupsAppearanceMode = .matchSpaces
 
-    /// Default global visual configuration for all groups.
-    public static let defaultGroupsGlobalVisualConfig: VisualProperties = .init(
-        backgroundTintColor: defaultSpaceVisualConfig.backgroundTintColor,
-        backgroundOpacity: min(defaultSpaceVisualConfig.backgroundOpacity, 0.2),
-        backgroundBlurRadius: defaultSpaceVisualConfig.backgroundBlurRadius,
-        borderTintColor: defaultSpaceVisualConfig.borderTintColor,
-        borderOpacity: defaultSpaceVisualConfig.borderOpacity,
-        borderWidth: defaultSpaceVisualConfig.borderWidth,
-        cornerRadius: defaultSpaceVisualConfig.cornerRadius,
+    /// Default global color properties for all groups.
+    public static let groupsGlobalColorProperties: ColorProperties = .init(
+        backgroundTintColor: spaceColorProperties.backgroundTintColor,
+        borderTintColor: spaceColorProperties.borderTintColor,
         foregroundColor: .primary
+    )
+
+    /// Default geometric properties for all groups.
+    public static let groupsGlobalGeometricProperties: GeometricProperties = .init(
+        cornerRadius: spaceGeometricProperties.cornerRadius,
+        borderWidth: spaceGeometricProperties.borderWidth
+    )
+
+    /// Default effect properties for all groups.
+    public static let groupsGlobalEffectProperties: EffectProperties = .init(
+        backgroundOpacity: min(spaceEffectProperties.backgroundOpacity, 0.2),
+        backgroundBlurRadius: spaceEffectProperties.backgroundBlurRadius,
+        borderOpacity: spaceEffectProperties.borderOpacity
+    )
+
+    /// Default theme mode for visual customization.
+    public static let themeMode: ThemeMode = .preset
+
+    /// Default theme preset for preset mode.
+    public static let themePresetColorProperties: ThemePresetColorProperties = .catppuccinMocha
+
+    /// Default geometric properties for visual containers using theme preset.
+    public static let themePresetGeometricProperties: GeometricProperties = .init(
+        cornerRadius: spaceGeometricProperties.cornerRadius,
+        borderWidth: 2.0
+    )
+
+    /// Default effect properties for visual containers using theme preset.
+    public static let themePresetEffectProperties: EffectProperties = .init(
+        backgroundOpacity: 0.8,
+        backgroundBlurRadius: 0.8,
+        borderOpacity: 0.8
     )
 }

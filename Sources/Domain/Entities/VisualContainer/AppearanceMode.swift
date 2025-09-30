@@ -23,7 +23,7 @@ public protocol AppearanceMode: CaseIterable, Equatable, RawRepresentable, Hasha
     /// effects of selecting this particular appearance mode.
     var description: LocalizedStringResource { get }
 
-    /// Determines whether the global visual configuration should be shown for this mode.
+    /// Determines whether the global color properties should be shown for this mode.
     ///
     /// When `true`, the settings interface will display global configuration options
     /// that apply to all entities when this appearance mode is selected.

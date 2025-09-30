@@ -4,7 +4,7 @@ import SwiftUI
 
 // MARK: - Visual Configuration Protocols
 
-/// Protocol for entities that have visual configuration capabilities.
+/// Protocol for entities that have color properties capabilities.
 ///
 /// This protocol defines the contract for entities that can be visually configured
 /// through the settings interface. Conforming types must provide metadata for
@@ -16,7 +16,7 @@ public protocol VisualContainer: Identifiable, Codable, Equatable, Hashable, Sen
     /// The appearance mode type associated with this visual container.
     ///
     /// This defines the type of appearance mode enumeration that controls
-    /// how visual configurations are applied to entities of this type.
+    /// how color properties are applied to entities of this type.
     associatedtype AppearanceMode: Domain.AppearanceMode
 
     /// The metadata configuration for this visual container type.
@@ -33,10 +33,24 @@ public protocol VisualContainer: Identifiable, Codable, Equatable, Hashable, Sen
     /// container instance (e.g., "Group 1", "Space A").
     var title: String { get set }
 
-    /// The visual configuration for the container.
+    /// The color properties for the container.
     ///
-    /// This contains all the visual properties that control how this
-    /// container appears in the interface, including colors, opacity,
-    /// borders, and geometry settings.
-    var visualConfig: VisualProperties { get set }
+    /// This contains all the color properties that control how this
+    /// container appears in the interface, including background, border,
+    /// and foreground colors.
+    var colorProperties: ColorProperties { get set }
+
+    /// The geometric properties for the container.
+    ///
+    /// This contains all the geometric properties that control the
+    /// shape and dimensions of this container, including corner radius
+    /// and border width.
+    var geometricProperties: GeometricProperties { get set }
+
+    /// The effect properties for the container.
+    ///
+    /// This contains all the visual effect properties that control
+    /// how this container's effects appear, including opacity and
+    /// blur radius values.
+    var effectProperties: EffectProperties { get set }
 }

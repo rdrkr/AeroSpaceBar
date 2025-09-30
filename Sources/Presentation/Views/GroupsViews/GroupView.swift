@@ -14,11 +14,35 @@ struct GroupView: View {
     /// The appearance mode determining which styling properties to use.
     let appearanceMode: GroupsAppearanceMode
 
-    /// The visual configuration for global groups appearance mode.
-    let globalVisualConfiguration: VisualProperties
+    /// The color properties for global groups appearance mode.
+    let globalGroupsColorProperties: ColorProperties
 
-    /// The visual configuration for match spaces appearance mode.
-    let spaceVisualConfiguration: VisualProperties
+    /// The geometric properties for global groups appearance mode.
+    let globalGroupsGeometricProperties: GeometricProperties
+
+    /// The effect properties for global groups appearance mode.
+    let globalGroupsEffectProperties: EffectProperties
+
+    /// The color properties for match spaces appearance mode.
+    let globalSpacesColorProperties: ColorProperties
+
+    /// The geometric properties for match spaces appearance mode.
+    let globalSpacesGeometricProperties: GeometricProperties
+
+    /// The effect properties for match spaces appearance mode.
+    let globalSpacesEffectProperties: EffectProperties
+
+    /// The theme mode for visual customization.
+    let themeMode: ThemeMode
+
+    /// The selected theme preset.
+    let themePresetColorProperties: ThemePresetColorProperties
+
+    /// The geometric properties for theme preset elements.
+    let themePresetGeometricProperties: GeometricProperties
+
+    /// The effect properties for theme preset elements.
+    let themePresetEffectProperties: EffectProperties
 
     /// The apps in this group that are currently visible (based on group range)
     private var groupApps: [MenuBarApp] {
@@ -33,58 +57,114 @@ struct GroupView: View {
 
     // MARK: - Appearance Properties
 
-    /// The visual configuration based on the current appearance mode
-    private var currentVisualConfiguration: VisualProperties {
-        switch appearanceMode {
-        case .perGroup:
-            // For per-app mode, use the group's visual configuration
-            group.visualConfig
+    /// The color properties based on the current appearance mode and theme mode
+    private var currentColorProperties: ColorProperties {
+        switch themeMode {
+        case .preset: themePresetColorProperties.colorProperties
 
-        case .allGroups:
-            globalVisualConfiguration
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .perGroup: group.colorProperties
+            case .allGroups: globalGroupsColorProperties
+            case .matchSpaces: globalSpacesColorProperties
+            default: group.colorProperties
+            }
 
-        case .matchSpaces:
-            spaceVisualConfiguration
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .perGroup: group.colorProperties
+            case .allGroups: globalGroupsColorProperties
+            case .matchSpaces: globalSpacesColorProperties
+            default: group.colorProperties
+            }
+        }
+    }
 
-        @unknown default:
-            // For unknown cases, use the group's visual configuration as fallback
-            group.visualConfig
+    /// The geometric properties based on the current appearance mode and theme mode
+    private var currentGeometricProperties: GeometricProperties {
+        switch themeMode {
+        case .preset: themePresetGeometricProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .perGroup: group.geometricProperties
+            case .allGroups: globalGroupsGeometricProperties
+            case .matchSpaces: globalSpacesGeometricProperties
+            default: group.geometricProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .perGroup: group.geometricProperties
+            case .allGroups: globalGroupsGeometricProperties
+            case .matchSpaces: globalSpacesGeometricProperties
+            default: group.geometricProperties
+            }
+        }
+    }
+
+    /// The effect properties based on the current appearance mode and theme mode
+    private var currentEffectProperties: EffectProperties {
+        switch themeMode {
+        case .preset: themePresetEffectProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .perGroup: group.effectProperties
+            case .allGroups: globalGroupsEffectProperties
+            case .matchSpaces: globalSpacesEffectProperties
+            default: group.effectProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .perGroup: group.effectProperties
+            case .allGroups: globalGroupsEffectProperties
+            case .matchSpaces: globalSpacesEffectProperties
+            default: group.effectProperties
+            }
         }
     }
 
     /// The background tint color based on the current appearance mode
     private var backgroundTintColor: Color {
-        currentVisualConfiguration.backgroundTintColor
+        currentColorProperties.backgroundTintColor
     }
 
     /// The background opacity based on the current appearance mode
     private var backgroundOpacity: Double {
-        currentVisualConfiguration.backgroundOpacity
+        currentEffectProperties.backgroundOpacity
     }
 
     /// The background blur radius based on the current appearance mode
     private var backgroundBlurRadius: Double {
-        currentVisualConfiguration.backgroundBlurRadius
+        currentEffectProperties.backgroundBlurRadius
     }
 
     /// The border color based on the current appearance mode
     private var borderColor: Color {
-        currentVisualConfiguration.borderTintColor
+        currentColorProperties.borderTintColor
     }
 
     /// The border opacity based on the current appearance mode
     private var borderOpacity: Double {
-        currentVisualConfiguration.borderOpacity
+        currentEffectProperties.borderOpacity
     }
 
     /// The border width based on the current appearance mode
     private var borderWidth: Double {
-        currentVisualConfiguration.borderWidth
+        currentGeometricProperties.borderWidth
     }
 
     /// The corner radius based on the current appearance mode
     private var cornerRadius: Double {
-        currentVisualConfiguration.cornerRadius
+        currentGeometricProperties.cornerRadius
     }
 
     /// The combined frame that encompasses all apps in this group
@@ -114,31 +194,49 @@ struct GroupView: View {
 
     var body: some View {
         Group {
-            Color.clear
-                .background(
-                    backgroundTintColor
-                        .opacity(backgroundOpacity)
-                        .blur(radius: backgroundBlurRadius)
-                )
-                .cornerRadius(cornerRadius)
-                .frame(width: groupFrame.width, height: groupFrame.height)
-                .background(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(
-                            borderColor.opacity(borderOpacity),
-                            lineWidth: borderWidth
-                        )
-                        .frame(
-                            width: groupFrame.width + borderWidth,
-                            height: groupFrame.height + borderWidth
-                        )
-                )
-                .position(
-                    x: groupFrame.midX,
-                    y: groupFrame.midY
-                )
-                .standardShadow()
+            if themeMode == .glass, #available(macOS 26.0, *) {
+                glassBackgroundView
+            } else {
+                standardBackgroundView
+            }
         }
         .animation(.themeEaseInOutFast, value: groupFrame)
+    }
+
+    /// The glass effect background view for macOS 26+.
+    @available(macOS 26.0, *)
+    private var glassBackgroundView: some View {
+        Text("")
+            .frame(width: groupFrame.width, height: groupFrame.height)
+            .glassEffect(.clear.interactive(true))
+            .position(x: groupFrame.midX, y: groupFrame.midY)
+    }
+
+    /// The standard background view with blur and opacity.
+    private var standardBackgroundView: some View {
+        Color.clear
+            .background(
+                backgroundTintColor
+                    .opacity(backgroundOpacity)
+                    .blur(radius: backgroundBlurRadius)
+            )
+            .cornerRadius(cornerRadius)
+            .frame(width: groupFrame.width, height: groupFrame.height)
+            .background(borderView)
+            .position(x: groupFrame.midX, y: groupFrame.midY)
+            .standardShadow()
+    }
+
+    /// The border view for the group.
+    private var borderView: some View {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .stroke(
+                borderColor.opacity(borderOpacity),
+                lineWidth: borderWidth
+            )
+            .frame(
+                width: groupFrame.width + borderWidth,
+                height: groupFrame.height + borderWidth
+            )
     }
 }

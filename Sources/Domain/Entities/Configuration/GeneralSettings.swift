@@ -10,7 +10,13 @@ import Foundation
 /// TOML parsing (with optional fields) and runtime usage (with required fields).
 /// Uses the `OptionalTypeMapping` protocol for type-level optionality control.
 public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
-    where Mode.BoolType: Codable, Mode.StringType: Codable
+    where
+    Mode.BoolType: Codable,
+    Mode.StringType: Codable,
+    Mode.ThemeModeType: Codable,
+    Mode.ThemePresetColorPropertiesType: Codable,
+    Mode.GeometricPropertiesType: Codable,
+    Mode.EffectPropertiesType: Codable
 {
     /// Type alias for the optional variant used during TOML decoding.
     public typealias OptionalVariant = GeneralSettings<OptionalMode>
@@ -32,19 +38,62 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
     /// point to a valid AeroSpace binary installation.
     public let aeroSpacePath: Mode.StringType
 
+    /// The theme mode for visual customization.
+    ///
+    /// This property determines how visual themes are applied to spaces and groups.
+    /// Options include preset, glass (macOS 26+ only), and custom configurations.
+    public let themeMode: Mode.ThemeModeType
+
+    /// The selected theme preset when theme mode is set to preset.
+    ///
+    /// This property stores the user's selected theme preset from the available
+    /// predefined color schemes. Only used when themeMode is set to .preset.
+    public let themePresetColorProperties: Mode.ThemePresetColorPropertiesType
+
+    /// The geometric properties for theme preset elements.
+    ///
+    /// This property stores the geometric properties (corner radius, border width, etc.)
+    /// used by preset theme elements. Only used when themeMode is set to .preset.
+    public let themePresetGeometricProperties: Mode.GeometricPropertiesType
+
+    /// The effect properties for theme preset elements.
+    ///
+    /// This property stores the effect properties (opacity, blur radius, etc.)
+    /// used by preset theme elements. Only used when themeMode is set to .preset.
+    public let themePresetEffectProperties: Mode.EffectPropertiesType
+
     /// Initializes a new GeneralSettings instance.
     ///
     /// - Parameters:
     ///   - showWindowTitles: Whether to display window titles in the menu bar
     ///   - aeroSpacePath: The file system path to the AeroSpace executable
-    public init(showWindowTitles: Mode.BoolType, aeroSpacePath: Mode.StringType) {
+    ///   - themeMode: The theme mode for visual customization
+    ///   - themePresetColorProperties: The selected theme preset
+    ///   - themePresetGeometricProperties: The geometric properties for theme preset elements
+    ///   - themePresetEffectProperties: The effect properties for theme preset elements
+    public init(
+        showWindowTitles: Mode.BoolType,
+        aeroSpacePath: Mode.StringType,
+        themeMode: Mode.ThemeModeType,
+        themePresetColorProperties: Mode.ThemePresetColorPropertiesType,
+        themePresetGeometricProperties: Mode.GeometricPropertiesType,
+        themePresetEffectProperties: Mode.EffectPropertiesType
+    ) {
         self.showWindowTitles = showWindowTitles
         self.aeroSpacePath = aeroSpacePath
+        self.themeMode = themeMode
+        self.themePresetColorProperties = themePresetColorProperties
+        self.themePresetGeometricProperties = themePresetGeometricProperties
+        self.themePresetEffectProperties = themePresetEffectProperties
     }
 
     enum CodingKeys: String, CodingKey {
         case showWindowTitles = "show-window-titles"
         case aeroSpacePath = "aerospace-path"
+        case themeMode = "theme-mode"
+        case themePresetColorProperties = "theme-preset"
+        case themePresetGeometricProperties = "theme-preset-geometric"
+        case themePresetEffectProperties = "theme-preset-effect"
     }
 
     /// Decodes optional settings and merges with required defaults.
@@ -64,7 +113,14 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
     ) throws -> GeneralSettings<RequiredMode> {
         GeneralSettings<RequiredMode>(
             showWindowTitles: decodedValue.showWindowTitles ?? defaultValue.showWindowTitles,
-            aeroSpacePath: decodedValue.aeroSpacePath ?? defaultValue.aeroSpacePath
+            aeroSpacePath: decodedValue.aeroSpacePath ?? defaultValue.aeroSpacePath,
+            themeMode: decodedValue.themeMode ?? defaultValue.themeMode,
+            themePresetColorProperties: decodedValue.themePresetColorProperties ?? defaultValue
+                .themePresetColorProperties,
+            themePresetGeometricProperties: decodedValue.themePresetGeometricProperties ?? defaultValue
+                .themePresetGeometricProperties,
+            themePresetEffectProperties: decodedValue.themePresetEffectProperties ?? defaultValue
+                .themePresetEffectProperties
         )
     }
 }

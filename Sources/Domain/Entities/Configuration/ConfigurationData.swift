@@ -11,7 +11,7 @@ import Foundation
 ///
 /// The structure organizes configuration into logical sections:
 /// - General: Basic application settings and paths
-/// - Spaces: AeroSpace workspace display and visual configuration
+/// - Spaces: AeroSpace workspace display and color properties
 /// - Groups: Application grouping and organization settings
 /// - Advanced: Performance, debugging, and interaction options
 public class ConfigurationData<Mode: OptionalTypeMapping>: OptionalType

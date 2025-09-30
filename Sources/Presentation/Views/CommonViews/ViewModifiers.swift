@@ -46,43 +46,80 @@ struct HoverState: ViewModifier {
 /// Focus state modifier for spaces
 struct SpaceFocusState: ViewModifier {
     let isFocused: Bool
-    let visualConfig: VisualProperties
-    let widgetSpacing: Double = ConfigurationDefaults.widgetSpacing
+    let colorProperties: ColorProperties
+    let geometricProperties: GeometricProperties
+    let effectProperties: EffectProperties
+    let themeMode: ThemeMode
 
     func body(content: Content) -> some View {
         content
             .background(
                 GeometryReader { geometry in
-                    visualConfig.backgroundTintColor
-                        .opacity(
-                            isFocused ? (
-                                visualConfig.backgroundOpacity == 0 ? 0 :
-                                    min(visualConfig.backgroundOpacity + 0.2, 1)
-                            ) : visualConfig.backgroundOpacity
-                        )
-                        .blur(radius: visualConfig.backgroundBlurRadius)
-                        .cornerRadius(visualConfig.cornerRadius)
-                        .frame(
-                            width: geometry.size.width,
-                            height: geometry.size.height - (visualConfig.borderWidth * 2)
-                        )
-                        .offset(y: visualConfig.borderWidth)
-                        .background(
-                            RoundedRectangle(cornerRadius: visualConfig.cornerRadius, style: .continuous)
-                                .stroke(
-                                    visualConfig.borderTintColor
-                                        .opacity(visualConfig.borderOpacity),
-                                    lineWidth: visualConfig.borderWidth
-                                )
-                                .frame(
-                                    width: geometry.size.width + visualConfig.borderWidth,
-                                    height: geometry.size.height - visualConfig.borderWidth
-                                )
-                                .offset(y: visualConfig.borderWidth)
-                        )
+                    backgroundView(for: geometry)
                 }
             )
-            .padding(.horizontal, widgetSpacing + visualConfig.borderWidth)
+            .padding(.horizontal, ConfigurationDefaults.widgetSpacing + geometricProperties.borderWidth)
+    }
+
+    /// Creates the background view based on theme mode and availability.
+    /// - Parameter geometry: The geometry proxy for sizing calculations.
+    /// - Returns: The configured background view.
+    @ViewBuilder
+    private func backgroundView(for geometry: GeometryProxy) -> some View {
+        let borderView = createBorderView(width: geometry.size.width, height: geometry.size.height)
+
+        if themeMode == .glass, #available(macOS 26.0, *) {
+            Color.clear
+                .frame(
+                    width: geometry.size.width,
+                    height: geometry.size.height - (geometricProperties.borderWidth * 2)
+                )
+                .glassEffect(.clear.interactive(true))
+                .offset(y: geometricProperties.borderWidth)
+        } else {
+            createStandardBackground(width: geometry.size.width, height: geometry.size.height)
+                .background(borderView)
+        }
+    }
+
+    /// Creates the standard background view with blur and opacity.
+    /// - Parameters:
+    ///   - width: The width of the background.
+    ///   - height: The height of the background.
+    /// - Returns: The standard background view.
+    private func createStandardBackground(width: CGFloat, height: CGFloat) -> some View {
+        let opacity = isFocused ? (
+            effectProperties.backgroundOpacity == 0 ? 0 :
+                min(effectProperties.backgroundOpacity + 0.2, 1)
+        ) : effectProperties.backgroundOpacity
+
+        return colorProperties.backgroundTintColor
+            .opacity(opacity)
+            .blur(radius: effectProperties.backgroundBlurRadius)
+            .cornerRadius(geometricProperties.cornerRadius)
+            .frame(
+                width: width,
+                height: height - (geometricProperties.borderWidth * 2)
+            )
+            .offset(y: geometricProperties.borderWidth)
+    }
+
+    /// Creates the border view for the space.
+    /// - Parameters:
+    ///   - width: The width of the parent view.
+    ///   - height: The height of the parent view.
+    /// - Returns: The border view.
+    private func createBorderView(width: CGFloat, height: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: geometricProperties.cornerRadius, style: .continuous)
+            .stroke(
+                colorProperties.borderTintColor.opacity(effectProperties.borderOpacity),
+                lineWidth: geometricProperties.borderWidth
+            )
+            .frame(
+                width: width + geometricProperties.borderWidth,
+                height: height - geometricProperties.borderWidth
+            )
+            .offset(y: geometricProperties.borderWidth)
     }
 }
 
@@ -260,31 +297,43 @@ struct SettingsFormStyle: ViewModifier {
 
 /// Visual container configuration modifier for applying consolidated visual styling
 struct VisualContainerConfigurationModifier: ViewModifier {
-    let configuration: VisualProperties
+    let colorConfiguration: ColorProperties
+    let geometricConfiguration: GeometricProperties
+    let effectConfiguration: EffectProperties
     let applyBackground: Bool
     let applyBorder: Bool
     let applyForeground: Bool
 
     func body(content: Content) -> some View {
         content
-            .modifier(ConditionalBackground(configuration: configuration, applyBackground: applyBackground))
-            .modifier(ConditionalBorder(configuration: configuration, applyBorder: applyBorder))
-            .modifier(ConditionalForeground(configuration: configuration, applyForeground: applyForeground))
-            .clipShape(RoundedRectangle(cornerRadius: configuration.cornerRadius))
+            .modifier(ConditionalBackground(
+                colorConfiguration: colorConfiguration,
+                effectConfiguration: effectConfiguration,
+                applyBackground: applyBackground
+            ))
+            .modifier(ConditionalBorder(
+                colorConfiguration: colorConfiguration,
+                geometricConfiguration: geometricConfiguration,
+                effectConfiguration: effectConfiguration,
+                applyBorder: applyBorder
+            ))
+            .modifier(ConditionalForeground(configuration: colorConfiguration, applyForeground: applyForeground))
+            .clipShape(RoundedRectangle(cornerRadius: geometricConfiguration.cornerRadius))
     }
 }
 
 /// Conditional background modifier
 private struct ConditionalBackground: ViewModifier {
-    let configuration: VisualProperties
+    let colorConfiguration: ColorProperties
+    let effectConfiguration: EffectProperties
     let applyBackground: Bool
 
     func body(content: Content) -> some View {
         if applyBackground {
             content.background(
-                configuration.backgroundTintColor
-                    .opacity(configuration.backgroundOpacity)
-                    .blur(radius: configuration.backgroundBlurRadius)
+                colorConfiguration.backgroundTintColor
+                    .opacity(effectConfiguration.backgroundOpacity)
+                    .blur(radius: effectConfiguration.backgroundBlurRadius)
             )
         } else {
             content
@@ -294,16 +343,18 @@ private struct ConditionalBackground: ViewModifier {
 
 /// Conditional border modifier
 private struct ConditionalBorder: ViewModifier {
-    let configuration: VisualProperties
+    let colorConfiguration: ColorProperties
+    let geometricConfiguration: GeometricProperties
+    let effectConfiguration: EffectProperties
     let applyBorder: Bool
 
     func body(content: Content) -> some View {
         if applyBorder {
             content.overlay(
-                RoundedRectangle(cornerRadius: configuration.cornerRadius)
+                RoundedRectangle(cornerRadius: geometricConfiguration.cornerRadius)
                     .stroke(
-                        configuration.borderTintColor.opacity(configuration.borderOpacity),
-                        lineWidth: configuration.borderWidth
+                        colorConfiguration.borderTintColor.opacity(effectConfiguration.borderOpacity),
+                        lineWidth: geometricConfiguration.borderWidth
                     )
             )
         } else {
@@ -314,7 +365,7 @@ private struct ConditionalBorder: ViewModifier {
 
 /// Conditional foreground modifier
 private struct ConditionalForeground: ViewModifier {
-    let configuration: VisualProperties
+    let configuration: ColorProperties
     let applyForeground: Bool
 
     func body(content: Content) -> some View {
@@ -347,12 +398,18 @@ extension View {
     /// Apply space focus state modifier
     func spaceFocusState(
         _ isFocused: Bool,
-        visualConfig: VisualProperties
+        colorProperties: ColorProperties,
+        geometricProperties: GeometricProperties,
+        effectProperties: EffectProperties,
+        themeMode: ThemeMode
     ) -> some View {
         modifier(
             SpaceFocusState(
                 isFocused: isFocused,
-                visualConfig: visualConfig
+                colorProperties: colorProperties,
+                geometricProperties: geometricProperties,
+                effectProperties: effectProperties,
+                themeMode: themeMode
             )
         )
     }
@@ -405,14 +462,18 @@ extension View {
 
     /// Apply visual container configuration styling
     func visualContainerConfiguration(
-        _ configuration: VisualProperties,
+        colorConfiguration: ColorProperties,
+        geometricConfiguration: GeometricProperties,
+        effectConfiguration: EffectProperties,
         applyBackground: Bool = true,
         applyBorder: Bool = true,
         applyForeground: Bool = true
     ) -> some View {
         modifier(
             VisualContainerConfigurationModifier(
-                configuration: configuration,
+                colorConfiguration: colorConfiguration,
+                geometricConfiguration: geometricConfiguration,
+                effectConfiguration: effectConfiguration,
                 applyBackground: applyBackground,
                 applyBorder: applyBorder,
                 applyForeground: applyForeground

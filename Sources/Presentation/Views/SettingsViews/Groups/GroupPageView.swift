@@ -85,10 +85,16 @@ struct GroupPageView: View {
                 ))
             }
 
-            if groupsViewModel.groupsAppearanceMode == .perGroup {
+            if
+                groupsViewModel.groupsAppearanceMode == .perGroup,
+                groupsViewModel.themeMode.isColorCustomizable
+            {
                 VisualSettingsView(
                     metadata: Domain.Group.metadata,
-                    visualConfig: group.visualConfig
+                    themeMode: groupsViewModel.themeMode,
+                    colorProperties: group.colorProperties,
+                    geometricProperties: group.geometricProperties,
+                    effectProperties: group.effectProperties
                 )
             }
 

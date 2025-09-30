@@ -11,6 +11,9 @@ struct AeroSpaceBarApp: App {
     /// The application delegate that manages the menu bar panel and app lifecycle.
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    /// The app view model for managing app-level state.
+    @StateObject private var appViewModel = DependencyContainer.shared.getAppViewModel()
+
     /// The main scene configuration for the application.
     ///
     /// This creates no scenes since the main interface
@@ -20,7 +23,7 @@ struct AeroSpaceBarApp: App {
             AppMenuView()
                 .environmentObject(DependencyContainer.shared.getLicenseViewModel())
         } label: {
-            Image("AppGlyph")
+            Image(appViewModel.isGlobeKeyPressed ? "AppGlyphGlobe" : "AppGlyph")
         }
         .menuBarExtraStyle(.window)
 

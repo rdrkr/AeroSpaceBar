@@ -35,8 +35,8 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Use case for getting the optimized performance enabled setting.
     private let getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase
 
-    /// Use case for getting the spaces visual configuration.
-    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
+    /// Use case for getting the spaces color properties.
+    private let getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase
 
     /// Cached AeroSpace executable path.
     private var aeroSpaceExecutable: String
@@ -44,8 +44,8 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Whether optimized performance is enabled.
     private var optimizedPerformanceEnabled: Bool
 
-    /// Cached spaces visual configuration.
-    private var spacesVisualConfig: [VisualProperties]
+    /// Cached spaces color properties.
+    private var spacesColorProperties: [ColorProperties]
 
     /// Task for window focus monitoring.
     private var windowFocusMonitoringTask: Task<Void, Never>?
@@ -74,23 +74,23 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///   - getAeroSpacePathUseCase: Use case to resolve AeroSpace binary path dynamically
     ///   - getAeroSpaceConfigPathUseCase: Use case to get the AeroSpace configuration file path
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get the optimized performance enabled setting
-    ///   - getSpacesVisualConfigUseCase: Use case to get the spaces visual configuration
+    ///   - getSpacesColorPropertiesUseCase: Use case to get the spaces color properties
     public init(
         iconCache: IconCache,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase,
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
-        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
+        getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase
     ) {
         self.iconCache = iconCache
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
         self.getAeroSpaceConfigPathUseCase = getAeroSpaceConfigPathUseCase
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
-        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
+        self.getSpacesColorPropertiesUseCase = getSpacesColorPropertiesUseCase
 
         aeroSpaceExecutable = getAeroSpacePathUseCase.execute().blockingFirst()
         optimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
-        spacesVisualConfig = getSpacesVisualConfigUseCase.execute().blockingFirst()
+        spacesColorProperties = getSpacesColorPropertiesUseCase.execute().blockingFirst()
 
         setupUseCaseObservers()
         configureWindowFocusMonitoring()
@@ -249,10 +249,10 @@ public final class AeroSpaceRepository: SpacesGateway {
             }
             .store(in: &cancellables)
 
-        getSpacesVisualConfigUseCase.execute()
-            .sink { [weak self] visualConfig in
-                if self?.spacesVisualConfig != visualConfig {
-                    self?.spacesVisualConfig = visualConfig
+        getSpacesColorPropertiesUseCase.execute()
+            .sink { [weak self] colorProperties in
+                if self?.spacesColorProperties != colorProperties {
+                    self?.spacesColorProperties = colorProperties
                     Task { @MainActor in
                         await self?.updateSpacesData()
                     }
@@ -270,11 +270,11 @@ public final class AeroSpaceRepository: SpacesGateway {
             }.value
 
             let spacesWithIcons = loadIconsForWindows(in: spaces)
-            let spacesWithVisualConfig = applyVisualConfigurationToSpaces(spacesWithIcons)
+            let spacesWithColorProperties = applyColorPropertiesToSpaces(spacesWithIcons)
             let isRunning = isAeroSpaceRunning()
 
             Task { @MainActor in
-                spacesWithWindowsSubject.send(spacesWithVisualConfig)
+                spacesWithWindowsSubject.send(spacesWithColorProperties)
                 aeroSpaceRunningSubject.send(isRunning)
             }
 
@@ -569,22 +569,22 @@ public final class AeroSpaceRepository: SpacesGateway {
         return updatedSpaces
     }
 
-    /// Applies visual configuration to spaces by matching sorted space IDs with visual properties.
-    /// Since VisualProperties don't contain space IDs, we sort spaces consistently by ID
+    /// Applies color properties to spaces by matching sorted space IDs with visual properties.
+    /// Since ColorProperties don't contain space IDs, we sort spaces consistently by ID
     /// and apply configurations in that sorted order for more stable mapping.
-    /// - Parameter spaces: The spaces to apply visual configuration to
+    /// - Parameter spaces: The spaces to apply color properties to
     /// - Returns: The spaces with their visual properties updated
-    private func applyVisualConfigurationToSpaces(_ spaces: [Space]) -> [Space] {
-        let visualConfigValue = spacesVisualConfig
+    private func applyColorPropertiesToSpaces(_ spaces: [Space]) -> [Space] {
+        let colorPropertiesValue = spacesColorProperties
 
         // Sort spaces by ID for consistent ordering
         var sortedSpaces = spaces.sorted { $0.id < $1.id }
 
-        // Apply visual configurations in sorted order
+        // Apply color properties in sorted order
         sortedSpaces.indices.forEach { spaceIndex in
-            // Apply visual configuration if available for this sorted index
-            if spaceIndex < visualConfigValue.count {
-                sortedSpaces[spaceIndex].visualConfig = visualConfigValue[spaceIndex]
+            // Apply color properties if available for this sorted index
+            if spaceIndex < colorPropertiesValue.count {
+                sortedSpaces[spaceIndex].colorProperties = colorPropertiesValue[spaceIndex]
             }
         }
 

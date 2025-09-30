@@ -5,6 +5,7 @@ import Combine
 import CoreGraphics
 import Domain
 import Foundation
+internal import ScreenCaptureKit
 
 /// Repository for capturing and managing desktop wallpaper dynamically and tracking system menu bar state.
 @MainActor
@@ -194,15 +195,111 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// This resource-intensive method runs less frequently to capture and update
     /// the wallpaper image when the menu bar is visible.
     private func captureWallpaperImage() {
-        // Find the wallpaper window for the main display
-        guard let wallpaperWindow = findDesktopWallpaperWindow() else {
-            Logger.info("No wallpaper window found", category: Logger.config)
-            return
-        }
-
         // Find the menu bar window to get its frame for clipping
         guard let menuBarFrame = lastMenuBarFrame else {
             Logger.warning("Menu bar is hidden, skipping wallpaper capture", category: Logger.userInterface)
+            return
+        }
+
+        // Use ScreenCaptureKit on macOS 15+ for better performance and future compatibility
+        if #available(macOS 15.0, *) {
+            Task {
+                await captureWallpaperUsingScreenCaptureKit(menuBarFrame: menuBarFrame)
+            }
+        } else {
+            captureWallpaperUsingLegacyAPI(menuBarFrame: menuBarFrame)
+        }
+    }
+
+    /// Captures wallpaper using the modern ScreenCaptureKit API (macOS 15+).
+    /// This captures the menu bar region including wallpaper and visual effects,
+    /// but excludes the menu bar UI and AeroSpaceBar app windows.
+    /// - Parameter menuBarFrame: The menu bar frame to use for clipping the capture area.
+    @available(macOS 15.0, *)
+    private func captureWallpaperUsingScreenCaptureKit(menuBarFrame: CGRect) async {
+        // Capture the image in a nonisolated context
+        let result = await Task<NSImage?, Never>.detached {
+            do {
+                // Get shareable content to access displays and windows
+                let content = try await SCShareableContent.current
+
+                // Find the main display
+                guard
+                    let mainDisplay = content.displays.first(where: { display in
+                        display.displayID == CGMainDisplayID()
+                    })
+                else {
+                    Logger.warning("Main display not found in shareable content", category: Logger.config)
+                    return nil as NSImage?
+                }
+
+                // Find windows to exclude from capture
+                let windowsToExclude = content.windows.filter { window in
+                    // Exclude Window Server's Menubar window
+                    let isMenuBarWindow = window.title == "Menubar"
+
+                    // Exclude AeroSpaceBar app windows
+                    let isAeroSpaceBarWindow = window.owningApplication?.bundleIdentifier == "com.rdrkr.AeroSpaceBar"
+
+                    return isMenuBarWindow || isAeroSpaceBarWindow
+                }
+
+                // Configure the capture to capture the menu bar region
+                let configuration = SCStreamConfiguration()
+                configuration.width = Int(menuBarFrame.width)
+                configuration.height = Int(menuBarFrame.height)
+                configuration.sourceRect = menuBarFrame
+                configuration.showsCursor = false
+
+                // Create a content filter that captures the display region excluding specified windows
+                // This will include wallpaper and visual effects, but not the menu bar UI itself
+                let contentFilter = SCContentFilter(display: mainDisplay, excludingWindows: windowsToExclude)
+
+                // Capture the display region
+                let image = try await SCScreenshotManager.captureImage(
+                    contentFilter: contentFilter,
+                    configuration: configuration
+                )
+
+                // Convert to NSImage
+                return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
+            } catch {
+                Logger.warning(
+                    "Failed to capture wallpaper using ScreenCaptureKit: \(error.localizedDescription)",
+                    category: Logger.config
+                )
+                return nil
+            }
+        }
+        .value
+
+        // Update state on the main actor
+        await MainActor.run {
+            if let nsImage = result {
+                // Check if this is different from the last captured image
+                if let pngData = nsImage.pngData, pngData != self.lastWallpaperData {
+                    self.lastWallpaperData = pngData
+                    self.wallpaperSubject.send(nsImage)
+                    Logger.info("Wallpaper captured and updated (ScreenCaptureKit)", category: Logger.config)
+
+                    // Save PNG to Downloads folder - Useful for debugging
+                    // self.savePNGToDownloads(pngData)
+                }
+            } else {
+                // Fall back to legacy API on error
+                self.captureWallpaperUsingLegacyAPI(menuBarFrame: menuBarFrame)
+            }
+        }
+    }
+
+    /// Captures wallpaper using the legacy CGWindowList API (macOS 14 and below).
+    /// This captures the menu bar region including wallpaper and visual effects,
+    /// but excludes the menu bar UI and AeroSpaceBar app windows.
+    /// - Parameter menuBarFrame: The menu bar frame to use for clipping the capture area.
+    private func captureWallpaperUsingLegacyAPI(menuBarFrame: CGRect) {
+        // Find the wallpaper window for the main display
+        guard let wallpaperWindow = findDesktopWallpaperWindow() else {
+            Logger.info("No wallpaper window found", category: Logger.config)
             return
         }
 
@@ -222,9 +319,35 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 lastWallpaperData = pngData
                 wallpaperSubject.send(nsImage)
                 Logger.info("Wallpaper captured and updated", category: Logger.config)
+
+                // Save PNG to Downloads folder - Useful for debugging
+                // savePNGToDownloads(pngData)
             }
         } else {
             Logger.warning("Failed to capture wallpaper image", category: Logger.config)
+        }
+    }
+
+    /// Saves PNG data to the Downloads folder with a timestamped filename.
+    /// - Parameter pngData: The PNG image data to save.
+    private func savePNGToDownloads(_ pngData: Data) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let timestamp = dateFormatter.string(from: Date())
+        let filename = "wallpaper_\(timestamp).png"
+
+        guard let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first else {
+            Logger.warning("Could not find Downloads folder", category: Logger.config)
+            return
+        }
+
+        let fileURL = downloadsURL.appendingPathComponent(filename)
+
+        do {
+            try pngData.write(to: fileURL)
+            Logger.info("Saved wallpaper to: \(fileURL.path)", category: Logger.config)
+        } catch {
+            Logger.warning("Failed to save wallpaper: \(error.localizedDescription)", category: Logger.config)
         }
     }
 

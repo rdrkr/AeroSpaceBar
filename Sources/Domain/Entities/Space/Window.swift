@@ -6,7 +6,7 @@ import Foundation
 /// Represents a window in the system.
 ///
 /// This struct contains information about a window including its identifier,
-/// title, associated application, focus state, workspace assignment, and visual configuration.
+/// title, associated application, focus state, workspace assignment, and color properties.
 public struct Window: VisualContainer {
     public typealias AppearanceMode = WindowsAppearanceMode
     /// The metadata configuration for Window entities.
@@ -17,7 +17,9 @@ public struct Window: VisualContainer {
         canAddEntities: false,
         canDeleteEntities: false,
         showForegroundSection: true,
-        defaultGlobalVisualConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
+        defaultGlobalColorProperties: ConfigurationDefaults.spaceColorProperties,
+        defaultGlobalEffectProperties: ConfigurationDefaults.spaceEffectProperties,
+        defaultGlobalGeometricProperties: ConfigurationDefaults.spaceGeometricProperties,
         canDeleteEntity: { _ in false }, // Windows cannot be deleted manually
         footerText: String(localized: LocalizedStringResource(
             "Windows are managed by the system and cannot be deleted manually."
@@ -56,8 +58,14 @@ public struct Window: VisualContainer {
     /// It should be set by the presentation layer using dependency injection.
     public var appIcon: NSImage?
 
-    /// The visual configuration for the window container.
-    public var visualConfig: VisualProperties
+    /// The color properties for the window container.
+    public var colorProperties: ColorProperties
+
+    /// The geometric properties for the window container.
+    public var geometricProperties: GeometricProperties
+
+    /// The effect properties for the window container.
+    public var effectProperties: EffectProperties
 
     /// Coding keys for JSON serialization.
     public enum CodingKeys: String, CodingKey {
@@ -65,7 +73,9 @@ public struct Window: VisualContainer {
         case title = "window-title"
         case appName = "app-name"
         case workspace
-        case visualConfig = "visual-config"
+        case colorProperties = "visual-config"
+        case geometricProperties = "geometric-config"
+        case effectProperties = "effect-config"
     }
 
     /// Creates a window with the specified parameters.
@@ -76,7 +86,9 @@ public struct Window: VisualContainer {
     ///   - isFocused: Whether the window is currently focused
     ///   - workspace: The workspace/space that the window belongs to
     ///   - appIcon: The application icon for the window
-    ///   - visualConfig: The visual configuration for the window container
+    ///   - colorProperties: The color properties for the window container
+    ///   - geometricProperties: The geometric properties for the window container
+    ///   - effectProperties: The effect properties for the window container
     public init(
         id: Int,
         title: String,
@@ -84,7 +96,9 @@ public struct Window: VisualContainer {
         isFocused: Bool = false,
         workspace: String?,
         appIcon: NSImage? = nil,
-        visualConfig: VisualProperties
+        colorProperties: ColorProperties = ConfigurationDefaults.spaceColorProperties,
+        geometricProperties: GeometricProperties = ConfigurationDefaults.spaceGeometricProperties,
+        effectProperties: EffectProperties = ConfigurationDefaults.spaceEffectProperties
     ) {
         self.id = id
         self.title = title
@@ -92,7 +106,9 @@ public struct Window: VisualContainer {
         self.isFocused = isFocused
         self.workspace = workspace
         self.appIcon = appIcon
-        self.visualConfig = visualConfig
+        self.colorProperties = colorProperties
+        self.geometricProperties = geometricProperties
+        self.effectProperties = effectProperties
     }
 
     /// Creates a window from a decoder.
@@ -105,9 +121,15 @@ public struct Window: VisualContainer {
         title = try container.decode(String.self, forKey: .title)
         appName = try container.decode(String.self, forKey: .appName)
         workspace = try container.decode(String.self, forKey: .workspace)
-        visualConfig = try container.decodeIfPresent(
-            VisualProperties.self, forKey: .visualConfig
-        ) ?? ConfigurationDefaults.defaultSpaceVisualConfig
+        colorProperties = try container.decodeIfPresent(
+            ColorProperties.self, forKey: .colorProperties
+        ) ?? ConfigurationDefaults.spaceColorProperties
+        geometricProperties = try container.decodeIfPresent(
+            GeometricProperties.self, forKey: .geometricProperties
+        ) ?? ConfigurationDefaults.spaceGeometricProperties
+        effectProperties = try container.decodeIfPresent(
+            EffectProperties.self, forKey: .effectProperties
+        ) ?? ConfigurationDefaults.spaceEffectProperties
         isFocused = false
         appIcon = nil // appIcon is not encoded/decoded as NSImage doesn't conform to Codable
     }
@@ -122,7 +144,9 @@ public struct Window: VisualContainer {
         try container.encode(title, forKey: .title)
         try container.encode(appName, forKey: .appName)
         try container.encode(workspace, forKey: .workspace)
-        try container.encode(visualConfig, forKey: .visualConfig)
+        try container.encode(colorProperties, forKey: .colorProperties)
+        try container.encode(geometricProperties, forKey: .geometricProperties)
+        try container.encode(effectProperties, forKey: .effectProperties)
     }
 
     /// Compares two windows for equality.
@@ -136,6 +160,8 @@ public struct Window: VisualContainer {
             lhs.appName == rhs.appName &&
             lhs.isFocused == rhs.isFocused &&
             lhs.workspace == rhs.workspace &&
-            lhs.visualConfig == rhs.visualConfig
+            lhs.colorProperties == rhs.colorProperties &&
+            lhs.geometricProperties == rhs.geometricProperties &&
+            lhs.effectProperties == rhs.effectProperties
     }
 }

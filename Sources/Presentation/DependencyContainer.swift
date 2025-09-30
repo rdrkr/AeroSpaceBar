@@ -31,7 +31,7 @@ final class DependencyContainer {
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         getAeroSpaceConfigPathUseCase: makeGetAeroSpaceConfigPathUseCase(),
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
-        getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase()
+        getSpacesColorPropertiesUseCase: makeGetSpacesColorPropertiesUseCase()
     )
 
     /// The configuration gateway for managing application settings.
@@ -54,6 +54,17 @@ final class DependencyContainer {
         getShowGroupsUseCase: makeGetShowGroupsUseCase()
     )
 
+    /// The keyboard shortcuts gateway for monitoring keyboard events.
+    ///
+    /// This gateway is lazily initialized and provides monitoring of
+    /// keyboard shortcuts and key press states.
+    private lazy var keyboardShortcutsGateway: KeyboardShortcutsGateway = KeyboardShortcutsRepository()
+
+    /// The AppViewModel instance.
+    private lazy var appViewModel: AppViewModel = .init(
+        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase()
+    )
+
     /// The SettingsViewModel instance.
     private lazy var settingsViewModel: SettingsViewModel = .init(
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
@@ -72,7 +83,11 @@ final class DependencyContainer {
         getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
         getConfigFilePathUseCase: makeGetConfigFilePathUseCase(),
         setConfigFilePathUseCase: makeSetConfigFilePathUseCase(),
-        openConfigFileUseCase: makeOpenConfigFileUseCase()
+        openConfigFileUseCase: makeOpenConfigFileUseCase(),
+        getThemeModeUseCase: makeGetThemeModeUseCase(),
+        setThemeModeUseCase: makeSetThemeModeUseCase(),
+        getThemePresetColorPropertiesUseCase: makeGetThemePresetColorPropertiesUseCase(),
+        setThemePresetColorPropertiesUseCase: makeSetThemePresetColorPropertiesUseCase()
     )
 
     /// The SpacesViewModel instance.
@@ -94,10 +109,25 @@ final class DependencyContainer {
         getFeatureFlagsUseCase: makeGetFeatureFlagsUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
         setSpacesAppearanceModeUseCase: makeSetSpacesAppearanceModeUseCase(),
-        getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase(),
-        setGlobalSpacesVisualConfigUseCase: makeSetGlobalSpacesVisualConfigUseCase(),
-        getSpacesVisualConfigUseCase: makeGetSpacesVisualConfigUseCase(),
-        setSpacesVisualConfigUseCase: makeSetSpacesVisualConfigUseCase()
+        getGlobalSpacesColorPropertiesUseCase: makeGetGlobalSpacesColorPropertiesUseCase(),
+        setGlobalSpacesColorPropertiesUseCase: makeSetGlobalSpacesColorPropertiesUseCase(),
+        getGlobalSpacesGeometricPropertiesUseCase: makeGetGlobalSpacesGeometricPropertiesUseCase(),
+        setGlobalSpacesGeometricPropertiesUseCase: makeSetGlobalSpacesGeometricPropertiesUseCase(),
+        getGlobalSpacesEffectPropertiesUseCase: makeGetGlobalSpacesEffectPropertiesUseCase(),
+        setGlobalSpacesEffectPropertiesUseCase: makeSetGlobalSpacesEffectPropertiesUseCase(),
+        getSpacesColorPropertiesUseCase: makeGetSpacesColorPropertiesUseCase(),
+        setSpacesColorPropertiesUseCase: makeSetSpacesColorPropertiesUseCase(),
+        getSpacesGeometricPropertiesUseCase: makeGetSpacesGeometricPropertiesUseCase(),
+        setSpacesGeometricPropertiesUseCase: makeSetSpacesGeometricPropertiesUseCase(),
+        getSpacesEffectPropertiesUseCase: makeGetSpacesEffectPropertiesUseCase(),
+        setSpacesEffectPropertiesUseCase: makeSetSpacesEffectPropertiesUseCase(),
+        getThemeModeUseCase: makeGetThemeModeUseCase(),
+        getThemePresetColorPropertiesUseCase: makeGetThemePresetColorPropertiesUseCase(),
+        getThemePresetGeometricPropertiesUseCase: makeGetThemePresetGeometricPropertiesUseCase(),
+        setThemePresetGeometricPropertiesUseCase: makeSetThemePresetGeometricPropertiesUseCase(),
+        getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase(),
+        setThemePresetEffectPropertiesUseCase: makeSetThemePresetEffectPropertiesUseCase(),
+        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase()
     )
 
     /// The LicenseViewModel instance.
@@ -123,9 +153,19 @@ final class DependencyContainer {
         getGroupsAppearanceModeUseCase: makeGetGroupsAppearanceModeUseCase(),
         setGroupsAppearanceModeUseCase: makeSetGroupsAppearanceModeUseCase(),
         getSpacesAppearanceModeUseCase: makeGetSpacesAppearanceModeUseCase(),
-        getGlobalGroupsVisualConfigUseCase: makeGetGlobalGroupsVisualConfigUseCase(),
-        setGlobalGroupsVisualConfigUseCase: makeSetGlobalGroupsVisualConfigUseCase(),
-        getGlobalSpacesVisualConfigUseCase: makeGetGlobalSpacesVisualConfigUseCase()
+        getGlobalGroupsColorPropertiesUseCase: makeGetGlobalGroupsColorPropertiesUseCase(),
+        setGlobalGroupsColorPropertiesUseCase: makeSetGlobalGroupsColorPropertiesUseCase(),
+        getGlobalGroupsGeometricPropertiesUseCase: makeGetGlobalGroupsGeometricPropertiesUseCase(),
+        setGlobalGroupsGeometricPropertiesUseCase: makeSetGlobalGroupsGeometricPropertiesUseCase(),
+        getGlobalGroupsEffectPropertiesUseCase: makeGetGlobalGroupsEffectPropertiesUseCase(),
+        setGlobalGroupsEffectPropertiesUseCase: makeSetGlobalGroupsEffectPropertiesUseCase(),
+        getGlobalSpacesColorPropertiesUseCase: makeGetGlobalSpacesColorPropertiesUseCase(),
+        getGlobalSpacesGeometricPropertiesUseCase: makeGetGlobalSpacesGeometricPropertiesUseCase(),
+        getGlobalSpacesEffectPropertiesUseCase: makeGetGlobalSpacesEffectPropertiesUseCase(),
+        getThemeModeUseCase: makeGetThemeModeUseCase(),
+        getThemePresetColorPropertiesUseCase: makeGetThemePresetColorPropertiesUseCase(),
+        getThemePresetGeometricPropertiesUseCase: makeGetThemePresetGeometricPropertiesUseCase(),
+        getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase()
     )
 
     /// The license gateway for managing application license.
@@ -160,6 +200,12 @@ final class DependencyContainer {
     /// - Returns: The spaces gateway protocol implementation
     func getSpacesGateway() -> SpacesGateway {
         spacesGateway
+    }
+
+    /// Gets the app view model instance.
+    /// - Returns: The app view model instance
+    func getAppViewModel() -> AppViewModel {
+        appViewModel
     }
 
     /// Gets the settings view model instance.
@@ -277,16 +323,28 @@ final class DependencyContainer {
     }
 
     //////////
-    /// Creates a new GetSpacesVisualConfigUseCase instance.
-    /// - Returns: A new GetSpacesVisualConfigUseCase instance
-    func makeGetSpacesVisualConfigUseCase() -> GetSpacesVisualConfigUseCase {
-        GetSpacesVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new GetSpacesColorPropertiesUseCase instance.
+    /// - Returns: A new GetSpacesColorPropertiesUseCase instance
+    func makeGetSpacesColorPropertiesUseCase() -> GetSpacesColorPropertiesUseCase {
+        GetSpacesColorPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
-    /// Creates a new SetSpacesVisualConfigUseCase instance.
-    /// - Returns: A new SetSpacesVisualConfigUseCase instance
-    func makeSetSpacesVisualConfigUseCase() -> SetSpacesVisualConfigUseCase {
-        SetSpacesVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new SetSpacesColorPropertiesUseCase instance.
+    /// - Returns: A new SetSpacesColorPropertiesUseCase instance
+    func makeSetSpacesColorPropertiesUseCase() -> SetSpacesColorPropertiesUseCase {
+        SetSpacesColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetSpacesGeometricPropertiesUseCase instance.
+    /// - Returns: A new GetSpacesGeometricPropertiesUseCase instance
+    func makeGetSpacesGeometricPropertiesUseCase() -> GetSpacesGeometricPropertiesUseCase {
+        GetSpacesGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetSpacesGeometricPropertiesUseCase instance.
+    /// - Returns: A new SetSpacesGeometricPropertiesUseCase instance
+    func makeSetSpacesGeometricPropertiesUseCase() -> SetSpacesGeometricPropertiesUseCase {
+        SetSpacesGeometricPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
     /// Creates a new GetSpacesAppearanceModeUseCase instance.
@@ -301,16 +359,52 @@ final class DependencyContainer {
         SetSpacesAppearanceModeUseCase(configurationGateway: configurationGateway)
     }
 
-    /// Creates a new GetGlobalSpacesVisualConfigUseCase instance.
-    /// - Returns: A new GetGlobalSpacesVisualConfigUseCase instance
-    func makeGetGlobalSpacesVisualConfigUseCase() -> GetGlobalSpacesVisualConfigUseCase {
-        GetGlobalSpacesVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new GetGlobalSpacesColorPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalSpacesColorPropertiesUseCase instance
+    func makeGetGlobalSpacesColorPropertiesUseCase() -> GetGlobalSpacesColorPropertiesUseCase {
+        GetGlobalSpacesColorPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
-    /// Creates a new SetGlobalSpacesVisualConfigUseCase instance.
-    /// - Returns: A new SetGlobalSpacesVisualConfigUseCase instance
-    func makeSetGlobalSpacesVisualConfigUseCase() -> SetGlobalSpacesVisualConfigUseCase {
-        SetGlobalSpacesVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new SetGlobalSpacesColorPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalSpacesColorPropertiesUseCase instance
+    func makeSetGlobalSpacesColorPropertiesUseCase() -> SetGlobalSpacesColorPropertiesUseCase {
+        SetGlobalSpacesColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGlobalSpacesGeometricPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalSpacesGeometricPropertiesUseCase instance
+    func makeGetGlobalSpacesGeometricPropertiesUseCase() -> GetGlobalSpacesGeometricPropertiesUseCase {
+        GetGlobalSpacesGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGlobalSpacesGeometricPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalSpacesGeometricPropertiesUseCase instance
+    func makeSetGlobalSpacesGeometricPropertiesUseCase() -> SetGlobalSpacesGeometricPropertiesUseCase {
+        SetGlobalSpacesGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetSpacesEffectPropertiesUseCase instance.
+    /// - Returns: A new GetSpacesEffectPropertiesUseCase instance
+    func makeGetSpacesEffectPropertiesUseCase() -> GetSpacesEffectPropertiesUseCase {
+        GetSpacesEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetSpacesEffectPropertiesUseCase instance.
+    /// - Returns: A new SetSpacesEffectPropertiesUseCase instance
+    func makeSetSpacesEffectPropertiesUseCase() -> SetSpacesEffectPropertiesUseCase {
+        SetSpacesEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGlobalSpacesEffectPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalSpacesEffectPropertiesUseCase instance
+    func makeGetGlobalSpacesEffectPropertiesUseCase() -> GetGlobalSpacesEffectPropertiesUseCase {
+        GetGlobalSpacesEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGlobalSpacesEffectPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalSpacesEffectPropertiesUseCase instance
+    func makeSetGlobalSpacesEffectPropertiesUseCase() -> SetGlobalSpacesEffectPropertiesUseCase {
+        SetGlobalSpacesEffectPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
     /// Creates a new GetGroupsUseCase instance.
@@ -337,16 +431,88 @@ final class DependencyContainer {
         SetGroupsAppearanceModeUseCase(configurationGateway: configurationGateway)
     }
 
-    /// Creates a new GetGlobalGroupsVisualConfigUseCase instance.
-    /// - Returns: A new GetGlobalGroupsVisualConfigUseCase instance
-    func makeGetGlobalGroupsVisualConfigUseCase() -> GetGlobalGroupsVisualConfigUseCase {
-        GetGlobalGroupsVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new GetGlobalGroupsColorPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalGroupsColorPropertiesUseCase instance
+    func makeGetGlobalGroupsColorPropertiesUseCase() -> GetGlobalGroupsColorPropertiesUseCase {
+        GetGlobalGroupsColorPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
-    /// Creates a new SetGlobalGroupsVisualConfigUseCase instance.
-    /// - Returns: A new SetGlobalGroupsVisualConfigUseCase instance
-    func makeSetGlobalGroupsVisualConfigUseCase() -> SetGlobalGroupsVisualConfigUseCase {
-        SetGlobalGroupsVisualConfigUseCase(configurationGateway: configurationGateway)
+    /// Creates a new SetGlobalGroupsColorPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalGroupsColorPropertiesUseCase instance
+    func makeSetGlobalGroupsColorPropertiesUseCase() -> SetGlobalGroupsColorPropertiesUseCase {
+        SetGlobalGroupsColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGlobalGroupsGeometricPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalGroupsGeometricPropertiesUseCase instance
+    func makeGetGlobalGroupsGeometricPropertiesUseCase() -> GetGlobalGroupsGeometricPropertiesUseCase {
+        GetGlobalGroupsGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGlobalGroupsGeometricPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalGroupsGeometricPropertiesUseCase instance
+    func makeSetGlobalGroupsGeometricPropertiesUseCase() -> SetGlobalGroupsGeometricPropertiesUseCase {
+        SetGlobalGroupsGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetGlobalGroupsEffectPropertiesUseCase instance.
+    /// - Returns: A new GetGlobalGroupsEffectPropertiesUseCase instance
+    func makeGetGlobalGroupsEffectPropertiesUseCase() -> GetGlobalGroupsEffectPropertiesUseCase {
+        GetGlobalGroupsEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetGlobalGroupsEffectPropertiesUseCase instance.
+    /// - Returns: A new SetGlobalGroupsEffectPropertiesUseCase instance
+    func makeSetGlobalGroupsEffectPropertiesUseCase() -> SetGlobalGroupsEffectPropertiesUseCase {
+        SetGlobalGroupsEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetThemeModeUseCase instance.
+    /// - Returns: A new GetThemeModeUseCase instance
+    func makeGetThemeModeUseCase() -> GetThemeModeUseCase {
+        GetThemeModeUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetThemeModeUseCase instance.
+    /// - Returns: A new SetThemeModeUseCase instance
+    func makeSetThemeModeUseCase() -> SetThemeModeUseCase {
+        SetThemeModeUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetThemePresetColorPropertiesUseCase instance.
+    /// - Returns: A new GetThemePresetColorPropertiesUseCase instance
+    func makeGetThemePresetColorPropertiesUseCase() -> GetThemePresetColorPropertiesUseCase {
+        GetThemePresetColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetThemePresetColorPropertiesUseCase instance.
+    /// - Returns: A new SetThemePresetColorPropertiesUseCase instance
+    func makeSetThemePresetColorPropertiesUseCase() -> SetThemePresetColorPropertiesUseCase {
+        SetThemePresetColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetThemePresetGeometricPropertiesUseCase instance.
+    /// - Returns: A new GetThemePresetGeometricPropertiesUseCase instance
+    func makeGetThemePresetGeometricPropertiesUseCase() -> GetThemePresetGeometricPropertiesUseCase {
+        GetThemePresetGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetThemePresetGeometricPropertiesUseCase instance.
+    /// - Returns: A new SetThemePresetGeometricPropertiesUseCase instance
+    func makeSetThemePresetGeometricPropertiesUseCase() -> SetThemePresetGeometricPropertiesUseCase {
+        SetThemePresetGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetThemePresetEffectPropertiesUseCase instance.
+    /// - Returns: A new GetThemePresetEffectPropertiesUseCase instance
+    func makeGetThemePresetEffectPropertiesUseCase() -> GetThemePresetEffectPropertiesUseCase {
+        GetThemePresetEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetThemePresetEffectPropertiesUseCase instance.
+    /// - Returns: A new SetThemePresetEffectPropertiesUseCase instance
+    func makeSetThemePresetEffectPropertiesUseCase() -> SetThemePresetEffectPropertiesUseCase {
+        SetThemePresetEffectPropertiesUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - AeroSpace Use Cases
@@ -463,6 +629,14 @@ final class DependencyContainer {
     /// - Returns: A new GetMenuBarVisibilityUseCase instance
     func makeGetMenuBarVisibilityUseCase() -> GetMenuBarVisibilityUseCase {
         GetMenuBarVisibilityUseCase(systemMenuBarGateway: systemMenuBarGateway)
+    }
+
+    // MARK: - Keyboard Shortcuts Use Cases
+
+    /// Creates a new GetGlobeKeyPressStateUseCase instance.
+    /// - Returns: A new GetGlobeKeyPressStateUseCase instance
+    func makeGetGlobeKeyPressStateUseCase() -> GetGlobeKeyPressStateUseCase {
+        GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: keyboardShortcutsGateway)
     }
 
     // MARK: - Feature Flags Use Cases

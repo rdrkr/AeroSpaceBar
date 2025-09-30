@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-/// Note: Hashable conformance is possible because VisualProperties now provides a custom Hashable implementation based
+/// Note: Hashable conformance is possible because ColorProperties now provides a custom Hashable implementation based
 /// on color hex strings.
 /// Configuration for a group of menu bar applications.
 public struct Group: VisualContainer {
@@ -15,7 +15,9 @@ public struct Group: VisualContainer {
         canAddEntities: true,
         canDeleteEntities: true,
         showForegroundSection: false,
-        defaultGlobalVisualConfig: ConfigurationDefaults.defaultGroupsGlobalVisualConfig,
+        defaultGlobalColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
+        defaultGlobalEffectProperties: ConfigurationDefaults.groupsGlobalEffectProperties,
+        defaultGlobalGeometricProperties: ConfigurationDefaults.groupsGlobalGeometricProperties,
         canDeleteEntity: { entity in
             guard let group = entity as? Group else { return false }
 
@@ -55,8 +57,14 @@ public struct Group: VisualContainer {
     /// The end index of the group in the list of apps (inclusive).
     public var endIndex: Int
 
-    /// The visual configuration for the group container.
-    public var visualConfig: VisualProperties
+    /// The color properties for the group container.
+    public var colorProperties: ColorProperties
+
+    /// The geometric properties for the group container.
+    public var geometricProperties: GeometricProperties
+
+    /// The effect properties for the group container.
+    public var effectProperties: EffectProperties
 
     /// The range of indices that this group covers.
     public var range: ClosedRange<Int> {
@@ -68,7 +76,9 @@ public struct Group: VisualContainer {
         case id
         case startIndex = "start-index"
         case endIndex = "end-index"
-        case visualConfig = "visual-config"
+        case colorProperties = "visual-config"
+        case geometricProperties = "geometric-config"
+        case effectProperties = "effect-config"
     }
 
     /// Standard initializer for creating GroupConfiguration instances
@@ -76,17 +86,23 @@ public struct Group: VisualContainer {
     ///   - id: The unique identifier for the group
     ///   - startIndex: The start index of the group in the list of apps (inclusive)
     ///   - endIndex: The end index of the group in the list of apps (inclusive)
-    ///   - visualConfig: The visual configuration for the group container
+    ///   - colorProperties: The color properties for the group container
+    ///   - geometricProperties: The geometric properties for the group container
+    ///   - effectProperties: The effect properties for the group container
     public init(
         id: Int,
         startIndex: Int,
         endIndex: Int,
-        visualConfig: VisualProperties
+        colorProperties: ColorProperties,
+        geometricProperties: GeometricProperties,
+        effectProperties: EffectProperties
     ) {
         self.id = id
         self.startIndex = startIndex
         self.endIndex = endIndex
-        self.visualConfig = visualConfig
+        self.colorProperties = colorProperties
+        self.geometricProperties = geometricProperties
+        self.effectProperties = effectProperties
     }
 
     /// Custom decoder for TOML compatibility
@@ -98,9 +114,15 @@ public struct Group: VisualContainer {
         id = try container.decode(Int.self, forKey: .id)
         startIndex = try container.decode(Int.self, forKey: .startIndex)
         endIndex = try container.decode(Int.self, forKey: .endIndex)
-        visualConfig = try container.decodeIfPresent(
-            VisualProperties.self, forKey: .visualConfig
-        ) ?? ConfigurationDefaults.defaultGroupsGlobalVisualConfig
+        colorProperties = try container.decodeIfPresent(
+            ColorProperties.self, forKey: .colorProperties
+        ) ?? ConfigurationDefaults.groupsGlobalColorProperties
+        geometricProperties = try container.decodeIfPresent(
+            GeometricProperties.self, forKey: .geometricProperties
+        ) ?? ConfigurationDefaults.groupsGlobalGeometricProperties
+        effectProperties = try container.decodeIfPresent(
+            EffectProperties.self, forKey: .effectProperties
+        ) ?? ConfigurationDefaults.groupsGlobalEffectProperties
     }
 
     /// Custom encoder for TOML compatibility
@@ -112,7 +134,9 @@ public struct Group: VisualContainer {
         try container.encode(id, forKey: .id)
         try container.encode(startIndex, forKey: .startIndex)
         try container.encode(endIndex, forKey: .endIndex)
-        try container.encode(visualConfig, forKey: .visualConfig)
+        try container.encode(colorProperties, forKey: .colorProperties)
+        try container.encode(geometricProperties, forKey: .geometricProperties)
+        try container.encode(effectProperties, forKey: .effectProperties)
     }
 
     /// Retrieves end index for this group.
@@ -142,7 +166,9 @@ public struct Group: VisualContainer {
         id: 0,
         startIndex: 1,
         endIndex: allAppsIndicatorIndex,
-        visualConfig: ConfigurationDefaults.defaultGroupsGlobalVisualConfig
+        colorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
+        geometricProperties: ConfigurationDefaults.groupsGlobalGeometricProperties,
+        effectProperties: ConfigurationDefaults.groupsGlobalEffectProperties
     )
 
     /// A default single group configuration

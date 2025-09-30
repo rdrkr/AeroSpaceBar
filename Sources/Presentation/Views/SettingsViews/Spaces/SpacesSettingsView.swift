@@ -16,7 +16,13 @@ struct SpacesSettingsView: View {
             navigationPage: .spaces,
             appearanceMode: $spacesViewModel.spacesAppearanceMode,
             entities: $spacesViewModel.allSpaces,
-            globalVisualConfig: $spacesViewModel.globalSpacesVisualConfig,
+            globalColorProperties: $spacesViewModel.globalSpacesColorProperties,
+            globalGeometricProperties: $spacesViewModel.globalSpacesGeometricProperties,
+            globalEffectProperties: $spacesViewModel.globalSpacesEffectProperties,
+            themeMode: spacesViewModel.themeMode,
+            themePresetColorProperties: $spacesViewModel.themePresetColorProperties,
+            themePresetGeometricProperties: $spacesViewModel.themePresetGeometricProperties,
+            themePresetEffectProperties: $spacesViewModel.themePresetEffectProperties,
             createNavigationPage: { (space: Domain.Space) in
                 AnyNavigationPage(SpaceNavigationPage(spaceId: space.id))
             },
@@ -24,11 +30,16 @@ struct SpacesSettingsView: View {
             onNavigateTo: settingsViewModel.navigateTo,
             onResetEntities: {
                 Task {
-                    await spacesViewModel.resetSpacesToDefaults()
+                    withAnimation(.themeEaseInOutFast) {
+                        Task {
+                            await spacesViewModel.resetSpacesToDefaults()
+                        }
+                    }
                 }
             },
             shouldShowEntitiesList: {
-                spacesViewModel.spacesAppearanceMode == .perSpace
+                spacesViewModel.spacesAppearanceMode == .perSpace &&
+                    spacesViewModel.themeMode.isColorCustomizable
             },
             prepend: {
                 Section {

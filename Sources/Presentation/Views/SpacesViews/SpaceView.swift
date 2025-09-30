@@ -21,8 +21,26 @@ struct SpaceView: View {
     /// The appearance mode determining which styling properties to use.
     let appearanceMode: SpacesAppearanceMode
 
-    /// The global visual configuration (used when appearanceMode is .allSpaces).
-    let globalVisualConfiguration: VisualProperties
+    /// The global color properties (used when appearanceMode is .allSpaces).
+    let globalColorProperties: ColorProperties
+
+    /// The global geometric properties.
+    let globalGeometricProperties: GeometricProperties
+
+    /// The global effect properties.
+    let globalEffectProperties: EffectProperties
+
+    /// The theme mode for visual customization.
+    let themeMode: ThemeMode
+
+    /// The selected theme preset.
+    let themePresetColorProperties: ThemePresetColorProperties
+
+    /// The geometric properties for theme preset elements.
+    let themePresetGeometricProperties: GeometricProperties
+
+    /// The effect properties for theme preset elements.
+    let themePresetEffectProperties: EffectProperties
 
     /// Callback invoked when the user wants to switch to a space.
     /// - Parameters:
@@ -39,15 +57,72 @@ struct SpaceView: View {
 
     // MARK: - Computed Properties
 
-    /// The visual configuration based on the current appearance mode.
-    private var currentVisualConfiguration: VisualProperties {
-        switch appearanceMode {
-        case .allSpaces:
-            globalVisualConfiguration
-        case .perSpace:
-            space.visualConfig
-        @unknown default:
-            globalVisualConfiguration
+    /// The color properties based on the current appearance mode and theme mode.
+    private var currentColorProperties: ColorProperties {
+        switch themeMode {
+        case .preset: themePresetColorProperties.colorProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .allSpaces: globalColorProperties
+            case .perSpace: space.colorProperties
+            default: globalColorProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .allSpaces: globalColorProperties
+            case .perSpace: space.colorProperties
+            default: globalColorProperties
+            }
+        }
+    }
+
+    /// The geometric properties based on the current appearance mode and theme mode.
+    private var currentGeometricProperties: GeometricProperties {
+        switch themeMode {
+        case .preset: themePresetGeometricProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .allSpaces: globalGeometricProperties
+            case .perSpace: space.geometricProperties
+            default: globalGeometricProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .allSpaces: globalGeometricProperties
+            case .perSpace: space.geometricProperties
+            default: globalGeometricProperties
+            }
+        }
+    }
+
+    /// The effect properties based on the current appearance mode and theme mode.
+    private var currentEffectProperties: EffectProperties {
+        switch themeMode {
+        case .preset: themePresetEffectProperties
+
+        case .glass,
+             .custom:
+            switch appearanceMode {
+            case .allSpaces: globalEffectProperties
+            case .perSpace: space.effectProperties
+            default: globalEffectProperties
+            }
+
+        default:
+            // For unknown theme modes, fall back to custom behavior
+            switch appearanceMode {
+            case .allSpaces: globalEffectProperties
+            case .perSpace: space.effectProperties
+            default: globalEffectProperties
+            }
         }
     }
 
@@ -64,7 +139,7 @@ struct SpaceView: View {
     private var spaceHeight: Double {
         ConfigurationDefaults.windowIconSize +
             (ConfigurationDefaults.menuBarVerticalPadding * 2) +
-            (currentVisualConfiguration.borderWidth * 2)
+            (currentGeometricProperties.borderWidth * 2)
     }
 
     // MARK: - Body
@@ -79,7 +154,7 @@ struct SpaceView: View {
 
             Text(space.title)
                 .font(.headline)
-                .foregroundColor(currentVisualConfiguration.foregroundColor)
+                .foregroundColor(currentColorProperties.foregroundColor)
                 .frame(minWidth: 15)
                 .fixedSize(horizontal: true, vertical: false)
                 .textShadow()
@@ -94,8 +169,8 @@ struct SpaceView: View {
                         space: space,
                         showWindowTitles: showWindowTitles,
                         focusWindowOnClick: focusWindowOnClick,
-                        spaceForegroundColor: currentVisualConfiguration.foregroundColor,
-                        spaceBackgroundTintColor: currentVisualConfiguration.backgroundTintColor,
+                        spaceForegroundColor: currentColorProperties.foregroundColor,
+                        spaceBackgroundTintColor: currentColorProperties.backgroundTintColor,
                         onSwitchToSpace: onSwitchToSpace,
                         onSwitchToWindow: onSwitchToWindow
                     )
@@ -109,11 +184,11 @@ struct SpaceView: View {
         .frame(height: spaceHeight)
         .spaceFocusState(
             isFocused,
-            visualConfig: currentVisualConfiguration
+            colorProperties: currentColorProperties,
+            geometricProperties: currentGeometricProperties,
+            effectProperties: currentEffectProperties,
+            themeMode: themeMode
         )
-        .cornerRadius(currentVisualConfiguration.cornerRadius)
-        .standardShadow()
-        .transition(.blurReplace)
         .conditionalInteraction(
             isEnabled: focusWindowOnClick,
             isHovered: $isHovered,
@@ -135,16 +210,20 @@ struct SpaceView: View {
         showWindowTitles: true,
         focusWindowOnClick: true,
         appearanceMode: .allSpaces,
-        globalVisualConfiguration: VisualProperties(
+        globalColorProperties: ColorProperties(
             backgroundTintColor: .blue,
-            backgroundOpacity: 0.2,
-            backgroundBlurRadius: 8.0,
             borderTintColor: .white,
-            borderOpacity: 0.8,
-            borderWidth: 2.0,
-            cornerRadius: 8.0,
             foregroundColor: .primary
         ),
+        globalGeometricProperties: GeometricProperties(
+            cornerRadius: 14.0,
+            borderWidth: 2.0
+        ),
+        globalEffectProperties: ConfigurationDefaults.spaceEffectProperties,
+        themeMode: .custom,
+        themePresetColorProperties: .catppuccinMocha,
+        themePresetGeometricProperties: ConfigurationDefaults.themePresetGeometricProperties,
+        themePresetEffectProperties: ConfigurationDefaults.themePresetEffectProperties,
         onSwitchToSpace: { _, _ in },
         onSwitchToWindow: { _ in }
     )

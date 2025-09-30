@@ -6,7 +6,7 @@ import SwiftUI
 /// Represents a space/workspace in the system.
 ///
 /// This struct contains information about a workspace including its identifier,
-/// focus state, associated windows, and visual configuration.
+/// focus state, associated windows, and color properties.
 public struct Space: VisualContainer {
     public typealias AppearanceMode = SpacesAppearanceMode
     /// The metadata configuration for Space entities.
@@ -17,7 +17,9 @@ public struct Space: VisualContainer {
         canAddEntities: false,
         canDeleteEntities: false,
         showForegroundSection: true,
-        defaultGlobalVisualConfig: ConfigurationDefaults.defaultSpaceVisualConfig,
+        defaultGlobalColorProperties: ConfigurationDefaults.spaceColorProperties,
+        defaultGlobalEffectProperties: ConfigurationDefaults.spaceEffectProperties,
+        defaultGlobalGeometricProperties: ConfigurationDefaults.spaceGeometricProperties,
         canDeleteEntity: { _ in false }, // Spaces cannot be deleted
         footerText: String(localized: LocalizedStringResource(
             "Spaces cannot be deleted or added manually - they are managed by AeroSpace."
@@ -50,13 +52,21 @@ public struct Space: VisualContainer {
     /// The windows that belong to this space.
     public var windows: [Window]
 
-    /// The visual configuration for the space container.
-    public var visualConfig: VisualProperties
+    /// The color properties for the space container.
+    public var colorProperties: ColorProperties
+
+    /// The geometric properties for the space container.
+    public var geometricProperties: GeometricProperties
+
+    /// The effect properties for the space container.
+    public var effectProperties: EffectProperties
 
     /// Coding keys for JSON serialization.
     public enum CodingKeys: String, CodingKey {
         case id = "workspace"
-        case visualConfig = "visual-config"
+        case colorProperties = "visual-config"
+        case geometricProperties = "geometric-config"
+        case effectProperties = "effect-config"
     }
 
     /// Creates a space with the specified parameters.
@@ -64,17 +74,23 @@ public struct Space: VisualContainer {
     ///   - id: The unique identifier for the space
     ///   - isFocused: Whether the space is currently focused
     ///   - windows: The windows that belong to this space
-    ///   - visualConfig: The visual configuration for the space container
+    ///   - colorProperties: The color properties for the space container
+    ///   - geometricProperties: The geometric properties for the space container
+    ///   - effectProperties: The effect properties for the space container
     public init(
         id: String,
         isFocused: Bool = false,
         windows: [Window] = [],
-        visualConfig: VisualProperties = ConfigurationDefaults.defaultSpaceVisualConfig
+        colorProperties: ColorProperties = ConfigurationDefaults.spaceColorProperties,
+        geometricProperties: GeometricProperties = ConfigurationDefaults.spaceGeometricProperties,
+        effectProperties: EffectProperties = ConfigurationDefaults.spaceEffectProperties
     ) {
         self.id = id
         self.isFocused = isFocused
         self.windows = windows
-        self.visualConfig = visualConfig
+        self.colorProperties = colorProperties
+        self.geometricProperties = geometricProperties
+        self.effectProperties = effectProperties
     }
 
     /// Creates a space from a decoder.
@@ -84,9 +100,15 @@ public struct Space: VisualContainer {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decode(String.self, forKey: .id)
-        visualConfig = try container.decodeIfPresent(
-            VisualProperties.self, forKey: .visualConfig
-        ) ?? ConfigurationDefaults.defaultSpaceVisualConfig
+        colorProperties = try container.decodeIfPresent(
+            ColorProperties.self, forKey: .colorProperties
+        ) ?? ConfigurationDefaults.spaceColorProperties
+        geometricProperties = try container.decodeIfPresent(
+            GeometricProperties.self, forKey: .geometricProperties
+        ) ?? ConfigurationDefaults.spaceGeometricProperties
+        effectProperties = try container.decodeIfPresent(
+            EffectProperties.self, forKey: .effectProperties
+        ) ?? ConfigurationDefaults.spaceEffectProperties
         isFocused = false
         windows = []
     }
@@ -98,6 +120,8 @@ public struct Space: VisualContainer {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
-        try container.encode(visualConfig, forKey: .visualConfig)
+        try container.encode(colorProperties, forKey: .colorProperties)
+        try container.encode(geometricProperties, forKey: .geometricProperties)
+        try container.encode(effectProperties, forKey: .effectProperties)
     }
 }

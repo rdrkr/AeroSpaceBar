@@ -2,37 +2,20 @@
 
 import SwiftUI
 
-/// A consolidated structure containing all visual configuration properties for container UI elements.
+/// A consolidated structure containing all color properties for container UI elements.
 ///
-/// This struct encapsulates common visual properties used across groups, spaces, and other container components
-/// to eliminate code duplication and provide a consistent visual configuration system.
-public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
+/// This struct encapsulates color properties used across groups, spaces, and other container components
+/// to eliminate code duplication and provide a consistent color properties system.
+public struct ColorProperties: Codable, Equatable, Hashable, Sendable {
     // MARK: - Background Properties
 
     /// The background tint color.
     public var backgroundTintColor: Color
 
-    /// The background opacity (0.0 to 1.0).
-    public var backgroundOpacity: Double
-
-    /// The background blur radius.
-    public var backgroundBlurRadius: Double
-
     // MARK: - Border Properties
 
     /// The border tint color.
     public var borderTintColor: Color
-
-    /// The border opacity (0.0 to 1.0).
-    public var borderOpacity: Double
-
-    /// The border width.
-    public var borderWidth: Double
-
-    // MARK: - Shape Properties
-
-    /// The corner radius for rounded corners.
-    public var cornerRadius: Double
 
     // MARK: - Foreground Properties
 
@@ -41,33 +24,18 @@ public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
 
     // MARK: - Initializers
 
-    /// Creates a new visual container configuration.
+    /// Creates a new color properties configuration.
     /// - Parameters:
     ///   - backgroundTintColor: The background tint color
-    ///   - backgroundOpacity: The background opacity (0.0 to 1.0)
-    ///   - backgroundBlurRadius: The background blur radius
     ///   - borderTintColor: The border tint color
-    ///   - borderOpacity: The border opacity (0.0 to 1.0)
-    ///   - borderWidth: The border width
-    ///   - cornerRadius: The corner radius for rounded corners
     ///   - foregroundColor: The foreground color for text and icons
     public init(
         backgroundTintColor: Color,
-        backgroundOpacity: Double,
-        backgroundBlurRadius: Double,
         borderTintColor: Color,
-        borderOpacity: Double,
-        borderWidth: Double,
-        cornerRadius: Double,
         foregroundColor: Color
     ) {
         self.backgroundTintColor = backgroundTintColor
-        self.backgroundOpacity = backgroundOpacity
-        self.backgroundBlurRadius = backgroundBlurRadius
         self.borderTintColor = borderTintColor
-        self.borderOpacity = borderOpacity
-        self.borderWidth = borderWidth
-        self.cornerRadius = cornerRadius
         self.foregroundColor = foregroundColor
     }
 
@@ -76,26 +44,15 @@ public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
     /// Coding keys for JSON serialization.
     private enum CodingKeys: String, CodingKey {
         case backgroundTintColor = "background-tint-color"
-        case backgroundOpacity = "background-opacity"
-        case backgroundBlurRadius = "background-blur-radius"
         case borderTintColor = "border-tint-color"
-        case borderOpacity = "border-opacity"
-        case borderWidth = "border-width"
-        case cornerRadius = "corner-radius"
         case foregroundColor = "foreground-color"
     }
 
-    /// Creates a visual container configuration from a decoder.
+    /// Creates a color properties configuration from a decoder.
     /// - Parameter decoder: The decoder to read from
     /// - Throws: DecodingError if the data is invalid
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        backgroundOpacity = try container.decode(Double.self, forKey: .backgroundOpacity)
-        backgroundBlurRadius = try container.decode(Double.self, forKey: .backgroundBlurRadius)
-        borderOpacity = try container.decode(Double.self, forKey: .borderOpacity)
-        borderWidth = try container.decode(Double.self, forKey: .borderWidth)
-        cornerRadius = try container.decode(Double.self, forKey: .cornerRadius)
 
         // Decode colors from ColorComponents
         let backgroundComponents = try container.decode(ColorComponents.self, forKey: .backgroundTintColor)
@@ -126,17 +83,11 @@ public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
         )
     }
 
-    /// Encodes the visual container configuration to an encoder.
+    /// Encodes the color properties configuration to an encoder.
     /// - Parameter encoder: The encoder to write to
     /// - Throws: EncodingError if the data cannot be encoded
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(backgroundOpacity, forKey: .backgroundOpacity)
-        try container.encode(backgroundBlurRadius, forKey: .backgroundBlurRadius)
-        try container.encode(borderOpacity, forKey: .borderOpacity)
-        try container.encode(borderWidth, forKey: .borderWidth)
-        try container.encode(cornerRadius, forKey: .cornerRadius)
 
         // Encode colors as ColorComponents
         let backgroundResolved = backgroundTintColor.resolve(in: EnvironmentValues())
@@ -169,25 +120,15 @@ public struct VisualProperties: Codable, Equatable, Hashable, Sendable {
 
     // MARK: - Hashable Implementation
 
-    public static func == (lhs: VisualProperties, rhs: VisualProperties) -> Bool {
+    public static func == (lhs: ColorProperties, rhs: ColorProperties) -> Bool {
         lhs.backgroundTintColor.toHex() == rhs.backgroundTintColor.toHex() &&
-            lhs.backgroundOpacity == rhs.backgroundOpacity &&
-            lhs.backgroundBlurRadius == rhs.backgroundBlurRadius &&
             lhs.borderTintColor.toHex() == rhs.borderTintColor.toHex() &&
-            lhs.borderOpacity == rhs.borderOpacity &&
-            lhs.borderWidth == rhs.borderWidth &&
-            lhs.cornerRadius == rhs.cornerRadius &&
             lhs.foregroundColor.toHex() == rhs.foregroundColor.toHex()
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(backgroundTintColor.toHex())
-        hasher.combine(backgroundOpacity)
-        hasher.combine(backgroundBlurRadius)
         hasher.combine(borderTintColor.toHex())
-        hasher.combine(borderOpacity)
-        hasher.combine(borderWidth)
-        hasher.combine(cornerRadius)
         hasher.combine(foregroundColor.toHex())
     }
 }

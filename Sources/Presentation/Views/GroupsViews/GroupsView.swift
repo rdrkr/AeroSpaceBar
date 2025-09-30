@@ -29,14 +29,30 @@ struct GroupsView: View {
     var body: some View {
         GeometryReader { _ in
             // Display grouped apps with their group styling
-            ForEach(viewModel.groups, id: \.id) { group in
+            let groupViews = ForEach(viewModel.groups, id: \.id) { group in
                 GroupView(
                     group: group,
                     menuBarApps: viewModel.menuBarApps,
                     appearanceMode: viewModel.groupsAppearanceMode,
-                    globalVisualConfiguration: viewModel.globalGroupsVisualConfig,
-                    spaceVisualConfiguration: viewModel.globalSpacesVisualConfig
+                    globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
+                    globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
+                    globalGroupsEffectProperties: viewModel.globalGroupsEffectProperties,
+                    globalSpacesColorProperties: viewModel.globalSpacesColorProperties,
+                    globalSpacesGeometricProperties: viewModel.globalSpacesGeometricProperties,
+                    globalSpacesEffectProperties: viewModel.globalSpacesEffectProperties,
+                    themeMode: viewModel.themeMode,
+                    themePresetColorProperties: viewModel.themePresetColorProperties,
+                    themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+                    themePresetEffectProperties: viewModel.themePresetEffectProperties
                 )
+            }
+
+            if #available(macOS 26.0, *) {
+                GlassEffectContainer {
+                    groupViews
+                }
+            } else {
+                groupViews
             }
         }
         .animation(.themeEaseInOutFast, value: viewModel.groups.map(\.id))
@@ -44,6 +60,7 @@ struct GroupsView: View {
         .opacity(shouldShowView ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)
         .animation(.themeEaseInOutFast, value: viewModel.groupsAppearanceMode)
+        .animation(.themeEaseInOutFast, value: viewModel.themeMode)
         .tag("groups-container")
     }
 }

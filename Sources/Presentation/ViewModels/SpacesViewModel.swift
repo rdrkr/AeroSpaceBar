@@ -58,10 +58,28 @@ final class SpacesViewModel: ObservableObject {
         }
     }
 
-    @Published var globalSpacesVisualConfig: VisualProperties {
+    @Published var globalSpacesColorProperties: ColorProperties {
         didSet {
             Task.detached(priority: .utility) { [self] in
-                await setGlobalSpacesVisualConfigUseCase.execute(value: globalSpacesVisualConfig)
+                await setGlobalSpacesColorPropertiesUseCase.execute(value: globalSpacesColorProperties)
+            }
+        }
+    }
+
+    /// Global geometric properties for spaces.
+    @Published var globalSpacesGeometricProperties: GeometricProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalSpacesGeometricPropertiesUseCase.execute(value: globalSpacesGeometricProperties)
+            }
+        }
+    }
+
+    /// Global effect properties for spaces.
+    @Published var globalSpacesEffectProperties: EffectProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setGlobalSpacesEffectPropertiesUseCase.execute(value: globalSpacesEffectProperties)
             }
         }
     }
@@ -75,8 +93,29 @@ final class SpacesViewModel: ObservableObject {
     /// Whether spaces functionality is enabled via feature flags.
     @Published var isSpacesEnabled: Bool
 
-    /// Monitor for global key events.
-    private nonisolated(unsafe) var keyMonitors: [Any] = []
+    /// The current theme mode.
+    @Published var themeMode: ThemeMode
+
+    /// The current theme preset.
+    @Published var themePresetColorProperties: ThemePresetColorProperties
+
+    /// The current theme preset geometric properties.
+    @Published var themePresetGeometricProperties: GeometricProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setThemePresetGeometricPropertiesUseCase.execute(value: themePresetGeometricProperties)
+            }
+        }
+    }
+
+    /// The current theme preset effect properties.
+    @Published var themePresetEffectProperties: EffectProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setThemePresetEffectPropertiesUseCase.execute(value: themePresetEffectProperties)
+            }
+        }
+    }
 
     // MARK: - Spaces Use Cases
 
@@ -100,10 +139,25 @@ final class SpacesViewModel: ObservableObject {
     private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
     private let getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase
     private let setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase
-    private let getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase
-    private let setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase
-    private let getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase
-    private let setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
+    private let getGlobalSpacesColorPropertiesUseCase: GetGlobalSpacesColorPropertiesUseCase
+    private let setGlobalSpacesColorPropertiesUseCase: SetGlobalSpacesColorPropertiesUseCase
+    private let getGlobalSpacesGeometricPropertiesUseCase: GetGlobalSpacesGeometricPropertiesUseCase
+    private let setGlobalSpacesGeometricPropertiesUseCase: SetGlobalSpacesGeometricPropertiesUseCase
+    private let getGlobalSpacesEffectPropertiesUseCase: GetGlobalSpacesEffectPropertiesUseCase
+    private let setGlobalSpacesEffectPropertiesUseCase: SetGlobalSpacesEffectPropertiesUseCase
+    private let getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase
+    private let setSpacesColorPropertiesUseCase: SetSpacesColorPropertiesUseCase
+    private let getSpacesGeometricPropertiesUseCase: GetSpacesGeometricPropertiesUseCase
+    private let setSpacesGeometricPropertiesUseCase: SetSpacesGeometricPropertiesUseCase
+    private let getSpacesEffectPropertiesUseCase: GetSpacesEffectPropertiesUseCase
+    private let setSpacesEffectPropertiesUseCase: SetSpacesEffectPropertiesUseCase
+    private let getThemeModeUseCase: GetThemeModeUseCase
+    private let getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase
+    private let getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase
+    private let setThemePresetGeometricPropertiesUseCase: SetThemePresetGeometricPropertiesUseCase
+    private let getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
+    private let setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase
+    private let getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
 
     /// Use cases for Spaces-related UI configuration properties.
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
@@ -127,7 +181,25 @@ final class SpacesViewModel: ObservableObject {
     ///   - getMenuBarHeightUseCase: Use case for getting menu bar height
     ///   - getSpacesAppearanceModeUseCase: Use case for getting spaces appearance mode
     ///   - setSpacesAppearanceModeUseCase: Use case for setting spaces appearance mode
-    ///   - getGlobalSpacesVisualConfigUseCase: Use case for getting consolidated space visual configuration
+    ///   - getGlobalSpacesColorPropertiesUseCase: Use case for getting consolidated space color properties
+    ///   - setGlobalSpacesColorPropertiesUseCase: Use case for setting consolidated space color properties
+    ///   - getGlobalSpacesGeometricPropertiesUseCase: Use case for getting consolidated space geometric properties
+    ///   - setGlobalSpacesGeometricPropertiesUseCase: Use case for setting consolidated space geometric properties
+    ///   - getGlobalSpacesEffectPropertiesUseCase: Use case for getting consolidated space effect properties
+    ///   - setGlobalSpacesEffectPropertiesUseCase: Use case for setting consolidated space effect properties
+    ///   - getSpacesColorPropertiesUseCase: Use case for getting space color properties
+    ///   - setSpacesColorPropertiesUseCase: Use case for setting space color properties
+    ///   - getSpacesGeometricPropertiesUseCase: Use case for getting space geometric properties
+    ///   - setSpacesGeometricPropertiesUseCase: Use case for setting space geometric properties
+    ///   - getSpacesEffectPropertiesUseCase: Use case for getting space effect properties
+    ///   - setSpacesEffectPropertiesUseCase: Use case for setting space effect properties
+    ///   - getThemeModeUseCase: Use case for getting theme mode
+    ///   - getThemePresetColorPropertiesUseCase: Use case for getting theme preset
+    ///   - getThemePresetGeometricPropertiesUseCase: Use case for getting theme preset geometric properties
+    ///   - setThemePresetGeometricPropertiesUseCase: Use case for setting theme preset geometric properties
+    ///   - getThemePresetEffectPropertiesUseCase: Use case for getting theme preset effect properties
+    ///   - setThemePresetEffectPropertiesUseCase: Use case for setting theme preset effect properties
+    ///   - getGlobeKeyPressStateUseCase: Use case for getting globe key press state
     init(
         getSpacesUseCase: GetSpacesUseCase,
         setFocusSpaceUseCase: SetFocusSpaceUseCase,
@@ -146,10 +218,25 @@ final class SpacesViewModel: ObservableObject {
         getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
         getSpacesAppearanceModeUseCase: GetSpacesAppearanceModeUseCase,
         setSpacesAppearanceModeUseCase: SetSpacesAppearanceModeUseCase,
-        getGlobalSpacesVisualConfigUseCase: GetGlobalSpacesVisualConfigUseCase,
-        setGlobalSpacesVisualConfigUseCase: SetGlobalSpacesVisualConfigUseCase,
-        getSpacesVisualConfigUseCase: GetSpacesVisualConfigUseCase,
-        setSpacesVisualConfigUseCase: SetSpacesVisualConfigUseCase
+        getGlobalSpacesColorPropertiesUseCase: GetGlobalSpacesColorPropertiesUseCase,
+        setGlobalSpacesColorPropertiesUseCase: SetGlobalSpacesColorPropertiesUseCase,
+        getGlobalSpacesGeometricPropertiesUseCase: GetGlobalSpacesGeometricPropertiesUseCase,
+        setGlobalSpacesGeometricPropertiesUseCase: SetGlobalSpacesGeometricPropertiesUseCase,
+        getGlobalSpacesEffectPropertiesUseCase: GetGlobalSpacesEffectPropertiesUseCase,
+        setGlobalSpacesEffectPropertiesUseCase: SetGlobalSpacesEffectPropertiesUseCase,
+        getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase,
+        setSpacesColorPropertiesUseCase: SetSpacesColorPropertiesUseCase,
+        getSpacesGeometricPropertiesUseCase: GetSpacesGeometricPropertiesUseCase,
+        setSpacesGeometricPropertiesUseCase: SetSpacesGeometricPropertiesUseCase,
+        getSpacesEffectPropertiesUseCase: GetSpacesEffectPropertiesUseCase,
+        setSpacesEffectPropertiesUseCase: SetSpacesEffectPropertiesUseCase,
+        getThemeModeUseCase: GetThemeModeUseCase,
+        getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase,
+        getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase,
+        setThemePresetGeometricPropertiesUseCase: SetThemePresetGeometricPropertiesUseCase,
+        getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase,
+        setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase,
+        getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -171,12 +258,27 @@ final class SpacesViewModel: ObservableObject {
         // Initialize UI configuration use cases
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
         self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
-        self.getGlobalSpacesVisualConfigUseCase = getGlobalSpacesVisualConfigUseCase
-        self.setGlobalSpacesVisualConfigUseCase = setGlobalSpacesVisualConfigUseCase
+        self.getGlobalSpacesColorPropertiesUseCase = getGlobalSpacesColorPropertiesUseCase
+        self.setGlobalSpacesColorPropertiesUseCase = setGlobalSpacesColorPropertiesUseCase
+        self.getGlobalSpacesGeometricPropertiesUseCase = getGlobalSpacesGeometricPropertiesUseCase
+        self.setGlobalSpacesGeometricPropertiesUseCase = setGlobalSpacesGeometricPropertiesUseCase
+        self.getGlobalSpacesEffectPropertiesUseCase = getGlobalSpacesEffectPropertiesUseCase
+        self.setGlobalSpacesEffectPropertiesUseCase = setGlobalSpacesEffectPropertiesUseCase
         self.getSpacesAppearanceModeUseCase = getSpacesAppearanceModeUseCase
         self.setSpacesAppearanceModeUseCase = setSpacesAppearanceModeUseCase
-        self.getSpacesVisualConfigUseCase = getSpacesVisualConfigUseCase
-        self.setSpacesVisualConfigUseCase = setSpacesVisualConfigUseCase
+        self.getSpacesColorPropertiesUseCase = getSpacesColorPropertiesUseCase
+        self.setSpacesColorPropertiesUseCase = setSpacesColorPropertiesUseCase
+        self.getSpacesGeometricPropertiesUseCase = getSpacesGeometricPropertiesUseCase
+        self.setSpacesGeometricPropertiesUseCase = setSpacesGeometricPropertiesUseCase
+        self.getSpacesEffectPropertiesUseCase = getSpacesEffectPropertiesUseCase
+        self.setSpacesEffectPropertiesUseCase = setSpacesEffectPropertiesUseCase
+        self.getThemeModeUseCase = getThemeModeUseCase
+        self.getThemePresetColorPropertiesUseCase = getThemePresetColorPropertiesUseCase
+        self.getThemePresetGeometricPropertiesUseCase = getThemePresetGeometricPropertiesUseCase
+        self.setThemePresetGeometricPropertiesUseCase = setThemePresetGeometricPropertiesUseCase
+        self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
+        self.setThemePresetEffectPropertiesUseCase = setThemePresetEffectPropertiesUseCase
+        self.getGlobeKeyPressStateUseCase = getGlobeKeyPressStateUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
@@ -194,10 +296,15 @@ final class SpacesViewModel: ObservableObject {
         isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
         isSpacesEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableSpaces
         spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
-        globalSpacesVisualConfig = getGlobalSpacesVisualConfigUseCase.execute().blockingFirst()
+        globalSpacesColorProperties = getGlobalSpacesColorPropertiesUseCase.execute().blockingFirst()
+        globalSpacesGeometricProperties = getGlobalSpacesGeometricPropertiesUseCase.execute().blockingFirst()
+        globalSpacesEffectProperties = getGlobalSpacesEffectPropertiesUseCase.execute().blockingFirst()
+        themeMode = getThemeModeUseCase.execute().blockingFirst()
+        themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
+        themePresetGeometricProperties = getThemePresetGeometricPropertiesUseCase.execute().blockingFirst()
+        themePresetEffectProperties = getThemePresetEffectPropertiesUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
-        setupGlobeKeyMonitors()
 
         // Auto-start AeroSpace if not running
         Task {
@@ -324,8 +431,36 @@ final class SpacesViewModel: ObservableObject {
             .assign(to: \.spacesAppearanceMode, on: self)
             .store(in: &cancellables)
 
-        getGlobalSpacesVisualConfigUseCase.execute()
-            .assign(to: \.globalSpacesVisualConfig, on: self)
+        getGlobalSpacesColorPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesGeometricPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobalSpacesEffectPropertiesUseCase.execute()
+            .assign(to: \.globalSpacesEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemeModeUseCase.execute()
+            .assign(to: \.themeMode, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetColorPropertiesUseCase.execute()
+            .assign(to: \.themePresetColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetGeometricPropertiesUseCase.execute()
+            .assign(to: \.themePresetGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getThemePresetEffectPropertiesUseCase.execute()
+            .assign(to: \.themePresetEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getGlobeKeyPressStateUseCase.execute()
+            .assign(to: \.isGlobeKeyPressed, on: self)
             .store(in: &cancellables)
     }
 
@@ -357,22 +492,64 @@ final class SpacesViewModel: ObservableObject {
         }
     }
 
-    /// Updates a specific space's visual configuration.
+    /// Updates a specific space's color properties.
     ///
-    /// This method updates the visual configuration for a space at the specified ID.
+    /// This method updates the color properties for a space at the specified ID.
     /// It modifies the local spaces array and persists the changes via the configuration use case.
     /// - Parameters:
     ///   - spaceId: The ID of the space to update
-    ///   - visualConfig: The new visual configuration for the space
-    func updateSpaceVisualConfig(spaceId: String, visualConfig: VisualProperties) {
+    ///   - colorProperties: The new color properties for the space
+    func updateSpaceColorProperties(spaceId: String, colorProperties: ColorProperties) {
         // Update the local spaces array
         if let index = allSpaces.firstIndex(where: { $0.id == spaceId }) {
-            allSpaces[index].visualConfig = visualConfig
+            allSpaces[index].colorProperties = colorProperties
 
             // Persist the changes using the use case
             Task { @MainActor in
-                let allSpaceVisualConfigs = allSpaces.map(\.visualConfig)
-                await setSpacesVisualConfigUseCase.execute(value: allSpaceVisualConfigs)
+                let allSpaceColorProperties = allSpaces.map(\.colorProperties)
+                await setSpacesColorPropertiesUseCase.execute(value: allSpaceColorProperties)
+            }
+
+            updateFilteredSpaces()
+        }
+    }
+
+    /// Updates a specific space's effect properties.
+    ///
+    /// This method updates the effect properties for a space at the specified ID.
+    /// It modifies the local spaces array and persists the changes via the configuration use case.
+    /// - Parameters:
+    ///   - spaceId: The ID of the space to update
+    ///   - effectProperties: The new effect properties for the space
+    func updateSpaceEffectProperties(spaceId: String, effectProperties: EffectProperties) {
+        // Update the local spaces array
+        if let index = allSpaces.firstIndex(where: { $0.id == spaceId }) {
+            allSpaces[index].effectProperties = effectProperties
+
+            // Persist the changes using the use case
+            Task { @MainActor in
+                let allSpaceEffectProperties = allSpaces.map(\.effectProperties)
+                await setSpacesEffectPropertiesUseCase.execute(value: allSpaceEffectProperties)
+            }
+
+            updateFilteredSpaces()
+        }
+    }
+
+    /// Updates the geometric properties for a specific space.
+    ///
+    /// - Parameters:
+    ///   - spaceId: The identifier of the space to update
+    ///   - geometricProperties: The new geometric properties to apply
+    func updateSpaceGeometricProperties(spaceId: String, geometricProperties: GeometricProperties) {
+        // Update the local spaces array
+        if let index = allSpaces.firstIndex(where: { $0.id == spaceId }) {
+            allSpaces[index].geometricProperties = geometricProperties
+
+            // Persist the changes using the use case
+            Task { @MainActor in
+                let allSpaceGeometricProperties = allSpaces.map(\.geometricProperties)
+                await setSpacesGeometricPropertiesUseCase.execute(value: allSpaceGeometricProperties)
             }
 
             updateFilteredSpaces()
@@ -381,11 +558,22 @@ final class SpacesViewModel: ObservableObject {
 
     /// Resets all spaces-related settings to their default values.
     ///
-    /// This method resets spaces visual configurations, appearance mode, and related UI settings
+    /// This method resets spaces color properties, appearance mode, and related UI settings
     /// to their default values as defined in ConfigurationDefaults.
     func resetSpacesToDefaults() async {
-        await setSpacesVisualConfigUseCase.execute(value: ConfigurationDefaults.spacesVisualConfiguration)
-        await setGlobalSpacesVisualConfigUseCase.execute(value: ConfigurationDefaults.defaultSpaceVisualConfig)
+        await setSpacesColorPropertiesUseCase.execute(value: ConfigurationDefaults.spacesColorProperties)
+        await setSpacesEffectPropertiesUseCase.execute(value: ConfigurationDefaults.spacesEffectProperties)
+        await setSpacesGeometricPropertiesUseCase.execute(value: ConfigurationDefaults.spacesGeometricProperties)
+        await setGlobalSpacesColorPropertiesUseCase.execute(value: ConfigurationDefaults.spaceColorProperties)
+        await setGlobalSpacesEffectPropertiesUseCase.execute(value: ConfigurationDefaults.spaceEffectProperties)
+        await setGlobalSpacesGeometricPropertiesUseCase.execute(
+            value: ConfigurationDefaults.spaceGeometricProperties
+        )
+
+        await setThemePresetEffectPropertiesUseCase.execute(value: ConfigurationDefaults.themePresetEffectProperties)
+        await setThemePresetGeometricPropertiesUseCase
+            .execute(value: ConfigurationDefaults.themePresetGeometricProperties)
+
         await setSpacesAppearanceModeUseCase.execute(value: ConfigurationDefaults.spacesAppearanceMode)
         await setShowWindowTitlesUseCase.execute(value: ConfigurationDefaults.showWindowTitles)
         await setShowEmptySpacesUseCase.execute(value: ConfigurationDefaults.showEmptySpaces)
@@ -398,43 +586,5 @@ final class SpacesViewModel: ObservableObject {
     /// and updates the spaces property accordingly.
     private func updateFilteredSpaces() {
         spaces = showEmptySpaces ? allSpaces : allSpaces.filter { !$0.windows.isEmpty }
-    }
-
-    // MARK: - Globe Key Monitoring
-
-    deinit {
-        removeGlobeKeyMonitors()
-    }
-
-    /// Sets up global key monitoring for the globe key (fn key)
-    private func setupGlobeKeyMonitors() {
-        let keyPressedCallback = { [weak self] (event: NSEvent) in
-            _ = Task { @MainActor in
-                // The globe/fn key is represented by the .function modifier flag
-                self?.isGlobeKeyPressed = event.modifierFlags.contains(.function)
-            }
-        }
-
-        unsafe keyMonitors = [
-            // Local monitor to capture key events when the app is focused
-            NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { event in
-                keyPressedCallback(event)
-                return event
-            },
-            // Global monitor to capture key events when the app is not focused
-            NSEvent.addGlobalMonitorForEvents(matching: [.flagsChanged], handler: keyPressedCallback)
-        ]
-        .compactMap(\.self)
-    }
-
-    /// Removes the global key monitor
-    private nonisolated func removeGlobeKeyMonitors() {
-        unsafe keyMonitors.forEach { monitor in
-            NSEvent.removeMonitor(monitor)
-        }
-
-        Task { @MainActor in
-            isGlobeKeyPressed = false
-        }
     }
 }

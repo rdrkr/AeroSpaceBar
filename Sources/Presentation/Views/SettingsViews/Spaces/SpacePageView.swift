@@ -33,14 +33,28 @@ struct SpacePageView: View {
                         id: spaceId,
                         isFocused: false,
                         windows: [],
-                        visualConfig: ConfigurationDefaults.defaultSpaceVisualConfig
+                        colorProperties: ConfigurationDefaults.spaceColorProperties,
+                        geometricProperties: ConfigurationDefaults.spaceGeometricProperties
                     )
                 }
 
                 return foundSpace
             },
             set: { newSpace in
-                spacesViewModel.updateSpaceVisualConfig(spaceId: spaceId, visualConfig: newSpace.visualConfig)
+                spacesViewModel.updateSpaceColorProperties(
+                    spaceId: spaceId,
+                    colorProperties: newSpace.colorProperties
+                )
+
+                spacesViewModel.updateSpaceEffectProperties(
+                    spaceId: spaceId,
+                    effectProperties: newSpace.effectProperties
+                )
+
+                spacesViewModel.updateSpaceGeometricProperties(
+                    spaceId: spaceId,
+                    geometricProperties: newSpace.geometricProperties
+                )
             }
         )
     }
@@ -48,10 +62,16 @@ struct SpacePageView: View {
     /// The main body of the space configuration view.
     var body: some View {
         Form {
-            if spacesViewModel.spacesAppearanceMode == .perSpace {
+            if
+                spacesViewModel.spacesAppearanceMode == .perSpace,
+                spacesViewModel.themeMode.isColorCustomizable
+            {
                 VisualSettingsView(
                     metadata: Space.metadata,
-                    visualConfig: space.visualConfig
+                    themeMode: spacesViewModel.themeMode,
+                    colorProperties: space.colorProperties,
+                    geometricProperties: space.geometricProperties,
+                    effectProperties: space.effectProperties
                 )
             }
         }

@@ -5,10 +5,10 @@ import Foundation
 /// Defines how windows visual appearance is configured
 public enum WindowsAppearanceMode: String, AppearanceMode {
     /// Each window has its own appearance configuration
-    case perWindow = "per_window"
+    case perWindow = "per-window"
 
     /// All windows share the same appearance configuration
-    case allWindows = "all_windows"
+    case allWindows = "all-windows"
 
     /// Display name for the mode
     public var displayName: LocalizedStringResource {
@@ -30,7 +30,7 @@ public enum WindowsAppearanceMode: String, AppearanceMode {
         }
     }
 
-    /// Determines whether the global visual configuration should be shown for this mode.
+    /// Determines whether the global color properties should be shown for this mode.
     public var shouldShowGlobalConfig: Bool {
         switch self {
         case .perWindow:

@@ -4,7 +4,7 @@ import Foundation
 
 /// Spaces-related configuration settings with generic optionality support.
 ///
-/// This structure manages settings for AeroSpace workspace display, visual configuration,
+/// This structure manages settings for AeroSpace workspace display, color properties,
 /// and appearance modes. Spaces represent virtual workspaces in the AeroSpace window
 /// manager, and these settings control how they appear in the menu bar interface.
 /// Supports both optional and required field variants through the `OptionalTypeMapping`
@@ -12,9 +12,13 @@ import Foundation
 public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     where
     Mode.BoolType: Codable,
-    Mode.VisualPropertiesArrayType: Codable,
+    Mode.ColorPropertiesArrayType: Codable,
+    Mode.GeometricPropertiesArrayType: Codable,
+    Mode.EffectPropertiesArrayType: Codable,
     Mode.StringType: Codable,
-    Mode.VisualPropertiesType: Codable
+    Mode.ColorPropertiesType: Codable,
+    Mode.GeometricPropertiesType: Codable,
+    Mode.EffectPropertiesType: Codable
 {
     /// Type alias for the optional variant used during TOML decoding.
     public typealias OptionalVariant = SpacesSettings<OptionalMode>
@@ -34,7 +38,21 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     /// Each space can have custom visual properties that override the global
     /// configuration. This array allows fine-grained control over how
     /// individual spaces appear in the menu bar interface.
-    public let spacesVisualConfig: Mode.VisualPropertiesArrayType
+    public let spacesColorProperties: Mode.ColorPropertiesArrayType
+
+    /// Array of geometric properties for individual spaces.
+    ///
+    /// Each space can have custom geometric properties that override the global
+    /// configuration. This array allows fine-grained control over geometry settings
+    /// like corner radius and border width for individual spaces.
+    public let spacesGeometricProperties: Mode.GeometricPropertiesArrayType
+
+    /// Array of effect properties for individual spaces.
+    ///
+    /// Each space can have custom effect properties that override the global
+    /// configuration. This array allows fine-grained control over effect settings
+    /// like opacity and blur radius for individual spaces.
+    public let spacesEffectProperties: Mode.EffectPropertiesArrayType
 
     /// The appearance mode for spaces display (raw string value).
     ///
@@ -47,32 +65,62 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     /// These properties serve as defaults for all spaces unless
     /// overridden by individual space configurations. Includes
     /// settings like colors, fonts, spacing, and other visual attributes.
-    public let globalSpacesVisualConfig: Mode.VisualPropertiesType
+    public let globalSpacesColorProperties: Mode.ColorPropertiesType
+
+    /// Global geometric properties applied to all spaces.
+    ///
+    /// These properties serve as defaults for all spaces unless
+    /// overridden by individual space configurations. Includes
+    /// settings like corner radius and border width.
+    public let globalSpacesGeometricProperties: Mode.GeometricPropertiesType
+
+    /// Global effect properties applied to all spaces.
+    ///
+    /// These properties serve as defaults for all spaces unless
+    /// overridden by individual space configurations. Includes
+    /// settings like opacity and blur radius.
+    public let globalSpacesEffectProperties: Mode.EffectPropertiesType
 
     /// Initializes a new SpacesSettings instance.
     ///
     /// - Parameters:
     ///   - showEmptySpaces: Whether to display empty spaces in the menu bar
-    ///   - spacesVisualConfig: Array of visual properties for individual spaces
+    ///   - spacesColorProperties: Array of visual properties for individual spaces
+    ///   - spacesGeometricProperties: Array of geometric properties for individual spaces
+    ///   - spacesEffectProperties: Array of effect properties for individual spaces
     ///   - spacesAppearanceMode: The appearance mode for spaces display
-    ///   - globalSpacesVisualConfig: Global visual properties for all spaces
+    ///   - globalSpacesColorProperties: Global visual properties for all spaces
+    ///   - globalSpacesGeometricProperties: Global geometric properties for all spaces
+    ///   - globalSpacesEffectProperties: Global effect properties for all spaces
     public init(
         showEmptySpaces: Mode.BoolType,
-        spacesVisualConfig: Mode.VisualPropertiesArrayType,
+        spacesColorProperties: Mode.ColorPropertiesArrayType,
+        spacesGeometricProperties: Mode.GeometricPropertiesArrayType,
+        spacesEffectProperties: Mode.EffectPropertiesArrayType,
         spacesAppearanceMode: Mode.StringType,
-        globalSpacesVisualConfig: Mode.VisualPropertiesType
+        globalSpacesColorProperties: Mode.ColorPropertiesType,
+        globalSpacesGeometricProperties: Mode.GeometricPropertiesType,
+        globalSpacesEffectProperties: Mode.EffectPropertiesType
     ) {
         self.showEmptySpaces = showEmptySpaces
-        self.spacesVisualConfig = spacesVisualConfig
+        self.spacesColorProperties = spacesColorProperties
+        self.spacesGeometricProperties = spacesGeometricProperties
+        self.spacesEffectProperties = spacesEffectProperties
         self.spacesAppearanceMode = spacesAppearanceMode
-        self.globalSpacesVisualConfig = globalSpacesVisualConfig
+        self.globalSpacesColorProperties = globalSpacesColorProperties
+        self.globalSpacesGeometricProperties = globalSpacesGeometricProperties
+        self.globalSpacesEffectProperties = globalSpacesEffectProperties
     }
 
     enum CodingKeys: String, CodingKey {
         case showEmptySpaces = "show-empty-spaces"
-        case spacesVisualConfig = "visual-config"
+        case spacesColorProperties = "visual-config"
+        case spacesGeometricProperties = "geometric-config"
+        case spacesEffectProperties = "effect-config"
         case spacesAppearanceMode = "appearance-mode"
-        case globalSpacesVisualConfig = "global-visual-config"
+        case globalSpacesColorProperties = "global-visual-config"
+        case globalSpacesGeometricProperties = "global-geometric-config"
+        case globalSpacesEffectProperties = "global-effect-config"
     }
 
     /// Decodes optional settings and merges with required defaults.
@@ -92,9 +140,17 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     ) throws -> SpacesSettings<RequiredMode> {
         SpacesSettings<RequiredMode>(
             showEmptySpaces: decodedValue.showEmptySpaces ?? defaultValue.showEmptySpaces,
-            spacesVisualConfig: decodedValue.spacesVisualConfig ?? defaultValue.spacesVisualConfig,
+            spacesColorProperties: decodedValue.spacesColorProperties ?? defaultValue.spacesColorProperties,
+            spacesGeometricProperties: decodedValue.spacesGeometricProperties ?? defaultValue
+                .spacesGeometricProperties,
+            spacesEffectProperties: decodedValue.spacesEffectProperties ?? defaultValue.spacesEffectProperties,
             spacesAppearanceMode: decodedValue.spacesAppearanceMode ?? defaultValue.spacesAppearanceMode,
-            globalSpacesVisualConfig: decodedValue.globalSpacesVisualConfig ?? defaultValue.globalSpacesVisualConfig
+            globalSpacesColorProperties: decodedValue.globalSpacesColorProperties ?? defaultValue
+                .globalSpacesColorProperties,
+            globalSpacesGeometricProperties: decodedValue.globalSpacesGeometricProperties ?? defaultValue
+                .globalSpacesGeometricProperties,
+            globalSpacesEffectProperties: decodedValue.globalSpacesEffectProperties ?? defaultValue
+                .globalSpacesEffectProperties
         )
     }
 }

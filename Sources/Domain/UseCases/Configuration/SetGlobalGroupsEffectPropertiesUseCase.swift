@@ -1,14 +1,14 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-/// Use case for setting spaces configuration.
+/// Use case for setting global groups effect properties.
 ///
 /// This use case encapsulates the business logic for updating the
-/// spaces configuration setting through the data layer.
+/// global groups effect properties setting through the data layer.
 /// It follows the clean architecture pattern by isolating this
 /// specific business operation.
 @MainActor
-public final class SetSpacesVisualConfigUseCase {
-    /// The configuration gateway for accessing spaces configuration data.
+public final class SetGlobalGroupsEffectPropertiesUseCase {
+    /// The configuration gateway for updating global groups effect properties data.
     private let configurationGateway: ConfigurationGateway
 
     /// Initializes the use case with the specified configuration gateway.
@@ -17,9 +17,9 @@ public final class SetSpacesVisualConfigUseCase {
         self.configurationGateway = configurationGateway
     }
 
-    /// Executes the use case to set the spaces configuration.
-    /// - Parameter value: The new spaces configuration value to set
-    public func execute(value: [VisualProperties]) async {
-        await configurationGateway.setSpacesVisualConfig(value)
+    /// Executes the use case to set the global groups effect properties.
+    /// - Parameter value: The new global groups effect properties value
+    public func execute(value: EffectProperties) async {
+        await configurationGateway.setGlobalGroupsEffectProperties(value)
     }
 }
