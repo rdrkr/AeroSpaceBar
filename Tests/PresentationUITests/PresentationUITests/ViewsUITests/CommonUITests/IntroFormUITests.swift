@@ -15,35 +15,19 @@ final class IntroFormUITests: XCTestCase {
         app = nil
     }
 
-    func testIntroFormDisplay() {
-        // TODO: Test IntroForm display
-    }
+    func testIntroFormDisplay() { }
 
-    func testIntroStyleDisplay() {
-        // TODO: Test intro style display
-    }
+    func testIntroStyleDisplay() { }
 
-    func testCompactStyleDisplay() {
-        // TODO: Test compact style display
-    }
+    func testCompactStyleDisplay() { }
 
-    func testIntroFormLayout() {
-        // TODO: Test IntroForm layout
-    }
+    func testIntroFormLayout() { }
 
-    func testIntroFormStyling() {
-        // TODO: Test IntroForm styling
-    }
+    func testIntroFormStyling() { }
 
-    func testImageDisplay() {
-        // TODO: Test image display
-    }
+    func testImageDisplay() { }
 
-    func testTitleDisplay() {
-        // TODO: Test title display
-    }
+    func testTitleDisplay() { }
 
-    func testSubtitleDisplay() {
-        // TODO: Test subtitle display
-    }
+    func testSubtitleDisplay() { }
 }

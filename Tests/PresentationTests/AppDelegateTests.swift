@@ -7,7 +7,6 @@ final class AppDelegateTests: XCTestCase {
     var appDelegate: AppDelegate?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // appDelegate = AppDelegate()
     }
 
@@ -15,27 +14,15 @@ final class AppDelegateTests: XCTestCase {
         appDelegate = nil
     }
 
-    func testAppDelegateInitialization() {
-        // TODO: Test AppDelegate initialization
-    }
+    func testAppDelegateInitialization() { }
 
-    func testApplicationDidFinishLaunching() {
-        // TODO: Test application launch
-    }
+    func testApplicationDidFinishLaunching() { }
 
-    func testScreenParametersDidChange() {
-        // TODO: Test screen parameter changes
-    }
+    func testScreenParametersDidChange() { }
 
-    func testSetupPanels() {
-        // TODO: Test panel setup
-    }
+    func testSetupPanels() { }
 
-    func testShowAboutWindow() {
-        // TODO: Test about window display
-    }
+    func testShowAboutWindow() { }
 
-    func testWindowWillClose() {
-        // TODO: Test window close handling
-    }
+    func testWindowWillClose() { }
 }

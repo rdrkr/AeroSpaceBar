@@ -102,6 +102,50 @@ struct GeneralSettingsView: View {
             }
             .tag("general-appearance-mode-section")
 
+            Section {
+                HStack {
+                    Image(systemName: viewModel
+                        .screenCapturePermissionGranted ? "checkmark.circle.fill" : "xmark.circle.fill"
+                    )
+                    .foregroundColor(viewModel.screenCapturePermissionGranted ? .green : .red)
+                    .tag("general-permissions-status-icon")
+
+                    HStack {
+                        Text(
+                            viewModel.screenCapturePermissionGranted
+                                ? LocalizedStringResource("Screen capture permissions granted")
+                                : LocalizedStringResource("Screen capture permissions denied")
+                        )
+                        .tag("general-permissions-status-text")
+
+                        Spacer()
+
+                        if !viewModel.screenCapturePermissionGranted {
+                            Button(LocalizedStringResource("Grant Permissions…")) {
+                                Task.detached(priority: .utility) {
+                                    await viewModel.requestScreenCapturePermissions()
+                                }
+                            }
+                            .tag("general-permissions-grant-button")
+                        }
+                    }
+                }
+                .tag("general-permissions-status")
+            } header: {
+                Text(LocalizedStringResource("Permissions"))
+            } footer: {
+                Text(
+                    LocalizedStringResource(
+                        """
+                        Screen capture permissions are required for optimal visual quality. \
+                        Without permission, visual artifacts may appear on Spaces with certain wallpapers.
+                        """
+                    )
+                )
+                .tag("general-permissions-description")
+            }
+            .tag("general-permissions-section")
+
             Section(LocalizedStringResource("AeroSpace")) {
                 VStack(alignment: .leading) {
                     HStack {

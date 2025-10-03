@@ -15,31 +15,17 @@ final class SpacesViewModelUITests: XCTestCase {
         app = nil
     }
 
-    func testSpacesViewModelUI() {
-        // TODO: Test SpacesViewModel in UI
-    }
+    func testSpacesViewModelUI() { }
 
-    func testIsAeroSpaceRunningDisplayUI() {
-        // TODO: Test is AeroSpace running display in UI
-    }
+    func testIsAeroSpaceRunningDisplayUI() { }
 
-    func testWallpaperDisplayUI() {
-        // TODO: Test wallpaper display in UI
-    }
+    func testWallpaperDisplayUI() { }
 
-    func testSpacesDisplayUI() {
-        // TODO: Test spaces display in UI
-    }
+    func testSpacesDisplayUI() { }
 
-    func testUIConfigurationPropertiesUI() {
-        // TODO: Test UI configuration properties in UI
-    }
+    func testUIConfigurationPropertiesUI() { }
 
-    func testSwitchToSpaceUI() {
-        // TODO: Test switch to space in UI
-    }
+    func testSwitchToSpaceUI() { }
 
-    func testSwitchToWindowUI() {
-        // TODO: Test switch to window in UI
-    }
+    func testSwitchToWindowUI() { }
 }

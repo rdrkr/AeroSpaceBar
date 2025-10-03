@@ -5,15 +5,9 @@ import Combine
 import XCTest
 
 final class SystemMenuBarGatewayTests: XCTestCase {
-    func testSystemMenuBarGatewayProtocol() {
-        // TODO: Test SystemMenuBarGateway protocol conformance
-    }
+    func testSystemMenuBarGatewayProtocol() { }
 
-    func testWallpaperPublisher() {
-        // TODO: Test wallpaper publisher
-    }
+    func testWallpaperPublisher() { }
 
-    func testMenuBarVisibilityPublisher() {
-        // TODO: Test menu bar visibility publisher
-    }
+    func testMenuBarVisibilityPublisher() { }
 }

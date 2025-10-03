@@ -17,7 +17,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testCompleteUserJourneyFromLaunchToSettingsConfiguration() {
-        // TODO: Test complete user journey:
         // 1. Verify app launches and menu bar item appears
         // 2. Click menu bar item to open menu
         // 3. Navigate to Settings from menu
@@ -32,7 +31,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testFirstTimeUserOnboardingFlow() {
-        // TODO: Test first-time user experience:
         // 1. Launch app for first time
         // 2. Verify default settings are applied
         // 3. Test AeroSpace path detection/validation
@@ -42,7 +40,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testSettingsConfigurationAndPersistenceFlow() {
-        // TODO: Test settings configuration flow:
         // 1. Open Settings from menu bar
         // 2. Navigate through all settings pages (General, Advanced)
         // 3. Modify various settings (transparency, log level, etc.)
@@ -53,7 +50,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testSpaceManagementAndNavigationFlow() {
-        // TODO: Test space management flow:
         // 1. Verify spaces are detected and displayed in menu
         // 2. Test clicking on different spaces to switch
         // 3. Verify space switching works correctly
@@ -64,7 +60,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testErrorHandlingAndRecoveryFlow() {
-        // TODO: Test error handling scenarios:
         // 1. Test behavior when AeroSpace is not running
         // 2. Test invalid AeroSpace path configuration
         // 3. Test network/connection issues
@@ -74,7 +69,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testPerformanceAndResponsivenessFlow() {
-        // TODO: Test performance scenarios:
         // 1. Test app responsiveness with many spaces/windows
         // 2. Verify menu updates are smooth and timely
         // 3. Test memory usage during extended use
@@ -84,7 +78,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testAccessibilityAndUsabilityFlow() {
-        // TODO: Test accessibility features:
         // 1. Verify VoiceOver compatibility
         // 2. Test keyboard navigation through settings
         // 3. Verify high contrast mode support
@@ -94,7 +87,6 @@ final class CompleteUserJourneyUITests: XCTestCase {
     }
 
     func testIntegrationWithSystemFeaturesFlow() {
-        // TODO: Test system integration:
         // 1. Test launch at login functionality
         // 2. Verify proper integration with macOS menu bar
         // 3. Test with different macOS versions/features

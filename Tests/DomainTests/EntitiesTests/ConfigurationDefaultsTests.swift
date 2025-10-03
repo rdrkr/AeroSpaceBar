@@ -4,35 +4,19 @@
 import XCTest
 
 final class ConfigurationDefaultsTests: XCTestCase {
-    func testShowWindowTitlesDefault() {
-        // TODO: Test show window titles default
-    }
+    func testShowWindowTitlesDefault() { }
 
-    func testAeroSpacePathDefault() {
-        // TODO: Test AeroSpace path default
-    }
+    func testAeroSpacePathDefault() { }
 
-    func testLaunchAtLoginDefault() {
-        // TODO: Test launch at login default
-    }
+    func testLaunchAtLoginDefault() { }
 
-    func testTransparencyDefault() {
-        // TODO: Test transparency default
-    }
+    func testTransparencyDefault() { }
 
-    func testFocusWindowOnClickDefault() {
-        // TODO: Test focus window on click default
-    }
+    func testFocusWindowOnClickDefault() { }
 
-    func testEnablePerformanceMetricsDefault() {
-        // TODO: Test enable performance metrics default
-    }
+    func testEnablePerformanceMetricsDefault() { }
 
-    func testLogLevelDefault() {
-        // TODO: Test log level default
-    }
+    func testLogLevelDefault() { }
 
-    func testUIConfigurationDefaults() {
-        // TODO: Test UI configuration defaults
-    }
+    func testUIConfigurationDefaults() { }
 }

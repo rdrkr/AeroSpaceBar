@@ -44,6 +44,9 @@ public protocol ConfigurationGateway {
     /// Publisher that emits config file path updates.
     var configFilePathPublisher: AnyPublisher<String, Never> { get }
 
+    /// Publisher that emits whether the user has been asked for screen capture permissions.
+    var hasAskedForScreenCapturePermissionsPublisher: AnyPublisher<Bool, Never> { get }
+
     // MARK: - UI Configuration Publishers
 
     /// Publisher that emits spaces configuration updates.
@@ -113,6 +116,8 @@ public protocol ConfigurationGateway {
     func setLogLevel(_ level: Logger.Level) async
 
     func setConfigFilePath(_ path: String) async
+
+    func setHasAskedForScreenCapturePermissions(_ value: Bool) async
 
     // MARK: - UI Configuration Async Setters
 

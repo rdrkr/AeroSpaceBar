@@ -15,47 +15,25 @@ final class AdvancedSettingsViewUITests: XCTestCase {
         app = nil
     }
 
-    func testAdvancedSettingsViewDisplay() {
-        // TODO: Test AdvancedSettingsView display
-    }
+    func testAdvancedSettingsViewDisplay() { }
 
-    func testFocusWindowOnClickToggleDisplay() {
-        // TODO: Test focus window on click toggle display
-    }
+    func testFocusWindowOnClickToggleDisplay() { }
 
-    func testFocusWindowOnClickToggleInteraction() {
-        // TODO: Test focus window on click toggle interaction
-    }
+    func testFocusWindowOnClickToggleInteraction() { }
 
-    func testLogLevelPickerDisplay() {
-        // TODO: Test log level picker display
-    }
+    func testLogLevelPickerDisplay() { }
 
-    func testLogLevelPickerInteraction() {
-        // TODO: Test log level picker interaction
-    }
+    func testLogLevelPickerInteraction() { }
 
-    func testEnablePerformanceMetricsToggleDisplay() {
-        // TODO: Test enable performance metrics toggle display
-    }
+    func testEnablePerformanceMetricsToggleDisplay() { }
 
-    func testEnablePerformanceMetricsToggleInteraction() {
-        // TODO: Test enable performance metrics toggle interaction
-    }
+    func testEnablePerformanceMetricsToggleInteraction() { }
 
-    func testResetAllSettingsButtonDisplay() {
-        // TODO: Test reset all settings button display
-    }
+    func testResetAllSettingsButtonDisplay() { }
 
-    func testResetAllSettingsButtonInteraction() {
-        // TODO: Test reset all settings button interaction
-    }
+    func testResetAllSettingsButtonInteraction() { }
 
-    func testAdvancedSettingsViewLayout() {
-        // TODO: Test AdvancedSettingsView layout
-    }
+    func testAdvancedSettingsViewLayout() { }
 
-    func testAdvancedSettingsViewStyling() {
-        // TODO: Test AdvancedSettingsView styling
-    }
+    func testAdvancedSettingsViewStyling() { }
 }

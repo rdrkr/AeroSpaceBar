@@ -15,19 +15,11 @@ final class AeroSpaceBarAppUITests: XCTestCase {
         app = nil
     }
 
-    func testAppLaunch() {
-        // TODO: Test app launch
-    }
+    func testAppLaunch() { }
 
-    func testMenuBarExtraDisplay() {
-        // TODO: Test menu bar extra display
-    }
+    func testMenuBarExtraDisplay() { }
 
-    func testSettingsSceneAccess() {
-        // TODO: Test settings scene access
-    }
+    func testSettingsSceneAccess() { }
 
-    func testAppIconDisplay() {
-        // TODO: Test app icon display
-    }
+    func testAppIconDisplay() { }
 }

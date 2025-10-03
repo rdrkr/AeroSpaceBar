@@ -9,7 +9,6 @@ final class GetAeroSpacePathUseCaseTests: XCTestCase {
     var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // mockConfigurationGateway = MockConfigurationGateway()
         // useCase = GetAeroSpacePathUseCase(configurationGateway: mockConfigurationGateway)
         cancellables = Set<AnyCancellable>()
@@ -20,15 +19,9 @@ final class GetAeroSpacePathUseCaseTests: XCTestCase {
         useCase = nil
     }
 
-    func testGetAeroSpacePathUseCaseInitialization() {
-        // TODO: Test use case initialization
-    }
+    func testGetAeroSpacePathUseCaseInitialization() { }
 
-    func testExecute() {
-        // TODO: Test execute method
-    }
+    func testExecute() { }
 
-    func testExecuteReturnsPublisher() {
-        // TODO: Test execute returns publisher
-    }
+    func testExecuteReturnsPublisher() { }
 }

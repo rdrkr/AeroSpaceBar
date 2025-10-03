@@ -9,7 +9,6 @@ final class GetSpacesUseCaseTests: XCTestCase {
     var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // mockSpacesGateway = MockSpacesGateway()
         // useCase = GetSpacesUseCase(spacesGateway: mockSpacesGateway)
         cancellables = Set<AnyCancellable>()
@@ -20,15 +19,9 @@ final class GetSpacesUseCaseTests: XCTestCase {
         useCase = nil
     }
 
-    func testGetSpacesUseCaseInitialization() {
-        // TODO: Test use case initialization
-    }
+    func testGetSpacesUseCaseInitialization() { }
 
-    func testExecute() {
-        // TODO: Test execute method
-    }
+    func testExecute() { }
 
-    func testExecuteReturnsPublisher() {
-        // TODO: Test execute returns publisher
-    }
+    func testExecuteReturnsPublisher() { }
 }

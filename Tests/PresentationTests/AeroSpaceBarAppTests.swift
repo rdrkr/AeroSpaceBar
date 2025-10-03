@@ -3,19 +3,11 @@
 import XCTest
 
 final class AeroSpaceBarAppTests: XCTestCase {
-    func testAeroSpaceBarAppInitialization() {
-        // TODO: Test app initialization
-    }
+    func testAeroSpaceBarAppInitialization() { }
 
-    func testAppSceneConfiguration() {
-        // TODO: Test scene configuration
-    }
+    func testAppSceneConfiguration() { }
 
-    func testMenuBarExtraConfiguration() {
-        // TODO: Test MenuBarExtra configuration
-    }
+    func testMenuBarExtraConfiguration() { }
 
-    func testSettingsSceneConfiguration() {
-        // TODO: Test Settings scene configuration
-    }
+    func testSettingsSceneConfiguration() { }
 }

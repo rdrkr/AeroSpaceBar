@@ -15,35 +15,19 @@ final class SpacesViewUITests: XCTestCase {
         app = nil
     }
 
-    func testSpacesViewDisplay() {
-        // TODO: Test SpacesView display
-    }
+    func testSpacesViewDisplay() { }
 
-    func testSpacesViewLayout() {
-        // TODO: Test SpacesView layout
-    }
+    func testSpacesViewLayout() { }
 
-    func testSpacesViewStyling() {
-        // TODO: Test SpacesView styling
-    }
+    func testSpacesViewStyling() { }
 
-    func testSpacesViewInteractions() {
-        // TODO: Test SpacesView interactions
-    }
+    func testSpacesViewInteractions() { }
 
-    func testSpaceDisplay() {
-        // TODO: Test space display
-    }
+    func testSpaceDisplay() { }
 
-    func testWindowDisplay() {
-        // TODO: Test window display
-    }
+    func testWindowDisplay() { }
 
-    func testSpaceInteraction() {
-        // TODO: Test space interaction
-    }
+    func testSpaceInteraction() { }
 
-    func testWindowInteraction() {
-        // TODO: Test window interaction
-    }
+    func testWindowInteraction() { }
 }

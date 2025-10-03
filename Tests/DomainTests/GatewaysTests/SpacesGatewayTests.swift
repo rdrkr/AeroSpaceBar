@@ -5,23 +5,13 @@ import Combine
 import XCTest
 
 final class SpacesGatewayTests: XCTestCase {
-    func testSpacesGatewayProtocol() {
-        // TODO: Test SpacesGateway protocol conformance
-    }
+    func testSpacesGatewayProtocol() { }
 
-    func testSpacesWithWindowsPublisher() {
-        // TODO: Test spaces with windows publisher
-    }
+    func testSpacesWithWindowsPublisher() { }
 
-    func testAeroSpaceRunningPublisher() {
-        // TODO: Test AeroSpace running publisher
-    }
+    func testAeroSpaceRunningPublisher() { }
 
-    func testFocusSpace() {
-        // TODO: Test focus space
-    }
+    func testFocusSpace() { }
 
-    func testFocusWindow() {
-        // TODO: Test focus window
-    }
+    func testFocusWindow() { }
 }

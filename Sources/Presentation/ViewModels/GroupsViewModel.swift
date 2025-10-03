@@ -101,6 +101,9 @@ final class GroupsViewModel: ObservableObject {
     /// The current theme preset effect properties.
     @Published var themePresetEffectProperties: EffectProperties
 
+    /// The current menu bar height.
+    @Published var menuBarHeight: Double
+
     // MARK: - Dependencies
 
     private let getShowGroupsUseCase: GetShowGroupsUseCase
@@ -125,6 +128,7 @@ final class GroupsViewModel: ObservableObject {
     private let getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase
     private let getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase
     private let getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
+    private let getMenuBarHeightUseCase: GetMenuBarHeightUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -154,6 +158,7 @@ final class GroupsViewModel: ObservableObject {
     ///   - getThemeModeUseCase: The use case for getting theme mode
     ///   - getThemePresetColorPropertiesUseCase: The use case for getting theme preset
     ///   - getThemePresetGeometricPropertiesUseCase: The use case for getting theme preset geometric properties
+    ///   - getMenuBarHeightUseCase: Use case for getting menu bar height
     init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         setShowGroupsUseCase: SetShowGroupsUseCase,
@@ -176,7 +181,8 @@ final class GroupsViewModel: ObservableObject {
         getThemeModeUseCase: GetThemeModeUseCase,
         getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase,
         getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase,
-        getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
+        getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase,
+        getMenuBarHeightUseCase: GetMenuBarHeightUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.setShowGroupsUseCase = setShowGroupsUseCase
@@ -200,6 +206,7 @@ final class GroupsViewModel: ObservableObject {
         self.getThemePresetColorPropertiesUseCase = getThemePresetColorPropertiesUseCase
         self.getThemePresetGeometricPropertiesUseCase = getThemePresetGeometricPropertiesUseCase
         self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
+        self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
@@ -218,6 +225,7 @@ final class GroupsViewModel: ObservableObject {
         themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
         themePresetGeometricProperties = getThemePresetGeometricPropertiesUseCase.execute().blockingFirst()
         themePresetEffectProperties = getThemePresetEffectPropertiesUseCase.execute().blockingFirst()
+        menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
 
         availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
         if spacesAppearanceMode == .perSpace {
@@ -298,7 +306,7 @@ final class GroupsViewModel: ObservableObject {
     /// Group 1 always gives up its last app, other groups shift left, new group takes the max position.
     func addNewGroup() {
         let totalApps = menuBarApps.count
-        guard totalApps > 0, groups.count < totalApps else { return }
+        guard groups.count < totalApps else { return }
 
         // Find first unassigned app
         let unassignedRanges = findUnassignedAppRanges(totalApps: totalApps)
@@ -563,6 +571,10 @@ final class GroupsViewModel: ObservableObject {
 
         getThemePresetEffectPropertiesUseCase.execute()
             .assign(to: \.themePresetEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getMenuBarHeightUseCase.execute()
+            .assign(to: \.menuBarHeight, on: self)
             .store(in: &cancellables)
     }
 

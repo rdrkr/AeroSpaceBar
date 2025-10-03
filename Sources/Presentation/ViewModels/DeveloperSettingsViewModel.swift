@@ -26,6 +26,9 @@
         /// The current license information.
         @Published var licenseInfo: LicenseInfo
 
+        /// Whether the user has been asked for screen capture permissions.
+        @Published var hasAskedForScreenCapturePermissions: Bool
+
         /// Use case for retrieving current feature flags.
         private let getFeatureFlagsUseCase: GetFeatureFlagsUseCase
 
@@ -50,6 +53,9 @@
         /// Use case for resetting license feature flags.
         private let resetLicenseFeatureFlagsUseCase: ResetLicenseFeatureFlagsUseCase
 
+        /// Use case for getting whether the user has been asked for screen capture permissions.
+        private let getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase
+
         /// Set of cancellable subscriptions for Combine publishers.
         private var cancellables = Set<AnyCancellable>()
 
@@ -65,6 +71,8 @@
         ///   - getMockActiveLicenseUseCase: Use case for getting mockActiveLicense flag
         ///   - setMockActiveLicenseUseCase: Use case for setting mockActiveLicense flag
         ///   - resetLicenseFeatureFlagsUseCase: Use case for resetting license feature flags
+        ///   - getHasAskedForScreenCapturePermissionsUseCase: Use case for getting screen capture permission request
+        /// status
         init(
             getFeatureFlagsUseCase: GetFeatureFlagsUseCase,
             setFeatureFlagsUseCase: SetFeatureFlagsUseCase,
@@ -73,7 +81,8 @@
             getMockActiveLicenseUseCase: GetMockActiveLicenseUseCase,
             setMockActiveLicenseUseCase: SetMockActiveLicenseUseCase,
             getLicenseInfoUseCase: GetLicenseInfoUseCase,
-            resetLicenseFeatureFlagsUseCase: ResetLicenseFeatureFlagsUseCase
+            resetLicenseFeatureFlagsUseCase: ResetLicenseFeatureFlagsUseCase,
+            getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase
         ) {
             self.getFeatureFlagsUseCase = getFeatureFlagsUseCase
             self.setFeatureFlagsUseCase = setFeatureFlagsUseCase
@@ -83,11 +92,14 @@
             self.setMockActiveLicenseUseCase = setMockActiveLicenseUseCase
             self.getLicenseInfoUseCase = getLicenseInfoUseCase
             self.resetLicenseFeatureFlagsUseCase = resetLicenseFeatureFlagsUseCase
+            self.getHasAskedForScreenCapturePermissionsUseCase = getHasAskedForScreenCapturePermissionsUseCase
 
             featureFlags = getFeatureFlagsUseCase.execute().blockingFirst()
             enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
             mockActiveLicense = getMockActiveLicenseUseCase.execute().blockingFirst()
             licenseInfo = getLicenseInfoUseCase.execute().blockingFirst()
+            hasAskedForScreenCapturePermissions = getHasAskedForScreenCapturePermissionsUseCase.execute()
+                .blockingFirst()
 
             setupSubscriptions()
         }
@@ -170,6 +182,11 @@
             // Subscribe to license info changes
             getLicenseInfoUseCase.execute()
                 .assign(to: \.licenseInfo, on: self)
+                .store(in: &cancellables)
+
+            // Subscribe to screen capture permissions changes
+            getHasAskedForScreenCapturePermissionsUseCase.execute()
+                .assign(to: \.hasAskedForScreenCapturePermissions, on: self)
                 .store(in: &cancellables)
         }
 

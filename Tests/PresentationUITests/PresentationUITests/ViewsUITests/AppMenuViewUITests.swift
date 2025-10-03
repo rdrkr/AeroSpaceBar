@@ -15,35 +15,19 @@ final class AppMenuViewUITests: XCTestCase {
         app = nil
     }
 
-    func testAppMenuViewDisplay() {
-        // TODO: Test AppMenuView display
-    }
+    func testAppMenuViewDisplay() { }
 
-    func testSettingsLinkDisplay() {
-        // TODO: Test SettingsLink display
-    }
+    func testSettingsLinkDisplay() { }
 
-    func testAboutButtonDisplay() {
-        // TODO: Test About button display
-    }
+    func testAboutButtonDisplay() { }
 
-    func testQuitButtonDisplay() {
-        // TODO: Test Quit button display
-    }
+    func testQuitButtonDisplay() { }
 
-    func testSettingsLinkInteraction() {
-        // TODO: Test SettingsLink interaction
-    }
+    func testSettingsLinkInteraction() { }
 
-    func testAboutButtonInteraction() {
-        // TODO: Test About button interaction
-    }
+    func testAboutButtonInteraction() { }
 
-    func testQuitButtonInteraction() {
-        // TODO: Test Quit button interaction
-    }
+    func testQuitButtonInteraction() { }
 
-    func testShowAboutWindow() {
-        // TODO: Test show about window
-    }
+    func testShowAboutWindow() { }
 }

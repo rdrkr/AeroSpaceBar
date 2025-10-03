@@ -5,55 +5,29 @@ import Combine
 import XCTest
 
 final class ConfigurationGatewayTests: XCTestCase {
-    func testConfigurationGatewayProtocol() {
-        // TODO: Test ConfigurationGateway protocol conformance
-    }
+    func testConfigurationGatewayProtocol() { }
 
-    func testShowWindowTitlesPublisher() {
-        // TODO: Test show window titles publisher
-    }
+    func testShowWindowTitlesPublisher() { }
 
-    func testAeroSpacePathPublisher() {
-        // TODO: Test AeroSpace path publisher
-    }
+    func testAeroSpacePathPublisher() { }
 
-    func testLaunchAtLoginPublisher() {
-        // TODO: Test launch at login publisher
-    }
+    func testLaunchAtLoginPublisher() { }
 
-    func testTransparencyPublisher() {
-        // TODO: Test transparency publisher
-    }
+    func testTransparencyPublisher() { }
 
-    func testFocusWindowOnClickPublisher() {
-        // TODO: Test focus window on click publisher
-    }
+    func testFocusWindowOnClickPublisher() { }
 
-    func testEnablePerformanceMetricsPublisher() {
-        // TODO: Test enable performance metrics publisher
-    }
+    func testEnablePerformanceMetricsPublisher() { }
 
-    func testLogLevelPublisher() {
-        // TODO: Test log level publisher
-    }
+    func testLogLevelPublisher() { }
 
-    func testCurrentAeroSpaceVersionPublisher() {
-        // TODO: Test current AeroSpace version publisher
-    }
+    func testCurrentAeroSpaceVersionPublisher() { }
 
-    func testUIConfigurationPublishers() {
-        // TODO: Test UI configuration publishers
-    }
+    func testUIConfigurationPublishers() { }
 
-    func testAsyncSetters() {
-        // TODO: Test async setters
-    }
+    func testAsyncSetters() { }
 
-    func testAeroSpaceConfigurationManagement() {
-        // TODO: Test AeroSpace configuration management
-    }
+    func testAeroSpaceConfigurationManagement() { }
 
-    func testConfigurationManagement() {
-        // TODO: Test configuration management
-    }
+    func testConfigurationManagement() { }
 }

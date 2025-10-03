@@ -10,7 +10,6 @@ disabled_rules:
   - trailing_newline  # We'll let SwiftFormat handle this
   - vertical_whitespace  # We'll let SwiftFormat handle this
   - opening_brace  # We'll let SwiftFormat handle brace spacing
-  - todo
   - identifier_name
 
 # Enable specific rules

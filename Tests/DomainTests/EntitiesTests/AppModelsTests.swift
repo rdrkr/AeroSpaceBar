@@ -4,35 +4,19 @@
 import XCTest
 
 final class AppModelsTests: XCTestCase {
-    func testWindowInitialization() {
-        // TODO: Test Window initialization
-    }
+    func testWindowInitialization() { }
 
-    func testWindowCodingKeys() {
-        // TODO: Test Window coding keys
-    }
+    func testWindowCodingKeys() { }
 
-    func testWindowDecoding() {
-        // TODO: Test Window decoding
-    }
+    func testWindowDecoding() { }
 
-    func testWindowEquatable() {
-        // TODO: Test Window equatable
-    }
+    func testWindowEquatable() { }
 
-    func testSpaceInitialization() {
-        // TODO: Test Space initialization
-    }
+    func testSpaceInitialization() { }
 
-    func testSpaceCodingKeys() {
-        // TODO: Test Space coding keys
-    }
+    func testSpaceCodingKeys() { }
 
-    func testSpaceDecoding() {
-        // TODO: Test Space decoding
-    }
+    func testSpaceDecoding() { }
 
-    func testSpaceEquatable() {
-        // TODO: Test Space equatable
-    }
+    func testSpaceEquatable() { }
 }

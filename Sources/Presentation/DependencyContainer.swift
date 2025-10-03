@@ -51,7 +51,9 @@ final class DependencyContainer {
     /// This gateway is lazily initialized and provides dynamic capture of
     /// the desktop wallpaper and monitoring of menu bar visibility and height.
     private lazy var systemMenuBarGateway: SystemMenuBarGateway = SystemMenuBarRepository(
-        getShowGroupsUseCase: makeGetShowGroupsUseCase()
+        getShowGroupsUseCase: makeGetShowGroupsUseCase(),
+        getHasAskedForScreenCapturePermissionsUseCase: makeGetHasAskedForScreenCapturePermissionsUseCase(),
+        setHasAskedForScreenCapturePermissionsUseCase: makeSetHasAskedForScreenCapturePermissionsUseCase()
     )
 
     /// The keyboard shortcuts gateway for monitoring keyboard events.
@@ -68,6 +70,8 @@ final class DependencyContainer {
     /// The SettingsViewModel instance.
     private lazy var settingsViewModel: SettingsViewModel = .init(
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
+        getScreenCapturePermissionGrantedUseCase: makeGetScreenCapturePermissionGrantedUseCase(),
+        requestScreenCapturePermissionsUseCase: makeRequestScreenCapturePermissionsUseCase(),
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         setAeroSpacePathUseCase: makeSetAeroSpaceCustomPathUseCase(),
         getAeroSpaceVersionUseCase: makeGetAeroSpaceVersionUseCase(),
@@ -165,7 +169,8 @@ final class DependencyContainer {
         getThemeModeUseCase: makeGetThemeModeUseCase(),
         getThemePresetColorPropertiesUseCase: makeGetThemePresetColorPropertiesUseCase(),
         getThemePresetGeometricPropertiesUseCase: makeGetThemePresetGeometricPropertiesUseCase(),
-        getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase()
+        getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase(),
+        getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase()
     )
 
     /// The license gateway for managing application license.
@@ -190,7 +195,8 @@ final class DependencyContainer {
             getMockActiveLicenseUseCase: makeGetMockActiveLicenseUseCase(),
             setMockActiveLicenseUseCase: makeSetMockActiveLicenseUseCase(),
             getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
-            resetLicenseFeatureFlagsUseCase: makeResetLicenseFeatureFlagsUseCase()
+            resetLicenseFeatureFlagsUseCase: makeResetLicenseFeatureFlagsUseCase(),
+            getHasAskedForScreenCapturePermissionsUseCase: makeGetHasAskedForScreenCapturePermissionsUseCase()
         )
     #endif
 
@@ -282,6 +288,18 @@ final class DependencyContainer {
     /// - Returns: A new GetMenuBarAppsUseCase instance
     func makeGetMenuBarAppsUseCase() -> GetMenuBarAppsUseCase {
         GetMenuBarAppsUseCase(systemMenuBarGateway: systemMenuBarGateway)
+    }
+
+    /// Creates a new GetScreenCapturePermissionGrantedUseCase instance.
+    /// - Returns: A new GetScreenCapturePermissionGrantedUseCase instance
+    func makeGetScreenCapturePermissionGrantedUseCase() -> GetScreenCapturePermissionGrantedUseCase {
+        GetScreenCapturePermissionGrantedUseCase(systemMenuBarGateway: systemMenuBarGateway)
+    }
+
+    /// Creates a new RequestScreenCapturePermissionsUseCase instance.
+    /// - Returns: A new RequestScreenCapturePermissionsUseCase instance
+    func makeRequestScreenCapturePermissionsUseCase() -> RequestScreenCapturePermissionsUseCase {
+        RequestScreenCapturePermissionsUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 
     // MARK: - Display Use Cases
@@ -563,6 +581,18 @@ final class DependencyContainer {
     /// - Returns: A new OpenConfigFileUseCase instance
     func makeOpenConfigFileUseCase() -> OpenConfigFileUseCase {
         OpenConfigFileUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetHasAskedForScreenCapturePermissionsUseCase instance.
+    /// - Returns: A new GetHasAskedForScreenCapturePermissionsUseCase instance
+    func makeGetHasAskedForScreenCapturePermissionsUseCase() -> GetHasAskedForScreenCapturePermissionsUseCase {
+        GetHasAskedForScreenCapturePermissionsUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetHasAskedForScreenCapturePermissionsUseCase instance.
+    /// - Returns: A new SetHasAskedForScreenCapturePermissionsUseCase instance
+    func makeSetHasAskedForScreenCapturePermissionsUseCase() -> SetHasAskedForScreenCapturePermissionsUseCase {
+        SetHasAskedForScreenCapturePermissionsUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - System Use Cases

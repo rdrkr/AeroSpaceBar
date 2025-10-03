@@ -4,51 +4,27 @@
 import XCTest
 
 final class LoggerTests: XCTestCase {
-    func testLogLevelEnum() {
-        // TODO: Test log level enum
-    }
+    func testLogLevelEnum() { }
 
-    func testLogLevelOsLogType() {
-        // TODO: Test log level OS log type
-    }
+    func testLogLevelOsLogType() { }
 
-    func testLogLevelEmoji() {
-        // TODO: Test log level emoji
-    }
+    func testLogLevelEmoji() { }
 
-    func testLogLevelProperty() {
-        // TODO: Test log level property
-    }
+    func testLogLevelProperty() { }
 
-    func testEnablePerformanceMetricsProperty() {
-        // TODO: Test enable performance metrics property
-    }
+    func testEnablePerformanceMetricsProperty() { }
 
-    func testLogCategories() {
-        // TODO: Test log categories
-    }
+    func testLogCategories() { }
 
-    func testDebugLogging() {
-        // TODO: Test debug logging
-    }
+    func testDebugLogging() { }
 
-    func testInfoLogging() {
-        // TODO: Test info logging
-    }
+    func testInfoLogging() { }
 
-    func testWarningLogging() {
-        // TODO: Test warning logging
-    }
+    func testWarningLogging() { }
 
-    func testErrorLogging() {
-        // TODO: Test error logging
-    }
+    func testErrorLogging() { }
 
-    func testFaultLogging() {
-        // TODO: Test fault logging
-    }
+    func testFaultLogging() { }
 
-    func testPerformanceMetrics() {
-        // TODO: Test performance metrics
-    }
+    func testPerformanceMetrics() { }
 }

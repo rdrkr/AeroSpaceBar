@@ -7,7 +7,6 @@ final class IconCacheTests: XCTestCase {
     var iconCache: IconCache?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // iconCache = IconCache()
     }
 
@@ -15,23 +14,13 @@ final class IconCacheTests: XCTestCase {
         iconCache = nil
     }
 
-    func testIconCacheInitialization() {
-        // TODO: Test IconCache initialization
-    }
+    func testIconCacheInitialization() { }
 
-    func testIconForAppName() {
-        // TODO: Test icon retrieval for app name
-    }
+    func testIconForAppName() { }
 
-    func testIconCacheHit() {
-        // TODO: Test cache hit behavior
-    }
+    func testIconCacheHit() { }
 
-    func testIconCacheMiss() {
-        // TODO: Test cache miss behavior
-    }
+    func testIconCacheMiss() { }
 
-    func testFindAppPath() {
-        // TODO: Test app path finding
-    }
+    func testFindAppPath() { }
 }

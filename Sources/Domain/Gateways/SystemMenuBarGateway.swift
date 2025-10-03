@@ -27,4 +27,13 @@ public protocol SystemMenuBarGateway {
     /// Publisher that emits menu bar applications updates.
     /// Emits an array of MenuBarApp instances representing applications with menu bar icons.
     var menuBarAppsPublisher: AnyPublisher<[MenuBarApp], Never> { get }
+
+    /// Publisher that emits screen capture permission status updates.
+    /// Emits `true` when screen capture permissions are granted, `false` when denied.
+    var screenCapturePermissionGrantedPublisher: AnyPublisher<Bool, Never> { get }
+
+    // MARK: - Permission Management
+
+    /// Requests screen capture permissions from the user if not already asked.
+    func requestScreenCapturePermissions() async
 }

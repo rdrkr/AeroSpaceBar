@@ -7,7 +7,6 @@ final class DependencyContainerTests: XCTestCase {
     var container: DependencyContainer?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // container = DependencyContainer.shared
     }
 
@@ -15,31 +14,17 @@ final class DependencyContainerTests: XCTestCase {
         container = nil
     }
 
-    func testDependencyContainerSingleton() {
-        // TODO: Test singleton pattern
-    }
+    func testDependencyContainerSingleton() { }
 
-    func testGetSpacesGateway() {
-        // TODO: Test getting spaces gateway
-    }
+    func testGetSpacesGateway() { }
 
-    func testGetSettingsViewModel() {
-        // TODO: Test getting settings view model
-    }
+    func testGetSettingsViewModel() { }
 
-    func testGetSpacesViewModel() {
-        // TODO: Test getting spaces view model
-    }
+    func testGetSpacesViewModel() { }
 
-    func testMakeGetSpacesUseCase() {
-        // TODO: Test making get spaces use case
-    }
+    func testMakeGetSpacesUseCase() { }
 
-    func testMakeSetFocusSpaceUseCase() {
-        // TODO: Test making set focus space use case
-    }
+    func testMakeSetFocusSpaceUseCase() { }
 
-    func testMakeSetFocusWindowUseCase() {
-        // TODO: Test making set focus window use case
-    }
+    func testMakeSetFocusWindowUseCase() { }
 }

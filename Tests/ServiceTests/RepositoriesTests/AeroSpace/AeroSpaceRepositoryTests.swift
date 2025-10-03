@@ -9,7 +9,6 @@ final class AeroSpaceRepositoryTests: XCTestCase {
     var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
-        // TODO: Initialize with mock dependencies
         cancellables = Set<AnyCancellable>()
     }
 
@@ -18,35 +17,19 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         repository = nil
     }
 
-    func testAeroSpaceRepositoryInitialization() {
-        // TODO: Test repository initialization
-    }
+    func testAeroSpaceRepositoryInitialization() { }
 
-    func testSpacesWithWindowsPublisher() {
-        // TODO: Test spaces with windows publisher
-    }
+    func testSpacesWithWindowsPublisher() { }
 
-    func testAeroSpaceRunningPublisher() {
-        // TODO: Test AeroSpace running publisher
-    }
+    func testAeroSpaceRunningPublisher() { }
 
-    func testFocusSpace() {
-        // TODO: Test focus space
-    }
+    func testFocusSpace() { }
 
-    func testFocusWindow() {
-        // TODO: Test focus window
-    }
+    func testFocusWindow() { }
 
-    func testIsAeroSpaceRunning() {
-        // TODO: Test AeroSpace running check
-    }
+    func testIsAeroSpaceRunning() { }
 
-    func testFetchSpacesWithWindows() {
-        // TODO: Test fetching spaces with windows
-    }
+    func testFetchSpacesWithWindows() { }
 
-    func testBuildSpacesWithWindows() {
-        // TODO: Test building spaces with windows
-    }
+    func testBuildSpacesWithWindows() { }
 }

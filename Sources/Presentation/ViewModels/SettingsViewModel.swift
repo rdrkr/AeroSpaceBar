@@ -171,6 +171,11 @@ class SettingsViewModel: ObservableObject {
     // MARK: - System Menu Bar Use Cases
 
     private let getMenuBarAppsUseCase: GetMenuBarAppsUseCase
+    private let getScreenCapturePermissionGrantedUseCase: GetScreenCapturePermissionGrantedUseCase
+    private let requestScreenCapturePermissionsUseCase: RequestScreenCapturePermissionsUseCase
+
+    /// Whether screen capture permissions are granted.
+    @Published var screenCapturePermissionGranted: Bool = false
 
     // MARK: - AeroSpace Use Cases
 
@@ -203,6 +208,8 @@ class SettingsViewModel: ObservableObject {
     /// Initializes the settings view model with dependencies.
     /// - Parameters:
     ///   - getMenuBarAppsUseCase: Use case to get menu bar apps.
+    ///   - getScreenCapturePermissionGrantedUseCase: Use case to get screen capture permission status.
+    ///   - requestScreenCapturePermissionsUseCase: Use case to request screen capture permissions.
     ///   - getAeroSpacePathUseCase: Use case to get AeroSpace path.
     ///   - setAeroSpacePathUseCase: Use case to set AeroSpace path.
     ///   - getAeroSpaceVersionUseCase: Use case to get AeroSpace version.
@@ -225,6 +232,8 @@ class SettingsViewModel: ObservableObject {
     ///   - setThemePresetColorPropertiesUseCase: Use case to set theme preset.
     init(
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
+        getScreenCapturePermissionGrantedUseCase: GetScreenCapturePermissionGrantedUseCase,
+        requestScreenCapturePermissionsUseCase: RequestScreenCapturePermissionsUseCase,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         setAeroSpacePathUseCase: SetAeroSpacePathUseCase,
         getAeroSpaceVersionUseCase: GetAeroSpaceVersionUseCase,
@@ -248,6 +257,8 @@ class SettingsViewModel: ObservableObject {
     ) {
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
+        self.getScreenCapturePermissionGrantedUseCase = getScreenCapturePermissionGrantedUseCase
+        self.requestScreenCapturePermissionsUseCase = requestScreenCapturePermissionsUseCase
 
         // Initialize AeroSpace Use Cases
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
@@ -404,6 +415,11 @@ class SettingsViewModel: ObservableObject {
         await openConfigFileUseCase.execute()
     }
 
+    /// Requests screen capture permissions from the user.
+    func requestScreenCapturePermissions() async {
+        await requestScreenCapturePermissionsUseCase.execute()
+    }
+
     // MARK: - Navigation Methods
 
     /// Sets programmatically the currently selected navigation page.
@@ -498,6 +514,10 @@ class SettingsViewModel: ObservableObject {
     /// Setup reactive subscriptions to UseCase publishers.
     private func setupReactiveSubscriptions() {
         // Monitor configuration changes
+
+        getScreenCapturePermissionGrantedUseCase.execute()
+            .assign(to: \.screenCapturePermissionGranted, on: self)
+            .store(in: &cancellables)
 
         getAeroSpacePathUseCase.execute()
             .assign(to: \.aeroSpacePath, on: self)

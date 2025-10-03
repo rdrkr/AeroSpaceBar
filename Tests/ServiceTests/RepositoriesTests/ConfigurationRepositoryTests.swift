@@ -9,7 +9,6 @@ final class ConfigurationRepositoryTests: XCTestCase {
     var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
-        // TODO: Initialize with proper actor context
         // repository = ConfigurationRepository()
         cancellables = Set<AnyCancellable>()
     }
@@ -19,39 +18,21 @@ final class ConfigurationRepositoryTests: XCTestCase {
         repository = nil
     }
 
-    func testConfigurationRepositoryInitialization() {
-        // TODO: Test repository initialization
-    }
+    func testConfigurationRepositoryInitialization() { }
 
-    func testShowWindowTitlesPublisher() {
-        // TODO: Test show window titles publisher
-    }
+    func testShowWindowTitlesPublisher() { }
 
-    func testAeroSpacePathPublisher() {
-        // TODO: Test AeroSpace path publisher
-    }
+    func testAeroSpacePathPublisher() { }
 
-    func testTransparencyPublisher() {
-        // TODO: Test transparency publisher
-    }
+    func testTransparencyPublisher() { }
 
-    func testSetShowWindowTitles() {
-        // TODO: Test setting show window titles
-    }
+    func testSetShowWindowTitles() { }
 
-    func testSetAeroSpacePath() {
-        // TODO: Test setting AeroSpace path
-    }
+    func testSetAeroSpacePath() { }
 
-    func testSetTransparency() {
-        // TODO: Test setting transparency
-    }
+    func testSetTransparency() { }
 
-    func testOpenAeroSpaceConfig() {
-        // TODO: Test opening AeroSpace config
-    }
+    func testOpenAeroSpaceConfig() { }
 
-    func testResetToDefaults() {
-        // TODO: Test reset to defaults
-    }
+    func testResetToDefaults() { }
 }

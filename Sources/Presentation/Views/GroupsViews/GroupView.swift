@@ -193,14 +193,20 @@ struct GroupView: View {
     }
 
     var body: some View {
-        Group {
+        let groupBackground = Group {
             if themeMode == .glass, #available(macOS 26.0, *) {
                 glassBackgroundView
             } else {
                 standardBackgroundView
             }
         }
-        .animation(.themeEaseInOutFast, value: groupFrame)
+
+        if !menuBarApps.isEmpty {
+            groupBackground
+                .animation(.themeEaseInOutFast, value: groupFrame)
+        } else {
+            groupBackground
+        }
     }
 
     /// The glass effect background view for macOS 26+.

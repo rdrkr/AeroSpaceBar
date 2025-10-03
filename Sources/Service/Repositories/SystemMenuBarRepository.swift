@@ -22,6 +22,9 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Publisher that emits menu bar applications updates.
     private let menuBarAppsSubject = CurrentValueSubject<[MenuBarApp], Never>([])
 
+    /// Publisher that emits screen capture permission status updates.
+    private let screenCapturePermissionGrantedSubject = CurrentValueSubject<Bool, Never>(false)
+
     /// The last captured wallpaper image data for comparison.
     private var lastWallpaperData: Data?
 
@@ -43,16 +46,35 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Use case for accessing show groups setting.
     private let getShowGroupsUseCase: GetShowGroupsUseCase
 
+    /// Use case for checking if user has been asked for screen capture permissions.
+    private let getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase
+
+    /// Use case for setting whether user has been asked for screen capture permissions.
+    private let setHasAskedForScreenCapturePermissionsUseCase: SetHasAskedForScreenCapturePermissionsUseCase
+
     /// Current show groups setting value.
     private var showGroupsEnabled: Bool = false
 
     /// Cancellable for the show groups publisher subscription.
     private var showGroupsCancellable: AnyCancellable?
 
+    /// Cancellable for the has asked for permissions publisher subscription.
+    private var hasAskedForPermissionsCancellable: AnyCancellable?
+
     /// Initializes the system menu bar repository.
-    /// - Parameter getShowGroupsUseCase: The use case for accessing show groups setting
-    public init(getShowGroupsUseCase: GetShowGroupsUseCase) {
+    /// - Parameters:
+    ///   - getShowGroupsUseCase: The use case for accessing show groups setting
+    ///   - getHasAskedForScreenCapturePermissionsUseCase: The use case for checking permission request status
+    ///   - setHasAskedForScreenCapturePermissionsUseCase: The use case for setting permission request status
+    public init(
+        getShowGroupsUseCase: GetShowGroupsUseCase,
+        getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase,
+        setHasAskedForScreenCapturePermissionsUseCase: SetHasAskedForScreenCapturePermissionsUseCase
+    ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
+        self.getHasAskedForScreenCapturePermissionsUseCase = getHasAskedForScreenCapturePermissionsUseCase
+        self.setHasAskedForScreenCapturePermissionsUseCase = setHasAskedForScreenCapturePermissionsUseCase
+
         setupShowGroupsSubscription()
         setupScreenStateObservers()
         startPeriodicTasks()
@@ -64,6 +86,65 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             .sink { [weak self] value in
                 self?.showGroupsEnabled = value
             }
+    }
+
+    /// Checks and requests screen capture permissions if needed on macOS 15+.
+    private func checkAndRequestPermissionsIfNeeded() {
+        guard #available(macOS 15.0, *) else {
+            // On older macOS versions, we don't need explicit permissions for legacy API
+            screenCapturePermissionGrantedSubject.send(true)
+            return
+        }
+
+        // Check current permission status
+        let hasPermission = CGPreflightScreenCaptureAccess()
+        screenCapturePermissionGrantedSubject.send(hasPermission)
+
+        // If we already have permission, no need to ask
+        if hasPermission {
+            return
+        }
+
+        // Check if we've already asked the user
+        hasAskedForPermissionsCancellable = getHasAskedForScreenCapturePermissionsUseCase.execute()
+            .sink { [weak self] hasAsked in
+                guard let self, !hasAsked else { return }
+
+                // Request permissions for the first time
+                Task { @MainActor [weak self] in
+                    await self?.requestScreenCapturePermissions()
+                }
+            }
+    }
+
+    /// Requests screen capture permissions from the user.
+    public func requestScreenCapturePermissions() async {
+        guard #available(macOS 15.0, *) else {
+            // Not needed on older macOS versions
+            return
+        }
+
+        // Mark that we've asked for permissions
+        await setHasAskedForScreenCapturePermissionsUseCase.execute(value: true)
+
+        // Request permissions by calling SCShareableContent
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            SCShareableContent.getWithCompletionHandler { _, _ in
+                // After the permission dialog, check the new permission status
+                Task { @MainActor in
+                    let hasPermission = CGPreflightScreenCaptureAccess()
+                    self.screenCapturePermissionGrantedSubject.send(hasPermission)
+
+                    if hasPermission {
+                        Logger.info("Screen capture permissions granted", category: Logger.config)
+                    } else {
+                        Logger.warning("Screen capture permissions denied", category: Logger.config)
+                    }
+
+                    continuation.resume()
+                }
+            }
+        }
     }
 
     /// Publisher that emits wallpaper image updates.
@@ -88,6 +169,12 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// - Returns: A publisher that emits arrays of MenuBarApp instances.
     public var menuBarAppsPublisher: AnyPublisher<[MenuBarApp], Never> {
         menuBarAppsSubject.eraseToAnyPublisher()
+    }
+
+    /// Publisher that emits screen capture permission status updates.
+    /// - Returns: A publisher that emits Boolean values indicating permission status.
+    public var screenCapturePermissionGrantedPublisher: AnyPublisher<Bool, Never> {
+        screenCapturePermissionGrantedSubject.eraseToAnyPublisher()
     }
 
     /// Starts periodic tasks for window recognition and wallpaper capture.
@@ -201,8 +288,10 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             return
         }
 
+        checkAndRequestPermissionsIfNeeded()
+
         // Use ScreenCaptureKit on macOS 15+ for better performance and future compatibility
-        if #available(macOS 15.0, *) {
+        if #available(macOS 15.0, *), screenCapturePermissionGrantedSubject.value {
             Task {
                 await captureWallpaperUsingScreenCaptureKit(menuBarFrame: menuBarFrame)
             }

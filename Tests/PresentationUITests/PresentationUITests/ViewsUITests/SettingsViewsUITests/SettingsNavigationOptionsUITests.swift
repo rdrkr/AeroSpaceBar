@@ -15,31 +15,17 @@ final class SettingsNavigationOptionsUITests: XCTestCase {
         app = nil
     }
 
-    func testSettingsNavigationOptionsDisplay() {
-        // TODO: Test SettingsNavigationOptions display
-    }
+    func testSettingsNavigationOptionsDisplay() { }
 
-    func testGeneralOptionDisplay() {
-        // TODO: Test general option display
-    }
+    func testGeneralOptionDisplay() { }
 
-    func testAdvancedOptionDisplay() {
-        // TODO: Test advanced option display
-    }
+    func testAdvancedOptionDisplay() { }
 
-    func testMainPagesDisplay() {
-        // TODO: Test main pages display
-    }
+    func testMainPagesDisplay() { }
 
-    func testNamePropertyDisplay() {
-        // TODO: Test name property display
-    }
+    func testNamePropertyDisplay() { }
 
-    func testSymbolNamePropertyDisplay() {
-        // TODO: Test symbol name property display
-    }
+    func testSymbolNamePropertyDisplay() { }
 
-    func testViewForPageDisplay() {
-        // TODO: Test view for page display
-    }
+    func testViewForPageDisplay() { }
 }

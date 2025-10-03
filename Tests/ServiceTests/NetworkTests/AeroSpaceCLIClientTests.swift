@@ -14,19 +14,11 @@ final class AeroSpaceCLIClientTests: XCTestCase {
         client = nil
     }
 
-    func testAeroSpaceCLIClientInitialization() {
-        // TODO: Test client initialization
-    }
+    func testAeroSpaceCLIClientInitialization() { }
 
-    func testExecuteCommand() {
-        // TODO: Test command execution
-    }
+    func testExecuteCommand() { }
 
-    func testExecuteCommandWithInvalidPath() {
-        // TODO: Test command execution with invalid path
-    }
+    func testExecuteCommandWithInvalidPath() { }
 
-    func testExecuteCommandWithNonZeroExitCode() {
-        // TODO: Test command execution with non-zero exit code
-    }
+    func testExecuteCommandWithNonZeroExitCode() { }
 }

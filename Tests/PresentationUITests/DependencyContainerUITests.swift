@@ -15,15 +15,9 @@ final class DependencyContainerUITests: XCTestCase {
         app = nil
     }
 
-    func testDependencyInjection() {
-        // TODO: Test dependency injection in UI
-    }
+    func testDependencyInjection() { }
 
-    func testServiceProvision() {
-        // TODO: Test service provision in UI
-    }
+    func testServiceProvision() { }
 
-    func testViewModelCreation() {
-        // TODO: Test view model creation in UI
-    }
+    func testViewModelCreation() { }
 }

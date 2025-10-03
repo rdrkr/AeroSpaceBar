@@ -87,6 +87,25 @@
                 }
                 .tag("developer-licensing-section")
 
+                Section(LocalizedStringResource("Permissions")) {
+                    HStack {
+                        Image(systemName: viewModel
+                            .hasAskedForScreenCapturePermissions ? "checkmark.circle.fill" : "xmark.circle.fill"
+                        )
+                        .foregroundColor(viewModel.hasAskedForScreenCapturePermissions ? .green : .red)
+                        .tag("developer-permissions-status-icon")
+
+                        Text(
+                            viewModel.hasAskedForScreenCapturePermissions
+                                ? LocalizedStringResource("User has been asked for screen capture permissions")
+                                : LocalizedStringResource("User has not been asked for screen capture permissions")
+                        )
+                        .tag("developer-permissions-status-text")
+                    }
+                    .tag("developer-permissions-status")
+                }
+                .tag("developer-permissions-section")
+
                 Section(LocalizedStringResource("Actions")) {
                     SettingsDestructiveButton(
                         title: LocalizedStringResource("Reset to Defaults"),

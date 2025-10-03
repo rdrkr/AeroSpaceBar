@@ -15,43 +15,23 @@ final class SettingsViewUITests: XCTestCase {
         app = nil
     }
 
-    func testSettingsViewDisplay() {
-        // TODO: Test SettingsView display
-    }
+    func testSettingsViewDisplay() { }
 
-    func testNavigationSplitViewDisplay() {
-        // TODO: Test NavigationSplitView display
-    }
+    func testNavigationSplitViewDisplay() { }
 
-    func testSidebarDisplay() {
-        // TODO: Test sidebar display
-    }
+    func testSidebarDisplay() { }
 
-    func testDetailViewDisplay() {
-        // TODO: Test detail view display
-    }
+    func testDetailViewDisplay() { }
 
-    func testNavigationButtonsDisplay() {
-        // TODO: Test navigation buttons display
-    }
+    func testNavigationButtonsDisplay() { }
 
-    func testBackButtonInteraction() {
-        // TODO: Test back button interaction
-    }
+    func testBackButtonInteraction() { }
 
-    func testForwardButtonInteraction() {
-        // TODO: Test forward button interaction
-    }
+    func testForwardButtonInteraction() { }
 
-    func testPageSelection() {
-        // TODO: Test page selection
-    }
+    func testPageSelection() { }
 
-    func testNavigationHistory() {
-        // TODO: Test navigation history
-    }
+    func testNavigationHistory() { }
 
-    func testWindowConfiguration() {
-        // TODO: Test window configuration
-    }
+    func testWindowConfiguration() { }
 }

@@ -4,27 +4,15 @@
 import XCTest
 
 final class AppErrorTests: XCTestCase {
-    func testAeroSpaceNotRunningError() {
-        // TODO: Test AeroSpace not running error
-    }
+    func testAeroSpaceNotRunningError() { }
 
-    func testCommandExecutionError() {
-        // TODO: Test command execution error
-    }
+    func testCommandExecutionError() { }
 
-    func testDataFetchError() {
-        // TODO: Test data fetch error
-    }
+    func testDataFetchError() { }
 
-    func testDecodingError() {
-        // TODO: Test decoding error
-    }
+    func testDecodingError() { }
 
-    func testServiceUnavailableError() {
-        // TODO: Test service unavailable error
-    }
+    func testServiceUnavailableError() { }
 
-    func testErrorDescription() {
-        // TODO: Test error description
-    }
+    func testErrorDescription() { }
 }

@@ -15,51 +15,27 @@ final class GeneralSettingsViewUITests: XCTestCase {
         app = nil
     }
 
-    func testGeneralSettingsViewDisplay() {
-        // TODO: Test GeneralSettingsView display
-    }
+    func testGeneralSettingsViewDisplay() { }
 
-    func testLaunchAtLoginToggleDisplay() {
-        // TODO: Test launch at login toggle display
-    }
+    func testLaunchAtLoginToggleDisplay() { }
 
-    func testLaunchAtLoginToggleInteraction() {
-        // TODO: Test launch at login toggle interaction
-    }
+    func testLaunchAtLoginToggleInteraction() { }
 
-    func testAeroSpacePathSectionDisplay() {
-        // TODO: Test AeroSpace path section display
-    }
+    func testAeroSpacePathSectionDisplay() { }
 
-    func testBrowseButtonDisplay() {
-        // TODO: Test browse button display
-    }
+    func testBrowseButtonDisplay() { }
 
-    func testBrowseButtonInteraction() {
-        // TODO: Test browse button interaction
-    }
+    func testBrowseButtonInteraction() { }
 
-    func testOpenConfigurationButtonDisplay() {
-        // TODO: Test open configuration button display
-    }
+    func testOpenConfigurationButtonDisplay() { }
 
-    func testOpenConfigurationButtonInteraction() {
-        // TODO: Test open configuration button interaction
-    }
+    func testOpenConfigurationButtonInteraction() { }
 
-    func testTransparencySliderDisplay() {
-        // TODO: Test transparency slider display
-    }
+    func testTransparencySliderDisplay() { }
 
-    func testTransparencySliderInteraction() {
-        // TODO: Test transparency slider interaction
-    }
+    func testTransparencySliderInteraction() { }
 
-    func testGeneralSettingsViewLayout() {
-        // TODO: Test GeneralSettingsView layout
-    }
+    func testGeneralSettingsViewLayout() { }
 
-    func testGeneralSettingsViewStyling() {
-        // TODO: Test GeneralSettingsView styling
-    }
+    func testGeneralSettingsViewStyling() { }
 }

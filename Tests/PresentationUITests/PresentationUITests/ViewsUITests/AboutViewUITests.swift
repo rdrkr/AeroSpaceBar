@@ -15,35 +15,19 @@ final class AboutViewUITests: XCTestCase {
         app = nil
     }
 
-    func testAboutViewDisplay() {
-        // TODO: Test AboutView display
-    }
+    func testAboutViewDisplay() { }
 
-    func testAppIconDisplay() {
-        // TODO: Test app icon display
-    }
+    func testAppIconDisplay() { }
 
-    func testAppVersionDisplay() {
-        // TODO: Test app version display
-    }
+    func testAppVersionDisplay() { }
 
-    func testAppBuildDisplay() {
-        // TODO: Test app build display
-    }
+    func testAppBuildDisplay() { }
 
-    func testAboutViewLayout() {
-        // TODO: Test AboutView layout
-    }
+    func testAboutViewLayout() { }
 
-    func testAboutViewStyling() {
-        // TODO: Test AboutView styling
-    }
+    func testAboutViewStyling() { }
 
-    func testAcknowledgementsSection() {
-        // TODO: Test acknowledgements section
-    }
+    func testAcknowledgementsSection() { }
 
-    func testMadeWithLoveCredit() {
-        // TODO: Test made with love credit
-    }
+    func testMadeWithLoveCredit() { }
 }

@@ -47,13 +47,16 @@ struct GroupsView: View {
                 )
             }
 
-            if #available(macOS 26.0, *) {
-                GlassEffectContainer {
+            Group {
+                if #available(macOS 26.0, *) {
+                    GlassEffectContainer {
+                        groupViews
+                    }
+                } else {
                     groupViews
                 }
-            } else {
-                groupViews
             }
+            .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
         }
         .animation(.themeEaseInOutFast, value: viewModel.groups.map(\.id))
         .ignoresSafeArea()
