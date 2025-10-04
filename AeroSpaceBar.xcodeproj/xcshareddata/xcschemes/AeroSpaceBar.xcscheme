@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
+   LastUpgradeVersion = "2600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "NO">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C10E2F892D41235900AC957C"
-               BuildableName = "AeroSpaceBar.app"
+               BuildableName = "AeroSpaceBar2.app"
                BlueprintName = "AeroSpaceBar"
                ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
             </BuildableReference>
@@ -27,6 +28,41 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1A09D2442E98F4C500924EE7"
+               BuildableName = "DomainTests"
+               BlueprintName = "DomainTests"
+               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1A09D2652E98F4D100924EE7"
+               BuildableName = "PresentationTests"
+               BlueprintName = "PresentationTests"
+               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1A2C03F62E98FA17003C9FF9"
+               BuildableName = "PresentationUITests"
+               BlueprintName = "PresentationUITests"
+               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -43,7 +79,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C10E2F892D41235900AC957C"
-            BuildableName = "AeroSpaceBar.app"
+            BuildableName = "AeroSpaceBar2.app"
             BlueprintName = "AeroSpaceBar"
             ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
          </BuildableReference>

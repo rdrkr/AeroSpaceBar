@@ -3,76 +3,53 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A0011AA2E7E9FD20005683F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A0011AB2E7E9FDA0005683F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A0011AC2E7E9FE30005683F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A493D052E73D9CF00187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
-		1A493DED2E73D9F100187B3E /* Service.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; };
-		1A4941722E73DC5600187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
-		1A4941732E73DC5600187B3E /* Domain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A49417A2E73DC6500187B3E /* Service.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; };
-		1A49417B2E73DC6500187B3E /* Service.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493DE42E73D9F000187B3E /* Service.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A4941802E73DC7000187B3E /* Domain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; };
-		1A4941812E73DC7000187B3E /* Domain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A493CFC2E73D9CF00187B3E /* Domain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A494BD92E73E5B700187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A494BDB2E73E5BD00187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A494BDD2E73E5C200187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A494BD22E73E4DB00187B3E /* AppIntents.framework */; };
-		1A4A143D2E87B55700A4B997 /* ModifiedCopy in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4A143C2E87B55700A4B997 /* ModifiedCopy */; };
-		1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1AAFCE8A2E7404D6001948FD /* TOMLKit */; };
-		1ADFDD162E8BC41A00D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */; };
-		1ADFDD192E8BC45700D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */; };
-		1ADFDD1C2E8BC4CD00D806E2 /* AsyncFileMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */; };
+		1A4E7B602E97FFCB00A17D69 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B5F2E97FFCB00A17D69 /* Domain */; };
+		1A4E7B632E97FFE000A17D69 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B622E97FFE000A17D69 /* Data */; };
+		1A4E7B662E97FFF200A17D69 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B652E97FFF200A17D69 /* Presentation */; };
+		1AF2D23F2E91868900A850B5 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1AF2D23E2E91868900A850B5 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1A493D062E73D9CF00187B3E /* PBXContainerItemProxy */ = {
+		1A09D22D2E98F46D00924EE7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C10E2F822D41235900AC957C /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
+			remoteGlobalIDString = 1A09D2222E98F46C00924EE7;
+			remoteInfo = Data;
+		};
+		1A09D2472E98F4C500924EE7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A09D23C2E98F4C500924EE7;
 			remoteInfo = Domain;
 		};
-		1A493DEE2E73D9F100187B3E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C10E2F822D41235900AC957C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A493DE32E73D9F000187B3E;
-			remoteInfo = Service;
-		};
-		1A4941742E73DC5600187B3E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C10E2F822D41235900AC957C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
-			remoteInfo = Domain;
-		};
-		1A49417C2E73DC6500187B3E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C10E2F822D41235900AC957C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A493DE32E73D9F000187B3E;
-			remoteInfo = Service;
-		};
-		1A4941822E73DC7000187B3E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C10E2F822D41235900AC957C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A493CFB2E73D9CF00187B3E;
-			remoteInfo = Domain;
-		};
-		1AFC28802E609B9E00258BEE /* PBXContainerItemProxy */ = {
+		1A09D2492E98F4C500924EE7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C10E2F822D41235900AC957C /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C10E2F892D41235900AC957C;
 			remoteInfo = AeroSpaceBar;
 		};
-		1AFC288D2E609BDA00258BEE /* PBXContainerItemProxy */ = {
+		1A09D2682E98F4D100924EE7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A09D25D2E98F4D100924EE7;
+			remoteInfo = Presentation;
+		};
+		1A09D26A2E98F4D100924EE7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10E2F822D41235900AC957C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C10E2F892D41235900AC957C;
+			remoteInfo = AeroSpaceBar;
+		};
+		1A2C03FD2E98FA18003C9FF9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C10E2F822D41235900AC957C /* Project object */;
 			proxyType = 1;
@@ -81,378 +58,113 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		1A4941762E73DC5600187B3E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1A4941732E73DC5600187B3E /* Domain.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1A49417E2E73DC6500187B3E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1A49417B2E73DC6500187B3E /* Service.framework in Embed Frameworks */,
-				1A4941812E73DC7000187B3E /* Domain.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		1A493CFC2E73D9CF00187B3E /* Domain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Domain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A493D042E73D9CF00187B3E /* DomainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DomainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A493DE42E73D9F000187B3E /* Service.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Service.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A494BD22E73E4DB00187B3E /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
-		1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroSpaceBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A4E7B5A2E97FF9700A17D69 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
+		1A4E7B5B2E97FF9700A17D69 /* Presentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Presentation; sourceTree = "<group>"; };
+		1A4E7B5C2E97FF9700A17D69 /* Data */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Data; sourceTree = "<group>"; };
+		1AB371752E9BAB000069A41F /* AeroSpaceBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroSpaceBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */ = {
+		1AB371762E9BAB6C0069A41F /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Presentation/AeroSpaceBarApp.swift,
-				Presentation/AppDelegate.swift,
-				Presentation/AppIcon.icon,
-				Presentation/DependencyContainer.swift,
-				Presentation/Resources/Assets.xcassets,
-				Presentation/Resources/Localizable.xcstrings,
-				Presentation/ViewModels/AppViewModel.swift,
-				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
-				Presentation/ViewModels/GroupsViewModel.swift,
-				Presentation/ViewModels/LicenseViewModel.swift,
-				Presentation/ViewModels/SettingsViewModel.swift,
-				Presentation/ViewModels/SpacesViewModel.swift,
-				Presentation/Views/AboutView.swift,
-				Presentation/Views/AppMenuView.swift,
-				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
-				Presentation/Views/CommonViews/GeometrySettingsView.swift,
-				Presentation/Views/CommonViews/IntroForm.swift,
-				Presentation/Views/CommonViews/LazyVStackList.swift,
-				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
-				Presentation/Views/CommonViews/SettingsColorPicker.swift,
-				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
-				Presentation/Views/CommonViews/SettingsSlider.swift,
-				Presentation/Views/CommonViews/SettingsToggle.swift,
-				Presentation/Views/CommonViews/StickySlider.swift,
-				Presentation/Views/CommonViews/Theme.swift,
-				Presentation/Views/CommonViews/ViewModifiers.swift,
-				Presentation/Views/CommonViews/VisualSettingsContainerView.swift,
-				Presentation/Views/CommonViews/VisualSettingsView.swift,
-				Presentation/Views/GroupsViews/GroupsView.swift,
-				Presentation/Views/GroupsViews/GroupView.swift,
-				Presentation/Views/MenuViews/MenuItemView.swift,
-				Presentation/Views/SettingsViews/Advanced/AdvancedSettingsView.swift,
-				Presentation/Views/SettingsViews/Developer/DeveloperSettingsView.swift,
-				Presentation/Views/SettingsViews/General/GeneralSettingsView.swift,
-				Presentation/Views/SettingsViews/Groups/GroupAppRangePicker.swift,
-				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
-				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
-				Presentation/Views/SettingsViews/License/CheckoutWebViewWrapper.swift,
-				Presentation/Views/SettingsViews/License/LicenseActionsSection.swift,
-				Presentation/Views/SettingsViews/License/LicenseKeyActivationView.swift,
-				Presentation/Views/SettingsViews/License/LicenseMenuItemView.swift,
-				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
-				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
-				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
-				Presentation/Views/SettingsViews/License/ProfileSection.swift,
-				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
-				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
-				Presentation/Views/SettingsViews/Navigation/SpaceNavigationPage.swift,
-				Presentation/Views/SettingsViews/SettingsView.swift,
-				Presentation/Views/SettingsViews/Spaces/SpacePageView.swift,
-				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
-				Presentation/Views/SpacesViews/SpacesContainerView.swift,
-				Presentation/Views/SpacesViews/SpacesView.swift,
-				Presentation/Views/SpacesViews/SpaceView.swift,
-				Presentation/Views/SpacesViews/WallpaperBackgroundView.swift,
-				Presentation/Views/SpacesViews/WindowView.swift,
+				Info.plist,
 			);
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
-		};
-		1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Presentation/AeroSpaceBarApp.swift,
-				Presentation/AppDelegate.swift,
-				Presentation/AppIcon.icon,
-				Presentation/DependencyContainer.swift,
-				Presentation/Info.plist,
-				Presentation/Resources/Assets.xcassets,
-				Presentation/Resources/Localizable.xcstrings,
-				Presentation/ViewModels/AppViewModel.swift,
-				Presentation/ViewModels/DeveloperSettingsViewModel.swift,
-				Presentation/ViewModels/GroupsViewModel.swift,
-				Presentation/ViewModels/LicenseViewModel.swift,
-				Presentation/ViewModels/SettingsViewModel.swift,
-				Presentation/ViewModels/SpacesViewModel.swift,
-				Presentation/Views/AboutView.swift,
-				Presentation/Views/AppMenuView.swift,
-				Presentation/Views/CommonViews/FeatureFlagToggle.swift,
-				Presentation/Views/CommonViews/GeometrySettingsView.swift,
-				Presentation/Views/CommonViews/IntroForm.swift,
-				Presentation/Views/CommonViews/LazyVStackList.swift,
-				Presentation/Views/CommonViews/LazyVStackListRowItem.swift,
-				Presentation/Views/CommonViews/SettingsColorPicker.swift,
-				Presentation/Views/CommonViews/SettingsDestructiveButton.swift,
-				Presentation/Views/CommonViews/SettingsSlider.swift,
-				Presentation/Views/CommonViews/SettingsToggle.swift,
-				Presentation/Views/CommonViews/StickySlider.swift,
-				Presentation/Views/CommonViews/Theme.swift,
-				Presentation/Views/CommonViews/ViewModifiers.swift,
-				Presentation/Views/CommonViews/VisualSettingsContainerView.swift,
-				Presentation/Views/CommonViews/VisualSettingsView.swift,
-				Presentation/Views/GroupsViews/GroupsView.swift,
-				Presentation/Views/GroupsViews/GroupView.swift,
-				Presentation/Views/MenuViews/MenuItemView.swift,
-				Presentation/Views/SettingsViews/Advanced/AdvancedSettingsView.swift,
-				Presentation/Views/SettingsViews/Developer/DeveloperSettingsView.swift,
-				Presentation/Views/SettingsViews/General/GeneralSettingsView.swift,
-				Presentation/Views/SettingsViews/Groups/GroupAppRangePicker.swift,
-				Presentation/Views/SettingsViews/Groups/GroupPageView.swift,
-				Presentation/Views/SettingsViews/Groups/GroupsSettingsView.swift,
-				Presentation/Views/SettingsViews/License/CheckoutWebViewWrapper.swift,
-				Presentation/Views/SettingsViews/License/LicenseActionsSection.swift,
-				Presentation/Views/SettingsViews/License/LicenseKeyActivationView.swift,
-				Presentation/Views/SettingsViews/License/LicenseMenuItemView.swift,
-				Presentation/Views/SettingsViews/License/LicenseSettingsSidebarItemView.swift,
-				Presentation/Views/SettingsViews/License/LicenseSettingsView.swift,
-				Presentation/Views/SettingsViews/License/LicenseStatusSection.swift,
-				Presentation/Views/SettingsViews/License/ProfileSection.swift,
-				Presentation/Views/SettingsViews/Navigation/GroupNavigationPage.swift,
-				Presentation/Views/SettingsViews/Navigation/RootNavigationPage.swift,
-				Presentation/Views/SettingsViews/Navigation/SpaceNavigationPage.swift,
-				Presentation/Views/SettingsViews/SettingsView.swift,
-				Presentation/Views/SettingsViews/Spaces/SpacePageView.swift,
-				Presentation/Views/SettingsViews/Spaces/SpacesSettingsView.swift,
-				Presentation/Views/SpacesViews/SpacesContainerView.swift,
-				Presentation/Views/SpacesViews/SpacesView.swift,
-				Presentation/Views/SpacesViews/SpaceView.swift,
-				Presentation/Views/SpacesViews/WallpaperBackgroundView.swift,
-				Presentation/Views/SpacesViews/WindowView.swift,
-				Service/Network/AeroSpaceCLIClient.swift,
-				Service/Network/IconCache.swift,
-				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
-				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
-				Service/Repositories/ConfigurationRepository.swift,
-				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/KeyboardShortcutsRepository.swift,
-				Service/Repositories/LicenseRepository.swift,
-				Service/Repositories/SystemMenuBarRepository.swift,
-			);
-			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-		};
-		1A49416B2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PresentationUITests/AeroSpaceBarAppUITests.swift,
-				PresentationUITests/AppDelegateUITests.swift,
-				PresentationUITests/DependencyContainerUITests.swift,
-				PresentationUITests/FlowsUITests/CompleteUserJourneyUITests.swift,
-				PresentationUITests/PresentationUITests/ViewModelsUITests/SettingsViewModelUITests.swift,
-				PresentationUITests/PresentationUITests/ViewModelsUITests/SpacesViewModelUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/AboutViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/AppMenuViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/CommonUITests/IntroFormUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/AdvancedSettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/GeneralSettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/SettingsNavigationOptionsUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SpacesViewUITests.swift,
-			);
-			target = 1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */;
-		};
-		1A49416C2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PresentationTests/AeroSpaceBarAppTests.swift,
-				PresentationTests/AppDelegateTests.swift,
-				PresentationTests/DependencyContainerTests.swift,
-			);
-			target = 1AFC28882E609BDA00258BEE /* AeroSpaceBarTests */;
-		};
-		1A49416D2E73DC3C00187B3E /* Exceptions for "Tests" folder in "Domain" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DomainTests/EntitiesTests/AppErrorTests.swift,
-				DomainTests/EntitiesTests/AppModelsTests.swift,
-				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
-				DomainTests/EntitiesTests/LoggerTests.swift,
-				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
-				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
-				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
-				DomainTests/UseCasesTests/GetAeroSpacePathUseCaseTests.swift,
-				DomainTests/UseCasesTests/GetSpacesUseCaseTests.swift,
-				PresentationTests/AeroSpaceBarAppTests.swift,
-				PresentationTests/AppDelegateTests.swift,
-				PresentationTests/DependencyContainerTests.swift,
-				PresentationUITests/AeroSpaceBarAppUITests.swift,
-				PresentationUITests/AppDelegateUITests.swift,
-				PresentationUITests/DependencyContainerUITests.swift,
-				PresentationUITests/FlowsUITests/CompleteUserJourneyUITests.swift,
-				PresentationUITests/PresentationUITests/ViewModelsUITests/SettingsViewModelUITests.swift,
-				PresentationUITests/PresentationUITests/ViewModelsUITests/SpacesViewModelUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/AboutViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/AppMenuViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/CommonUITests/IntroFormUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/AdvancedSettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/GeneralSettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewsUITests/SettingsNavigationOptionsUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SettingsViewUITests.swift,
-				PresentationUITests/PresentationUITests/ViewsUITests/SpacesViewUITests.swift,
-				ServiceTests/NetworkTests/AeroSpaceCLIClientTests.swift,
-				ServiceTests/NetworkTests/IconCacheTests.swift,
-				ServiceTests/RepositoriesTests/AeroSpace/AeroSpaceRepositoryTests.swift,
-				ServiceTests/RepositoriesTests/ConfigurationRepositoryTests.swift,
-				ServiceTests/RepositoriesTests/SystemMenuBarRepositoryTests.swift,
-			);
-			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-		};
-		1A49416E2E73DC3C00187B3E /* Exceptions for "Tests" folder in "DomainTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				DomainTests/EntitiesTests/AppErrorTests.swift,
-				DomainTests/EntitiesTests/AppModelsTests.swift,
-				DomainTests/EntitiesTests/ConfigurationDefaultsTests.swift,
-				DomainTests/EntitiesTests/LoggerTests.swift,
-				DomainTests/GatewaysTests/ConfigurationGatewayTests.swift,
-				DomainTests/GatewaysTests/SpacesGatewayTests.swift,
-				DomainTests/GatewaysTests/SystemMenuBarGatewayTests.swift,
-				DomainTests/UseCasesTests/GetAeroSpacePathUseCaseTests.swift,
-				DomainTests/UseCasesTests/GetSpacesUseCaseTests.swift,
-			);
-			target = 1A493D032E73D9CF00187B3E /* DomainTests */;
-		};
-		1A49416F2E73DC3C00187B3E /* Exceptions for "Tests" folder in "ServiceTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ServiceTests/NetworkTests/AeroSpaceCLIClientTests.swift,
-				ServiceTests/NetworkTests/IconCacheTests.swift,
-				ServiceTests/RepositoriesTests/AeroSpace/AeroSpaceRepositoryTests.swift,
-				ServiceTests/RepositoriesTests/ConfigurationRepositoryTests.swift,
-				ServiceTests/RepositoriesTests/SystemMenuBarRepositoryTests.swift,
-			);
-			target = 1A493DEB2E73D9F100187B3E /* ServiceTests */;
-		};
-		1ADFDF632E8CEE3400D806E2 /* Exceptions for "Sources" folder in "Service" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Service/Network/AeroSpaceCLIClient.swift,
-				Service/Network/IconCache.swift,
-				Service/Repositories/AeroSpace/AeroSpaceConfiguration.swift,
-				Service/Repositories/AeroSpace/AeroSpaceRepository.swift,
-				Service/Repositories/ConfigurationRepository.swift,
-				Service/Repositories/FeatureFlagsRepository.swift,
-				Service/Repositories/KeyboardShortcutsRepository.swift,
-				Service/Repositories/LicenseRepository.swift,
-				Service/Repositories/SystemMenuBarRepository.swift,
-			);
-			target = 1A493DE32E73D9F000187B3E /* Service */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1A493FFF2E73DBFD00187B3E /* Sources */ = {
+		1A09D2242E98F46C00924EE7 /* Packages/Data/Sources/Data */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				1A4941172E73DC1200187B3E /* Exceptions for "Sources" folder in "AeroSpaceBar" target */,
-				1A4941182E73DC1200187B3E /* Exceptions for "Sources" folder in "Domain" target */,
-				1ADFDF632E8CEE3400D806E2 /* Exceptions for "Sources" folder in "Service" target */,
-			);
-			path = Sources;
+			path = Packages/Data/Sources/Data;
 			sourceTree = "<group>";
 		};
-		1A4940022E73DC0600187B3E /* Tests */ = {
+		1A09D22F2E98F46D00924EE7 /* Packages/Data/Tests/DataTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Data/Tests/DataTests;
+			sourceTree = "<group>";
+		};
+		1A09D23E2E98F4C500924EE7 /* Packages/Domain/Sources/Domain */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Domain/Sources/Domain;
+			sourceTree = "<group>";
+		};
+		1A09D24B2E98F4C500924EE7 /* Packages/Domain/Tests/DomainTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Domain/Tests/DomainTests;
+			sourceTree = "<group>";
+		};
+		1A09D25F2E98F4D100924EE7 /* Packages/Presentation/Sources/Presentation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Presentation/Sources/Presentation;
+			sourceTree = "<group>";
+		};
+		1A09D26C2E98F4D100924EE7 /* Packages/Presentation/Tests/PresentationTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Presentation/Tests/PresentationTests;
+			sourceTree = "<group>";
+		};
+		1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/Presentation/Tests/PresentationUITests;
+			sourceTree = "<group>";
+		};
+		1A4E7B502E97FD6F00A17D69 /* AeroSpaceBar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1A49416B2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarUITests" target */,
-				1A49416C2E73DC3C00187B3E /* Exceptions for "Tests" folder in "AeroSpaceBarTests" target */,
-				1A49416D2E73DC3C00187B3E /* Exceptions for "Tests" folder in "Domain" target */,
-				1A49416E2E73DC3C00187B3E /* Exceptions for "Tests" folder in "DomainTests" target */,
-				1A49416F2E73DC3C00187B3E /* Exceptions for "Tests" folder in "ServiceTests" target */,
+				1AB371762E9BAB6C0069A41F /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */,
 			);
-			path = Tests;
+			path = AeroSpaceBar;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1A493CF92E73D9CF00187B3E /* Frameworks */ = {
+		1A09D2202E98F46C00924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A4A143D2E87B55700A4B997 /* ModifiedCopy in Frameworks */,
-				1A0011AB2E7E9FDA0005683F /* AppIntents.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493D012E73D9CF00187B3E /* Frameworks */ = {
+		1A09D2282E98F46D00924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A494BDD2E73E5C200187B3E /* AppIntents.framework in Frameworks */,
-				1A493D052E73D9CF00187B3E /* Domain.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DE12E73D9F000187B3E /* Frameworks */ = {
+		1A09D23A2E98F4C500924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1AAFCE8B2E7404D6001948FD /* TOMLKit in Frameworks */,
-				1A4941722E73DC5600187B3E /* Domain.framework in Frameworks */,
-				1ADFDD1C2E8BC4CD00D806E2 /* AsyncFileMonitor in Frameworks */,
-				1ADFDD162E8BC41A00D806E2 /* AsyncFileMonitor in Frameworks */,
-				1ADFDD192E8BC45700D806E2 /* AsyncFileMonitor in Frameworks */,
-				1A0011AA2E7E9FD20005683F /* AppIntents.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DE92E73D9F100187B3E /* Frameworks */ = {
+		1A09D2422E98F4C500924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A494BDF2E73E5C800187B3E /* AppIntents.framework in Frameworks */,
-				1A493DED2E73D9F100187B3E /* Service.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28772E609B9E00258BEE /* Frameworks */ = {
+		1A09D25B2E98F4D100924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A494BD92E73E5B700187B3E /* AppIntents.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28862E609BDA00258BEE /* Frameworks */ = {
+		1A09D2632E98F4D100924EE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A494BDB2E73E5BD00187B3E /* AppIntents.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A2C03F42E98FA17003C9FF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
 		};
 		C10E2F872D41235900AC957C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				1A49417A2E73DC6500187B3E /* Service.framework in Frameworks */,
-				1A4941802E73DC7000187B3E /* Domain.framework in Frameworks */,
-				1A0011AC2E7E9FE30005683F /* AppIntents.framework in Frameworks */,
+				1A4E7B662E97FFF200A17D69 /* Presentation in Frameworks */,
+				1A4E7B632E97FFE000A17D69 /* Data in Frameworks */,
+				1A4E7B602E97FFCB00A17D69 /* Domain in Frameworks */,
+				1AF2D23F2E91868900A850B5 /* Sparkle in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -460,31 +172,41 @@
 		1A493B982E7335CB00187B3E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1A494BD22E73E4DB00187B3E /* AppIntents.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1A4E7B5D2E97FF9700A17D69 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				1A4E7B5C2E97FF9700A17D69 /* Data */,
+				1A4E7B5A2E97FF9700A17D69 /* Domain */,
+				1A4E7B5B2E97FF9700A17D69 /* Presentation */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 		C10E2F812D41235900AC957C = {
 			isa = PBXGroup;
 			children = (
 				1A493B982E7335CB00187B3E /* Frameworks */,
+				1A4E7B502E97FD6F00A17D69 /* AeroSpaceBar */,
+				1A4E7B5D2E97FF9700A17D69 /* Packages */,
+				1A09D2242E98F46C00924EE7 /* Packages/Data/Sources/Data */,
+				1A09D22F2E98F46D00924EE7 /* Packages/Data/Tests/DataTests */,
+				1A09D23E2E98F4C500924EE7 /* Packages/Domain/Sources/Domain */,
+				1A09D24B2E98F4C500924EE7 /* Packages/Domain/Tests/DomainTests */,
+				1A09D25F2E98F4D100924EE7 /* Packages/Presentation/Sources/Presentation */,
+				1A09D26C2E98F4D100924EE7 /* Packages/Presentation/Tests/PresentationTests */,
+				1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */,
 				C10E2F8B2D41235900AC957C /* Products */,
-				1A493FFF2E73DBFD00187B3E /* Sources */,
-				1A4940022E73DC0600187B3E /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
 		C10E2F8B2D41235900AC957C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */,
-				1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */,
-				1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */,
-				1A493CFC2E73D9CF00187B3E /* Domain.framework */,
-				1A493D042E73D9CF00187B3E /* DomainTests.xctest */,
-				1A493DE42E73D9F000187B3E /* Service.framework */,
-				1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */,
+				1AB371752E9BAB000069A41F /* AeroSpaceBar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -492,174 +214,183 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		1A493CF72E73D9CF00187B3E /* Headers */ = {
+		1A09D21E2E98F46C00924EE7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DDF2E73D9F000187B3E /* Headers */ = {
+		1A09D2382E98F4C500924EE7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A09D2592E98F4D100924EE7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1A493CFB2E73D9CF00187B3E /* Domain */ = {
+		1A09D2222E98F46C00924EE7 /* Data */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A493D152E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "Domain" */;
+			buildConfigurationList = 1A09D2322E98F46D00924EE7 /* Build configuration list for PBXNativeTarget "Data" */;
 			buildPhases = (
-				1A493CF72E73D9CF00187B3E /* Headers */,
-				1A493CF82E73D9CF00187B3E /* Sources */,
-				1A493CF92E73D9CF00187B3E /* Frameworks */,
-				1A493CFA2E73D9CF00187B3E /* Resources */,
+				1A09D21E2E98F46C00924EE7 /* Headers */,
+				1A09D21F2E98F46C00924EE7 /* Sources */,
+				1A09D2202E98F46C00924EE7 /* Frameworks */,
+				1A09D2212E98F46C00924EE7 /* Resources */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1A493FFF2E73DBFD00187B3E /* Sources */,
-				1A4940022E73DC0600187B3E /* Tests */,
+				1A09D2242E98F46C00924EE7 /* Packages/Data/Sources/Data */,
+			);
+			name = Data;
+			productName = Data;
+			productType = "com.apple.product-type.framework";
+		};
+		1A09D22A2E98F46D00924EE7 /* DataTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A09D2352E98F46D00924EE7 /* Build configuration list for PBXNativeTarget "DataTests" */;
+			buildPhases = (
+				1A09D2272E98F46D00924EE7 /* Sources */,
+				1A09D2282E98F46D00924EE7 /* Frameworks */,
+				1A09D2292E98F46D00924EE7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A09D22E2E98F46D00924EE7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1A09D22F2E98F46D00924EE7 /* Packages/Data/Tests/DataTests */,
+			);
+			name = DataTests;
+			productName = DataTests;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1A09D23C2E98F4C500924EE7 /* Domain */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A09D2522E98F4C500924EE7 /* Build configuration list for PBXNativeTarget "Domain" */;
+			buildPhases = (
+				1A09D2382E98F4C500924EE7 /* Headers */,
+				1A09D2392E98F4C500924EE7 /* Sources */,
+				1A09D23A2E98F4C500924EE7 /* Frameworks */,
+				1A09D23B2E98F4C500924EE7 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				1A09D23E2E98F4C500924EE7 /* Packages/Domain/Sources/Domain */,
 			);
 			name = Domain;
-			packageProductDependencies = (
-				1A4A143C2E87B55700A4B997 /* ModifiedCopy */,
-			);
 			productName = Domain;
-			productReference = 1A493CFC2E73D9CF00187B3E /* Domain.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1A493D032E73D9CF00187B3E /* DomainTests */ = {
+		1A09D2442E98F4C500924EE7 /* DomainTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A493D202E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "DomainTests" */;
+			buildConfigurationList = 1A09D2562E98F4C500924EE7 /* Build configuration list for PBXNativeTarget "DomainTests" */;
 			buildPhases = (
-				1A493D002E73D9CF00187B3E /* Sources */,
-				1A493D012E73D9CF00187B3E /* Frameworks */,
-				1A493D022E73D9CF00187B3E /* Resources */,
+				1A09D2412E98F4C500924EE7 /* Sources */,
+				1A09D2422E98F4C500924EE7 /* Frameworks */,
+				1A09D2432E98F4C500924EE7 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1A493D072E73D9CF00187B3E /* PBXTargetDependency */,
+				1A09D2482E98F4C500924EE7 /* PBXTargetDependency */,
+				1A09D24A2E98F4C500924EE7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1A09D24B2E98F4C500924EE7 /* Packages/Domain/Tests/DomainTests */,
 			);
 			name = DomainTests;
-			packageProductDependencies = (
-			);
 			productName = DomainTests;
-			productReference = 1A493D042E73D9CF00187B3E /* DomainTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1A493DE32E73D9F000187B3E /* Service */ = {
+		1A09D25D2E98F4D100924EE7 /* Presentation */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A493DF92E73D9F100187B3E /* Build configuration list for PBXNativeTarget "Service" */;
+			buildConfigurationList = 1A09D2732E98F4D100924EE7 /* Build configuration list for PBXNativeTarget "Presentation" */;
 			buildPhases = (
-				1A493DDF2E73D9F000187B3E /* Headers */,
-				1A493DE02E73D9F000187B3E /* Sources */,
-				1A493DE12E73D9F000187B3E /* Frameworks */,
-				1A493DE22E73D9F000187B3E /* Resources */,
-				1A4941762E73DC5600187B3E /* Embed Frameworks */,
+				1A09D2592E98F4D100924EE7 /* Headers */,
+				1A09D25A2E98F4D100924EE7 /* Sources */,
+				1A09D25B2E98F4D100924EE7 /* Frameworks */,
+				1A09D25C2E98F4D100924EE7 /* Resources */,
 			);
 			buildRules = (
 			);
-			dependencies = (
-				1A4941752E73DC5600187B3E /* PBXTargetDependency */,
+			fileSystemSynchronizedGroups = (
+				1A09D25F2E98F4D100924EE7 /* Packages/Presentation/Sources/Presentation */,
 			);
-			name = Service;
-			packageProductDependencies = (
-				1AAFCE8A2E7404D6001948FD /* TOMLKit */,
-				1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */,
-				1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */,
-				1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */,
-			);
-			productName = Service;
-			productReference = 1A493DE42E73D9F000187B3E /* Service.framework */;
+			name = Presentation;
+			productName = Presentation;
 			productType = "com.apple.product-type.framework";
 		};
-		1A493DEB2E73D9F100187B3E /* ServiceTests */ = {
+		1A09D2652E98F4D100924EE7 /* PresentationTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A493DFC2E73D9F100187B3E /* Build configuration list for PBXNativeTarget "ServiceTests" */;
+			buildConfigurationList = 1A09D2762E98F4D100924EE7 /* Build configuration list for PBXNativeTarget "PresentationTests" */;
 			buildPhases = (
-				1A493DE82E73D9F100187B3E /* Sources */,
-				1A493DE92E73D9F100187B3E /* Frameworks */,
-				1A493DEA2E73D9F100187B3E /* Resources */,
+				1A09D2622E98F4D100924EE7 /* Sources */,
+				1A09D2632E98F4D100924EE7 /* Frameworks */,
+				1A09D2642E98F4D100924EE7 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1A493DEF2E73D9F100187B3E /* PBXTargetDependency */,
+				1A09D2692E98F4D100924EE7 /* PBXTargetDependency */,
+				1A09D26B2E98F4D100924EE7 /* PBXTargetDependency */,
 			);
-			name = ServiceTests;
-			packageProductDependencies = (
+			fileSystemSynchronizedGroups = (
+				1A09D26C2E98F4D100924EE7 /* Packages/Presentation/Tests/PresentationTests */,
 			);
-			productName = ServiceTests;
-			productReference = 1A493DEC2E73D9F100187B3E /* ServiceTests.xctest */;
+			name = PresentationTests;
+			productName = PresentationTests;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */ = {
+		1A2C03F62E98FA17003C9FF9 /* PresentationUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1AFC28842E609B9E00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */;
+			buildConfigurationList = 1A2C03FF2E98FA18003C9FF9 /* Build configuration list for PBXNativeTarget "PresentationUITests" */;
 			buildPhases = (
-				1AFC28762E609B9E00258BEE /* Sources */,
-				1AFC28772E609B9E00258BEE /* Frameworks */,
-				1AFC28782E609B9E00258BEE /* Resources */,
+				1A2C03F32E98FA17003C9FF9 /* Sources */,
+				1A2C03F42E98FA17003C9FF9 /* Frameworks */,
+				1A2C03F52E98FA17003C9FF9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1AFC28812E609B9E00258BEE /* PBXTargetDependency */,
+				1A2C03FE2E98FA18003C9FF9 /* PBXTargetDependency */,
 			);
-			name = AeroSpaceBarUITests;
-			packageProductDependencies = (
+			fileSystemSynchronizedGroups = (
+				1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */,
 			);
-			productName = AeroSpaceBarUITests;
-			productReference = 1AFC287A2E609B9E00258BEE /* AeroSpaceBarUITests.xctest */;
+			name = PresentationUITests;
+			productName = PresentationUITests;
 			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		1AFC28882E609BDA00258BEE /* AeroSpaceBarTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1AFC288F2E609BDA00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarTests" */;
-			buildPhases = (
-				1AFC28852E609BDA00258BEE /* Sources */,
-				1AFC28862E609BDA00258BEE /* Frameworks */,
-				1AFC28872E609BDA00258BEE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1AFC288E2E609BDA00258BEE /* PBXTargetDependency */,
-			);
-			name = AeroSpaceBarTests;
-			packageProductDependencies = (
-			);
-			productName = AeroSpaceBarTests;
-			productReference = 1AFC28892E609BDA00258BEE /* AeroSpaceBarTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C10E2F892D41235900AC957C /* AeroSpaceBar */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C10E2FAF2D41235B00AC957C /* Build configuration list for PBXNativeTarget "AeroSpaceBar" */;
 			buildPhases = (
+				1A4E7C092E981E6C00A17D69 /* ShellScript */,
 				C10E2F862D41235900AC957C /* Sources */,
 				C10E2F872D41235900AC957C /* Frameworks */,
 				C10E2F882D41235900AC957C /* Resources */,
-				1A49417E2E73DC6500187B3E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
-			dependencies = (
-				1A49417D2E73DC6500187B3E /* PBXTargetDependency */,
-				1A4941832E73DC7000187B3E /* PBXTargetDependency */,
+			fileSystemSynchronizedGroups = (
+				1A4E7B502E97FD6F00A17D69 /* AeroSpaceBar */,
 			);
 			name = AeroSpaceBar;
 			packageProductDependencies = (
+				1AF2D23E2E91868900A850B5 /* Sparkle */,
+				1A4E7B5F2E97FFCB00A17D69 /* Domain */,
+				1A4E7B622E97FFE000A17D69 /* Data */,
+				1A4E7B652E97FFF200A17D69 /* Presentation */,
 			);
 			productName = AeroSpaceBar;
-			productReference = C10E2F8A2D41235900AC957C /* AeroSpaceBar.app */;
+			productReference = 1AB371752E9BAB000069A41F /* AeroSpaceBar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -671,27 +402,30 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
+				ORGANIZATIONNAME = "Ronen Druker";
 				TargetAttributes = {
-					1A493CFB2E73D9CF00187B3E = {
-						CreatedOnToolsVersion = 26.0;
+					1A09D2222E98F46C00924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
 					};
-					1A493D032E73D9CF00187B3E = {
-						CreatedOnToolsVersion = 26.0;
+					1A09D22A2E98F46D00924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					1A09D23C2E98F4C500924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					1A09D2442E98F4C500924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = C10E2F892D41235900AC957C;
 					};
-					1A493DE32E73D9F000187B3E = {
-						CreatedOnToolsVersion = 26.0;
+					1A09D25D2E98F4D100924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
 					};
-					1A493DEB2E73D9F100187B3E = {
-						CreatedOnToolsVersion = 26.0;
+					1A09D2652E98F4D100924EE7 = {
+						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = C10E2F892D41235900AC957C;
 					};
-					1AFC28792E609B9E00258BEE = {
-						CreatedOnToolsVersion = 26.0;
-						TestTargetID = C10E2F892D41235900AC957C;
-					};
-					1AFC28882E609BDA00258BEE = {
-						CreatedOnToolsVersion = 26.0;
+					1A2C03F62E98FA17003C9FF9 = {
+						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = C10E2F892D41235900AC957C;
 					};
 					C10E2F892D41235900AC957C = {
@@ -710,185 +444,230 @@
 			mainGroup = C10E2F812D41235900AC957C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */,
-				1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */,
-				1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */,
+				1AF4504E2E90FD6100E65663 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				1A4E7B5E2E97FFCB00A17D69 /* XCLocalSwiftPackageReference "Packages/Domain" */,
+				1A4E7B612E97FFE000A17D69 /* XCLocalSwiftPackageReference "Packages/Data" */,
+				1A4E7B642E97FFF200A17D69 /* XCLocalSwiftPackageReference "Packages/Presentation" */,
 			);
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 90;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C10E2F892D41235900AC957C /* AeroSpaceBar */,
-				1AFC28792E609B9E00258BEE /* AeroSpaceBarUITests */,
-				1AFC28882E609BDA00258BEE /* AeroSpaceBarTests */,
-				1A493CFB2E73D9CF00187B3E /* Domain */,
-				1A493D032E73D9CF00187B3E /* DomainTests */,
-				1A493DE32E73D9F000187B3E /* Service */,
-				1A493DEB2E73D9F100187B3E /* ServiceTests */,
+				1A09D2222E98F46C00924EE7 /* Data */,
+				1A09D22A2E98F46D00924EE7 /* DataTests */,
+				1A09D23C2E98F4C500924EE7 /* Domain */,
+				1A09D2442E98F4C500924EE7 /* DomainTests */,
+				1A09D25D2E98F4D100924EE7 /* Presentation */,
+				1A09D2652E98F4D100924EE7 /* PresentationTests */,
+				1A2C03F62E98FA17003C9FF9 /* PresentationUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1A493CFA2E73D9CF00187B3E /* Resources */ = {
+		1A09D2212E98F46C00924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493D022E73D9CF00187B3E /* Resources */ = {
+		1A09D2292E98F46D00924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DE22E73D9F000187B3E /* Resources */ = {
+		1A09D23B2E98F4C500924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DEA2E73D9F100187B3E /* Resources */ = {
+		1A09D2432E98F4C500924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28782E609B9E00258BEE /* Resources */ = {
+		1A09D25C2E98F4D100924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28872E609BDA00258BEE /* Resources */ = {
+		1A09D2642E98F4D100924EE7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A2C03F52E98FA17003C9FF9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
 		};
 		C10E2F882D41235900AC957C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1A4E7C092E981E6C00A17D69 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			shellPath = /bin/sh;
+			shellScript = (
+				"# Pre-build Code Quality Checks",
+				"# Runs SwiftFormat and SwiftLint before every build",
+				"",
+				"set -e",
+				"",
+				"cd \"$SRCROOT\"",
+				"",
+				"paths=(",
+				"    \"\\\"$SRCROOT/AeroSpaceBar\\\"\"",
+				"    \"\\\"$SRCROOT/Packages\\\"\"",
+				")",
+				"",
+				"swiftformat_cmd=\"swiftformat --config \\\"$SRCROOT/.swiftformat\\\" ${paths[@]}\"",
+				"swiftlint_cmd=\"swiftlint --config \\\"$SRCROOT/.swiftlint.yaml\\\"\"",
+				"",
+				"if [[ \"$(uname -m)\" == arm64 ]]; then",
+				"    export PATH=\"/opt/homebrew/bin:$PATH\"",
+				"fi",
+				"",
+				"echo \"🔧 Running SwiftFormat (pass 1)...\"",
+				"if which swiftformat > /dev/null; then",
+				"    eval \"$swiftformat_cmd\"",
+				"else",
+				"    echo \"⚠️ SwiftFormat not found. Install with: brew install swiftformat\"",
+				"    exit 1",
+				"fi",
+				"",
+				"echo \"🔍 Running SwiftLint fix...\"",
+				"if which swiftlint > /dev/null; then",
+				"    eval \"$swiftlint_cmd --fix\"",
+				"else",
+				"    echo \"⚠️ SwiftLint not found. Install with: brew install swiftlint\"",
+				"    exit 1",
+				"fi",
+				"",
+				"echo \"🔧 Running SwiftFormat (pass 2)...\"",
+				"eval \"$swiftformat_cmd\"",
+				"",
+				"echo \"✅ Running SwiftLint strict check...\"",
+				"eval \"$swiftlint_cmd --strict\"",
+				"",
+				"echo \"✅ Pre-build checks completed successfully\"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+			);
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		1A493CF82E73D9CF00187B3E /* Sources */ = {
+		1A09D21F2E98F46C00924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493D002E73D9CF00187B3E /* Sources */ = {
+		1A09D2272E98F46D00924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DE02E73D9F000187B3E /* Sources */ = {
+		1A09D2392E98F4C500924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A493DE82E73D9F100187B3E /* Sources */ = {
+		1A09D2412E98F4C500924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28762E609B9E00258BEE /* Sources */ = {
+		1A09D25A2E98F4D100924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AFC28852E609BDA00258BEE /* Sources */ = {
+		1A09D2622E98F4D100924EE7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A2C03F32E98FA17003C9FF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
 		};
 		C10E2F862D41235900AC957C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1A493D072E73D9CF00187B3E /* PBXTargetDependency */ = {
+		1A09D22E2E98F46D00924EE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-			targetProxy = 1A493D062E73D9CF00187B3E /* PBXContainerItemProxy */;
+			target = 1A09D2222E98F46C00924EE7 /* Data */;
+			targetProxy = 1A09D22D2E98F46D00924EE7 /* PBXContainerItemProxy */;
 		};
-		1A493DEF2E73D9F100187B3E /* PBXTargetDependency */ = {
+		1A09D2482E98F4C500924EE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1A493DE32E73D9F000187B3E /* Service */;
-			targetProxy = 1A493DEE2E73D9F100187B3E /* PBXContainerItemProxy */;
+			target = 1A09D23C2E98F4C500924EE7 /* Domain */;
+			targetProxy = 1A09D2472E98F4C500924EE7 /* PBXContainerItemProxy */;
 		};
-		1A4941752E73DC5600187B3E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-			targetProxy = 1A4941742E73DC5600187B3E /* PBXContainerItemProxy */;
-		};
-		1A49417D2E73DC6500187B3E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A493DE32E73D9F000187B3E /* Service */;
-			targetProxy = 1A49417C2E73DC6500187B3E /* PBXContainerItemProxy */;
-		};
-		1A4941832E73DC7000187B3E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A493CFB2E73D9CF00187B3E /* Domain */;
-			targetProxy = 1A4941822E73DC7000187B3E /* PBXContainerItemProxy */;
-		};
-		1AFC28812E609B9E00258BEE /* PBXTargetDependency */ = {
+		1A09D24A2E98F4C500924EE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
-			targetProxy = 1AFC28802E609B9E00258BEE /* PBXContainerItemProxy */;
+			targetProxy = 1A09D2492E98F4C500924EE7 /* PBXContainerItemProxy */;
 		};
-		1AFC288E2E609BDA00258BEE /* PBXTargetDependency */ = {
+		1A09D2692E98F4D100924EE7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A09D25D2E98F4D100924EE7 /* Presentation */;
+			targetProxy = 1A09D2682E98F4D100924EE7 /* PBXContainerItemProxy */;
+		};
+		1A09D26B2E98F4D100924EE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
-			targetProxy = 1AFC288D2E609BDA00258BEE /* PBXContainerItemProxy */;
+			targetProxy = 1A09D26A2E98F4D100924EE7 /* PBXContainerItemProxy */;
+		};
+		1A2C03FE2E98FA18003C9FF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
+			targetProxy = 1A2C03FD2E98FA18003C9FF9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1A493D112E73D9CF00187B3E /* Debug */ = {
+		1A09D2332E98F46D00924EE7 /* Debug configuration for PBXNativeTarget "Data" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -897,13 +676,132 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Data;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.2;
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1A09D2342E98F46D00924EE7 /* Release configuration for PBXNativeTarget "Data" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Data;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.2;
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		1A09D2362E98F46D00924EE7 /* Debug configuration for PBXNativeTarget "DataTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DataTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.2;
+			};
+			name = Debug;
+		};
+		1A09D2372E98F46D00924EE7 /* Release configuration for PBXNativeTarget "DataTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DataTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.2;
+			};
+			name = Release;
+		};
+		1A09D2532E98F4C500924EE7 /* Debug configuration for PBXNativeTarget "Domain" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Domain;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -911,28 +809,25 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_VERSION = 6.2;
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		1A493D122E73D9CF00187B3E /* Release */ = {
+		1A09D2542E98F4C500924EE7 /* Release configuration for PBXNativeTarget "Domain" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -941,13 +836,12 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Domain;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -955,75 +849,67 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_VERSION = 6.2;
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		1A493D132E73D9CF00187B3E /* Debug */ = {
+		1A09D2572E98F4C500924EE7 /* Debug configuration for PBXNativeTarget "DomainTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DomainTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
 			};
 			name = Debug;
 		};
-		1A493D142E73D9CF00187B3E /* Release */ = {
+		1A09D2582E98F4C500924EE7 /* Release configuration for PBXNativeTarget "DomainTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.DomainTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
 			};
 			name = Release;
 		};
-		1A493DFA2E73D9F100187B3E /* Debug */ = {
+		1A09D2742E98F4D100924EE7 /* Debug configuration for PBXNativeTarget "Presentation" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				GCC_WARN_SHADOW = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1032,13 +918,12 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Service;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Presentation;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -1046,29 +931,25 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_VERSION = 6.2;
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		1A493DFB2E73D9F100187B3E /* Release */ = {
+		1A09D2752E98F4D100924EE7 /* Release configuration for PBXNativeTarget "Presentation" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				GCC_WARN_SHADOW = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1077,13 +958,12 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Service;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.Presentation;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -1091,153 +971,96 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_VERSION = 6.2;
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		1A493DFD2E73D9F100187B3E /* Debug */ = {
+		1A09D2772E98F4D100924EE7 /* Debug configuration for PBXNativeTarget "PresentationTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.ServiceTests;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
 			};
 			name = Debug;
 		};
-		1A493DFE2E73D9F100187B3E /* Release */ = {
+		1A09D2782E98F4D100924EE7 /* Release configuration for PBXNativeTarget "PresentationTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.ServiceTests;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
 			};
 			name = Release;
 		};
-		1AFC28822E609B9E00258BEE /* Debug */ = {
+		1A2C04002E98FA18003C9FF9 /* Debug configuration for PBXNativeTarget "PresentationUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_TARGET_NAME = AeroSpaceBar;
 			};
 			name = Debug;
 		};
-		1AFC28832E609B9E00258BEE /* Release */ = {
+		1A2C04012E98FA18003C9FF9 /* Release configuration for PBXNativeTarget "PresentationUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.2;
 				TEST_TARGET_NAME = AeroSpaceBar;
 			};
 			name = Release;
 		};
-		1AFC28902E609BDA00258BEE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 53JNQ2ENLL;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarTests.AeroSpaceBarTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
-			};
-			name = Debug;
-		};
-		1AFC28912E609BDA00258BEE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 53JNQ2ENLL;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarTests.AeroSpaceBarTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroSpaceBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroSpaceBar";
-			};
-			name = Release;
-		};
-		C10E2FAD2D41235B00AC957C /* Debug */ = {
+		C10E2FAD2D41235B00AC957C /* Debug configuration for PBXProject "AeroSpaceBar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1281,6 +1104,7 @@
 				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_CPLUSPLUS_BOUNDS_SAFE_BUFFERS = YES;
 				ENABLE_C_BOUNDS_SAFETY = YES;
 				ENABLE_ENHANCED_SECURITY = YES;
@@ -1309,7 +1133,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Sources/Presentation/Info.plist;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_PREPROCESS = YES;
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				LD_WARN_UNUSED_DYLIBS = NO;
@@ -1327,14 +1151,14 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 6.2;
 				TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS = YES;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
-		C10E2FAE2D41235B00AC957C /* Release */ = {
+		C10E2FAE2D41235B00AC957C /* Release configuration for PBXProject "AeroSpaceBar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1378,6 +1202,7 @@
 				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_CPLUSPLUS_BOUNDS_SAFE_BUFFERS = YES;
 				ENABLE_C_BOUNDS_SAFETY = YES;
 				ENABLE_ENHANCED_SECURITY = YES;
@@ -1400,7 +1225,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Sources/Presentation/Info.plist;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_PREPROCESS = YES;
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				LD_WARN_UNUSED_DYLIBS = NO;
@@ -1416,51 +1241,48 @@
 				SWIFT_OBJC_INTEROP_MODE = objc;
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 6.2;
 				TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS = YES;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
-		C10E2FB02D41235B00AC957C /* Debug */ = {
+		C10E2FB02D41235B00AC957C /* Debug configuration for PBXNativeTarget "AeroSpaceBar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Sources/Presentation/AeroSpaceBar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AeroSpaceBar/AeroSpaceBar.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = Sources/Presentation/Resources;
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Localizable.xcstrings AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_SECURITY_COMPILER_WARNINGS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Sources/Presentation/Info.plist;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses location permission for display WiFi network name";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -1472,48 +1294,45 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 6.2;
 			};
 			name = Debug;
 		};
-		C10E2FB12D41235B00AC957C /* Release */ = {
+		C10E2FB12D41235B00AC957C /* Release configuration for PBXNativeTarget "AeroSpaceBar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Sources/Presentation/AeroSpaceBar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AeroSpaceBar/AeroSpaceBar.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = Sources/Presentation/Resources;
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Localizable.xcstrings AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_SECURITY_COMPILER_WARNINGS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Sources/Presentation/Info.plist;
+				INFOPLIST_FILE = AeroSpaceBar/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AeroSpaceBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Ronen Druker";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses location permission for display WiFi network name";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				LD_WARN_DUPLICATE_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "1.0.0-beta.1";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -1524,137 +1343,130 @@
 				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 6.2;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A493D152E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "Domain" */ = {
+		1A09D2322E98F46D00924EE7 /* Build configuration list for PBXNativeTarget "Data" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A493D112E73D9CF00187B3E /* Debug */,
-				1A493D122E73D9CF00187B3E /* Release */,
+				1A09D2332E98F46D00924EE7 /* Debug configuration for PBXNativeTarget "Data" */,
+				1A09D2342E98F46D00924EE7 /* Release configuration for PBXNativeTarget "Data" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A493D202E73D9CF00187B3E /* Build configuration list for PBXNativeTarget "DomainTests" */ = {
+		1A09D2352E98F46D00924EE7 /* Build configuration list for PBXNativeTarget "DataTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A493D132E73D9CF00187B3E /* Debug */,
-				1A493D142E73D9CF00187B3E /* Release */,
+				1A09D2362E98F46D00924EE7 /* Debug configuration for PBXNativeTarget "DataTests" */,
+				1A09D2372E98F46D00924EE7 /* Release configuration for PBXNativeTarget "DataTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A493DF92E73D9F100187B3E /* Build configuration list for PBXNativeTarget "Service" */ = {
+		1A09D2522E98F4C500924EE7 /* Build configuration list for PBXNativeTarget "Domain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A493DFA2E73D9F100187B3E /* Debug */,
-				1A493DFB2E73D9F100187B3E /* Release */,
+				1A09D2532E98F4C500924EE7 /* Debug configuration for PBXNativeTarget "Domain" */,
+				1A09D2542E98F4C500924EE7 /* Release configuration for PBXNativeTarget "Domain" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A493DFC2E73D9F100187B3E /* Build configuration list for PBXNativeTarget "ServiceTests" */ = {
+		1A09D2562E98F4C500924EE7 /* Build configuration list for PBXNativeTarget "DomainTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A493DFD2E73D9F100187B3E /* Debug */,
-				1A493DFE2E73D9F100187B3E /* Release */,
+				1A09D2572E98F4C500924EE7 /* Debug configuration for PBXNativeTarget "DomainTests" */,
+				1A09D2582E98F4C500924EE7 /* Release configuration for PBXNativeTarget "DomainTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1AFC28842E609B9E00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */ = {
+		1A09D2732E98F4D100924EE7 /* Build configuration list for PBXNativeTarget "Presentation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1AFC28822E609B9E00258BEE /* Debug */,
-				1AFC28832E609B9E00258BEE /* Release */,
+				1A09D2742E98F4D100924EE7 /* Debug configuration for PBXNativeTarget "Presentation" */,
+				1A09D2752E98F4D100924EE7 /* Release configuration for PBXNativeTarget "Presentation" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1AFC288F2E609BDA00258BEE /* Build configuration list for PBXNativeTarget "AeroSpaceBarTests" */ = {
+		1A09D2762E98F4D100924EE7 /* Build configuration list for PBXNativeTarget "PresentationTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1AFC28902E609BDA00258BEE /* Debug */,
-				1AFC28912E609BDA00258BEE /* Release */,
+				1A09D2772E98F4D100924EE7 /* Debug configuration for PBXNativeTarget "PresentationTests" */,
+				1A09D2782E98F4D100924EE7 /* Release configuration for PBXNativeTarget "PresentationTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A2C03FF2E98FA18003C9FF9 /* Build configuration list for PBXNativeTarget "PresentationUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A2C04002E98FA18003C9FF9 /* Debug configuration for PBXNativeTarget "PresentationUITests" */,
+				1A2C04012E98FA18003C9FF9 /* Release configuration for PBXNativeTarget "PresentationUITests" */,
+			);
 			defaultConfigurationName = Release;
 		};
 		C10E2F852D41235900AC957C /* Build configuration list for PBXProject "AeroSpaceBar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C10E2FAD2D41235B00AC957C /* Debug */,
-				C10E2FAE2D41235B00AC957C /* Release */,
+				C10E2FAD2D41235B00AC957C /* Debug configuration for PBXProject "AeroSpaceBar" */,
+				C10E2FAE2D41235B00AC957C /* Release configuration for PBXProject "AeroSpaceBar" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		C10E2FAF2D41235B00AC957C /* Build configuration list for PBXNativeTarget "AeroSpaceBar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C10E2FB02D41235B00AC957C /* Debug */,
-				C10E2FB12D41235B00AC957C /* Release */,
+				C10E2FB02D41235B00AC957C /* Debug configuration for PBXNativeTarget "AeroSpaceBar" */,
+				C10E2FB12D41235B00AC957C /* Release configuration for PBXNativeTarget "AeroSpaceBar" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		1A4E7B5E2E97FFCB00A17D69 /* XCLocalSwiftPackageReference "Packages/Domain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Domain;
+		};
+		1A4E7B612E97FFE000A17D69 /* XCLocalSwiftPackageReference "Packages/Data" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Data;
+		};
+		1A4E7B642E97FFF200A17D69 /* XCLocalSwiftPackageReference "Packages/Presentation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Presentation;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */ = {
+		1AF4504E2E90FD6100E65663 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/WilhelmOks/ModifiedCopyMacro.git";
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.2;
-			};
-		};
-		1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/LebJe/TOMLKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.0;
-			};
-		};
-		1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rdrkr/AsyncFileMonitor.git";
-			requirement = {
-				branch = main;
-				kind = branch;
+				kind = exactVersion;
+				version = 2.8.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1A4A143C2E87B55700A4B997 /* ModifiedCopy */ = {
+		1A4E7B5F2E97FFCB00A17D69 /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1A4A143B2E87B55700A4B997 /* XCRemoteSwiftPackageReference "ModifiedCopyMacro" */;
-			productName = ModifiedCopy;
+			productName = Domain;
 		};
-		1AAFCE8A2E7404D6001948FD /* TOMLKit */ = {
+		1A4E7B622E97FFE000A17D69 /* Data */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1AAFCE892E7404D6001948FD /* XCRemoteSwiftPackageReference "TOMLKit" */;
-			productName = TOMLKit;
+			productName = Data;
 		};
-		1ADFDD152E8BC41A00D806E2 /* AsyncFileMonitor */ = {
+		1A4E7B652E97FFF200A17D69 /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AsyncFileMonitor;
+			productName = Presentation;
 		};
-		1ADFDD182E8BC45700D806E2 /* AsyncFileMonitor */ = {
+		1AF2D23E2E91868900A850B5 /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AsyncFileMonitor;
-		};
-		1ADFDD1B2E8BC4CD00D806E2 /* AsyncFileMonitor */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1ADFDD1A2E8BC4CD00D806E2 /* XCRemoteSwiftPackageReference "AsyncFileMonitor" */;
-			productName = AsyncFileMonitor;
+			package = 1AF4504E2E90FD6100E65663 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

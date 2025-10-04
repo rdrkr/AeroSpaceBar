@@ -1,0 +1,10 @@
+<project version="4">
+  <component name="SwiftPackageManagerSettings">
+    <option name="linkedExternalProjectsSettings">
+      <SwiftPackageManagerProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      </SwiftPackageManagerProjectSettings>
+    </option>
+  </component>
+  <component name="SwiftPackageManagerWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+</project>

@@ -1,0 +1,114 @@
+# Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+
+# SwiftLint Configuration for AeroSpaceBar
+# https://github.com/realm/SwiftLint
+
+# Disable all rules by default
+disabled_rules:
+  # Add any rules you want to disable here
+  - trailing_whitespace  # We'll let SwiftFormat handle this
+  - trailing_newline  # We'll let SwiftFormat handle this
+  - vertical_whitespace  # We'll let SwiftFormat handle this
+  - opening_brace  # We'll let SwiftFormat handle brace spacing
+  - identifier_name
+
+# Enable specific rules
+opt_in_rules:
+  - array_init
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - empty_collection_literal
+  - empty_string
+  - enum_case_associated_values_count
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - last_where
+  - legacy_random
+  - literal_expression_end_indentation
+  - multiline_arguments
+  - multiline_function_chains
+  - multiline_literal_brackets
+  - multiline_parameters
+  - operator_usage_whitespace
+  - overridden_super_call
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - single_test_class
+  - sorted_first_last
+  - sorted_imports
+  - static_operator
+  - strict_fileprivate
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - unneeded_break_in_switch
+  - vertical_parameter_alignment_on_call
+  - yoda_condition
+
+# Configure rules
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+
+# Custom rule configurations
+unused_import:
+  severity: error
+
+unused_declaration:
+  severity: error
+
+line_length:
+  warning: 120
+  error: 150
+  ignores_comments: true
+  ignores_urls: true
+
+function_body_length:
+  warning: 100
+  error: 200
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+type_body_length:
+  warning: 1000
+  error: 1000
+
+file_length:
+  warning: 1500
+  error: 1500
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+large_tuple:
+  warning: 3
+  error: 4
+
+type_name:
+  max_length:
+    warning: 60
+    error: 60
+
+# Exclude files and directories
+excluded:
+  - .build
+  - .generated.swift
+  - build
+  - Carthage
+  - DerivedData
+  - Pods
+
+# Include only specific file types
+included:
+  - ./**/*.swift
