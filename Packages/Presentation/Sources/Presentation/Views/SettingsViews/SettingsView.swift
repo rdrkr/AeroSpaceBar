@@ -154,8 +154,8 @@ public struct SettingsView: View {
             window.toolbarStyle = .unified
 
             // Make always on top
-            window.level = .floating
-            window.hidesOnDeactivate = false
+            // window.level = .floating
+            // window.hidesOnDeactivate = false
 
             window.makeKeyAndOrderFront(nil)
         }

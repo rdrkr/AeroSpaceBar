@@ -40,6 +40,10 @@ public enum FeatureFlagDefaults {
     #if DEBUG
         /// Default state for mocking an active license.
         /// Set to false by default, can be enabled for testing licensed features.
-        public static let mockActiveLicense: Bool = true
+        public static let mockActiveLicense: Bool = false
+
+        /// Default checkout environment for license purchases.
+        /// Set to production by default, can be switched to development for testing.
+        public static let checkoutEnvironment: CheckoutEnvironment = .development
     #endif
 }

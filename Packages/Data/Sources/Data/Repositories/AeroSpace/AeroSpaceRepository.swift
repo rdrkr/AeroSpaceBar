@@ -101,19 +101,18 @@ public final class AeroSpaceRepository: SpacesGateway {
         let success = if optimizedPerformanceEnabled {
             try? await AeroSpaceConfiguration.appendOnFocusChanged(
                 at: getAeroSpaceConfigPathUseCase.execute(),
-                command: AeroSpaceRepository.onFocusChangedCallback
+                command: Self.onFocusChangedCallback
             )
         } else {
             try? await AeroSpaceConfiguration.removeOnFocusChanged(
                 at: getAeroSpaceConfigPathUseCase.execute(),
-                command: AeroSpaceRepository.onFocusChangedCallback
+                command: Self.onFocusChangedCallback
             )
         }
 
         if success == true {
             await reloadAeroSpaceConfig()
             Logger.info("Successfully configured AeroSpace configuration", category: Logger.config)
-
         } else {
             Logger.warning("Failed to configure AeroSpace configuration", category: Logger.config)
         }
@@ -277,7 +276,6 @@ public final class AeroSpaceRepository: SpacesGateway {
                 spacesWithWindowsSubject.send(spacesWithColorProperties)
                 aeroSpaceRunningSubject.send(isRunning)
             }
-
         } catch {
             Logger.error("Failed to update spaces data", error: error, category: Logger.spaces)
         }
@@ -401,9 +399,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         // Check for various possible AeroSpace process names
         let isRunning = NSWorkspace.shared
             .runningApplications
-            .compactMap {
-                $0.localizedName?.lowercased()
-            }
+            .compactMap { $0.localizedName?.lowercased() }
             .contains("aerospace")
 
         Logger.debug("AeroSpace running: \(isRunning)", category: Logger.spaces)
@@ -503,8 +499,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         let data = try await cli.execute(arguments: ["list-workspaces", "--all", "--json"])
 
         do {
-            let spaces = try JSONDecoder().decode([Space].self, from: data)
-            return spaces
+            return try JSONDecoder().decode([Space].self, from: data)
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }
@@ -521,8 +516,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         ])
 
         do {
-            let windows = try JSONDecoder().decode([Window].self, from: data)
-            return windows
+            return try JSONDecoder().decode([Window].self, from: data)
         } catch {
             throw AppError.decodingError(error.localizedDescription)
         }
@@ -614,12 +608,12 @@ public final class AeroSpaceRepository: SpacesGateway {
             if optimized {
                 try await AeroSpaceConfiguration.appendOnFocusChanged(
                     at: getAeroSpaceConfigPathUseCase.execute(),
-                    command: AeroSpaceRepository.onFocusChangedCallback
+                    command: Self.onFocusChangedCallback
                 )
             } else {
                 try await AeroSpaceConfiguration.removeOnFocusChanged(
                     at: getAeroSpaceConfigPathUseCase.execute(),
-                    command: AeroSpaceRepository.onFocusChangedCallback
+                    command: Self.onFocusChangedCallback
                 )
             }
         }()

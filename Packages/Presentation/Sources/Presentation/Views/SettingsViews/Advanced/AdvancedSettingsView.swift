@@ -172,10 +172,9 @@ struct AdvancedSettingsView: View {
             Section(LocalizedStringResource("Reset")) {
                 SettingsDestructiveButton(
                     title: LocalizedStringResource("Reset All Settings"),
-                    description: LocalizedStringResource("Reset all settings to their default values."),
-                    action: { showingResetConfirmation = true }
-                )
-                .tag("advanced-reset-settings-button")
+                    description: LocalizedStringResource("Reset all settings to their default values.")
+                ) { showingResetConfirmation = true }
+                    .tag("advanced-reset-settings-button")
             }
             .tag("advanced-reset-section")
         }

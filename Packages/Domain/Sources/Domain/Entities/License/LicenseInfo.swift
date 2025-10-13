@@ -2,7 +2,7 @@
 
 import Foundation
 
-/// License information from Paddle.
+/// License information.
 public struct LicenseInfo: Codable, Equatable, Sendable {
     /// The license key.
     public let licenseKey: String
@@ -12,6 +12,9 @@ public struct LicenseInfo: Codable, Equatable, Sendable {
 
     /// The user's display name.
     public let userName: String
+
+    /// The user's email address.
+    public let email: String
 
     /// The user's profile image data.
     public let profileImageData: Data?
@@ -33,11 +36,13 @@ public struct LicenseInfo: Codable, Equatable, Sendable {
         licenseKey: String = "",
         licenseStatus: LicenseStatus = .unknown,
         userName: String = "",
+        email: String = "",
         profileImageData: Data? = nil
     ) {
         self.licenseKey = licenseKey
         self.licenseStatus = licenseStatus
         self.userName = userName
+        self.email = email
         self.profileImageData = profileImageData
     }
 }

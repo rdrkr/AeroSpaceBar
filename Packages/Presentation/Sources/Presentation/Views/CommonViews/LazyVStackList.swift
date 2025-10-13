@@ -85,9 +85,7 @@ private struct SelectionWrapper: Sendable {
 
     /// Optional closure that returns the selected item's identifier
     let getSelectedId: (@Sendable () -> Any?)?
-}
 
-extension SelectionWrapper {
     /// Creates a SelectionWrapper for basic selection handling without ID extraction
     /// - Parameters:
     ///   - getValue: Closure that returns the current selection value
@@ -123,7 +121,10 @@ extension SelectionWrapper {
 /// by using ObjectIdentifier as keys to differentiate between different selection types.
 @MainActor private var selectionStorage: [ObjectIdentifier: SelectionWrapper] = [:]
 
+// swiftlint:disable no_grouping_extension
 extension LazyVStackList {
+    // swiftlint:enable no_grouping_extension
+
     /// The currently selected item for this LazyVStackList instance
     ///
     /// Returns the currently selected item if selection is enabled, otherwise returns nil.
@@ -196,17 +197,16 @@ extension LazyVStackList {
             .environment(\.lazyVStackListContext, SelectionContext(
                 selectedItem: selectionEnabled ? selection : nil,
                 showHoverEffect: showHoverEffect,
-                selectionEnabled: selectionEnabled,
-                onSelectionChange: { newValue in
-                    if
-                        selectionEnabled,
-                        let identifier = selectionIdentifier,
-                        let wrapper = selectionStorage[identifier]
-                    {
-                        wrapper.setValue(newValue)
-                    }
+                selectionEnabled: selectionEnabled
+            ) { newValue in
+                if
+                    selectionEnabled,
+                    let identifier = selectionIdentifier,
+                    let wrapper = selectionStorage[identifier]
+                {
+                    wrapper.setValue(newValue)
                 }
-            ))
+            })
         }
         .onPreferenceChange(NavigationItemsPreferenceKey.self) { items in
             collectedItems = items
@@ -272,7 +272,7 @@ private struct NavigationItem: @MainActor Equatable {
     let value: Any
 
     /// Compares two NavigationItems by their IDs only
-    static func == (lhs: NavigationItem, rhs: NavigationItem) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
 }

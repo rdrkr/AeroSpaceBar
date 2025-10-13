@@ -64,7 +64,7 @@ public struct AnyNavigationPage: NavigationPage {
 
     /// Returns a Boolean value indicating whether two navigation pages are equal.
     /// Two navigation pages are equal if they have the same identifier.
-    public static func == (lhs: AnyNavigationPage, rhs: AnyNavigationPage) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
 }

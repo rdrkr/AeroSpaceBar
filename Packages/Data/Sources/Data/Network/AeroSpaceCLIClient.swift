@@ -4,7 +4,7 @@ import Domain
 import Foundation
 
 /// Protocol describing a minimal AeroSpace CLI client capable of executing commands.
-protocol AeroSpaceCLIClientProtocol: Sendable {
+internal protocol AeroSpaceCLIClientProtocol: Sendable {
     /// Executes an AeroSpace CLI command and returns the output data.
     /// - Parameter arguments: The CLI arguments to pass to the AeroSpace executable
     /// - Returns: The command output as `Data`
@@ -13,18 +13,18 @@ protocol AeroSpaceCLIClientProtocol: Sendable {
 }
 
 /// Default implementation of `AeroSpaceCLIClientProtocol` using `Process`.
-final class AeroSpaceCLIClient: AeroSpaceCLIClientProtocol {
+internal final class AeroSpaceCLIClient: AeroSpaceCLIClientProtocol {
     /// Path to the AeroSpace executable.
     private let executablePath: String
 
     /// Initializes the CLI client.
     /// - Parameter executablePath: The path to the AeroSpace executable.
-    init(executablePath: String) {
+    internal init(executablePath: String) {
         self.executablePath = executablePath
     }
 
     /// Executes an AeroSpace CLI command and returns the output data.
-    func execute(arguments: [String]) async throws -> Data {
+    internal func execute(arguments: [String]) async throws -> Data {
         try await Logger.measure("CLI Operation", id: Logger.SignpostID.cliOperation) {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: executablePath)

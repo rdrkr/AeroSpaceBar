@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C10E2F892D41235900AC957C"
-               BuildableName = "AeroSpaceBar2.app"
+               BuildableName = "AeroSpaceBar.app"
                BlueprintName = "AeroSpaceBar"
                ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
             </BuildableReference>
@@ -80,7 +80,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C10E2F892D41235900AC957C"
-            BuildableName = "AeroSpaceBar2.app"
+            BuildableName = "AeroSpaceBar.app"
             BlueprintName = "AeroSpaceBar"
             ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
          </BuildableReference>
@@ -101,7 +101,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C10E2F892D41235900AC957C"
-            BuildableName = "AeroSpaceBar2.app"
+            BuildableName = "AeroSpaceBar.app"
             BlueprintName = "AeroSpaceBar"
             ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
          </BuildableReference>

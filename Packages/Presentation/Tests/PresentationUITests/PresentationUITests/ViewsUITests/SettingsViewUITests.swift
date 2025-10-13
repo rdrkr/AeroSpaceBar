@@ -3,7 +3,7 @@
 import XCTest
 
 final class SettingsViewUITests: XCTestCase {
-    var app: XCUIApplication?
+    private var app: XCUIApplication?
 
     override func setUp() {
         continueAfterFailure = false

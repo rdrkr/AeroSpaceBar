@@ -5,9 +5,9 @@ internal import TOMLKit
 
 /// Represents the minimal AeroSpace TOML configuration structure
 /// We only care about some of the configuration keys
-public struct AeroSpaceConfiguration: Codable {
+internal struct AeroSpaceConfiguration: Codable {
     /// On-focus-changed callbacks
-    var onFocusChanged: [String]?
+    private var onFocusChanged: [String]?
 
     /// Coding keys
     private enum CodingKeys: String, CodingKey, CaseIterable {
@@ -18,7 +18,7 @@ public struct AeroSpaceConfiguration: Codable {
     /// - Parameter fileURL: The path to the TOML file
     /// - Returns: The decoded `AeroSpaceConfiguration`
     /// - Throws: An error if the decoding fails
-    public static func decode(from fileURL: URL) throws -> AeroSpaceConfiguration {
+    internal static func decode(from fileURL: URL) throws -> Self {
         let data = try Data(contentsOf: fileURL)
         guard let content = String(data: data, encoding: .utf8) else {
             throw NSError(
@@ -30,7 +30,7 @@ public struct AeroSpaceConfiguration: Codable {
 
         let table = try TOMLTable(string: content)
         let decoder = TOMLDecoder()
-        return try decoder.decode(AeroSpaceConfiguration.self, from: table)
+        return try decoder.decode(Self.self, from: table)
     }
 
     /// Appends a command to the `on-focus-changed` array in the TOML at path if not present
@@ -39,7 +39,7 @@ public struct AeroSpaceConfiguration: Codable {
     /// - Returns: `true` if the command was appended; `false` if it already existed
     /// - Throws: An error if the appending fails
     @discardableResult
-    public static func appendOnFocusChanged(at fileURL: URL, command: String) throws -> Bool {
+    internal static func appendOnFocusChanged(at fileURL: URL, command: String) throws -> Bool {
         var configuration = try decode(from: fileURL)
 
         if let callbacks = configuration.onFocusChanged, callbacks.contains(command) {
@@ -64,7 +64,7 @@ public struct AeroSpaceConfiguration: Codable {
     /// - Throws: An error if the removing fails
 
     @discardableResult
-    public static func removeOnFocusChanged(at fileURL: URL, command: String) throws -> Bool {
+    static func removeOnFocusChanged(at fileURL: URL, command: String) throws -> Bool {
         var configuration = try decode(from: fileURL)
 
         if let callbacks = configuration.onFocusChanged, !callbacks.contains(command) {
@@ -83,7 +83,7 @@ public struct AeroSpaceConfiguration: Codable {
     /// - If a key does not exist, it is added at the top, followed by the existing content
     /// - Parameter fileURL: The path to the TOML file
     /// - Throws: An error if the encoding fails
-    public func encode(to fileURL: URL) throws {
+    func encode(to fileURL: URL) throws {
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
@@ -99,7 +99,7 @@ public struct AeroSpaceConfiguration: Codable {
             let value = getValue(for: codingKey)
 
             if
-                let region = AeroSpaceConfiguration.findKeyValueRegion(
+                let region = Self.findKeyValueRegion(
                     for: key,
                     in: finalContent
                 )
@@ -107,14 +107,14 @@ public struct AeroSpaceConfiguration: Codable {
                 if let value {
                     // Replace existing value in-place
                     let newValue = formatKeyValue(key: key, value: value)
-                    finalContent = AeroSpaceConfiguration.replaceRegion(
+                    finalContent = Self.replaceRegion(
                         in: finalContent,
                         region: region,
                         with: newValue
                     )
                 } else {
                     // Remove existing key-value block
-                    finalContent = AeroSpaceConfiguration.removeRegion(
+                    finalContent = Self.removeRegion(
                         in: finalContent,
                         region: region
                     )

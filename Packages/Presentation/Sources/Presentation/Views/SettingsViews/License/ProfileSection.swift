@@ -110,7 +110,7 @@ struct ProfileSection: View {
                                 editingUserName = userName
                                 isEditingProfile = true
                                 Task { @MainActor in
-                                    try await Task.sleep(for: .milliseconds(100))
+                                    try? await Task.sleep(for: .milliseconds(100))
                                     isNameFieldFocused = true
                                 }
                             } label: {

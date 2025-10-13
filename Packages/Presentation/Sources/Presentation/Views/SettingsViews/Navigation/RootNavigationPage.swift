@@ -125,10 +125,13 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         switch self {
         case .general:
             AnyView(defaultIcon.foregroundColor(Color.gray))
+
         case .updates:
             AnyView(defaultIcon.foregroundColor(Color.indigo))
+
         case .advanced:
             AnyView(defaultIcon.foregroundColor(Color.red))
+
         default:
             AnyView(defaultIcon.foregroundColor(Color.accentColor))
         }
@@ -146,6 +149,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
                 switch self {
                 case .license:
                     LicenseSettingsSidebarItemView()
+
                 default:
                     defaultViewForSidebar(icon)
                 }
@@ -159,17 +163,23 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         switch self {
         case .license:
             return PageView(LicenseSettingsView())
+
         case .general:
             return PageView(GeneralSettingsView())
+
         case .spaces:
             return PageView(SpacesSettingsView())
+
         case .groups:
             return PageView(GroupsSettingsView())
+
         case .updates:
             return PageView(UpdatesSettingsView())
+
         case .advanced:
             return PageView(AdvancedSettingsView())
         #if DEBUG
+
             case .developer:
                 return PageView(DeveloperSettingsView())
         #endif

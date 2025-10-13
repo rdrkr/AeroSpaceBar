@@ -77,10 +77,13 @@ public func withTimeout<ClockType, ResultType>(
                 switch next {
                 case let .operationResult(result):
                     return result
+
                 case .sleepResult(.success(false)):
                     return .failure(TimeoutExceededError())
+
                 case .sleepResult(.success(true)):
                     continue
+
                 case let .sleepResult(.failure(error)):
                     return .failure(error)
                 }

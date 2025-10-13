@@ -162,6 +162,9 @@ TestResults/
 *.crt
 *.der
 
+# Secrets (auto-generated files containing API keys)
+**/Secrets.swift
+
 # Other
 *.orig
 *.rej
@@ -175,3 +178,4 @@ TestResults/
 # Ignore Gradle build output
 build
 default.profraw
+.env

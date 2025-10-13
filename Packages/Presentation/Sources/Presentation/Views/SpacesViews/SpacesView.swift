@@ -165,7 +165,7 @@ struct SpacesView: View {
                 monitoredWallpaperVisibility = false
 
                 Task { @MainActor in
-                    try await Task.sleep(for: .seconds(0.2))
+                    try? await Task.sleep(for: .seconds(0.2))
                     monitoredWallpaperVisibility = true
                 }
             }

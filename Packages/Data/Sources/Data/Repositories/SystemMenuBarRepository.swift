@@ -352,8 +352,6 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                     configuration: configuration
                 )
 
-                let nsImage = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
-
                 // Save PNG to Downloads folder - Useful for debugging
                 // if let image = nsImage.pngData {
                 //     await MainActor.run {
@@ -362,7 +360,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 // }
 
                 // Convert to NSImage
-                return nsImage
+                return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
             } catch {
                 Logger.warning(
                     "Failed to capture wallpaper using ScreenCaptureKit: \(error.localizedDescription)",
@@ -505,7 +503,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// - Parameter windows: The current list of on-screen windows.
     /// - Returns: An array of MenuBarApp instances representing menu bar applications from right to left.
     private func findMenuBarApplications(windows: [WindowInfo]) -> [MenuBarApp] {
-        let menuBarApps = windows
+        windows
             .filter { window in
                 window.isControlCenterWindow &&
                     window.isOnScreen &&
@@ -521,8 +519,6 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             }
             .sorted { $0.frame.origin.x > $1.frame.origin.x } // Sort apps from right to left
             .insertClockApp()
-
-        return menuBarApps
     }
 }
 
@@ -602,14 +598,14 @@ private struct WindowInfo {
     /// - Parameter excludeDesktopWindows: A Boolean value that indicates whether
     ///   to exclude desktop owned windows, such as the wallpaper and desktop icons.
     /// - Returns: An array of WindowInfo instances representing visible windows.
-    static func getOnScreenWindows(excludeDesktopWindows: Bool = false) -> [WindowInfo] {
+    static func getOnScreenWindows(excludeDesktopWindows: Bool = false) -> [Self] {
         let options: CGWindowListOption = excludeDesktopWindows ? [.optionOnScreenOnly, .excludeDesktopElements] :
             .optionOnScreenOnly
         guard let list = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[CFString: CFTypeRef]] else {
             return []
         }
 
-        return list.compactMap { WindowInfo(dictionary: $0) }
+        return list.compactMap { Self(dictionary: $0) }
     }
 
     /// Creates a window with the given dictionary.

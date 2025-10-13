@@ -136,9 +136,8 @@ public final class GroupsViewModel: ObservableObject {
     // MARK: - Private Constants
 
     /// All cases of GroupsAppearanceMode without matchSpaces.
-    private static let restrictedGroupsAppearanceMode = GroupsAppearanceMode.allCases.filter {
-        $0 != .matchSpaces
-    }
+    private static let restrictedGroupsAppearanceMode = GroupsAppearanceMode.allCases
+        .filter { $0 != .matchSpaces }
 
     // MARK: - Initialization
 
@@ -229,7 +228,7 @@ public final class GroupsViewModel: ObservableObject {
 
         availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
         if spacesAppearanceMode == .perSpace {
-            availableGroupsAppearanceModes = GroupsViewModel.restrictedGroupsAppearanceMode
+            availableGroupsAppearanceModes = Self.restrictedGroupsAppearanceMode
         }
 
         setupReactiveSubscriptions()
@@ -325,28 +324,27 @@ public final class GroupsViewModel: ObservableObject {
             normalizeGroupsConfiguration()
 
             return
-        } else {
-            // Priority 2: Fallback - take app from first group (original behavior)
-            guard !groups.isEmpty else { return }
-
-            // Sort to ensure we get the rightmost group (lowest startIndex)
-            normalizeGroupsConfiguration()
-            let rightmostGroup = groups[0]
-            let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
-            guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return }
-
-            // Reduce rightmost group by 1 app
-            groups[0].endIndex = rightmostGroupEndIndex - 1
-
-            // Create new group with the taken app
-            var newGroup = Group.defaultInstance
-            newGroup.startIndex = rightmostGroupEndIndex
-            newGroup.endIndex = rightmostGroupEndIndex
-
-            // Add to array and normalize
-            groups.append(newGroup)
-            normalizeGroupsConfiguration()
         }
+        // Priority 2: Fallback - take app from first group (original behavior)
+        guard !groups.isEmpty else { return }
+
+        // Sort to ensure we get the rightmost group (lowest startIndex)
+        normalizeGroupsConfiguration()
+        let rightmostGroup = groups[0]
+        let rightmostGroupEndIndex = rightmostGroup.getEndIndex(menuBarAppsCount: totalApps)
+        guard rightmostGroupEndIndex > rightmostGroup.startIndex else { return }
+
+        // Reduce rightmost group by 1 app
+        groups[0].endIndex = rightmostGroupEndIndex - 1
+
+        // Create new group with the taken app
+        var newGroup = Group.defaultInstance
+        newGroup.startIndex = rightmostGroupEndIndex
+        newGroup.endIndex = rightmostGroupEndIndex
+
+        // Add to array and normalize
+        groups.append(newGroup)
+        normalizeGroupsConfiguration()
     }
 
     /// Removes a group at the specified id.
@@ -516,9 +514,9 @@ public final class GroupsViewModel: ObservableObject {
                 // automatically switch groups to allGroups mode
                 if
                     spacesAppearanceMode == .perSpace,
-                    availableGroupsAppearanceModes != GroupsViewModel.restrictedGroupsAppearanceMode
+                    availableGroupsAppearanceModes != Self.restrictedGroupsAppearanceMode
                 {
-                    availableGroupsAppearanceModes = GroupsViewModel.restrictedGroupsAppearanceMode
+                    availableGroupsAppearanceModes = Self.restrictedGroupsAppearanceMode
 
                     if !availableGroupsAppearanceModes.contains(groupsAppearanceMode) {
                         groupsAppearanceMode = .allGroups

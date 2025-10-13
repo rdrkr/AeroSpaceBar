@@ -84,10 +84,13 @@ struct LicenseMenuItemView: View {
         switch licenseInfo.licenseStatus {
         case let .trial(daysRemaining):
             "Trial - \(daysRemaining) days left"
+
         case .expired:
             "Trial Expired - Purchase to continue"
+
         case .unknown:
             enableTrialRequest ? "Start Trial" : "Purchase to continue"
+
         default:
             nil
         }

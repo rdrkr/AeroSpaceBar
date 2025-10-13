@@ -403,10 +403,9 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
         return Section(LocalizedStringResource("Reset")) {
             SettingsDestructiveButton(
                 title: LocalizedStringResource(stringLiteral: metadata.resetButtonTitle),
-                description: LocalizedStringResource(stringLiteral: metadata.resetButtonDescription),
-                action: { showingResetConfirmation = true }
-            )
-            .tag("\(metadata.tagPrefix)-reset-button")
+                description: LocalizedStringResource(stringLiteral: metadata.resetButtonDescription)
+            ) { showingResetConfirmation = true }
+                .tag("\(metadata.tagPrefix)-reset-button")
         }
         .tag("\(metadata.tagPrefix)-reset-section")
     }
@@ -424,7 +423,8 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
     private func getEntityDisplayId(_ entity: Entity) -> String {
         if let group = entity as? Domain.Group {
             return String(group.id + 1)
-        } else if let space = entity as? Domain.Space {
+        }
+        if let space = entity as? Domain.Space {
             return space.id
         }
         return String(describing: entity.id)
@@ -436,7 +436,8 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
     private func getEntityId(_ entity: Entity) -> AnyHashable {
         if let group = entity as? Domain.Group {
             return group.id
-        } else if let space = entity as? Domain.Space {
+        }
+        if let space = entity as? Domain.Space {
             return space.id
         }
         return entity.id
@@ -515,9 +516,8 @@ extension VisualSettingsContainerView where AppendContent == EmptyView {
             canAddMoreEntities: canAddMoreEntities,
             onFeatureDisabled: onFeatureDisabled,
             shouldShowEntitiesList: shouldShowEntitiesList,
-            prepend: prepend,
-            append: { EmptyView() }
-        )
+            prepend: prepend
+        ) { EmptyView() }
     }
 }
 

@@ -5,8 +5,8 @@ import Combine
 import XCTest
 
 final class GetSpacesUseCaseTests: XCTestCase {
-    var useCase: GetSpacesUseCase?
-    var cancellables: Set<AnyCancellable>?
+    private var useCase: GetSpacesUseCase?
+    private var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
         // mockSpacesGateway = MockSpacesGateway()

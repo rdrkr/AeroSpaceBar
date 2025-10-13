@@ -17,7 +17,7 @@ public final class ResetLicenseFeatureFlagsUseCase {
     }
 
     /// Executes the use case to reset all license feature flags to their default values.
-    public func execute() {
-        gateway.resetLicenseFeatureFlags()
+    public func execute() async {
+        await gateway.resetLicenseFeatureFlags()
     }
 }

@@ -14,7 +14,7 @@ struct LicenseSettingsView: View {
     var body: some View {
         Form {
             ProfileSection(
-                isLicensed: isLicensed,
+                isLicensed: licenseViewModel.isLicensed,
                 onSetUserName: licenseViewModel.setUserName,
                 onSetProfileImage: licenseViewModel.setProfileImage,
                 userName: licenseViewModel.licenseInfo.userName,
@@ -34,18 +34,10 @@ struct LicenseSettingsView: View {
                 licenseKeyInput: $licenseViewModel.licenseKeyInput,
                 isActivating: licenseViewModel.isActivating,
                 activationError: licenseViewModel.activationError,
-                onStartTrial: {
-                    licenseViewModel.startTrial()
-                },
-                onPurchaseLicense: {
-                    licenseViewModel.openCheckout()
-                },
-                onActivateLicense: {
-                    licenseViewModel.activateLicense()
-                },
-                onDeactivateLicense: {
-                    licenseViewModel.deactivateLicense()
-                },
+                onStartTrial: licenseViewModel.startTrial,
+                onPurchaseLicense: licenseViewModel.openCheckout,
+                onActivateLicense: licenseViewModel.activateLicense,
+                onDeactivateLicense: licenseViewModel.deactivateLicense,
                 onClearActivationError: {
                     licenseViewModel.activationError = nil
                 }
@@ -56,9 +48,11 @@ struct LicenseSettingsView: View {
         .sheet(isPresented: $licenseViewModel.showingCheckoutWebView) {
             if let checkoutURL = licenseViewModel.checkoutURL {
                 NavigationStack {
-                    CheckoutWebViewWrapper(url: checkoutURL) {
-                        licenseViewModel.dismissCheckoutWebView()
-                    }
+                    CheckoutWebViewWrapper(
+                        url: checkoutURL,
+                        onDismiss: licenseViewModel.dismissCheckoutWebView,
+                        onCheckoutSuccess: licenseViewModel.handleCheckoutSuccess
+                    )
                     .navigationTitle(LocalizedStringResource("Purchase License"))
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
@@ -71,13 +65,6 @@ struct LicenseSettingsView: View {
                 .frame(minWidth: 800, minHeight: 600)
             }
         }
-    }
-
-    // MARK: - Computed Properties
-
-    /// Returns true if the user has an active license.
-    private var isLicensed: Bool {
-        licenseViewModel.isLicensed
     }
 }
 

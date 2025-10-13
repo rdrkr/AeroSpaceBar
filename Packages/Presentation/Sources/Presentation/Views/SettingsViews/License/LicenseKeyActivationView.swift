@@ -61,7 +61,7 @@ struct LicenseKeyActivationView: View {
                         } else {
                             // Delay focus to ensure text field is rendered
                             Task {
-                                try await Task.sleep(for: .milliseconds(100))
+                                try? await Task.sleep(for: .milliseconds(100))
                                 isTextFieldFocused = true
                             }
                         }

@@ -21,7 +21,7 @@ struct SpaceNavigationPage: NavigationPage {
     var name: String {
         String(
             localized: LocalizedStringResource(
-                "\(SpaceNavigationPage.namePrefix)\(spaceId)",
+                "\(Self.namePrefix)\(spaceId)",
                 comment: "Title for space detail page"
             )
         )
@@ -71,7 +71,7 @@ struct SpaceNavigationPage: NavigationPage {
     }
 
     /// Returns a Boolean value indicating whether two space detail navigation pages are equal.
-    static func == (lhs: SpaceNavigationPage, rhs: SpaceNavigationPage) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.spaceId == rhs.spaceId
     }
 }

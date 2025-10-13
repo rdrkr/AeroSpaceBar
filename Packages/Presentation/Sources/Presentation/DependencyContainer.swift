@@ -146,7 +146,6 @@ public final class DependencyContainer {
         getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
         activateLicenseUseCase: makeActivateLicenseUseCase(),
         openCheckoutUseCase: makeOpenCheckoutUseCase(),
-        startTrialUseCase: makeStartTrialUseCase(),
         deactivateLicenseUseCase: makeDeactivateLicenseUseCase(),
         getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
         getEnableTrialRequestUseCase: makeGetEnableTrialRequestUseCase(),
@@ -182,7 +181,7 @@ public final class DependencyContainer {
     )
 
     /// The license gateway for managing application license.
-    private lazy var licenseGateway: LicenseGateway = PaddleLicenseRepository()
+    private lazy var licenseGateway: LicenseGateway = LemonSqueezyLicenseRepository()
 
     /// The feature flags gateway for managing development feature toggles.
     ///
@@ -209,6 +208,8 @@ public final class DependencyContainer {
             setEnableTrialRequestUseCase: makeSetEnableTrialRequestUseCase(),
             getMockActiveLicenseUseCase: makeGetMockActiveLicenseUseCase(),
             setMockActiveLicenseUseCase: makeSetMockActiveLicenseUseCase(),
+            getCheckoutEnvironmentUseCase: makeGetCheckoutEnvironmentUseCase(),
+            setCheckoutEnvironmentUseCase: makeSetCheckoutEnvironmentUseCase(),
             getLicenseInfoUseCase: makeGetLicenseInfoUseCase(),
             resetLicenseFeatureFlagsUseCase: makeResetLicenseFeatureFlagsUseCase(),
             getHasAskedForScreenCapturePermissionsUseCase: makeGetHasAskedForScreenCapturePermissionsUseCase()
@@ -730,6 +731,18 @@ public final class DependencyContainer {
         func makeSetMockActiveLicenseUseCase() -> SetMockActiveLicenseUseCase {
             SetMockActiveLicenseUseCase(gateway: licenseGateway)
         }
+
+        /// Creates a new GetCheckoutEnvironmentUseCase instance (DEBUG builds only).
+        /// - Returns: A new GetCheckoutEnvironmentUseCase instance
+        func makeGetCheckoutEnvironmentUseCase() -> GetCheckoutEnvironmentUseCase {
+            GetCheckoutEnvironmentUseCase(licenseGateway: licenseGateway)
+        }
+
+        /// Creates a new SetCheckoutEnvironmentUseCase instance (DEBUG builds only).
+        /// - Returns: A new SetCheckoutEnvironmentUseCase instance
+        func makeSetCheckoutEnvironmentUseCase() -> SetCheckoutEnvironmentUseCase {
+            SetCheckoutEnvironmentUseCase(licenseGateway: licenseGateway)
+        }
     #endif
 
     /// Creates a new ResetLicenseFeatureFlagsUseCase instance.
@@ -756,12 +769,6 @@ public final class DependencyContainer {
     /// - Returns: A new OpenCheckoutUseCase instance
     func makeOpenCheckoutUseCase() -> OpenCheckoutUseCase {
         OpenCheckoutUseCase(licenseGateway: licenseGateway)
-    }
-
-    /// Creates a new StartTrialUseCase instance.
-    /// - Returns: A new StartTrialUseCase instance
-    func makeStartTrialUseCase() -> StartTrialUseCase {
-        StartTrialUseCase(licenseGateway: licenseGateway)
     }
 
     /// Creates a new DeactivateLicenseUseCase instance.

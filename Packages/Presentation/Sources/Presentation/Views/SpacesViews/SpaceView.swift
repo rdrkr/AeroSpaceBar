@@ -102,9 +102,7 @@ struct SpaceView: View {
     /// Computed property for focus state to avoid repeated calculations.
     /// - Returns: True if any window in the space is focused or the space itself is focused
     private var isFocused: Bool {
-        space.windows.contains {
-            $0.isFocused
-        } || space.isFocused
+        space.windows.contains(where: \.isFocused) || space.isFocused
     }
 
     /// Computed property for minimum height to match spaces with windows.
@@ -164,11 +162,10 @@ struct SpaceView: View {
         )
         .conditionalInteraction(
             isEnabled: focusWindowOnClick,
-            isHovered: $isHovered,
-            onTap: {
-                onSwitchToSpace(space, true)
-            }
-        )
+            isHovered: $isHovered
+        ) {
+            onSwitchToSpace(space, true)
+        }
         .tag("space-\(space.id)-view")
     }
 }

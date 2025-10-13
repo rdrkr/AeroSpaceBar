@@ -198,11 +198,23 @@ brew install --cask aerospacebar
 - **Swift 6.2+** (latest Swift toolchain)
 - **Development Tools** (for code quality):
   ```bash
-  brew install swiftformat swiftlint
+  brew install swiftformat swiftlint pre-commit
   ```
     - **SwiftFormat**: Code formatting (required for builds)
     - **SwiftLint**: Code linting (required for builds)
+    - **pre-commit**: Git hook framework for pre-commit checks
     - **Note**: The Xcode project includes pre-build scripts that run these tools automatically
+
+- **Pre-commit Setup** (optional but recommended):
+  ```bash
+  # Install pre-commit hooks
+  pre-commit install
+
+  # Run against all files (optional, to verify setup)
+  pre-commit run --all-files
+  ```
+
+  Pre-commit hooks automatically run code quality checks before each commit, ensuring code consistency.
 
 ### Installation
 
@@ -360,15 +372,15 @@ Updates are signed with EdDSA signatures to ensure authenticity and security.
 
    **Required Secrets:**
 
-   | Secret                  | Description                                                            |
-   |-------------------------|------------------------------------------------------------------------|
-   | `CERTIFICATES_P12`      | Base64-encoded Apple Developer ID Application certificate (P12 format) |
-   | `CERTIFICATES_PASSWORD` | Password used when exporting the P12 certificate                       |
-   | `NOTARIZATION_APPLE_ID` | Your Apple Developer account email                                     |
-   | `NOTARIZATION_PASSWORD` | App-specific password from appleid.apple.com                           |
-   | `NOTARIZATION_TEAM_ID`  | Your Apple Developer Team ID (10-character code)                       |
-   | `SPARKLE_PRIVATE_KEY`   | Sparkle EdDSA private key for signing updates                          |
-   | `PUBLIC_REPO_TOKEN`     | GitHub Personal Access Token with `repo` scope                         |
+   | Secret                   | Description                                                            |
+   |--------------------------|------------------------------------------------------------------------|
+   | `CERTIFICATES_P12`       | Base64-encoded Apple Developer ID Application certificate (P12 format) |
+   | `CERTIFICATES_PASSWORD`  | Password used when exporting the P12 certificate                       |
+   | `NOTARIZATION_APPLE_ID`  | Your Apple Developer account email                                     |
+   | `NOTARIZATION_PASSWORD`  | App-specific password from appleid.apple.com                           |
+   | `NOTARIZATION_TEAM_ID`   | Your Apple Developer Team ID (10-character code)                       |
+   | `SPARKLE_PRIVATE_KEY`    | Sparkle EdDSA private key for signing updates                          |
+   | `PUBLIC_REPO_TOKEN`      | GitHub Personal Access Token with `repo` scope                         |
 
    **How to obtain each secret:**
 
@@ -442,6 +454,34 @@ Updates are signed with EdDSA signatures to ensure authenticity and security.
    Check if you have it in keychain:
    ```bash
    security find-generic-password -s "aerospacebar-app-github-token" -w 2>/dev/null
+   ```
+
+   </details>
+
+   <details>
+   <summary><strong>LEMONSQUEEZY_API_KEY</strong> - LemonSqueezy API Key</summary>
+
+   1. Go to https://app.lemonsqueezy.com
+   2. Navigate to Settings → API
+   3. Create a new API key with appropriate permissions
+   4. Copy the generated API key
+
+   Store in keychain for local development:
+   ```bash
+   security add-generic-password \
+     -s "lemonsqueezy-api-key" \
+     -a "lemonsqueezy" \
+     -w "YOUR_LEMONSQUEEZY_API_KEY_HERE"
+   ```
+
+   Check if you have it in keychain:
+   ```bash
+   security find-generic-password -s "lemonsqueezy-api-key" -w 2>/dev/null
+   ```
+
+   Or create a `.env` file in the project root:
+   ```bash
+   echo 'LEMONSQUEEZY_API_KEY="your-api-key-here"' > .env
    ```
 
    </details>
@@ -753,6 +793,7 @@ The project uses modern Swift Package Manager dependencies:
 - **[AsyncFileMonitor](https://github.com/rdrkr/AsyncFileMonitor)**: Async file monitoring for configuration file
   changes
 - **[Sparkle](https://github.com/sparkle-project/Sparkle)**: Software update framework for automatic updates
+- **[LemonSqueezy](https://github.com/lmsqueezy/lemonsqueezy-swift)**: LemonSqueezy SDK for license management
 - **[ModifiedCopyMacro](https://github.com/WilhelmOks/ModifiedCopyMacro)**: Swift macro for immutable copy modifications
 - **AppIntents.framework**: Native macOS framework for app integration and metadata extraction
 - **Standard macOS Frameworks**: SwiftUI, Combine, AppKit for native system integration
@@ -850,6 +891,7 @@ We welcome contributions! Please follow these guidelines:
 - **[TOMLKit](https://github.com/LebJe/TOMLKit)**: TOML parsing library for AeroSpace configuration files
 - **[AsyncFileMonitor](https://github.com/rdrkr/AsyncFileMonitor)**: Async file monitoring for configuration changes
 - **[Sparkle](https://github.com/sparkle-project/Sparkle)**: Software update framework
+- **[LemonSqueezy](https://github.com/lmsqueezy/lemonsqueezy-swift)**: License management SDK
 - **[ModifiedCopyMacro](https://github.com/WilhelmOks/ModifiedCopyMacro)**: Swift macro for immutable modifications
 
 ## 📞 Support

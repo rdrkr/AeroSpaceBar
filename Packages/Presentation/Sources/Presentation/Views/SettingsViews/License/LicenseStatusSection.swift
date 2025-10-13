@@ -53,14 +53,19 @@ struct LicenseStatusSection: View {
         switch licenseStatus {
         case .licensed:
             "checkmark.shield.fill"
+
         case .trial:
             "clock.badge.checkmark"
+
         case .expired:
             "exclamationmark.shield.fill"
+
         case .validating:
             "hourglass"
+
         case .unknown:
             "questionmark.circle"
+
         @unknown default:
             "questionmark.circle"
         }
@@ -71,14 +76,19 @@ struct LicenseStatusSection: View {
         switch licenseStatus {
         case .licensed:
             .green
+
         case .trial:
             .blue
+
         case .expired:
             .red
+
         case .validating:
             .orange
+
         case .unknown:
             .gray
+
         @unknown default:
             .gray
         }
@@ -89,14 +99,19 @@ struct LicenseStatusSection: View {
         switch licenseStatus {
         case .licensed:
             "Licensed"
+
         case let .trial(daysRemaining):
             "Trial Active - \(daysRemaining) days remaining"
+
         case .expired:
             "Trial Expired"
+
         case .validating:
             "Validating License"
+
         case .unknown:
             "No Active License"
+
         @unknown default:
             "Unknown Status"
         }

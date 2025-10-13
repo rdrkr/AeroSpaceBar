@@ -21,7 +21,7 @@ struct GroupNavigationPage: NavigationPage {
     var name: String {
         String(
             localized: LocalizedStringResource(
-                "\(GroupNavigationPage.namePrefix)\(id + 1)",
+                "\(Self.namePrefix)\(id + 1)",
                 comment: "Title for group detail page"
             )
         )
@@ -71,7 +71,7 @@ struct GroupNavigationPage: NavigationPage {
     }
 
     /// Returns a Boolean value indicating whether two group detail navigation pages are equal.
-    static func == (lhs: GroupNavigationPage, rhs: GroupNavigationPage) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
 }

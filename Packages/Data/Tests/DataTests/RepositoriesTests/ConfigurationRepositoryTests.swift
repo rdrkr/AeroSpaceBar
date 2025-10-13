@@ -5,8 +5,8 @@ import Combine
 import XCTest
 
 final class ConfigurationRepositoryTests: XCTestCase {
-    var repository: ConfigurationRepository?
-    var cancellables: Set<AnyCancellable>?
+    private var repository: ConfigurationRepository?
+    private var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
         // repository = ConfigurationRepository()

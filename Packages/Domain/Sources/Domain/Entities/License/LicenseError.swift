@@ -23,12 +23,16 @@ public enum LicenseError: LocalizedError {
         switch self {
         case .invalidLicenseKey:
             "The license key provided is invalid."
+
         case let .networkError(error):
             "Network error: \(error.localizedDescription)"
+
         case .validationFailed:
             "License validation failed."
+
         case .trialAlreadyStarted:
             "Trial period has already been started."
+
         case .licenseExpired:
             "License is expired or inactive."
         }

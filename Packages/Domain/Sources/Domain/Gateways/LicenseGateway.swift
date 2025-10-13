@@ -3,7 +3,7 @@
 import Combine
 import Foundation
 
-/// Gateway for managing application license through Paddle.
+/// Gateway for managing application license.
 @MainActor
 public protocol LicenseGateway {
     /// Publisher that emits the current license information.
@@ -18,6 +18,9 @@ public protocol LicenseGateway {
     #if DEBUG
         /// Publisher that emits changes to the mockActiveLicense feature flag (DEBUG builds only).
         var mockActiveLicensePublisher: AnyPublisher<Bool, Never> { get }
+
+        /// Publisher that emits changes to the checkout environment (DEBUG builds only).
+        var checkoutEnvironmentPublisher: AnyPublisher<CheckoutEnvironment, Never> { get }
     #endif
 
     /// Activates a license with the provided license key.
@@ -26,18 +29,27 @@ public protocol LicenseGateway {
     func activateLicense(_ licenseKey: String) async throws -> LicenseInfo
 
     /// Deactivates the current license.
-    func deactivateLicense() async
+    func deactivateLicense() async throws
 
-    /// Creates a checkout URL for purchasing a license.
-    /// - Returns: The Paddle checkout URL
-    func createCheckoutURL() -> URL
+    /// Gets the checkout URL for purchasing a license.
+    ///
+    /// Returns a static checkout URL from the LemonSqueezy Dashboard.
+    /// No API call is needed - the URL directly opens the checkout page.
+    ///
+    /// - Returns: The checkout URL
+    func getCheckoutURL() -> URL
+
+    /// Gets the checkout URL for starting a trial.
+    ///
+    /// Returns a static checkout URL from the LemonSqueezy Dashboard.
+    /// No API call is needed - the URL directly opens the trial checkout page.
+    ///
+    /// - Returns: The trial checkout URL
+    func getTrialCheckoutURL() -> URL
 
     /// Handles successful checkout completion
     /// - Parameter licenseKey: The license key from the successful checkout
     func handleCheckoutSuccess(licenseKey: String) async
-
-    /// Starts the trial period.
-    func startTrial()
 
     /// Sets the enableLicensing feature flag value.
     /// - Parameter enabled: Whether licensing features should be enabled
@@ -51,10 +63,14 @@ public protocol LicenseGateway {
         /// Sets the mockActiveLicense feature flag value (DEBUG builds only).
         /// - Parameter enabled: Whether an active license should be mocked
         func setMockActiveLicense(_ enabled: Bool)
+
+        /// Sets the checkout environment (DEBUG builds only).
+        /// - Parameter environment: The checkout environment to use
+        func setCheckoutEnvironment(_ environment: CheckoutEnvironment)
     #endif
 
     /// Resets all license feature flags to their default values.
-    func resetLicenseFeatureFlags()
+    func resetLicenseFeatureFlags() async
 
     /// Sets the user's display name.
     /// - Parameter userName: The user's display name

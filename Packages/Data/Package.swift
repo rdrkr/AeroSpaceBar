@@ -5,7 +5,8 @@
 
 import PackageDescription
 
-let package = Package(
+/// Define the package.
+public let package = Package(
     name: "Data",
     platforms: [
         .macOS(.v14)
@@ -20,6 +21,7 @@ let package = Package(
         .package(path: "../Domain"),
         .package(url: "https://github.com/LebJe/TOMLKit.git", exact: "0.6.0"),
         .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", exact: "1.0.0"),
+        .package(url: "https://github.com/lmsqueezy/lemonsqueezy-swift.git", exact: "1.3.0"),
         .package(url: "https://github.com/sparkle-project/Sparkle.git", exact: "2.8.0")
     ],
     targets: [
@@ -28,6 +30,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Domain", package: "Domain"),
                 .product(name: "AsyncFileMonitor", package: "AsyncFileMonitor"),
+                .product(name: "LemonSqueezy", package: "lemonsqueezy-swift"),
                 .product(name: "Sparkle", package: "Sparkle"),
                 .product(name: "TOMLKit", package: "TOMLKit")
             ],
@@ -35,7 +38,15 @@ let package = Package(
             swiftSettings: [
                 .treatAllWarnings(as: .error),
                 .strictMemorySafety()
+            ],
+            plugins: [
+                .plugin(name: "SecretGeneratorPlugin")
             ]
+        ),
+        .plugin(
+            name: "SecretGeneratorPlugin",
+            capability: .buildTool(),
+            path: "Plugins/SecretGeneratorPlugin"
         ),
         .testTarget(
             name: "DataTests",

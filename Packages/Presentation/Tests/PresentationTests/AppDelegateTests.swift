@@ -4,7 +4,7 @@
 import XCTest
 
 final class AppDelegateTests: XCTestCase {
-    var appDelegate: AppDelegate?
+    private weak var appDelegate: AppDelegate?
 
     override func setUp() {
         // appDelegate = AppDelegate()

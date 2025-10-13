@@ -8,7 +8,7 @@ import SwiftUI
 /// This app provides a menu bar interface for managing AeroSpace workspaces and windows.
 /// It displays a visual representation of spaces and their associated windows in the menu bar area.
 @main
-struct AeroSpaceBarApp: App {
+private struct AeroSpaceBarApp: App {
     /// The application delegate that manages the menu bar panel and app lifecycle.
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 

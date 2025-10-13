@@ -16,6 +16,7 @@ public enum SpacesAppearanceMode: String, AppearanceMode {
         switch self {
         case .perSpace:
             LocalizedStringResource("Per Space")
+
         case .allSpaces:
             LocalizedStringResource("All Spaces")
         }
@@ -26,6 +27,7 @@ public enum SpacesAppearanceMode: String, AppearanceMode {
         switch self {
         case .perSpace:
             LocalizedStringResource("Configure appearance for each space individually.")
+
         case .allSpaces:
             LocalizedStringResource("Use the same appearance for all spaces.")
         }

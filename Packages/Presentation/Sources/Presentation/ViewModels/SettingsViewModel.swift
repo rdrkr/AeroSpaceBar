@@ -574,7 +574,7 @@ public class SettingsViewModel: ObservableObject {
         navigationHistory.removeAll()
         forwardHistory.removeAll()
 
-        setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
+        setSelectedPage(AnyNavigationPage(Self.defaultPage))
     }
 
     // MARK: - Private Methods
@@ -665,17 +665,22 @@ public class SettingsViewModel: ObservableObject {
             switch option {
             case .license:
                 enableLicensing
+
             case .general:
                 true // General is always available
             case .spaces:
                 featureFlags.enableSpaces
+
             case .groups:
                 featureFlags.enableGroups
+
             case .updates:
                 featureFlags.enableSoftwareUpdates
+
             case .advanced:
                 featureFlags.enableAdvancedSettings
             #if DEBUG
+
                 case .developer:
                     true // Developer is always available in debug builds
             #endif
@@ -714,17 +719,17 @@ public class SettingsViewModel: ObservableObject {
 
         // Check if current selected page is still available
         if !allAvailablePages.contains(where: { $0.id == selectedPage.id }) {
-            setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
+            setSelectedPage(AnyNavigationPage(Self.defaultPage))
         }
 
         // Clean up navigation history to remove disabled pages
         navigationHistory = navigationHistory.filter { page in
-            allAvailablePages.contains(where: { $0.id == page.id })
+            allAvailablePages.contains { $0.id == page.id }
         }
 
         // Clean up forward history to remove disabled pages
         forwardHistory = forwardHistory.filter { page in
-            allAvailablePages.contains(where: { $0.id == page.id })
+            allAvailablePages.contains { $0.id == page.id }
         }
 
         // Remove sub-pages whose parent is no longer available
@@ -756,7 +761,7 @@ public class SettingsViewModel: ObservableObject {
             {
                 setSelectedPage(AnyNavigationPage(parentPage))
             } else {
-                setSelectedPage(AnyNavigationPage(SettingsViewModel.defaultPage))
+                setSelectedPage(AnyNavigationPage(Self.defaultPage))
             }
         }
     }

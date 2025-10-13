@@ -15,6 +15,7 @@ public enum WindowsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perWindow:
             LocalizedStringResource("Per Window")
+
         case .allWindows:
             LocalizedStringResource("All Windows")
         }
@@ -25,6 +26,7 @@ public enum WindowsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perWindow:
             LocalizedStringResource("Configure appearance for each window individually.")
+
         case .allWindows:
             LocalizedStringResource("Use the same appearance for all windows.")
         }
@@ -35,6 +37,7 @@ public enum WindowsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perWindow:
             false
+
         case .allWindows:
             true
         }

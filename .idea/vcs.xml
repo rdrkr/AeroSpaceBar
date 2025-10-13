@@ -2,5 +2,12 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/AsyncFileMonitor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/ModifiedCopyMacro" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/Sparkle" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/TOMLKit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/lemonsqueezy-swift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/swift-collections" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/SourcePackages/checkouts/swift-syntax" vcs="Git" />
   </component>
 </project>

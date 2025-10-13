@@ -14,7 +14,7 @@ public final class DeactivateLicenseUseCase {
     }
 
     /// Executes the use case to deactivate the current license.
-    public func execute() async {
-        await licenseGateway.deactivateLicense()
+    public func execute() async throws {
+        try await licenseGateway.deactivateLicense()
     }
 }

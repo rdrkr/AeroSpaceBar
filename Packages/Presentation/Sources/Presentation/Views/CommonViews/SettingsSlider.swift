@@ -61,36 +61,6 @@ struct SettingsSlider<V>: View where V: BinaryFloatingPoint, V.Stride: BinaryFlo
         self.onEditingChanged = onEditingChanged
     }
 
-    /// The body of the settings slider view.
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                StickySlider(
-                    value: $value,
-                    in: bounds,
-                    defaultValue: defaultValue,
-                    stickiness: stickiness,
-                    labelWidth: 174.0
-                ) {
-                    Text(label)
-                }
-
-                Text(valueFormatter(value))
-                    .secondaryText()
-                    .frame(
-                        width: 34,
-                        alignment: .trailing
-                    )
-            }
-
-            Text(helpText)
-                .secondaryText()
-        }
-    }
-}
-
-/// Convenience initializers for common formatting patterns
-extension SettingsSlider {
     /// Initializer for percentage values (0.0-1.0 displayed as 0-100%)
     init(
         value: Binding<V>,
@@ -139,5 +109,32 @@ extension SettingsSlider {
             },
             onEditingChanged: onEditingChanged
         )
+    }
+
+    /// The body of the settings slider view.
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                StickySlider(
+                    value: $value,
+                    in: bounds,
+                    defaultValue: defaultValue,
+                    stickiness: stickiness,
+                    labelWidth: 174.0
+                ) {
+                    Text(label)
+                }
+
+                Text(valueFormatter(value))
+                    .secondaryText()
+                    .frame(
+                        width: 34,
+                        alignment: .trailing
+                    )
+            }
+
+            Text(helpText)
+                .secondaryText()
+        }
     }
 }

@@ -5,15 +5,15 @@ import Combine
 import XCTest
 
 final class SystemMenuBarRepositoryTests: XCTestCase {
-    var repository: SystemMenuBarRepository?
-    var cancellables: Set<AnyCancellable>?
+    private var repository: SystemMenuBarRepository?
+    private var cancellables: Set<AnyCancellable> = .init()
 
     override func setUp() {
         cancellables = Set<AnyCancellable>()
     }
 
     override func tearDown() {
-        cancellables?.removeAll()
+        cancellables.removeAll()
         repository = nil
     }
 

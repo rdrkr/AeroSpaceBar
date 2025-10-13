@@ -120,7 +120,7 @@ public struct ColorProperties: Codable, Equatable, Hashable, Sendable {
 
     // MARK: - Hashable Implementation
 
-    public static func == (lhs: ColorProperties, rhs: ColorProperties) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.backgroundTintColor.toHex() == rhs.backgroundTintColor.toHex() &&
             lhs.borderTintColor.toHex() == rhs.borderTintColor.toHex() &&
             lhs.foregroundColor.toHex() == rhs.foregroundColor.toHex()

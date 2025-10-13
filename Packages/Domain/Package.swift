@@ -5,7 +5,8 @@
 
 import PackageDescription
 
-let package = Package(
+/// Define the package.
+public let package = Package(
     name: "Domain",
     platforms: [
         .macOS(.v14)
@@ -26,6 +27,9 @@ let package = Package(
                 .product(name: "ModifiedCopy", package: "ModifiedCopyMacro")
             ],
             path: "Sources/Domain",
+            resources: [
+                .process("Resources/Localizable.xcstrings")
+            ],
             swiftSettings: [
                 .treatAllWarnings(as: .error),
                 .strictMemorySafety()

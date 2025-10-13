@@ -1,6 +1,7 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 #if DEBUG
+    import Domain
     import SwiftUI
 
     /// Developer settings view for managing feature flags and debugging options.
@@ -104,6 +105,42 @@
                                 isEnabled: viewModel.mockActiveLicense,
                                 onToggle: viewModel.setMockActiveLicense
                             )
+
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(LocalizedStringResource("Checkout Environment"))
+                                        .font(.headline)
+                                        .tag("developer-checkout-environment-title")
+
+                                    Text(
+                                        LocalizedStringResource(
+                                            "Select the checkout environment for license purchases and trials."
+                                        )
+                                    )
+                                    .secondaryText()
+                                    .tag("developer-checkout-environment-description")
+                                }
+                                .tag("developer-checkout-environment-vstack")
+
+                                Spacer()
+
+                                Picker(
+                                    LocalizedStringResource("Checkout Environment"),
+                                    selection: Binding(
+                                        get: { viewModel.checkoutEnvironment },
+                                        set: { viewModel.setCheckoutEnvironment($0) }
+                                    )
+                                ) {
+                                    ForEach(CheckoutEnvironment.allCases, id: \.self) { environment in
+                                        Text(environment.displayName)
+                                            .tag(environment)
+                                    }
+                                }
+                                .labelsHidden()
+                                .pickerStyle(.segmented)
+                                .tag("developer-checkout-environment-picker")
+                            }
+                            .tag("developer-checkout-environment-section")
                         }
                     }
                 }

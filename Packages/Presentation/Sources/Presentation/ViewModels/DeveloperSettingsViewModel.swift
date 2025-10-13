@@ -26,6 +26,9 @@
         /// Whether an active license should be mocked for development testing.
         @Published var mockActiveLicense: Bool
 
+        /// The checkout environment for license purchases.
+        @Published var checkoutEnvironment: CheckoutEnvironment
+
         /// The current license information.
         @Published var licenseInfo: LicenseInfo
 
@@ -56,6 +59,12 @@
         /// Use case for setting mockActiveLicense feature flag.
         private let setMockActiveLicenseUseCase: SetMockActiveLicenseUseCase
 
+        /// Use case for getting checkout environment.
+        private let getCheckoutEnvironmentUseCase: GetCheckoutEnvironmentUseCase
+
+        /// Use case for setting checkout environment.
+        private let setCheckoutEnvironmentUseCase: SetCheckoutEnvironmentUseCase
+
         /// Use case for getting license information.
         private let getLicenseInfoUseCase: GetLicenseInfoUseCase
 
@@ -81,6 +90,8 @@
         ///   - setEnableTrialRequestUseCase: Use case for setting enableTrialRequest flag
         ///   - getMockActiveLicenseUseCase: Use case for getting mockActiveLicense flag
         ///   - setMockActiveLicenseUseCase: Use case for setting mockActiveLicense flag
+        ///   - getCheckoutEnvironmentUseCase: Use case for getting checkout environment
+        ///   - setCheckoutEnvironmentUseCase: Use case for setting checkout environment
         ///   - resetLicenseFeatureFlagsUseCase: Use case for resetting license feature flags
         ///   - getHasAskedForScreenCapturePermissionsUseCase: Use case for getting screen capture permission request
         /// status
@@ -93,6 +104,8 @@
             setEnableTrialRequestUseCase: SetEnableTrialRequestUseCase,
             getMockActiveLicenseUseCase: GetMockActiveLicenseUseCase,
             setMockActiveLicenseUseCase: SetMockActiveLicenseUseCase,
+            getCheckoutEnvironmentUseCase: GetCheckoutEnvironmentUseCase,
+            setCheckoutEnvironmentUseCase: SetCheckoutEnvironmentUseCase,
             getLicenseInfoUseCase: GetLicenseInfoUseCase,
             resetLicenseFeatureFlagsUseCase: ResetLicenseFeatureFlagsUseCase,
             getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase
@@ -105,6 +118,8 @@
             self.setEnableTrialRequestUseCase = setEnableTrialRequestUseCase
             self.getMockActiveLicenseUseCase = getMockActiveLicenseUseCase
             self.setMockActiveLicenseUseCase = setMockActiveLicenseUseCase
+            self.getCheckoutEnvironmentUseCase = getCheckoutEnvironmentUseCase
+            self.setCheckoutEnvironmentUseCase = setCheckoutEnvironmentUseCase
             self.getLicenseInfoUseCase = getLicenseInfoUseCase
             self.resetLicenseFeatureFlagsUseCase = resetLicenseFeatureFlagsUseCase
             self.getHasAskedForScreenCapturePermissionsUseCase = getHasAskedForScreenCapturePermissionsUseCase
@@ -113,6 +128,7 @@
             enableLicensing = getEnableLicensingUseCase.execute().blockingFirst()
             enableTrialRequest = getEnableTrialRequestUseCase.execute().blockingFirst()
             mockActiveLicense = getMockActiveLicenseUseCase.execute().blockingFirst()
+            checkoutEnvironment = getCheckoutEnvironmentUseCase.execute().blockingFirst()
             licenseInfo = getLicenseInfoUseCase.execute().blockingFirst()
             hasAskedForScreenCapturePermissions = getHasAskedForScreenCapturePermissionsUseCase.execute()
                 .blockingFirst()
@@ -190,6 +206,16 @@
             }
         }
 
+        /// Sets the checkout environment.
+        /// - Parameter environment: The checkout environment to use
+        func setCheckoutEnvironment(_ environment: CheckoutEnvironment) {
+            if environment == checkoutEnvironment { return }
+
+            Task.detached(priority: .utility) { [self] in
+                await setCheckoutEnvironmentUseCase.execute(environment)
+            }
+        }
+
         /// Whether feature flag toggles should be disabled due to no active license.
         var areFeatureFlagsDisabled: Bool {
             enableLicensing && !licenseInfo.isActive
@@ -220,6 +246,11 @@
                 .assign(to: \.mockActiveLicense, on: self)
                 .store(in: &cancellables)
 
+            // Subscribe to checkout environment changes
+            getCheckoutEnvironmentUseCase.execute()
+                .assign(to: \.checkoutEnvironment, on: self)
+                .store(in: &cancellables)
+
             // Subscribe to license info changes
             getLicenseInfoUseCase.execute()
                 .assign(to: \.licenseInfo, on: self)
@@ -237,7 +268,10 @@
         /// the application to a clean state.
         func resetToDefaults() {
             setFeatureFlagsUseCase.resetToDefaults()
-            resetLicenseFeatureFlagsUseCase.execute()
+
+            Task.detached(priority: .utility) { [self] in
+                await resetLicenseFeatureFlagsUseCase.execute()
+            }
         }
     }
 #endif

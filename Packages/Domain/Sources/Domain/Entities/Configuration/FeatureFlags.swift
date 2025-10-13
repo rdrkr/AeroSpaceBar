@@ -27,8 +27,8 @@ public struct FeatureFlags: Equatable, Sendable {
 
     /// Creates feature flags with default values.
     /// - Returns: FeatureFlags with all default values
-    public static func defaultFlags() -> FeatureFlags {
-        FeatureFlags(
+    public static func defaultFlags() -> Self {
+        Self(
             enableGroups: FeatureFlagDefaults.enableGroups,
             enableSpaces: FeatureFlagDefaults.enableSpaces,
             enableSoftwareUpdates: FeatureFlagDefaults.enableSoftwareUpdates,
@@ -39,25 +39,21 @@ public struct FeatureFlags: Equatable, Sendable {
     /// Copies this instance while updating non required license flags from a given other instance.
     /// - Parameter other The other instance to be used for updating this instance.
     /// - Returns FeatureFlags with updated non required license flags.
-    public func copyWithUpdatedNonRequiredLicenseFlags(other: FeatureFlags) -> FeatureFlags {
-        let updatedInstance = if enableSoftwareUpdates != other.enableSoftwareUpdates {
+    public func copyWithUpdatedNonRequiredLicenseFlags(other: Self) -> Self {
+        if enableSoftwareUpdates != other.enableSoftwareUpdates {
             copy(enableSoftwareUpdates: other.enableSoftwareUpdates)
         } else {
             self
         }
-
-        return updatedInstance
     }
 
     /// Copies this instance while disabling required license flags.
     /// - Returns FeatureFlags with disabled required license flags.
-    public func copyWithDisabledRequiredLicenseFlags() -> FeatureFlags {
-        let updatedInstance = copy(
+    public func copyWithDisabledRequiredLicenseFlags() -> Self {
+        copy(
             enableGroups: false,
             enableSpaces: false,
             enableAdvancedSettings: false
         )
-
-        return updatedInstance
     }
 }

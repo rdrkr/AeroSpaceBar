@@ -5,8 +5,8 @@ import Combine
 import XCTest
 
 final class GetAeroSpacePathUseCaseTests: XCTestCase {
-    var useCase: GetAeroSpacePathUseCase?
-    var cancellables: Set<AnyCancellable>?
+    private var useCase: GetAeroSpacePathUseCase?
+    private var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
         // mockConfigurationGateway = MockConfigurationGateway()

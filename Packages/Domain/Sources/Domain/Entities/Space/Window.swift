@@ -154,7 +154,7 @@ public struct Window: VisualContainer {
     ///   - lhs: The left-hand side window
     ///   - rhs: The right-hand side window
     /// - Returns: True if the windows are equal (ignoring appIcon)
-    public static func == (lhs: Window, rhs: Window) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id &&
             lhs.title == rhs.title &&
             lhs.appName == rhs.appName &&

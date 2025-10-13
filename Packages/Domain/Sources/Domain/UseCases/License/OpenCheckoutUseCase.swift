@@ -3,7 +3,7 @@
 import AppKit
 import Foundation
 
-/// Use case for getting the Paddle checkout URL.
+/// Use case for getting the license checkout URL.
 @MainActor
 public final class OpenCheckoutUseCase {
     private let licenseGateway: LicenseGateway
@@ -14,17 +14,24 @@ public final class OpenCheckoutUseCase {
         self.licenseGateway = licenseGateway
     }
 
-    /// Executes the use case to start the checkout process.
-    /// - Parameter parentWindow: The parent window (ignored for now)
-    /// - Returns: The Paddle checkout URL for the presentation layer to use
-    public func execute(from _: NSWindow?) -> URL {
-        licenseGateway.createCheckoutURL()
+    /// Gets the checkout URL synchronously.
+    ///
+    /// Returns a static checkout URL from the LemonSqueezy Dashboard.
+    /// No API call is needed - the URL directly opens the checkout page.
+    ///
+    /// - Returns: The license checkout URL
+    public func getCheckoutURL() -> URL {
+        licenseGateway.getCheckoutURL()
     }
 
-    /// Gets the checkout URL synchronously.
-    /// - Returns: The Paddle checkout URL
-    public func getCheckoutURL() -> URL {
-        licenseGateway.createCheckoutURL()
+    /// Gets the trial checkout URL synchronously.
+    ///
+    /// Returns a static checkout URL from the LemonSqueezy Dashboard.
+    /// No API call is needed - the URL directly opens the trial checkout page.
+    ///
+    /// - Returns: The trial checkout URL
+    public func getTrialCheckoutURL() -> URL {
+        licenseGateway.getTrialCheckoutURL()
     }
 
     /// Handles successful checkout completion.

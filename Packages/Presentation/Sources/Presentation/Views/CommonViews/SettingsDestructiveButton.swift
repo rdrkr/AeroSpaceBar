@@ -52,9 +52,8 @@ struct SettingsDestructiveButton: View {
         Section {
             SettingsDestructiveButton(
                 title: "Delete Group",
-                description: "Delete this group and its configuration",
-                action: { print("Delete action") }
-            )
+                description: "Delete this group and its configuration"
+            ) { print("Delete action") }
         }
     }
     .settingsFormStyle()

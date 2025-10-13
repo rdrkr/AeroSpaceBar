@@ -4,7 +4,7 @@
 import XCTest
 
 final class DependencyContainerTests: XCTestCase {
-    var container: DependencyContainer?
+    private var container: DependencyContainer?
 
     override func setUp() {
         // container = DependencyContainer.shared

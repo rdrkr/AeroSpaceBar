@@ -28,12 +28,16 @@ public enum AppError: LocalizedError, Equatable {
         switch self {
         case .aeroSpaceNotRunning:
             "AeroSpace is not running"
+
         case let .commandExecutionError(message):
             "Command execution failed: \(message)"
+
         case let .dataFetchError(message):
             "Data fetch failed: \(message)"
+
         case let .decodingError(message):
             "Data decoding failed: \(message)"
+
         case .serviceUnavailable:
             "Service is unavailable"
         }

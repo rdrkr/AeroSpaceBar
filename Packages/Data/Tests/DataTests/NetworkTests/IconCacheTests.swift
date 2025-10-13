@@ -4,7 +4,7 @@
 import XCTest
 
 final class IconCacheTests: XCTestCase {
-    var iconCache: IconCache?
+    private var iconCache: IconCache?
 
     override func setUp() {
         // iconCache = IconCache()

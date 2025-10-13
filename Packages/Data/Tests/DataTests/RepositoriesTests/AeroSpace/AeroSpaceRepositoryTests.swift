@@ -5,8 +5,8 @@ import Combine
 import XCTest
 
 final class AeroSpaceRepositoryTests: XCTestCase {
-    var repository: AeroSpaceRepository?
-    var cancellables: Set<AnyCancellable>?
+    private var repository: AeroSpaceRepository?
+    private var cancellables: Set<AnyCancellable>?
 
     override func setUp() {
         cancellables = Set<AnyCancellable>()

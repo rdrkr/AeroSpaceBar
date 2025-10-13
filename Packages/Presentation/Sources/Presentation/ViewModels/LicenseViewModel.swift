@@ -56,11 +56,8 @@ public final class LicenseViewModel: ObservableObject {
     /// Use case for activating a license with a provided key.
     private let activateLicenseUseCase: ActivateLicenseUseCase
 
-    /// Use case for opening the Paddle checkout flow.
+    /// Use case for opening the license checkout flow.
     private let openCheckoutUseCase: OpenCheckoutUseCase
-
-    /// Use case for starting the trial period.
-    private let startTrialUseCase: StartTrialUseCase
 
     /// Use case for deactivating the current license.
     private let deactivateLicenseUseCase: DeactivateLicenseUseCase
@@ -87,7 +84,6 @@ public final class LicenseViewModel: ObservableObject {
         getLicenseInfoUseCase: GetLicenseInfoUseCase,
         activateLicenseUseCase: ActivateLicenseUseCase,
         openCheckoutUseCase: OpenCheckoutUseCase,
-        startTrialUseCase: StartTrialUseCase,
         deactivateLicenseUseCase: DeactivateLicenseUseCase,
         getEnableLicensingUseCase: GetEnableLicensingUseCase,
         getEnableTrialRequestUseCase: GetEnableTrialRequestUseCase,
@@ -97,7 +93,6 @@ public final class LicenseViewModel: ObservableObject {
         self.getLicenseInfoUseCase = getLicenseInfoUseCase
         self.activateLicenseUseCase = activateLicenseUseCase
         self.openCheckoutUseCase = openCheckoutUseCase
-        self.startTrialUseCase = startTrialUseCase
         self.deactivateLicenseUseCase = deactivateLicenseUseCase
         self.getEnableLicensingUseCase = getEnableLicensingUseCase
         self.getEnableTrialRequestUseCase = getEnableTrialRequestUseCase
@@ -114,23 +109,48 @@ public final class LicenseViewModel: ObservableObject {
 
     // MARK: - Public Methods
 
-    /// Starts the 14-day trial period for the user.
+    /// Starts the 14-day trial period for the user by opening the trial checkout.
     public func startTrial() {
-        Logger.info("Starting trial period", category: Logger.app)
-        startTrialUseCase.execute()
+        Logger.info("Starting trial period via checkout", category: Logger.app)
+        openTrialCheckout()
     }
 
-    /// Opens the Paddle checkout flow in an embedded WebView.
+    /// Opens the license checkout flow in an embedded WebView.
     public func openCheckout() {
         Logger.info("Opening checkout flow", category: Logger.app)
-        checkoutURL = openCheckoutUseCase.getCheckoutURL()
+
+        let url = openCheckoutUseCase.getCheckoutURL()
+        checkoutURL = url
         showingCheckoutWebView = true
+
+        Logger.debug("Using checkout URL: \(url.absoluteString)", category: Logger.app)
+    }
+
+    /// Opens the trial checkout flow in an embedded WebView.
+    public func openTrialCheckout() {
+        Logger.info("Opening trial checkout flow", category: Logger.app)
+
+        let url = openCheckoutUseCase.getTrialCheckoutURL()
+        checkoutURL = url
+        showingCheckoutWebView = true
+
+        Logger.debug("Using trial checkout URL: \(url.absoluteString)", category: Logger.app)
     }
 
     /// Dismisses the checkout WebView.
     public func dismissCheckoutWebView() {
         showingCheckoutWebView = false
         checkoutURL = nil
+    }
+
+    /// Handles successful checkout completion with a license key.
+    /// - Parameter licenseKey: The license key from the successful checkout
+    public func handleCheckoutSuccess(licenseKey: String) {
+        Logger.info("Handling checkout success", category: Logger.app)
+
+        Task {
+            await openCheckoutUseCase.handleSuccess(licenseKey: licenseKey)
+        }
     }
 
     /// Activates a license with the provided license key.
@@ -176,7 +196,11 @@ public final class LicenseViewModel: ObservableObject {
         Logger.info("Deactivating license", category: Logger.app)
 
         Task {
-            await deactivateLicenseUseCase.execute()
+            do {
+                try await deactivateLicenseUseCase.execute()
+            } catch {
+                Logger.error("Failed to deactivate license", error: error, category: Logger.app)
+            }
         }
     }
 

@@ -45,16 +45,14 @@ struct WindowView: View {
     /// Computed property for title text to avoid repeated calculations.
     /// - Returns: The window title if multiple apps of the same type exist, otherwise the app name
     private var titleText: String {
-        let sameAppCount = space.windows.count(where: { $0.appName == window.appName })
+        let sameAppCount = space.windows.count { $0.appName == window.appName }
         return sameAppCount > 1 ? window.title : (window.appName ?? "")
     }
 
     /// Computed property for space focus state to avoid repeated calculations.
     /// - Returns: True if any window in the space is focused
     private var spaceIsFocused: Bool {
-        space.windows.contains {
-            $0.isFocused
-        }
+        space.windows.contains(where: \.isFocused)
     }
 
     // MARK: - Body
@@ -88,15 +86,14 @@ struct WindowView: View {
         .transition(.blurReplace)
         .conditionalInteraction(
             isEnabled: focusWindowOnClick,
-            isHovered: $isHovered,
-            onTap: {
-                Task { @MainActor in
-                    onSwitchToSpace(space, false)
-                    try await Task.sleep(for: .milliseconds(100))
-                    onSwitchToWindow(window)
-                }
+            isHovered: $isHovered
+        ) {
+            Task { @MainActor in
+                onSwitchToSpace(space, false)
+                try? await Task.sleep(for: .milliseconds(100))
+                onSwitchToWindow(window)
             }
-        )
+        }
         .tag("window-\(window.id)-view")
     }
 }

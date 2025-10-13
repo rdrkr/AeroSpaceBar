@@ -383,9 +383,7 @@ public final class SpacesViewModel: ObservableObject {
         // Monitor spaces changes
         getSpacesUseCase.execute()
             .sink { [weak self] allSpacesData in
-                let sortedAllSpaces = allSpacesData.sorted {
-                    $0.id < $1.id
-                }
+                let sortedAllSpaces = allSpacesData.sorted { $0.id < $1.id }
                 self?.allSpaces = sortedAllSpaces
 
                 // Update filtered spaces based on showEmptySpaces setting

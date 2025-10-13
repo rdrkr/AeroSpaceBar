@@ -73,7 +73,7 @@ public enum Logger {
             guard newValue != logLevel else { return }
 
             UserDefaults.standard.set(newValue.rawValue, forKey: UserDefaultsKeys.logLevel.rawValue)
-            info("Log level changed to: \(newValue.rawValue)", category: Logger.app)
+            info("Log level changed to: \(newValue.rawValue)", category: app)
         }
     }
 
@@ -274,7 +274,7 @@ public enum Logger {
         guard enablePerformanceMetrics else { return }
 
         // For now, just log the start of the interval
-        debug("Performance interval started: \(name)", category: Logger.performance)
+        debug("Performance interval started: \(name)", category: performance)
     }
 
     /// Ends a performance measurement interval
@@ -282,7 +282,7 @@ public enum Logger {
         guard enablePerformanceMetrics else { return }
 
         // For now, just log the end of the interval
-        debug("Performance interval ended: \(name)", category: Logger.performance)
+        debug("Performance interval ended: \(name)", category: performance)
     }
 
     /// Measures the execution time of a block
@@ -297,7 +297,7 @@ public enum Logger {
         defer {
             let endTime = CFAbsoluteTimeGetCurrent()
             let duration = endTime - startTime
-            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
+            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Self.performance)
         }
 
         return try operation()
@@ -315,7 +315,7 @@ public enum Logger {
         defer {
             let endTime = CFAbsoluteTimeGetCurrent()
             let duration = endTime - startTime
-            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Logger.performance)
+            info(unsafe "Performance: \(name) took \(String(format: "%.3f", duration))s", category: Self.performance)
         }
 
         return try await operation()

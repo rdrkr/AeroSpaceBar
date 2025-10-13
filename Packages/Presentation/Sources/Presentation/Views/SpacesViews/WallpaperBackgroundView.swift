@@ -39,6 +39,7 @@ struct WallpaperBackgroundView: View {
 }
 
 #Preview {
+    // swiftlint:disable object_literal
     if let wallpaper = NSImage(named: "AppIcon") {
         WallpaperBackgroundView(
             wallpaper: wallpaper
@@ -48,4 +49,5 @@ struct WallpaperBackgroundView: View {
         Text("No wallpaper available for preview")
             .foregroundColor(.secondary)
     }
+    // swiftlint:enable object_literal
 }

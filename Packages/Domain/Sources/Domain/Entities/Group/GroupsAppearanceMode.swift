@@ -19,8 +19,10 @@ public enum GroupsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perGroup:
             LocalizedStringResource("Per Group")
+
         case .allGroups:
             LocalizedStringResource("All Groups")
+
         case .matchSpaces:
             LocalizedStringResource("Match Spaces")
         }
@@ -31,8 +33,10 @@ public enum GroupsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perGroup:
             LocalizedStringResource("Configure appearance for each group individually.")
+
         case .allGroups:
             LocalizedStringResource("Use the same appearance for all groups.")
+
         case .matchSpaces:
             LocalizedStringResource("Use the same appearance as spaces.")
         }
@@ -43,8 +47,10 @@ public enum GroupsAppearanceMode: String, AppearanceMode {
         switch self {
         case .perGroup:
             false
+
         case .allGroups:
             true
+
         case .matchSpaces:
             false
         }

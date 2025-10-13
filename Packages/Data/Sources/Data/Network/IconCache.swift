@@ -17,7 +17,7 @@ public final class IconCache {
     ///
     /// This cache uses the application name as the key and stores NSImage objects.
     /// It has configurable limits for memory management.
-    private let cache = NSCache<NSString, NSImage>()
+    private let cache: NSCache<NSString, NSImage> = .init()
 
     /// Initializer that configures cache limits.
     public init() {
@@ -32,7 +32,7 @@ public final class IconCache {
     /// it attempts to load the icon from the running application and caches it.
     /// - Parameter appName: The name of the application
     /// - Returns: The application icon if available, nil otherwise
-    func icon(for appName: String) -> NSImage? {
+    public func icon(for appName: String) -> NSImage? {
         // Check cache first
         if let cachedIcon = cache.object(forKey: appName as NSString) {
             Logger.debug(
@@ -46,9 +46,9 @@ public final class IconCache {
         Logger.info("Loading icon for application", category: Logger.data, metadata: ["appName": appName])
 
         // Try to get icon from running applications
-        let runningApps = NSWorkspace.shared.runningApplications
+        let runningApps: [NSRunningApplication] = NSWorkspace.shared.runningApplications
         if let app = runningApps.first(where: { $0.localizedName?.lowercased() == appName.lowercased() }) {
-            let icon = app.icon ?? NSWorkspace.shared.icon(for: .application)
+            let icon: NSImage = app.icon ?? NSWorkspace.shared.icon(for: .application)
             cache.setObject(icon, forKey: appName as NSString)
             Logger.info("Icon loaded from running application", category: Logger.data, metadata: [
                 "appName": appName,

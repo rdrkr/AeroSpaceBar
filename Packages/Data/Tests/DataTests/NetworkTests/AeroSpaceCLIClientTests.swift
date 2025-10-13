@@ -4,7 +4,7 @@
 import XCTest
 
 final class AeroSpaceCLIClientTests: XCTestCase {
-    var client: AeroSpaceCLIClient?
+    private var client: AeroSpaceCLIClient?
 
     override func setUp() {
         client = AeroSpaceCLIClient(executablePath: "/test/path/aerospace")

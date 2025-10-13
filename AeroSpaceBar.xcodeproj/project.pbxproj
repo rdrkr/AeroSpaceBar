@@ -532,23 +532,23 @@
 				"",
 				"if [[ \"$(uname -m)\" == arm64 ]]; then",
 				"    export PATH=\"/opt/homebrew/bin:$PATH\"",
-				"fi",
+				fi,
 				"",
 				"echo \"🔧 Running SwiftFormat (pass 1)...\"",
 				"if which swiftformat > /dev/null; then",
 				"    eval \"$swiftformat_cmd\"",
-				"else",
+				else,
 				"    echo \"⚠️ SwiftFormat not found. Install with: brew install swiftformat\"",
 				"    exit 1",
-				"fi",
+				fi,
 				"",
 				"echo \"🔍 Running SwiftLint fix...\"",
 				"if which swiftlint > /dev/null; then",
 				"    eval \"$swiftlint_cmd --fix\"",
-				"else",
+				else,
 				"    echo \"⚠️ SwiftLint not found. Install with: brew install swiftlint\"",
 				"    exit 1",
-				"fi",
+				fi,
 				"",
 				"echo \"🔧 Running SwiftFormat (pass 2)...\"",
 				"eval \"$swiftformat_cmd\"",
@@ -557,22 +557,6 @@
 				"eval \"$swiftlint_cmd --strict\"",
 				"",
 				"echo \"✅ Pre-build checks completed successfully\"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1066,6 +1050,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++23";
@@ -1164,6 +1150,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++23";
@@ -1261,7 +1249,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Localizable.xcstrings AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1311,7 +1299,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Localizable.xcstrings AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;

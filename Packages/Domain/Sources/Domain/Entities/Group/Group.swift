@@ -19,7 +19,7 @@ public struct Group: VisualContainer {
         defaultGlobalEffectProperties: ConfigurationDefaults.groupsGlobalEffectProperties,
         defaultGlobalGeometricProperties: ConfigurationDefaults.groupsGlobalGeometricProperties,
         canDeleteEntity: { entity in
-            guard let group = entity as? Group else { return false }
+            guard let group = entity as? Self else { return false }
 
             return group.id > 0 // Groups with id > 0 can be deleted
         },
@@ -143,7 +143,7 @@ public struct Group: VisualContainer {
     /// - Parameter menuBarAppsCount: number of existing menubar apps
     /// - Returns: the group end index
     public func getEndIndex(menuBarAppsCount: Int) -> Int {
-        endIndex == Group.allAppsIndicatorIndex ? menuBarAppsCount : endIndex
+        endIndex == Self.allAppsIndicatorIndex ? menuBarAppsCount : endIndex
     }
 
     /// Sets end index for this group.
@@ -151,7 +151,7 @@ public struct Group: VisualContainer {
     /// - Parameter menuBarAppsCount: number of existing menubar apps
     /// - Returns: the group end index
     public mutating func setEndIndex(_ index: Int, menuBarAppsCount: Int) {
-        endIndex = if index == Group.allAppsIndicatorIndex {
+        endIndex = if index == Self.allAppsIndicatorIndex {
             menuBarAppsCount
         } else {
             index

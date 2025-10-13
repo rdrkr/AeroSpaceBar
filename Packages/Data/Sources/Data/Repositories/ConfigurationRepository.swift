@@ -848,13 +848,11 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// Gets the AeroSpace configuration file path, creating a default one if needed
     public func getAeroSpaceConfigPath() async -> URL {
         let cliPath = await fetchAeroSpaceConfigPathFromCLI()
-        let resolvedURL = if let path = cliPath, !path.isEmpty {
+        return if let path = cliPath, !path.isEmpty {
             URL(fileURLWithPath: path)
         } else {
             URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent(".aerospace.toml")
         }
-
-        return resolvedURL
     }
 
     /// Gets the configuration file path.
@@ -874,9 +872,8 @@ public final class ConfigurationRepository: ConfigurationGateway {
         do {
             let cli = AeroSpaceCLIClient(executablePath: executablePath)
             let data = try await cli.execute(arguments: ["config", "--config-path"])
-            let pathString = String(data: data, encoding: .utf8)?
+            return String(data: data, encoding: .utf8)?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
-            return pathString
         } catch {
             Logger.error(
                 "Failed to obtain AeroSpace config path from CLI",
