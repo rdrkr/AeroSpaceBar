@@ -458,34 +458,6 @@ Updates are signed with EdDSA signatures to ensure authenticity and security.
 
    </details>
 
-   <details>
-   <summary><strong>LEMONSQUEEZY_API_KEY</strong> - LemonSqueezy API Key</summary>
-
-   1. Go to https://app.lemonsqueezy.com
-   2. Navigate to Settings → API
-   3. Create a new API key with appropriate permissions
-   4. Copy the generated API key
-
-   Store in keychain for local development:
-   ```bash
-   security add-generic-password \
-     -s "lemonsqueezy-api-key" \
-     -a "lemonsqueezy" \
-     -w "YOUR_LEMONSQUEEZY_API_KEY_HERE"
-   ```
-
-   Check if you have it in keychain:
-   ```bash
-   security find-generic-password -s "lemonsqueezy-api-key" -w 2>/dev/null
-   ```
-
-   Or create a `.env` file in the project root:
-   ```bash
-   echo 'LEMONSQUEEZY_API_KEY="your-api-key-here"' > .env
-   ```
-
-   </details>
-
    **Setting up secrets:**
 
    1. Go to https://github.com/rdrkr/AeroSpaceBar

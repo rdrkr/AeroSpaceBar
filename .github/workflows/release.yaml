@@ -74,7 +74,6 @@ jobs:
           NOTARIZATION_APPLE_ID: ${{ secrets.NOTARIZATION_APPLE_ID }}
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
           NOTARIZATION_TEAM_ID: ${{ secrets.NOTARIZATION_TEAM_ID }}
-          LEMONSQUEEZY_API_KEY: ${{ secrets.LEMONSQUEEZY_API_KEY }}
         run: |
           chmod +x ./Scripts/release.sh
           ./Scripts/release.sh --skip-notarize --version ${{ github.event.inputs.version }}

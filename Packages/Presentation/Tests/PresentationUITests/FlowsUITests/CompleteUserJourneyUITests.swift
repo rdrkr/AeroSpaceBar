@@ -1,18 +1,18 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-@testable import AeroSpaceBar
 import XCTest
 
+@MainActor
 final class CompleteUserJourneyUITests: XCTestCase {
     private var app: XCUIApplication?
 
-    override func setUp() {
+    override func setUp() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app?.launch()
     }
 
-    override func tearDown() {
+    override func tearDown() throws {
         app = nil
     }
 

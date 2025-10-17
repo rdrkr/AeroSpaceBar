@@ -150,7 +150,8 @@ public final class DependencyContainer {
         getEnableLicensingUseCase: makeGetEnableLicensingUseCase(),
         getEnableTrialRequestUseCase: makeGetEnableTrialRequestUseCase(),
         setUserNameUseCase: makeSetUserNameUseCase(),
-        setProfileImageDataUseCase: makeSetProfileImageDataUseCase()
+        setProfileImageDataUseCase: makeSetProfileImageDataUseCase(),
+        hasTrialBeenUsedUseCase: makeHasTrialBeenUsedUseCase()
     )
 
     /// The GroupsViewModel instance.
@@ -787,6 +788,12 @@ public final class DependencyContainer {
     /// - Returns: A new SetProfileImageDataUseCase instance
     func makeSetProfileImageDataUseCase() -> SetProfileImageDataUseCase {
         SetProfileImageDataUseCase(licenseGateway: licenseGateway)
+    }
+
+    /// Creates a new HasTrialBeenUsedUseCase instance.
+    /// - Returns: A new HasTrialBeenUsedUseCase instance
+    func makeHasTrialBeenUsedUseCase() -> HasTrialBeenUsedUseCase {
+        HasTrialBeenUsedUseCase(licenseGateway: licenseGateway)
     }
 
     // MARK: - Software Update Use Cases

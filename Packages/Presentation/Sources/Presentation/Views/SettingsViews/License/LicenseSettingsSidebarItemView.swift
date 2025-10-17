@@ -53,7 +53,9 @@ struct LicenseSettingsSidebarItemView: View {
                 )
 
                 // Status Text
-                Text(isLicensed ? String(localized: "Licensed User") :
+                Text(isLicensed ?
+                    (!viewModel.licenseInfo.email.isEmpty ? viewModel.licenseInfo
+                        .email : String(localized: "Licensed User")) :
                     String(localized: "Purchase a license to customize your profile")
                 )
                 .font(.subheadline)
@@ -62,6 +64,7 @@ struct LicenseSettingsSidebarItemView: View {
         }
         .animation(.themeEaseInOutFast, value: isLicensed)
         .animation(.themeEaseInOutFast, value: viewModel.licenseInfo.userName)
+        .animation(.themeEaseInOutFast, value: viewModel.licenseInfo.email)
         .animation(.themeEaseInOutFast, value: viewModel.profileImage)
         .animation(.themeEaseInOutFast, value: controlActiveState)
     }

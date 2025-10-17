@@ -395,7 +395,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// This method queries the running applications to determine if AeroSpace
     /// is currently active on the system.
     /// - Returns: True if AeroSpace is running, false otherwise
-    private nonisolated func isAeroSpaceRunning() -> Bool {
+    nonisolated private func isAeroSpaceRunning() -> Bool {
         // Check for various possible AeroSpace process names
         let isRunning = NSWorkspace.shared
             .runningApplications
@@ -414,7 +414,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// and builds the complete spaces data structure.
     /// - Returns: An array of all spaces with their associated windows (including empty spaces)
     /// - Throws: AppError if any operation fails
-    private nonisolated func fetchSpacesWithWindows(executablePath: String) async throws -> [Space] {
+    nonisolated private func fetchSpacesWithWindows(executablePath: String) async throws -> [Space] {
         guard isAeroSpaceRunning() else {
             throw AppError.aeroSpaceNotRunning
         }
@@ -443,7 +443,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///   - focusedWindow: The currently focused window
     /// - Returns: An array of all spaces with their associated windows (including empty spaces)
     /// - Throws: SpacesError if the operation fails
-    private nonisolated func buildSpacesWithWindows(
+    nonisolated private func buildSpacesWithWindows(
         spaces: [Space],
         windows: [Window],
         focusedSpace: Space?,
@@ -494,7 +494,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Fetches all spaces from AeroSpace.
     /// - Returns: An array of spaces
     /// - Throws: AppError if the operation fails
-    private nonisolated func fetchSpaces(executablePath: String) async throws -> [Space] {
+    nonisolated private func fetchSpaces(executablePath: String) async throws -> [Space] {
         let cli = AeroSpaceCLIClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: ["list-workspaces", "--all", "--json"])
 
@@ -508,7 +508,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Fetches all windows from AeroSpace.
     /// - Returns: An array of windows
     /// - Throws: AppError if the operation fails
-    private nonisolated func fetchWindows(executablePath: String) async throws -> [Window] {
+    nonisolated private func fetchWindows(executablePath: String) async throws -> [Window] {
         let cli = AeroSpaceCLIClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: [
             "list-windows", "--all", "--json", "--format",
@@ -525,7 +525,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Fetches the currently focused space from AeroSpace.
     /// - Returns: The focused space, or nil if none
     /// - Throws: AppError if the operation fails
-    private nonisolated func fetchFocusedSpace(executablePath: String) async throws -> Space? {
+    nonisolated private func fetchFocusedSpace(executablePath: String) async throws -> Space? {
         let cli = AeroSpaceCLIClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: ["list-workspaces", "--focused", "--json"])
 
@@ -540,7 +540,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Fetches the currently focused window from AeroSpace.
     /// - Returns: The focused window, or nil if none
     /// - Throws: AppError if the operation fails
-    private nonisolated func fetchFocusedWindow(executablePath: String) async throws -> Window? {
+    nonisolated private func fetchFocusedWindow(executablePath: String) async throws -> Window? {
         let cli = AeroSpaceCLIClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: [
             "list-windows", "--focused", "--json", "--format",
@@ -603,7 +603,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     }
 
     // Add this new method that does the heavy work off-main
-    private nonisolated func reconfigureAeroSpaceOffMain(executablePath: String, optimized: Bool) async {
+    nonisolated private func reconfigureAeroSpaceOffMain(executablePath: String, optimized: Bool) async {
         let success: Bool? = try? await {
             if optimized {
                 try await AeroSpaceConfiguration.appendOnFocusChanged(

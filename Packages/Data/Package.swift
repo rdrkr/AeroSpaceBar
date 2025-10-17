@@ -20,8 +20,8 @@ public let package = Package(
     dependencies: [
         .package(path: "../Domain"),
         .package(url: "https://github.com/LebJe/TOMLKit.git", exact: "0.6.0"),
-        .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", exact: "1.0.0"),
         .package(url: "https://github.com/lmsqueezy/lemonsqueezy-swift.git", exact: "1.3.0"),
+        .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", exact: "1.0.0"),
         .package(url: "https://github.com/sparkle-project/Sparkle.git", exact: "2.8.0")
     ],
     targets: [
@@ -38,15 +38,7 @@ public let package = Package(
             swiftSettings: [
                 .treatAllWarnings(as: .error),
                 .strictMemorySafety()
-            ],
-            plugins: [
-                .plugin(name: "SecretGeneratorPlugin")
             ]
-        ),
-        .plugin(
-            name: "SecretGeneratorPlugin",
-            capability: .buildTool(),
-            path: "Plugins/SecretGeneratorPlugin"
         ),
         .testTarget(
             name: "DataTests",

@@ -79,4 +79,8 @@ public protocol LicenseGateway {
     /// Sets the user's profile image.
     /// - Parameter profileImageData: The profile image data
     func setProfileImageData(_ profileImageData: Data?) async
+
+    /// Checks if a trial has already been used on this device.
+    /// - Returns: True if trial was previously activated, false otherwise
+    func hasTrialBeenUsed() -> Bool
 }

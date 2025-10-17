@@ -1,6 +1,7 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Combine
+import CryptoKit
 import Domain
 import Foundation
 import LemonSqueezy
@@ -90,12 +91,20 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
 
     /// Instance name for this device/installation
     /// This persists across app reinstalls and is unique per device
-    private static let instanceName: String = "AeroSpaceBar-\(HardwareIdentifier.getHardwareUUID())"
+    private static let instanceName: String = HardwareIdentifier.getHardwareUUID()
+
+    // MARK: - Trial Storage Constants
+
+    /// UserDefaults key for storing trial marker (obfuscated)
+    private static let userDefaultsTrialUsedKey = "f8d9a1c3e7b2" // gitleaks:allow
+
+    /// Hidden file name for storing trial marker in Application Support
+    private static let hiddenFileName = ".sys_marker"
 
     // MARK: - Private Properties
 
     /// LemonSqueezy SDK instance
-    private let lemonSqueezy: LemonSqueezy
+    private let lemonSqueezy: LemonSqueezy = .init("")
 
     private let licenseInfoSubject = CurrentValueSubject<LicenseInfo, Never>(
         LicenseInfo()
@@ -157,49 +166,142 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     // MARK: - Initialization
 
     /// Initializes the repository with the provided API key.
-    /// - Parameter apiKey: LemonSqueezy API key. If not provided, uses the API key baked into the binary at build time.
-    public init(apiKey: String? = nil) {
-        // Initialize API key from parameter or use the build-time generated secret
-        // Trim whitespace and newlines that might have been accidentally included
-        let rawApiKey = apiKey ?? Secrets.lemonSqueezyAPIKey
-        let lemonSqueezyApiKey = rawApiKey.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // Validate API key
-        Logger.debug("Initializing LemonSqueezy SDK", category: Logger.app)
-
-        if lemonSqueezyApiKey.isEmpty {
-            Logger.error("LemonSqueezy API key is empty!", category: Logger.app)
-            Logger.error("  Raw key length: \(rawApiKey.count)", category: Logger.app)
-            Logger.error("  Trimmed key length: \(lemonSqueezyApiKey.count)", category: Logger.app)
-        } else {
-            let keyPrefix = String(lemonSqueezyApiKey.prefix(2))
-            Logger.debug("  API Key prefix: \(keyPrefix)...", category: Logger.app)
-            Logger.debug("  API Key length: \(lemonSqueezyApiKey.count) characters", category: Logger.app)
-
-            // Check for suspicious characters
-            if rawApiKey != lemonSqueezyApiKey {
-                Logger.warning(
-                    "API key had whitespace/newlines (trimmed \(rawApiKey.count - lemonSqueezyApiKey.count) chars)",
-                    category: Logger.app
-                )
-            }
-
-            // Validate format (LemonSqueezy API keys typically start with specific patterns)
-            if !lemonSqueezyApiKey.contains("-") {
-                Logger.warning("API key format looks unusual (no hyphens found)", category: Logger.app)
-            }
-        }
-
-        // Initialize LemonSqueezy SDK
-        lemonSqueezy = LemonSqueezy(lemonSqueezyApiKey)
-        Logger.debug("LemonSqueezy SDK initialized", category: Logger.app)
-
+    public init() {
         initializeLicenseInfo()
         startPeriodicValidation()
         setupFeatureFlagObservation()
     }
 
     // MARK: - Private Methods
+
+    // MARK: - Trial Abuse Prevention
+
+    /// Generates an obfuscated marker from the instance name.
+    /// This makes it harder for users to understand what's being stored.
+    /// - Parameter instanceName: The device instance name to obfuscate
+    /// - Returns: A hash-based marker string
+    private func generateTrialMarker(from instanceName: String) -> String {
+        // Use SHA256 hash of instanceName + salt for obfuscation
+        let saltedValue = "asb_trial_" + instanceName + "_marker"
+        guard let data = saltedValue.data(using: .utf8) else {
+            return instanceName // Fallback to plain instanceName if encoding fails
+        }
+
+        // Create SHA256 hash using CryptoKit
+        let hash = SHA256.hash(data: data)
+
+        // Convert to hex string (first 16 characters for shorter storage)
+        // Using unsafe because String(format:) requires it in Swift 6
+        return hash.prefix(8).map { unsafe String(format: "%02x", $0) }.joined()
+    }
+
+    /// Gets the path to the hidden trial marker file in Application Support.
+    /// - Returns: URL to the hidden file
+    private func getHiddenFilePath() -> URL? {
+        guard
+            let appSupport = FileManager.default
+                .urls(
+                    for: .applicationSupportDirectory,
+                    in: .userDomainMask
+                )
+                .first
+        else {
+            return nil
+        }
+
+        // Create a subdirectory with an obscure name
+        let markerDir = appSupport.appendingPathComponent("Preferences", isDirectory: true)
+
+        // Create directory if it doesn't exist
+        try? FileManager.default.createDirectory(at: markerDir, withIntermediateDirectories: true)
+
+        return markerDir.appendingPathComponent(Self.hiddenFileName)
+    }
+
+    /// Checks if trial marker exists in UserDefaults.
+    /// - Returns: True if marker found and valid
+    private func checkUserDefaultsForTrialMarker() -> Bool {
+        #if DEBUG
+            Logger.debug("Checking UserDefaults for trial marker", category: Logger.app)
+        #endif
+
+        if let storedMarker = UserDefaults.standard.string(forKey: Self.userDefaultsTrialUsedKey) {
+            let currentMarker = generateTrialMarker(from: Self.instanceName)
+            return storedMarker == currentMarker
+        }
+        return false
+    }
+
+    /// Checks if trial marker exists in hidden file.
+    /// - Returns: True if marker found and valid
+    private func checkHiddenFileForTrialMarker() -> Bool {
+        guard let filePath = getHiddenFilePath() else { return false }
+
+        #if DEBUG
+            Logger.debug("Checking hidden file for trial marker at path: \(filePath.path)", category: Logger.app)
+        #endif
+
+        // Check if file exists and read contents
+        guard let storedMarker = try? String(contentsOf: filePath, encoding: .utf8) else {
+            return false
+        }
+
+        let currentMarker = generateTrialMarker(from: Self.instanceName)
+        return storedMarker.trimmingCharacters(in: .whitespacesAndNewlines) == currentMarker
+    }
+
+    /// Checks if a trial has already been used on this device.
+    /// Checks multiple storage locations - if ANY has the marker, trial was used.
+    /// This makes it difficult for users to bypass trial restrictions by deleting one location.
+    /// - Returns: True if trial was previously activated, false otherwise
+    public func hasTrialBeenUsed() -> Bool {
+        // Check both locations - if ANY returns true, trial was used
+        let inUserDefaults = checkUserDefaultsForTrialMarker()
+        let inHiddenFile = checkHiddenFileForTrialMarker()
+
+        let trialWasUsed = inUserDefaults || inHiddenFile
+
+        #if DEBUG
+            if trialWasUsed {
+                Logger.debug(
+                    "Trial marker found - UserDefaults: \(inUserDefaults), File: \(inHiddenFile)",
+                    category: Logger.app
+                )
+            } else {
+                Logger.debug("No trial markers found - trial can be activated", category: Logger.app)
+            }
+        #endif
+
+        return trialWasUsed
+    }
+
+    /// Marks the trial as used on this device by storing markers in multiple locations.
+    /// This creates redundancy to prevent users from bypassing by deleting one storage location.
+    private func markTrialAsUsed() {
+        let marker = generateTrialMarker(from: Self.instanceName)
+
+        // 1. Store in UserDefaults
+        UserDefaults.standard.set(marker, forKey: Self.userDefaultsTrialUsedKey)
+        #if DEBUG
+            Logger.debug("Storing trial marker in UserDefaults", category: Logger.app)
+        #endif
+
+        // 2. Store in hidden file
+        if var filePath = getHiddenFilePath() {
+            try? marker.write(to: filePath, atomically: true, encoding: .utf8)
+
+            // Set file attributes to make it hidden and less obvious
+            var resourceValues = URLResourceValues()
+            resourceValues.isHidden = true
+            try? filePath.setResourceValues(resourceValues)
+
+            #if DEBUG
+                Logger.debug("Storing trial marker in hidden file at path: \(filePath.path)", category: Logger.app)
+            #endif
+        }
+
+        Logger.info("Trial markers stored across multiple locations for device", category: Logger.app)
+    }
 
     /// Determines if a variant ID corresponds to a trial variant.
     /// - Parameter variantId: The variant ID to check
@@ -209,7 +311,15 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
             Int(Self.productionTrialVariantId) ?? 0,
             Int(Self.developmentTrialVariantId) ?? 0
         ]
-        return trialVariantIds.contains(variantId)
+        let isTrial = trialVariantIds.contains(variantId)
+
+        #if DEBUG
+            Logger.debug("Checking if variant \(variantId) is a trial variant", category: Logger.app)
+            Logger.debug("Expected trial variant IDs: \(trialVariantIds)", category: Logger.app)
+            Logger.debug("Is trial variant: \(isTrial)", category: Logger.app)
+        #endif
+
+        return isTrial
     }
 
     /// Determines the license status based on validation result and variant information.
@@ -531,6 +641,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     public func resetLicenseFeatureFlags() async {
         try? await deactivateLicense()
 
+        // Clear trial markers to restore app to initial state
+        // clearTrialMarkers()
+
         setEnableLicensing(FeatureFlagDefaults.enableLicensing)
         setEnableTrialRequest(FeatureFlagDefaults.enableTrialRequest)
 
@@ -539,7 +652,21 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         #endif
     }
 
-    public func validateLicense() async -> LicenseInfo {
+    /// Clears all trial marker files and storage, allowing trial to be used again.
+    /// This is used when resetting license feature flags to restore the app to its initial state.
+    private func clearTrialMarkers() {
+        // 1. Clear UserDefaults trial marker
+        UserDefaults.standard.removeObject(forKey: Self.userDefaultsTrialUsedKey)
+
+        // 2. Delete hidden file trial marker
+        if let filePath = getHiddenFilePath() {
+            try? FileManager.default.removeItem(at: filePath)
+        }
+
+        Logger.debug("Trial markers cleared - app restored to initial state", category: Logger.app)
+    }
+
+    private func validateLicense() async -> LicenseInfo {
         let currentInfo = licenseInfoSubject.value
 
         #if DEBUG
@@ -629,6 +756,19 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                 instanceName: Self.instanceName
             )
 
+            // Check if this is a trial variant
+            let isTrial = isTrialVariant(result.meta.variantId)
+
+            #if DEBUG
+                Logger.debug("Trial variant detected: \(isTrial)", category: Logger.app)
+            #endif
+
+            // Prevent trial abuse: check if trial was already used on this device
+            if isTrial, hasTrialBeenUsed() {
+                Logger.warning("Trial activation blocked: trial already used on this device", category: Logger.app)
+                throw LicenseError.trialAlreadyUsed
+            }
+
             // Store the instance ID returned by LemonSqueezy for future validation/deactivation
             UserDefaults.standard.set(result.instance.id, forKey: UserDefaultsKeys.instanceId)
             UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.lastValidationDate)
@@ -649,6 +789,11 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                 email: currentInfo.email.isEmpty ? result.meta.customerEmail : currentInfo.email,
                 profileImageData: currentInfo.profileImageData
             )
+
+            // Mark trial as used if this is a trial license
+            if isTrial {
+                markTrialAsUsed()
+            }
 
             licenseInfoSubject.send(activatedInfo)
             saveLicenseInfo(activatedInfo)
@@ -774,7 +919,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                 ? Self.developmentCheckoutUrl
                 : Self.productionCheckoutUrl
         #else
-            let urlString = productionCheckoutUrl
+            let urlString = Self.productionCheckoutUrl
         #endif
 
         guard let url = URL(string: urlString) else {
@@ -798,7 +943,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                 ? Self.developmentTrialCheckoutUrl
                 : Self.productionTrialCheckoutUrl
         #else
-            let urlString = productionTrialCheckoutUrl
+            let urlString = Self.productionTrialCheckoutUrl
         #endif
 
         guard let url = URL(string: urlString) else {

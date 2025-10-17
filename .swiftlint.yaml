@@ -200,6 +200,9 @@ excluded:
   - Carthage
   - DerivedData
   - Pods
+  - Packages/Data/.build
+  - Packages/Domain/.build
+  - Packages/Presentation/.build
   - "**/Secrets.swift"  # Auto-generated secrets file
 
 # Include only specific file types

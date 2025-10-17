@@ -378,7 +378,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 if let pngData = nsImage.pngData, pngData != self.lastWallpaperData {
                     self.lastWallpaperData = pngData
                     self.wallpaperSubject.send(nsImage)
-                    Logger.info("Wallpaper captured and updated (ScreenCaptureKit)", category: Logger.config)
+                    Logger.debug("Wallpaper captured and updated (ScreenCaptureKit)", category: Logger.config)
 
                     // Save PNG to Downloads folder - Useful for debugging
                     // self.savePNGToDownloads(pngData)

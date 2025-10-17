@@ -26,7 +26,7 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
     private let globeKeyPressStateSubject = CurrentValueSubject<Bool, Never>(false)
 
     /// Monitor for global key events.
-    private nonisolated(unsafe) var keyMonitors: [Any] = []
+    nonisolated(unsafe) private var keyMonitors: [Any] = []
 
     // MARK: - Initialization
 
@@ -74,7 +74,7 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
     ///
     /// This method cleans up event monitors and resets the globe key state
     /// to false when the repository is deallocated.
-    private nonisolated func removeGlobeKeyMonitors() {
+    nonisolated private func removeGlobeKeyMonitors() {
         unsafe keyMonitors.forEach { monitor in
             NSEvent.removeMonitor(monitor)
         }

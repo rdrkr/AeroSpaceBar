@@ -16,6 +16,9 @@ public enum LicenseError: LocalizedError {
     /// Trial has already been started.
     case trialAlreadyStarted
 
+    /// Trial has already been used on this device.
+    case trialAlreadyUsed
+
     /// License is expired or inactive.
     case licenseExpired
 
@@ -32,6 +35,9 @@ public enum LicenseError: LocalizedError {
 
         case .trialAlreadyStarted:
             "Trial period has already been started."
+
+        case .trialAlreadyUsed:
+            "Trial has already been used on this device. Please purchase a license to continue using the app."
 
         case .licenseExpired:
             "License is expired or inactive."

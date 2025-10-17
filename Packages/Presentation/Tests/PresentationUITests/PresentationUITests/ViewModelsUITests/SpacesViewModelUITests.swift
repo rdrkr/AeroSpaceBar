@@ -2,16 +2,17 @@
 
 import XCTest
 
+@MainActor
 final class SpacesViewModelUITests: XCTestCase {
     private var app: XCUIApplication?
 
-    override func setUp() {
+    override func setUp() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app?.launch()
     }
 
-    override func tearDown() {
+    override func tearDown() throws {
         app = nil
     }
 

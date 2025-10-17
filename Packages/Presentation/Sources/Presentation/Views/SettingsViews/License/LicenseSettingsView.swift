@@ -18,7 +18,8 @@ struct LicenseSettingsView: View {
                 onSetUserName: licenseViewModel.setUserName,
                 onSetProfileImage: licenseViewModel.setProfileImage,
                 userName: licenseViewModel.licenseInfo.userName,
-                profileImage: licenseViewModel.profileImage
+                profileImage: licenseViewModel.profileImage,
+                email: licenseViewModel.licenseInfo.email
             )
 
             LicenseStatusSection(
@@ -53,7 +54,7 @@ struct LicenseSettingsView: View {
                         onDismiss: licenseViewModel.dismissCheckoutWebView,
                         onCheckoutSuccess: licenseViewModel.handleCheckoutSuccess
                     )
-                    .navigationTitle(LocalizedStringResource("Purchase License"))
+                    .navigationTitle(LocalizedStringResource("AeroSpaceBar"))
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button(LocalizedStringResource("Cancel")) {

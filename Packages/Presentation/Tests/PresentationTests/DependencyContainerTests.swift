@@ -1,6 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-@testable import AeroSpaceBar
+@testable import Presentation
 import XCTest
 
 final class DependencyContainerTests: XCTestCase {

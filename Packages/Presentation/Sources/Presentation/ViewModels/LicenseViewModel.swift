@@ -74,6 +74,9 @@ public final class LicenseViewModel: ObservableObject {
     /// Use case for setting the user's profile image data.
     private let setProfileImageDataUseCase: SetProfileImageDataUseCase
 
+    /// Use case for checking if trial has been used on this device.
+    private let hasTrialBeenUsedUseCase: HasTrialBeenUsedUseCase
+
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
 
@@ -88,7 +91,8 @@ public final class LicenseViewModel: ObservableObject {
         getEnableLicensingUseCase: GetEnableLicensingUseCase,
         getEnableTrialRequestUseCase: GetEnableTrialRequestUseCase,
         setUserNameUseCase: SetUserNameUseCase,
-        setProfileImageDataUseCase: SetProfileImageDataUseCase
+        setProfileImageDataUseCase: SetProfileImageDataUseCase,
+        hasTrialBeenUsedUseCase: HasTrialBeenUsedUseCase
     ) {
         self.getLicenseInfoUseCase = getLicenseInfoUseCase
         self.activateLicenseUseCase = activateLicenseUseCase
@@ -98,6 +102,7 @@ public final class LicenseViewModel: ObservableObject {
         self.getEnableTrialRequestUseCase = getEnableTrialRequestUseCase
         self.setUserNameUseCase = setUserNameUseCase
         self.setProfileImageDataUseCase = setProfileImageDataUseCase
+        self.hasTrialBeenUsedUseCase = hasTrialBeenUsedUseCase
 
         licenseInfo = getLicenseInfoUseCase.execute().blockingFirst()
         enableLicense = getEnableLicensingUseCase.execute().blockingFirst()
@@ -129,6 +134,16 @@ public final class LicenseViewModel: ObservableObject {
     /// Opens the trial checkout flow in an embedded WebView.
     public func openTrialCheckout() {
         Logger.info("Opening trial checkout flow", category: Logger.app)
+
+        // Check if trial has already been used on this device
+        if hasTrialBeenUsedUseCase.execute() {
+            Logger.warning("Trial checkout blocked: trial already used on this device", category: Logger.app)
+            activationError = String(
+                localized:
+                "Trial has already been used on this device. Please purchase a license to continue using the app."
+            )
+            return
+        }
 
         let url = openCheckoutUseCase.getTrialCheckoutURL()
         checkoutURL = url

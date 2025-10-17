@@ -59,6 +59,7 @@
 # rules
 --disable preferForLoop
 --disable redundantInternal
+--disable modifierOrder
 --enable blankLineAfterImports
 --enable blankLineAfterSwitchCase
 --enable blankLinesAfterGuardStatements

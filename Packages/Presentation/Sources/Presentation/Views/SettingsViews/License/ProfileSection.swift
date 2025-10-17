@@ -24,6 +24,9 @@ struct ProfileSection: View {
     /// The current profile image from the license info.
     let profileImage: NSImage?
 
+    /// The current email from the license info.
+    let email: String
+
     /// Whether the user is currently editing their profile name.
     @State private var isEditingProfile = false
 
@@ -129,7 +132,7 @@ struct ProfileSection: View {
                             .buttonStyle(.plain)
                         }
 
-                        Text(LocalizedStringResource("Licensed User"))
+                        Text(!email.isEmpty ? email : String(localized: "Licensed User"))
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     } else {
@@ -195,6 +198,7 @@ struct ProfileSection: View {
         onSetUserName: { _ in },
         onSetProfileImage: { _ in },
         userName: "John Doe",
-        profileImage: nil
+        profileImage: nil,
+        email: "john.doe@example.com"
     )
 }
