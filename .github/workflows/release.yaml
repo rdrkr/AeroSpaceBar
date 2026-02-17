@@ -65,12 +65,20 @@ jobs:
           path: aerospacebar-app
           token: ${{ secrets.PUBLIC_REPO_TOKEN }}
 
+      - name: Checkout homebrew-tap repo
+        uses: actions/checkout@v4
+        with:
+          repository: rdrkr/homebrew-tap
+          path: homebrew-tap
+          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+
       - name: Run automated release
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
           PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
           GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
           PUBLIC_REPO_PATH: aerospacebar-app
+          HOMEBREW_TAP_PATH: homebrew-tap
           NOTARIZATION_APPLE_ID: ${{ secrets.NOTARIZATION_APPLE_ID }}
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
           NOTARIZATION_TEAM_ID: ${{ secrets.NOTARIZATION_TEAM_ID }}

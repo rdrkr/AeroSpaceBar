@@ -490,6 +490,35 @@ else
 fi
 echo ""
 
+# Step 8c: Update Homebrew cask formula
+CASK_COMMITTED=false
+if [ -d "$HOMEBREW_TAP_PATH" ] && [ -f "$HOMEBREW_TAP_PATH/Casks/aerospacebar.rb" ]; then
+    echo -e "${BLUE}Step 8c: Updating Homebrew cask formula...${NC}"
+
+    if bash "$SCRIPT_DIR/update-cask.sh" "$VERSION" "$DISTRIBUTION_PATH" "$HOMEBREW_TAP_PATH"; then
+        echo -e "${GREEN}✓ Cask formula updated${NC}"
+
+        # Commit cask changes
+        cd "$HOMEBREW_TAP_PATH"
+        git add Casks/aerospacebar.rb
+
+        if git diff --staged --quiet; then
+            echo -e "${YELLOW}⚠ No changes to commit in cask formula${NC}"
+        else
+            git commit -m "Update AeroSpaceBar to v$VERSION"
+            echo -e "${GREEN}✓ Cask changes committed locally (will push after all operations succeed)${NC}"
+            CASK_COMMITTED=true
+        fi
+
+        cd "$PROJECT_ROOT"
+    else
+        echo -e "${YELLOW}⚠ Failed to update cask formula (continuing anyway)${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠ Homebrew-tap repo not found, skipping cask update${NC}"
+fi
+echo ""
+
 # Step 9: Push all changes to repositories
 echo -e "${BLUE}Step 9: Pushing all changes to repositories...${NC}"
 
@@ -542,6 +571,23 @@ if [ "${APPCAST_COMMITTED:-false}" = true ] || [ -n "${DISTRIBUTION_PATH:-}" ]; 
         else
             echo -e "${YELLOW}⚠ Tag v$VERSION already exists in public repo${NC}"
         fi
+    fi
+
+    cd "$PROJECT_ROOT"
+fi
+
+# Push cask changes to homebrew-tap repo
+if [ "$CASK_COMMITTED" = true ]; then
+    echo -e "${BLUE}Step 9c: Pushing changes to homebrew-tap repo...${NC}"
+    cd "$HOMEBREW_TAP_PATH"
+
+    HOMEBREW_REMOTE_URL="https://${PUBLIC_GH_REPO_TOKEN}@github.com/${HOMEBREW_TAP_REPO}.git"
+
+    if git push "$HOMEBREW_REMOTE_URL" main; then
+        echo -e "${GREEN}✓ Cask formula pushed to homebrew-tap${NC}"
+    else
+        echo -e "${RED}✗ Failed to push cask changes to homebrew-tap${NC}"
+        echo -e "${YELLOW}  You may need to push manually: cd $HOMEBREW_TAP_PATH && git push origin main${NC}"
     fi
 
     cd "$PROJECT_ROOT"

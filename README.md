@@ -580,6 +580,7 @@ All scripts are in the `Scripts/` directory:
 
 - `generate-appcast.sh` - Generate appcast.xml from GitHub releases
 - `update-appcast.sh` - Update appcast with new release
+- `update-cask.sh` - Update Homebrew cask formula with version and SHA-256
 - `verify-appcast.sh` - Validate appcast XML structure
 - `changelog-to-html.sh` - Convert CHANGELOG.md to HTML
 
