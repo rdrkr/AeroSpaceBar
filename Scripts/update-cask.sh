@@ -83,10 +83,10 @@ echo -e "${GREEN}SHA-256: $SHA256${NC}"
 echo -e "${BLUE}Updating cask formula at $CASK_FILE...${NC}"
 
 # Replace version line
-sed -i '' "s/^  version \".*\"/  version \"$VERSION\"/" "$CASK_FILE"
+sed "s/^[[:space:]]*version \".*\"/  version \"$VERSION\"/" "$CASK_FILE" > "$CASK_FILE.tmp" && mv "$CASK_FILE.tmp" "$CASK_FILE"
 
 # Replace sha256 line
-sed -i '' "s/^  sha256 \".*\"/  sha256 \"$SHA256\"/" "$CASK_FILE"
+sed "s/^[[:space:]]*sha256 \".*\"/  sha256 \"$SHA256\"/" "$CASK_FILE" > "$CASK_FILE.tmp" && mv "$CASK_FILE.tmp" "$CASK_FILE"
 
 # Verify the update
 UPDATED_VERSION=$(grep '  version "' "$CASK_FILE" | sed 's/.*version "\(.*\)".*/\1/')

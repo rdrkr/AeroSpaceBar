@@ -588,6 +588,7 @@ if [ "$CASK_COMMITTED" = true ]; then
     else
         echo -e "${RED}✗ Failed to push cask changes to homebrew-tap${NC}"
         echo -e "${YELLOW}  You may need to push manually: cd $HOMEBREW_TAP_PATH && git push origin main${NC}"
+        exit 1
     fi
 
     cd "$PROJECT_ROOT"
