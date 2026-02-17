@@ -16,7 +16,7 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
     // MARK: - Properties
 
     /// Sparkle updater controller.
-    private let updaterController: SPUStandardUpdaterController
+    private let updaterController: SparkleUpdaterControllerProtocol
 
     /// Cancellables for publisher subscriptions.
     private var cancellables = Set<AnyCancellable>()
@@ -49,7 +49,7 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
 
     // MARK: - Initialization
 
-    public init(updaterController: SPUStandardUpdaterController? = nil) {
+    public init(updaterController: SparkleUpdaterControllerProtocol? = nil) {
         // Initialize or use provided updater controller
         self.updaterController = updaterController ?? SPUStandardUpdaterController(
             startingUpdater: true,
@@ -59,15 +59,15 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
 
         // Initialize subjects with current Sparkle values
         automaticCheckForUpdatesEnabledSubject = CurrentValueSubject<Bool, Never>(
-            self.updaterController.updater.automaticallyChecksForUpdates
+            self.updaterController.sparkleUpdater.automaticallyChecksForUpdates
         )
 
         automaticDownloadUpdatesEnabledSubject = CurrentValueSubject<Bool, Never>(
-            self.updaterController.updater.automaticallyDownloadsUpdates
+            self.updaterController.sparkleUpdater.automaticallyDownloadsUpdates
         )
 
         lastUpdateCheckDateSubject = CurrentValueSubject<Date?, Never>(
-            self.updaterController.updater.lastUpdateCheckDate
+            self.updaterController.sparkleUpdater.lastUpdateCheckDate
         )
 
         setupObservers()
@@ -78,8 +78,8 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
     /// Sets up observers for Sparkle updater changes.
     private func setupObservers() {
         // Observe changes to automatic check for updates
-        updaterController.updater
-            .publisher(for: \.automaticallyChecksForUpdates)
+        updaterController.sparkleUpdater
+            .publisherForAutomaticallyChecksForUpdates()
             .sink { [weak self] value in
                 guard self?.automaticCheckForUpdatesEnabledSubject.value != value else { return }
 
@@ -88,8 +88,8 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
             .store(in: &cancellables)
 
         // Observe changes to automatic download updates
-        updaterController.updater
-            .publisher(for: \.automaticallyDownloadsUpdates)
+        updaterController.sparkleUpdater
+            .publisherForAutomaticallyDownloadsUpdates()
             .sink { [weak self] value in
                 guard self?.automaticDownloadUpdatesEnabledSubject.value != value else { return }
 
@@ -98,8 +98,8 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
             .store(in: &cancellables)
 
         // Observe changes to last update check date
-        updaterController.updater
-            .publisher(for: \.lastUpdateCheckDate)
+        updaterController.sparkleUpdater
+            .publisherForLastUpdateCheckDate()
             .sink { [weak self] value in
                 guard self?.lastUpdateCheckDateSubject.value != value else { return }
 
@@ -115,7 +115,7 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
     public func setAutomaticCheckForUpdatesEnabled(_ enabled: Bool) {
         guard automaticCheckForUpdatesEnabledSubject.value != enabled else { return }
 
-        updaterController.updater.automaticallyChecksForUpdates = enabled
+        updaterController.sparkleUpdater.automaticallyChecksForUpdates = enabled
         automaticCheckForUpdatesEnabledSubject.send(enabled)
     }
 
@@ -124,12 +124,56 @@ public final class SparkleSoftwareUpdateRepository: SoftwareUpdateGateway {
     public func setAutomaticDownloadUpdatesEnabled(_ enabled: Bool) {
         guard automaticDownloadUpdatesEnabledSubject.value != enabled else { return }
 
-        updaterController.updater.automaticallyDownloadsUpdates = enabled
+        updaterController.sparkleUpdater.automaticallyDownloadsUpdates = enabled
         automaticDownloadUpdatesEnabledSubject.send(enabled)
     }
 
     /// Manually checks for updates.
     public func checkForUpdates() {
         updaterController.checkForUpdates(nil)
+    }
+}
+
+// MARK: - Protocols
+
+/// Protocol defining the interface for Sparkle updater.
+@MainActor
+public protocol SparkleUpdaterProtocol: AnyObject {
+    var automaticallyChecksForUpdates: Bool { get set }
+    var automaticallyDownloadsUpdates: Bool { get set }
+    var lastUpdateCheckDate: Date? { get }
+
+    func publisherForAutomaticallyChecksForUpdates() -> AnyPublisher<Bool, Never>
+    func publisherForAutomaticallyDownloadsUpdates() -> AnyPublisher<Bool, Never>
+    func publisherForLastUpdateCheckDate() -> AnyPublisher<Date?, Never>
+}
+
+/// Protocol defining the interface for Sparkle updater controller.
+@MainActor
+public protocol SparkleUpdaterControllerProtocol: AnyObject {
+    var sparkleUpdater: SparkleUpdaterProtocol { get }
+
+    func checkForUpdates(_ sender: Any?)
+}
+
+// MARK: - Extensions
+
+extension SPUUpdater: SparkleUpdaterProtocol {
+    public func publisherForAutomaticallyChecksForUpdates() -> AnyPublisher<Bool, Never> {
+        publisher(for: \.automaticallyChecksForUpdates).eraseToAnyPublisher()
+    }
+
+    public func publisherForAutomaticallyDownloadsUpdates() -> AnyPublisher<Bool, Never> {
+        publisher(for: \.automaticallyDownloadsUpdates).eraseToAnyPublisher()
+    }
+
+    public func publisherForLastUpdateCheckDate() -> AnyPublisher<Date?, Never> {
+        publisher(for: \.lastUpdateCheckDate).eraseToAnyPublisher()
+    }
+}
+
+extension SPUStandardUpdaterController: SparkleUpdaterControllerProtocol {
+    public var sparkleUpdater: SparkleUpdaterProtocol {
+        updater
     }
 }

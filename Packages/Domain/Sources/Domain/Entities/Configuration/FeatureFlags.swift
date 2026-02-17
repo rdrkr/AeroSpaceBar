@@ -23,6 +23,26 @@ public struct FeatureFlags: Equatable, Sendable {
     /// Whether to show advanced settings in the preferences.
     public var enableAdvancedSettings: Bool
 
+    // MARK: - Initialization
+
+    /// Creates a new FeatureFlags instance.
+    /// - Parameters:
+    ///   - enableGroups: Whether groups functionality is enabled
+    ///   - enableSpaces: Whether spaces visualization is enabled
+    ///   - enableSoftwareUpdates: Whether software updates are enabled
+    ///   - enableAdvancedSettings: Whether advanced settings are shown
+    public init(
+        enableGroups: Bool,
+        enableSpaces: Bool,
+        enableSoftwareUpdates: Bool,
+        enableAdvancedSettings: Bool
+    ) {
+        self.enableGroups = enableGroups
+        self.enableSpaces = enableSpaces
+        self.enableSoftwareUpdates = enableSoftwareUpdates
+        self.enableAdvancedSettings = enableAdvancedSettings
+    }
+
     // MARK: - Convenience Methods
 
     /// Creates feature flags with default values.

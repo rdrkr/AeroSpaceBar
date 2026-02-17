@@ -26,7 +26,8 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
     private let globeKeyPressStateSubject = CurrentValueSubject<Bool, Never>(false)
 
     /// Monitor for global key events.
-    nonisolated(unsafe) private var keyMonitors: [Any] = []
+    /// Stored as Sendable wrapper to allow access from nonisolated deinit.
+    private let keyMonitorsBox = MonitorsBox()
 
     // MARK: - Initialization
 
@@ -40,7 +41,8 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
     // MARK: - Deinitialization
 
     deinit {
-        removeGlobeKeyMonitors()
+        // Clean up monitors without accessing MainActor-isolated properties
+        keyMonitorsBox.removeAll()
     }
 
     // MARK: - Private Methods
@@ -58,7 +60,7 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
             }
         }
 
-        unsafe keyMonitors = [
+        let monitors: [Any] = [
             // Local monitor to capture key events when the app is focused
             NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { event in
                 keyPressedCallback(event)
@@ -68,19 +70,34 @@ public final class KeyboardShortcutsRepository: KeyboardShortcutsGateway {
             NSEvent.addGlobalMonitorForEvents(matching: [.flagsChanged], handler: keyPressedCallback)
         ]
         .compactMap(\.self)
+
+        keyMonitorsBox.set(monitors)
+    }
+}
+
+// MARK: - Sendable Monitors Box
+
+/// Thread-safe box for storing NSEvent monitors.
+/// This allows monitors to be cleaned up from nonisolated deinit.
+private final class MonitorsBox: @unchecked Sendable {
+    private let lock = NSLock()
+    private var monitors: [Any] = []
+
+    func set(_ newMonitors: [Any]) {
+        lock.lock()
+        defer { lock.unlock() }
+        monitors = newMonitors
     }
 
-    /// Removes the global key monitors.
-    ///
-    /// This method cleans up event monitors and resets the globe key state
-    /// to false when the repository is deallocated.
-    nonisolated private func removeGlobeKeyMonitors() {
-        unsafe keyMonitors.forEach { monitor in
-            NSEvent.removeMonitor(monitor)
-        }
+    func removeAll() {
+        lock.lock()
+        let monitorsToRemove = monitors
+        monitors = []
+        lock.unlock()
 
-        Task { @MainActor in
-            globeKeyPressStateSubject.send(false)
+        // Remove monitors outside the lock to avoid potential deadlocks
+        monitorsToRemove.forEach { monitor in
+            NSEvent.removeMonitor(monitor)
         }
     }
 }

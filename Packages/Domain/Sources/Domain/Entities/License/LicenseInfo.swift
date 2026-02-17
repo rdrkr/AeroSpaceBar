@@ -1,23 +1,25 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
+internal import ModifiedCopy
 
 /// License information.
+@CopyableCombi
 public struct LicenseInfo: Codable, Equatable, Sendable {
     /// The license key.
-    public let licenseKey: String
+    public var licenseKey: String
 
     /// The current license status.
-    public let licenseStatus: LicenseStatus
+    public var licenseStatus: LicenseStatus
 
     /// The user's display name.
-    public let userName: String
+    public var userName: String
 
     /// The user's email address.
-    public let email: String
+    public var email: String
 
     /// The user's profile image data.
-    public let profileImageData: Data?
+    public var profileImageData: Data?
 
     /// Whether the license is active.
     public var isActive: Bool {
@@ -25,6 +27,7 @@ public struct LicenseInfo: Codable, Equatable, Sendable {
         case .licensed,
              .trial:
             true
+
         case .expired,
              .validating,
              .unknown:

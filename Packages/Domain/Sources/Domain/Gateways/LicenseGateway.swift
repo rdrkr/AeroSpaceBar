@@ -17,10 +17,14 @@ public protocol LicenseGateway {
 
     #if DEBUG
         /// Publisher that emits changes to the mockActiveLicense feature flag (DEBUG builds only).
-        var mockActiveLicensePublisher: AnyPublisher<Bool, Never> { get }
+        var mockActiveLicensePublisher: AnyPublisher<Bool, Never> {
+            get
+        }
 
         /// Publisher that emits changes to the checkout environment (DEBUG builds only).
-        var checkoutEnvironmentPublisher: AnyPublisher<CheckoutEnvironment, Never> { get }
+        var checkoutEnvironmentPublisher: AnyPublisher<CheckoutEnvironment, Never> {
+            get
+        }
     #endif
 
     /// Activates a license with the provided license key.

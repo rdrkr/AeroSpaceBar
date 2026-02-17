@@ -32,12 +32,10 @@ public protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
     /// A view builder that returns the view for this navigation page.
     /// - Returns: The view associated with this navigation page
     @MainActor
-    @ViewBuilder
     var viewForPage: PageView { get }
 
     /// A view builder that returns the sidebar item view for this navigation page.
     @MainActor
-    @ViewBuilder
     var viewForSidebar: AnyView { get }
 }
 
@@ -80,7 +78,6 @@ public extension NavigationPage {
 
     /// A default view builder that returns the sidebar item view for this navigation page.
     @MainActor
-    @ViewBuilder
     func defaultViewForSidebar(_ icon: AnyView) -> some View {
         HStack(spacing: 5) {
             icon

@@ -7,7 +7,7 @@ import SwiftUI
 ///
 /// This component provides a consistent layout for form sections across the settings views,
 /// with a centered icon, title, and descriptive subtitle.
-struct IntroForm<Content, HeaderContent>: View where Content: View, HeaderContent: View {
+struct IntroForm<Content: View, HeaderContent: View>: View {
     /// The style of the form intro section.
     ///
     /// - intro: The intro section is displayed with a centered icon, title, and subtitle.

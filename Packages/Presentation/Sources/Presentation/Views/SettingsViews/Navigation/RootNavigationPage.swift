@@ -23,7 +23,9 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     #endif
 
     /// The ID of the navigation option.
-    var id: Int { rawValue }
+    var id: Int {
+        rawValue
+    }
 
     /// The name of the navigation option.
     var name: String {
@@ -31,21 +33,27 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         case .license: String(
                 localized: LocalizedStringResource("License", comment: "Title for the License settings section.")
             )
+
         case .general: String(
                 localized: LocalizedStringResource("General", comment: "Title for the General settings section.")
             )
+
         case .spaces: String(
                 localized: LocalizedStringResource("Spaces", comment: "Title for the Spaces settings section.")
             )
+
         case .groups: String(
                 localized: LocalizedStringResource("Groups", comment: "Title for the Groups settings section.")
             )
+
         case .updates: String(
                 localized: LocalizedStringResource("Updates", comment: "Title for the Updates settings section.")
             )
+
         case .advanced: String(
                 localized: LocalizedStringResource("Advanced", comment: "Title for the Advanced settings section.")
             )
+
         #if DEBUG
             case .developer: String(
                     localized: LocalizedStringResource(
@@ -66,6 +74,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         case .groups: "rectangle.3.group.fill"
         case .updates: "arrow.trianglehead.2.clockwise.rotate.90.circle.fill"
         case .advanced: "star.fill"
+
         #if DEBUG
             case .developer: "hammer.fill"
         #endif
@@ -78,6 +87,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         case .license: String(
                 localized: LocalizedStringResource("Manage your license and subscription settings.")
             )
+
         case .general: String(
                 localized: LocalizedStringResource(
                     """
@@ -86,11 +96,13 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
                     """
                 )
             )
+
         case .spaces: String(
                 localized: LocalizedStringResource(
                     "Fine-tune how spaces look and behave: opacity, blur, titles, and more."
                 )
             )
+
         case .groups: String(
                 localized: LocalizedStringResource(
                     """
@@ -99,16 +111,19 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
                     """
                 )
             )
+
         case .updates: String(
                 localized: LocalizedStringResource(
                     "Manage software update preferences and check for new versions of AeroSpaceBar."
                 )
             )
+
         case .advanced: String(
                 localized: LocalizedStringResource(
                     "Configure advanced behaviors, logging, performance metrics, and reset options."
                 )
             )
+
         #if DEBUG
             case .developer: String(
                     localized: LocalizedStringResource(
@@ -138,11 +153,12 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
     }
 
     /// The parent page of the navigation option.
-    var parentPage: (any NavigationPage)? { nil }
+    var parentPage: (any NavigationPage)? {
+        nil
+    }
 
     /// The view for the sidebar item.
     @MainActor
-    @ViewBuilder
     var viewForSidebar: AnyView {
         AnyView(
             Group {
@@ -178,6 +194,7 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
 
         case .advanced:
             return PageView(AdvancedSettingsView())
+
         #if DEBUG
 
             case .developer:

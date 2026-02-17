@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
+   LastUpgradeVersion = "2620"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -27,38 +27,45 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      codeCoverageEnabled = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1A09D23C2E98F4C500924EE7"
+            BuildableName = "Domain"
+            BlueprintName = "Domain"
+            ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1A09D25D2E98F4D100924EE7"
+            BuildableName = "Presentation"
+            BlueprintName = "Presentation"
+            ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1A09D2222E98F46C00924EE7"
+            BuildableName = "Data"
+            BlueprintName = "Data"
+            ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:AeroSpaceBar.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A09D2442E98F4C500924EE7"
-               BuildableName = "DomainTests"
-               BlueprintName = "DomainTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A09D2652E98F4D100924EE7"
-               BuildableName = "PresentationTests"
-               BlueprintName = "PresentationTests"
-               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A2C03F62E98FA17003C9FF9"
-               BuildableName = "PresentationUITests"
-               BlueprintName = "PresentationUITests"
+               BlueprintIdentifier = "1AB620202ED229940040A2F2"
+               BuildableName = "AeroSpaceBarUITests.xctest"
+               BlueprintName = "AeroSpaceBarUITests"
                ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -95,6 +102,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "C10E2F892D41235900AC957C"
+            BuildableName = "AeroSpaceBar.app"
+            BlueprintName = "AeroSpaceBar"
+            ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

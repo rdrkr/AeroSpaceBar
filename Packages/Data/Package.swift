@@ -22,7 +22,8 @@ public let package = Package(
         .package(url: "https://github.com/LebJe/TOMLKit.git", exact: "0.6.0"),
         .package(url: "https://github.com/lmsqueezy/lemonsqueezy-swift.git", exact: "1.3.0"),
         .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", exact: "1.0.0"),
-        .package(url: "https://github.com/sparkle-project/Sparkle.git", exact: "2.8.0")
+        .package(url: "https://github.com/sparkle-project/Sparkle.git", exact: "2.8.0"),
+        .package(url: "https://github.com/Quick/Nimble.git", exact: "13.8.0")
     ],
     targets: [
         .target(
@@ -43,7 +44,8 @@ public let package = Package(
         .testTarget(
             name: "DataTests",
             dependencies: [
-                .target(name: "Data")
+                .target(name: "Data"),
+                .product(name: "Nimble", package: "Nimble")
             ],
             path: "Tests/DataTests",
             swiftSettings: [

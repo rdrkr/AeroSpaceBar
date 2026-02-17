@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A4E7B602E97FFCB00A17D69 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B5F2E97FFCB00A17D69 /* Domain */; };
-		1A4E7B632E97FFE000A17D69 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B622E97FFE000A17D69 /* Data */; };
-		1A4E7B662E97FFF200A17D69 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E7B652E97FFF200A17D69 /* Presentation */; };
+		1AD27C952ED2F2FC00ED141F /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27C942ED2F2FC00ED141F /* Nimble */; };
+		1AD27C9D2ED2F72A00ED141F /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27C9C2ED2F72A00ED141F /* Domain */; };
+		1AD27C9F2ED2F72A00ED141F /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27C9E2ED2F72A00ED141F /* Data */; };
+		1AD27CA12ED2F72A00ED141F /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27CA02ED2F72A00ED141F /* Presentation */; };
+		1AD27CA32ED2F76C00ED141F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27CA22ED2F76C00ED141F /* Sparkle */; };
+		1AD27CA52ED2F76C00ED141F /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27CA42ED2F76C00ED141F /* Domain */; };
+		1AD27CA72ED2F76C00ED141F /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27CA62ED2F76C00ED141F /* Data */; };
+		1AD27CA92ED2F76C00ED141F /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD27CA82ED2F76C00ED141F /* Presentation */; };
 		1AF2D23F2E91868900A850B5 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1AF2D23E2E91868900A850B5 /* Sparkle */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +54,7 @@
 			remoteGlobalIDString = C10E2F892D41235900AC957C;
 			remoteInfo = AeroSpaceBar;
 		};
-		1A2C03FD2E98FA18003C9FF9 /* PBXContainerItemProxy */ = {
+		1AB620272ED229940040A2F2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C10E2F822D41235900AC957C /* Project object */;
 			proxyType = 1;
@@ -62,7 +67,9 @@
 		1A4E7B5A2E97FF9700A17D69 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		1A4E7B5B2E97FF9700A17D69 /* Presentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Presentation; sourceTree = "<group>"; };
 		1A4E7B5C2E97FF9700A17D69 /* Data */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Data; sourceTree = "<group>"; };
+		1A6692842ED2E60800B500AE /* AeroSpaceBar.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AeroSpaceBar.xctestplan; sourceTree = "<group>"; };
 		1AB371752E9BAB000069A41F /* AeroSpaceBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroSpaceBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AB620212ED229940040A2F2 /* AeroSpaceBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroSpaceBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -106,17 +113,17 @@
 			path = Packages/Presentation/Tests/PresentationTests;
 			sourceTree = "<group>";
 		};
-		1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Packages/Presentation/Tests/PresentationUITests;
-			sourceTree = "<group>";
-		};
 		1A4E7B502E97FD6F00A17D69 /* AeroSpaceBar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1AB371762E9BAB6C0069A41F /* Exceptions for "AeroSpaceBar" folder in "AeroSpaceBar" target */,
 			);
 			path = AeroSpaceBar;
+			sourceTree = "<group>";
+		};
+		1AB620222ED229940040A2F2 /* AeroSpaceBarUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AeroSpaceBarUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -152,18 +159,23 @@
 			files = (
 			);
 		};
-		1A2C03F42E98FA17003C9FF9 /* Frameworks */ = {
+		1AB6201E2ED229940040A2F2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				1AD27CA52ED2F76C00ED141F /* Domain in Frameworks */,
+				1AD27C952ED2F2FC00ED141F /* Nimble in Frameworks */,
+				1AD27CA72ED2F76C00ED141F /* Data in Frameworks */,
+				1AD27CA92ED2F76C00ED141F /* Presentation in Frameworks */,
+				1AD27CA32ED2F76C00ED141F /* Sparkle in Frameworks */,
 			);
 		};
 		C10E2F872D41235900AC957C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				1A4E7B662E97FFF200A17D69 /* Presentation in Frameworks */,
-				1A4E7B632E97FFE000A17D69 /* Data in Frameworks */,
-				1A4E7B602E97FFCB00A17D69 /* Domain in Frameworks */,
+				1AD27CA12ED2F72A00ED141F /* Presentation in Frameworks */,
+				1AD27C9D2ED2F72A00ED141F /* Domain in Frameworks */,
 				1AF2D23F2E91868900A850B5 /* Sparkle in Frameworks */,
+				1AD27C9F2ED2F72A00ED141F /* Data in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -189,8 +201,10 @@
 		C10E2F812D41235900AC957C = {
 			isa = PBXGroup;
 			children = (
+				1A6692842ED2E60800B500AE /* AeroSpaceBar.xctestplan */,
 				1A493B982E7335CB00187B3E /* Frameworks */,
 				1A4E7B502E97FD6F00A17D69 /* AeroSpaceBar */,
+				1AB620222ED229940040A2F2 /* AeroSpaceBarUITests */,
 				1A4E7B5D2E97FF9700A17D69 /* Packages */,
 				1A09D2242E98F46C00924EE7 /* Packages/Data/Sources/Data */,
 				1A09D22F2E98F46D00924EE7 /* Packages/Data/Tests/DataTests */,
@@ -198,7 +212,6 @@
 				1A09D24B2E98F4C500924EE7 /* Packages/Domain/Tests/DomainTests */,
 				1A09D25F2E98F4D100924EE7 /* Packages/Presentation/Sources/Presentation */,
 				1A09D26C2E98F4D100924EE7 /* Packages/Presentation/Tests/PresentationTests */,
-				1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */,
 				C10E2F8B2D41235900AC957C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -207,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				1AB371752E9BAB000069A41F /* AeroSpaceBar.app */,
+				1AB620212ED229940040A2F2 /* AeroSpaceBarUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -348,24 +362,32 @@
 			productName = PresentationTests;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1A2C03F62E98FA17003C9FF9 /* PresentationUITests */ = {
+		1AB620202ED229940040A2F2 /* AeroSpaceBarUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A2C03FF2E98FA18003C9FF9 /* Build configuration list for PBXNativeTarget "PresentationUITests" */;
+			buildConfigurationList = 1AB620292ED229940040A2F2 /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */;
 			buildPhases = (
-				1A2C03F32E98FA17003C9FF9 /* Sources */,
-				1A2C03F42E98FA17003C9FF9 /* Frameworks */,
-				1A2C03F52E98FA17003C9FF9 /* Resources */,
+				1AB6201D2ED229940040A2F2 /* Sources */,
+				1AB6201E2ED229940040A2F2 /* Frameworks */,
+				1AB6201F2ED229940040A2F2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1A2C03FE2E98FA18003C9FF9 /* PBXTargetDependency */,
+				1AB620282ED229940040A2F2 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				1A2C03F82E98FA18003C9FF9 /* Packages/Presentation/Tests/PresentationUITests */,
+				1AB620222ED229940040A2F2 /* AeroSpaceBarUITests */,
 			);
-			name = PresentationUITests;
-			productName = PresentationUITests;
+			name = AeroSpaceBarUITests;
+			packageProductDependencies = (
+				1AD27C942ED2F2FC00ED141F /* Nimble */,
+				1AD27CA22ED2F76C00ED141F /* Sparkle */,
+				1AD27CA42ED2F76C00ED141F /* Domain */,
+				1AD27CA62ED2F76C00ED141F /* Data */,
+				1AD27CA82ED2F76C00ED141F /* Presentation */,
+			);
+			productName = AeroSpaceBarUITests;
+			productReference = 1AB620212ED229940040A2F2 /* AeroSpaceBarUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		C10E2F892D41235900AC957C /* AeroSpaceBar */ = {
@@ -385,9 +407,9 @@
 			name = AeroSpaceBar;
 			packageProductDependencies = (
 				1AF2D23E2E91868900A850B5 /* Sparkle */,
-				1A4E7B5F2E97FFCB00A17D69 /* Domain */,
-				1A4E7B622E97FFE000A17D69 /* Data */,
-				1A4E7B652E97FFF200A17D69 /* Presentation */,
+				1AD27C9C2ED2F72A00ED141F /* Domain */,
+				1AD27C9E2ED2F72A00ED141F /* Data */,
+				1AD27CA02ED2F72A00ED141F /* Presentation */,
 			);
 			productName = AeroSpaceBar;
 			productReference = 1AB371752E9BAB000069A41F /* AeroSpaceBar.app */;
@@ -401,7 +423,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2600;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2620;
 				ORGANIZATIONNAME = "Ronen Druker";
 				TargetAttributes = {
 					1A09D2222E98F46C00924EE7 = {
@@ -424,8 +446,8 @@
 						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = C10E2F892D41235900AC957C;
 					};
-					1A2C03F62E98FA17003C9FF9 = {
-						CreatedOnToolsVersion = 26.0.1;
+					1AB620202ED229940040A2F2 = {
+						CreatedOnToolsVersion = 26.1.1;
 						TestTargetID = C10E2F892D41235900AC957C;
 					};
 					C10E2F892D41235900AC957C = {
@@ -448,6 +470,7 @@
 				1A4E7B5E2E97FFCB00A17D69 /* XCLocalSwiftPackageReference "Packages/Domain" */,
 				1A4E7B612E97FFE000A17D69 /* XCLocalSwiftPackageReference "Packages/Data" */,
 				1A4E7B642E97FFF200A17D69 /* XCLocalSwiftPackageReference "Packages/Presentation" */,
+				1AD27C912ED2F2A700ED141F /* XCRemoteSwiftPackageReference "Nimble" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = C10E2F8B2D41235900AC957C /* Products */;
@@ -461,7 +484,7 @@
 				1A09D2442E98F4C500924EE7 /* DomainTests */,
 				1A09D25D2E98F4D100924EE7 /* Presentation */,
 				1A09D2652E98F4D100924EE7 /* PresentationTests */,
-				1A2C03F62E98FA17003C9FF9 /* PresentationUITests */,
+				1AB620202ED229940040A2F2 /* AeroSpaceBarUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -497,7 +520,7 @@
 			files = (
 			);
 		};
-		1A2C03F52E98FA17003C9FF9 /* Resources */ = {
+		1AB6201F2ED229940040A2F2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -524,6 +547,7 @@
 				"",
 				"paths=(",
 				"    \"\\\"$SRCROOT/AeroSpaceBar\\\"\"",
+				"    \"\\\"$SRCROOT/AeroSpaceBarUITests\\\"\"",
 				"    \"\\\"$SRCROOT/Packages\\\"\"",
 				")",
 				"",
@@ -532,23 +556,23 @@
 				"",
 				"if [[ \"$(uname -m)\" == arm64 ]]; then",
 				"    export PATH=\"/opt/homebrew/bin:$PATH\"",
-				fi,
+				"fi",
 				"",
 				"echo \"🔧 Running SwiftFormat (pass 1)...\"",
 				"if which swiftformat > /dev/null; then",
 				"    eval \"$swiftformat_cmd\"",
-				else,
+				"else",
 				"    echo \"⚠️ SwiftFormat not found. Install with: brew install swiftformat\"",
 				"    exit 1",
-				fi,
+				"fi",
 				"",
 				"echo \"🔍 Running SwiftLint fix...\"",
 				"if which swiftlint > /dev/null; then",
 				"    eval \"$swiftlint_cmd --fix\"",
-				else,
+				"else",
 				"    echo \"⚠️ SwiftLint not found. Install with: brew install swiftlint\"",
 				"    exit 1",
-				fi,
+				"fi",
 				"",
 				"echo \"🔧 Running SwiftFormat (pass 2)...\"",
 				"eval \"$swiftformat_cmd\"",
@@ -557,6 +581,7 @@
 				"eval \"$swiftlint_cmd --strict\"",
 				"",
 				"echo \"✅ Pre-build checks completed successfully\"",
+				"",
 			);
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -592,7 +617,7 @@
 			files = (
 			);
 		};
-		1A2C03F32E98FA17003C9FF9 /* Sources */ = {
+		1AB6201D2ED229940040A2F2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
 			);
@@ -630,10 +655,10 @@
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
 			targetProxy = 1A09D26A2E98F4D100924EE7 /* PBXContainerItemProxy */;
 		};
-		1A2C03FE2E98FA18003C9FF9 /* PBXTargetDependency */ = {
+		1AB620282ED229940040A2F2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C10E2F892D41235900AC957C /* AeroSpaceBar */;
-			targetProxy = 1A2C03FD2E98FA18003C9FF9 /* PBXContainerItemProxy */;
+			targetProxy = 1AB620272ED229940040A2F2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -643,6 +668,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -683,6 +709,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -763,6 +790,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -803,6 +831,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -885,6 +914,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -925,6 +955,7 @@
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1002,7 +1033,7 @@
 			};
 			name = Release;
 		};
-		1A2C04002E98FA18003C9FF9 /* Debug configuration for PBXNativeTarget "PresentationUITests" */ = {
+		1AB6202A2ED229940040A2F2 /* Debug configuration for PBXNativeTarget "AeroSpaceBarUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1010,20 +1041,20 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = "1.0.0-beta.1";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationUITests;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.2;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = AeroSpaceBar;
 			};
 			name = Debug;
 		};
-		1A2C04012E98FA18003C9FF9 /* Release configuration for PBXNativeTarget "PresentationUITests" */ = {
+		1AB6202B2ED229940040A2F2 /* Release configuration for PBXNativeTarget "AeroSpaceBarUITests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1031,15 +1062,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = "1.0.0-beta.1";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar.PresentationUITests;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBarUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.2;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = AeroSpaceBar;
 			};
 			name = Release;
@@ -1386,11 +1417,11 @@
 			);
 			defaultConfigurationName = Release;
 		};
-		1A2C03FF2E98FA18003C9FF9 /* Build configuration list for PBXNativeTarget "PresentationUITests" */ = {
+		1AB620292ED229940040A2F2 /* Build configuration list for PBXNativeTarget "AeroSpaceBarUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A2C04002E98FA18003C9FF9 /* Debug configuration for PBXNativeTarget "PresentationUITests" */,
-				1A2C04012E98FA18003C9FF9 /* Release configuration for PBXNativeTarget "PresentationUITests" */,
+				1AB6202A2ED229940040A2F2 /* Debug configuration for PBXNativeTarget "AeroSpaceBarUITests" */,
+				1AB6202B2ED229940040A2F2 /* Release configuration for PBXNativeTarget "AeroSpaceBarUITests" */,
 			);
 			defaultConfigurationName = Release;
 		};
@@ -1428,6 +1459,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1AD27C912ED2F2A700ED141F /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				kind = exactVersion;
+				version = 13.8.0;
+			};
+		};
 		1AF4504E2E90FD6100E65663 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -1439,16 +1478,44 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1A4E7B5F2E97FFCB00A17D69 /* Domain */ = {
+		1AD27C942ED2F2FC00ED141F /* Nimble */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 1AD27C912ED2F2A700ED141F /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		1AD27C9C2ED2F72A00ED141F /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B5E2E97FFCB00A17D69 /* XCLocalSwiftPackageReference "Packages/Domain" */;
 			productName = Domain;
 		};
-		1A4E7B622E97FFE000A17D69 /* Data */ = {
+		1AD27C9E2ED2F72A00ED141F /* Data */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B612E97FFE000A17D69 /* XCLocalSwiftPackageReference "Packages/Data" */;
 			productName = Data;
 		};
-		1A4E7B652E97FFF200A17D69 /* Presentation */ = {
+		1AD27CA02ED2F72A00ED141F /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B642E97FFF200A17D69 /* XCLocalSwiftPackageReference "Packages/Presentation" */;
+			productName = Presentation;
+		};
+		1AD27CA22ED2F76C00ED141F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AF4504E2E90FD6100E65663 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		1AD27CA42ED2F76C00ED141F /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B5E2E97FFCB00A17D69 /* XCLocalSwiftPackageReference "Packages/Domain" */;
+			productName = Domain;
+		};
+		1AD27CA62ED2F76C00ED141F /* Data */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B612E97FFE000A17D69 /* XCLocalSwiftPackageReference "Packages/Data" */;
+			productName = Data;
+		};
+		1AD27CA82ED2F76C00ED141F /* Presentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4E7B642E97FFF200A17D69 /* XCLocalSwiftPackageReference "Packages/Presentation" */;
 			productName = Presentation;
 		};
 		1AF2D23E2E91868900A850B5 /* Sparkle */ = {

@@ -77,17 +77,21 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
 
     // MARK: - License Validation Constants
 
-    /// Interval between license validation checks
+    // Interval between license validation checks
     #if DEBUG
-        // Shorter interval for debug builds to facilitate testing
+        /// Shorter interval for debug builds to facilitate testing
         private static let validationIntervalSeconds: TimeInterval = 30 // 30 seconds
     #else
-        // Longer interval for production builds
+        /// Longer interval for production builds
         private static let validationIntervalSeconds: TimeInterval = 5 * 60 * 60 // 5 hours
     #endif
 
-    /// Grace period for offline validation (7 days)
-    private static let validationGracePeriodSeconds: TimeInterval = 7 * 24 * 60 * 60
+    /// Grace period for offline trial validation (7 days)
+    /// This only applies to trial licenses, not purchased licenses
+    private static let trialValidationGracePeriodSeconds: TimeInterval = 7 * 24 * 60 * 60
+
+    /// Trial duration in seconds (14 days)
+    private static let trialDurationSeconds: TimeInterval = 14 * 24 * 60 * 60
 
     /// Instance name for this device/installation
     /// This persists across app reinstalls and is unique per device
@@ -137,6 +141,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         static let licenseInfo = "license_info"
         static let lastValidationDate = "last_license_validation"
         static let instanceId = "license_instance_id"
+        static let trialActivationDate = "trial_activation_date"
     }
 
     // MARK: - Public Properties
@@ -163,10 +168,15 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         }
     #endif
 
+    /// UserDefaults instance for storage
+    private let userDefaults: UserDefaults
+
     // MARK: - Initialization
 
     /// Initializes the repository with the provided API key.
-    public init() {
+    /// - Parameter userDefaults: The UserDefaults instance to use for storage (defaults to .standard)
+    public init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
         initializeLicenseInfo()
         startPeriodicValidation()
         setupFeatureFlagObservation()
@@ -225,7 +235,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
             Logger.debug("Checking UserDefaults for trial marker", category: Logger.app)
         #endif
 
-        if let storedMarker = UserDefaults.standard.string(forKey: Self.userDefaultsTrialUsedKey) {
+        if let storedMarker = userDefaults.string(forKey: Self.userDefaultsTrialUsedKey) {
             let currentMarker = generateTrialMarker(from: Self.instanceName)
             return storedMarker == currentMarker
         }
@@ -281,7 +291,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         let marker = generateTrialMarker(from: Self.instanceName)
 
         // 1. Store in UserDefaults
-        UserDefaults.standard.set(marker, forKey: Self.userDefaultsTrialUsedKey)
+        userDefaults.set(marker, forKey: Self.userDefaultsTrialUsedKey)
         #if DEBUG
             Logger.debug("Storing trial marker in UserDefaults", category: Logger.app)
         #endif
@@ -470,7 +480,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         var savedProfileImageData: Data?
 
         if
-            let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.licenseInfo),
+            let data = userDefaults.data(forKey: UserDefaultsKeys.licenseInfo),
             let savedInfo = try? JSONDecoder().decode(LicenseInfo.self, from: data)
         {
             savedUserName = savedInfo.userName
@@ -496,7 +506,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
 
         // Load from UserDefaults
         if
-            let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.licenseInfo),
+            let data = userDefaults.data(forKey: UserDefaultsKeys.licenseInfo),
             let savedInfo = try? JSONDecoder().decode(LicenseInfo.self, from: data)
         {
             // Check if we have a valid license key
@@ -532,6 +542,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     }
 
     /// Starts periodic license validation using async/await Task.
+    /// Only validates trial licenses periodically - purchased licenses don't need periodic validation.
     private func startPeriodicValidation() {
         // Cancel existing validation task if any
         validationTask?.cancel()
@@ -547,9 +558,10 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                 // Check if task was cancelled during sleep
                 guard !Task.isCancelled else { return }
 
-                // Validate license if currently licensed
+                // Only validate trial licenses periodically
+                // Purchased licenses don't need periodic validation as they're perpetual
                 let currentInfo = licenseInfoSubject.value
-                if currentInfo.isActive {
+                if case .trial = currentInfo.licenseStatus {
                     let validatedInfo = await validateLicense()
                     licenseInfoSubject.send(validatedInfo)
                 }
@@ -586,7 +598,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
                         let currentInfo = licenseInfoSubject.value
                         if currentInfo.licenseKey == Self.mockLicenseKey {
                             // Clear mock data and reinitialize
-                            UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.licenseInfo)
+                            userDefaults.removeObject(forKey: UserDefaultsKeys.licenseInfo)
                             initializeLicenseInfo()
                         }
                     }
@@ -598,7 +610,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     /// Saves license info to UserDefaults.
     private func saveLicenseInfo(_ info: LicenseInfo) {
         if let data = try? JSONEncoder().encode(info) {
-            UserDefaults.standard.set(data, forKey: UserDefaultsKeys.licenseInfo)
+            userDefaults.set(data, forKey: UserDefaultsKeys.licenseInfo)
         }
     }
 
@@ -656,7 +668,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     /// This is used when resetting license feature flags to restore the app to its initial state.
     private func clearTrialMarkers() {
         // 1. Clear UserDefaults trial marker
-        UserDefaults.standard.removeObject(forKey: Self.userDefaultsTrialUsedKey)
+        userDefaults.removeObject(forKey: Self.userDefaultsTrialUsedKey)
 
         // 2. Delete hidden file trial marker
         if let filePath = getHiddenFilePath() {
@@ -664,6 +676,26 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         }
 
         Logger.debug("Trial markers cleared - app restored to initial state", category: Logger.app)
+    }
+
+    /// Validates trial expiration locally by checking if trial duration has passed since activation.
+    /// This is used as a fallback during the grace period when network validation fails.
+    /// - Parameter activationDate: The date when the trial was first activated
+    /// - Returns: True if trial has expired locally, false otherwise
+    private func isTrialExpiredLocally(activationDate: Date) -> Bool {
+        let now = Date()
+        let timeSinceActivation = now.timeIntervalSince(activationDate)
+        let isExpired = timeSinceActivation >= Self.trialDurationSeconds
+
+        #if DEBUG
+            let daysElapsed = timeSinceActivation / (24 * 60 * 60)
+            Logger.debug(
+                "Local trial expiration check - Days elapsed: \(daysElapsed), Expired: \(isExpired)",
+                category: Logger.app
+            )
+        #endif
+
+        return isExpired
     }
 
     private func validateLicense() async -> LicenseInfo {
@@ -681,71 +713,157 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         }
 
         // Get stored instance ID from activation
-        guard let instanceId = UserDefaults.standard.string(forKey: UserDefaultsKeys.instanceId) else {
-            Logger.warning("No instance ID found, cannot validate license", category: Logger.app)
-            return currentInfo
+        guard let instanceId = userDefaults.string(forKey: UserDefaultsKeys.instanceId) else {
+            return handleMissingInstanceId(currentInfo: currentInfo)
         }
 
         do {
-            // Validate license using LemonSqueezy SDK with stored instance ID
             let result: ValidateLicense = try await lemonSqueezy.validateLicense(
                 licenseKey: currentInfo.licenseKey,
                 instanceId: instanceId
             )
-
-            // Update last validation date
-            UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.lastValidationDate)
-
-            // Determine license status based on LemonSqueezy response
-            let licenseStatus = determineLicenseStatus(
-                lemonSqueezyStatus: result.licenseKey.status,
-                isValid: result.valid,
-                variantId: result.meta.variantId,
-                expiresAt: result.licenseKey.expiresAt
-            )
-
-            let validatedInfo = LicenseInfo(
-                licenseKey: result.licenseKey.key,
-                licenseStatus: licenseStatus,
-                userName: currentInfo.userName.isEmpty ? result.meta.customerName : currentInfo.userName,
-                email: currentInfo.email.isEmpty ? result.meta.customerEmail : currentInfo.email,
-                profileImageData: currentInfo.profileImageData
-            )
-
-            saveLicenseInfo(validatedInfo)
-
-            // Only deactivate if license is disabled (manually disabled by admin)
-            // Don't deactivate for expired licenses - they should stay expired
-            // so users can see they had a license/trial that expired
-            if result.licenseKey.status.lowercased() == "disabled" {
-                Task {
-                    try? await deactivateLicense()
-                }
-            }
-
-            return validatedInfo
+            return processSuccessfulValidation(result: result, currentInfo: currentInfo)
+        } catch let apiError as LemonSqueezyAPIError {
+            return handleValidationAPIError(apiError: apiError, currentInfo: currentInfo)
         } catch {
-            Logger.error("License validation failed", error: error, category: Logger.app)
-
-            // If we can't validate but have a recent successful validation, stay licensed
-            if
-                let lastValidation = UserDefaults.standard.object(forKey: UserDefaultsKeys.lastValidationDate) as? Date,
-                Date().timeIntervalSince(lastValidation) < Self.validationGracePeriodSeconds
-            {
-                return currentInfo
-            }
-
-            let expiredInfo = LicenseInfo(
-                licenseKey: currentInfo.licenseKey,
-                licenseStatus: .expired,
-                userName: currentInfo.userName,
-                email: currentInfo.email,
-                profileImageData: currentInfo.profileImageData
-            )
-
-            saveLicenseInfo(expiredInfo)
-            return expiredInfo
+            return handleValidationNetworkError(error: error, currentInfo: currentInfo)
         }
+    }
+
+    private func handleMissingInstanceId(currentInfo: LicenseInfo) -> LicenseInfo {
+        Logger.error("No instance ID found - license validation failed, marking as expired", category: Logger.app)
+
+        let expiredInfo = LicenseInfo(
+            licenseKey: currentInfo.licenseKey,
+            licenseStatus: .expired,
+            userName: currentInfo.userName,
+            email: currentInfo.email,
+            profileImageData: currentInfo.profileImageData
+        )
+        saveLicenseInfo(expiredInfo)
+
+        // Clear instance-related data to ensure clean state
+        userDefaults.removeObject(forKey: UserDefaultsKeys.instanceId)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.lastValidationDate)
+
+        return expiredInfo
+    }
+
+    private func processSuccessfulValidation(result: ValidateLicense, currentInfo: LicenseInfo) -> LicenseInfo {
+        // Update last validation date
+        userDefaults.set(Date(), forKey: UserDefaultsKeys.lastValidationDate)
+
+        // Determine license status based on LemonSqueezy response
+        let licenseStatus = determineLicenseStatus(
+            lemonSqueezyStatus: result.licenseKey.status,
+            isValid: result.valid,
+            variantId: result.meta.variantId,
+            expiresAt: result.licenseKey.expiresAt
+        )
+
+        let validatedInfo = LicenseInfo(
+            licenseKey: result.licenseKey.key,
+            licenseStatus: licenseStatus,
+            userName: currentInfo.userName.isEmpty ? result.meta.customerName : currentInfo.userName,
+            email: currentInfo.email.isEmpty ? result.meta.customerEmail : currentInfo.email,
+            profileImageData: currentInfo.profileImageData
+        )
+
+        saveLicenseInfo(validatedInfo)
+
+        // Only deactivate if license is disabled (manually disabled by admin)
+        if result.licenseKey.status.lowercased() == "disabled" {
+            Task {
+                try? await deactivateLicense()
+            }
+        }
+
+        return validatedInfo
+    }
+
+    private func handleValidationAPIError(apiError: LemonSqueezyAPIError, currentInfo: LicenseInfo) -> LicenseInfo {
+        Logger.error("License validation failed with API error", error: apiError, category: Logger.app)
+
+        // If validateLicense throws, it means the request failed (e.g. 4xx, 5xx, or decoding error).
+        // It does NOT mean the license is invalid (which would return 200 OK with valid=false).
+        // Therefore, we should treat this as a temporary failure (like a network error)
+        // to avoid expiring valid licenses due to server/connection issues.
+        return handleValidationNetworkError(error: apiError, currentInfo: currentInfo)
+    }
+
+    private func handleValidationNetworkError(error: Error, currentInfo: LicenseInfo) -> LicenseInfo {
+        Logger.error("License validation failed with network/system error", error: error, category: Logger.app)
+
+        // Check if this is a trial license
+        let isTrial = if case .trial = currentInfo.licenseStatus {
+            true
+        } else {
+            false
+        }
+
+        if isTrial {
+            return handleTrialNetworkError(currentInfo: currentInfo)
+        }
+        // For purchased licenses: no grace period, no expiration
+        // If we can't validate, keep the license active indefinitely
+        Logger.warning(
+            "Purchased license validation failed but license is perpetual, keeping active",
+            category: Logger.app
+        )
+        return currentInfo
+    }
+
+    private func handleTrialNetworkError(currentInfo: LicenseInfo) -> LicenseInfo {
+        // For trials: apply grace period with local expiration fallback
+        guard
+            let lastValidation = userDefaults.object(forKey: UserDefaultsKeys.lastValidationDate) as? Date,
+            Date().timeIntervalSince(lastValidation) < Self.trialValidationGracePeriodSeconds
+        else {
+            // Outside grace period - mark as expired
+            Logger.warning(
+                "Trial validation failed and outside grace period, marking as expired",
+                category: Logger.app
+            )
+            return createExpiredLicenseInfo(from: currentInfo)
+        }
+
+        // Within grace period - check local expiration as fallback
+        guard
+            let trialActivationDate = userDefaults
+                .object(forKey: UserDefaultsKeys.trialActivationDate) as? Date
+        else {
+            // No activation date stored - treat as expired for safety
+            Logger.warning("No trial activation date found, marking as expired", category: Logger.app)
+            return createExpiredLicenseInfo(from: currentInfo)
+        }
+
+        if isTrialExpiredLocally(activationDate: trialActivationDate) {
+            // Trial has expired locally even though we're within grace period
+            Logger.warning(
+                "Trial expired locally (14 days passed), marking as expired",
+                category: Logger.app
+            )
+            return createExpiredLicenseInfo(from: currentInfo)
+        }
+
+        // Within grace period and not locally expired - stay active
+        Logger.warning(
+            "Network validation failed but within grace period and trial not locally expired, staying active",
+            category: Logger.app
+        )
+        return currentInfo
+    }
+
+    private func createExpiredLicenseInfo(from currentInfo: LicenseInfo) -> LicenseInfo {
+        let expiredInfo = LicenseInfo(
+            licenseKey: currentInfo.licenseKey,
+            licenseStatus: .expired,
+            userName: currentInfo.userName,
+            email: currentInfo.email,
+            profileImageData: currentInfo.profileImageData
+        )
+        saveLicenseInfo(expiredInfo)
+        return expiredInfo
     }
 
     public func activateLicense(_ licenseKey: String) async throws -> LicenseInfo {
@@ -770,8 +888,8 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
             }
 
             // Store the instance ID returned by LemonSqueezy for future validation/deactivation
-            UserDefaults.standard.set(result.instance.id, forKey: UserDefaultsKeys.instanceId)
-            UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.lastValidationDate)
+            userDefaults.set(result.instance.id, forKey: UserDefaultsKeys.instanceId)
+            userDefaults.set(Date(), forKey: UserDefaultsKeys.lastValidationDate)
 
             // Create activated license info with proper status based on LemonSqueezy response
             let currentInfo = licenseInfoSubject.value
@@ -793,6 +911,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
             // Mark trial as used if this is a trial license
             if isTrial {
                 markTrialAsUsed()
+                // Store trial activation date for local expiration validation during grace period
+                userDefaults.set(Date(), forKey: UserDefaultsKeys.trialActivationDate)
+                Logger.debug("Trial activation date stored for local expiration validation", category: Logger.app)
             }
 
             licenseInfoSubject.send(activatedInfo)
@@ -828,7 +949,7 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         // Check if we have a license key and instance ID to deactivate
         guard
             !currentInfo.licenseKey.isEmpty,
-            let instanceId = UserDefaults.standard.string(forKey: UserDefaultsKeys.instanceId)
+            let instanceId = userDefaults.string(forKey: UserDefaultsKeys.instanceId)
         else {
             // No license key or instance ID, just clear local data
             clearLicenseData(preservingUserData: currentInfo)
@@ -859,9 +980,10 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     /// Clears license data while preserving user information.
     /// - Parameter currentInfo: Current license info to preserve user data from
     private func clearLicenseData(preservingUserData currentInfo: LicenseInfo) {
-        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.licenseInfo)
-        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.lastValidationDate)
-        UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.instanceId)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.licenseInfo)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.lastValidationDate)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.instanceId)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.trialActivationDate)
 
         // Preserve user data when deactivating
         let clearedInfo = LicenseInfo(

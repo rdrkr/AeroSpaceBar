@@ -42,7 +42,9 @@ public final class AppViewModel: ObservableObject {
     /// in globe key press state and update the published properties accordingly.
     private func setupReactiveSubscriptions() {
         getGlobeKeyPressStateUseCase.execute()
-            .assign(to: \.isGlobeKeyPressed, on: self)
+            .sink { [weak self] isPressed in
+                self?.isGlobeKeyPressed = isPressed
+            }
             .store(in: &cancellables)
     }
 }

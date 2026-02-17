@@ -32,22 +32,15 @@
 --ranges spaced
 --semicolons never
 --commas never
---decimalgrouping 3,4
---binarygrouping 4,8
---octalgrouping 4,8
---hexgrouping 4,8
---fractiongrouping enabled
---exponentgrouping enabled
 --hexliteralcase uppercase
 --exponentcase lowercase
---decimal-grouping 3,4
 --line-between-guards true
 
 # Imports
 --importgrouping alphabetized
 
 # Comments
---header "Copyright (c) {year} AeroSpaceBar by Ronen Druker."
+--header "Copyright (c) {created.year} AeroSpaceBar by Ronen Druker."
 --stripunusedargs always
 
 # Swift version
@@ -57,6 +50,7 @@
 --redundant-async always
 
 # rules
+--disable numberFormatting
 --disable preferForLoop
 --disable redundantInternal
 --disable modifierOrder
@@ -68,10 +62,10 @@
 --enable consecutiveSpaces
 --enable docCommentsBeforeModifiers
 --enable duplicateImports
---enable redundantAsync
 --enable leadingDelimiters
 --enable linebreakAtEndOfFile
 --enable privateStateVariables
+--enable redundantAsync
 --enable redundantMemberwiseInit
 --enable spaceAroundComments
 --enable wrapMultilineFunctionChains

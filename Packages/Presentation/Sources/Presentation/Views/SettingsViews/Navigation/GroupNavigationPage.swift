@@ -15,7 +15,9 @@ struct GroupNavigationPage: NavigationPage {
     let index: Int
 
     /// The unique identifier for this navigation page which is the group index.
-    var id: Int { index }
+    var id: Int {
+        index
+    }
 
     /// The localized display name for this navigation page.
     var name: String {
@@ -50,17 +52,17 @@ struct GroupNavigationPage: NavigationPage {
 
     /// A view builder that returns the sidebar item view for this navigation page.
     @MainActor
-    @ViewBuilder
     var viewForSidebar: AnyView {
         AnyView(defaultViewForSidebar(icon))
     }
 
     /// The parent page of the navigation option.
-    var parentPage: (any NavigationPage)? { RootNavigationPage.groups }
+    var parentPage: (any NavigationPage)? {
+        RootNavigationPage.groups
+    }
 
     /// A view builder that returns the view for this navigation page.
     @MainActor
-    @ViewBuilder
     var viewForPage: PageView {
         PageView(GroupPageView(id: id))
     }

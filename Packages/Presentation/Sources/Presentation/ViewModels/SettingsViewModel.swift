@@ -668,6 +668,7 @@ public class SettingsViewModel: ObservableObject {
 
             case .general:
                 true // General is always available
+
             case .spaces:
                 featureFlags.enableSpaces
 
@@ -679,6 +680,7 @@ public class SettingsViewModel: ObservableObject {
 
             case .advanced:
                 featureFlags.enableAdvancedSettings
+
             #if DEBUG
 
                 case .developer:

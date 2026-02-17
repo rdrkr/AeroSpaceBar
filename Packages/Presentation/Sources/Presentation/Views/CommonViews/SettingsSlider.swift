@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// SettingsSlider provides a unified interface for sliders used in settings screens,
 /// including the slider control, value display, and help text with consistent spacing and alignment.
-struct SettingsSlider<V>: View where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
+struct SettingsSlider<V: BinaryFloatingPoint>: View where V.Stride: BinaryFloatingPoint {
     /// The binding for the slider's current value.
     @Binding var value: V
 

@@ -503,12 +503,17 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// - Parameter windows: The current list of on-screen windows.
     /// - Returns: An array of MenuBarApp instances representing menu bar applications from right to left.
     private func findMenuBarApplications(windows: [WindowInfo]) -> [MenuBarApp] {
-        windows
+        let menuBarHeight = menuBarHeightSubject.value
+
+        return windows
             .filter { window in
                 window.isControlCenterWindow &&
                     window.isOnScreen &&
                     window.layer >= kCGMainMenuWindowLevel &&
-                    window.frame.origin.y == 0.0 && // ignore views which are non in menubar (e.g. notifications).
+                    // ignore views which are non in menubar (e.g. notifications).
+                    window.frame.origin.y == 0.0 &&
+                    // ignore views which are non in menubar (e.g. widgets).
+                    window.frame.size.height <= menuBarHeight &&
                     CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
             }
             .map { window in

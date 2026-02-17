@@ -4,7 +4,7 @@ import Domain
 import Foundation
 
 /// Protocol describing a minimal AeroSpace CLI client capable of executing commands.
-internal protocol AeroSpaceCLIClientProtocol: Sendable {
+public protocol AeroSpaceCLIClientProtocol: Sendable {
     /// Executes an AeroSpace CLI command and returns the output data.
     /// - Parameter arguments: The CLI arguments to pass to the AeroSpace executable
     /// - Returns: The command output as `Data`
@@ -51,7 +51,9 @@ internal final class AeroSpaceCLIClient: AeroSpaceCLIClientProtocol {
             }
 
             guard let (data, terminationStatus) = result else {
-                process.terminate()
+                if process.isRunning {
+                    process.terminate()
+                }
                 Logger.error("AeroSpace command timed out during execution", category: Logger.aerospace, metadata: [
                     "executable": executablePath,
                     "arguments": arguments
@@ -90,5 +92,19 @@ internal final class AeroSpaceCLIClient: AeroSpaceCLIClientProtocol {
 
             return data
         }
+    }
+}
+
+/// Factory for creating AeroSpace CLI clients.
+public protocol AeroSpaceCLIClientFactoryProtocol: Sendable {
+    func makeClient(executablePath: String) -> AeroSpaceCLIClientProtocol
+}
+
+/// Default implementation of `AeroSpaceCLIClientFactoryProtocol`.
+public struct AeroSpaceCLIClientFactory: AeroSpaceCLIClientFactoryProtocol {
+    public init() { }
+
+    public func makeClient(executablePath: String) -> AeroSpaceCLIClientProtocol {
+        AeroSpaceCLIClient(executablePath: executablePath)
     }
 }

@@ -140,20 +140,14 @@
         /// - Parameter enabled: The new show groups feature flag value
         func setEnableGroups(_ enabled: Bool) {
             if enabled == featureFlags.enableGroups { return }
-
-            Task.detached(priority: .utility) { [self] in
-                await setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableGroups: enabled))
-            }
+            setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableGroups: enabled))
         }
 
         /// Sets the show spaces feature flag configuration.
         /// - Parameter enabled: The new show spaces feature
         func setEnableSpaces(_ enabled: Bool) {
             if enabled == featureFlags.enableSpaces { return }
-
-            Task.detached(priority: .utility) { [self] in
-                await setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableSpaces: enabled))
-            }
+            setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableSpaces: enabled))
         }
 
         /// Sets the software updates feature flag configuration.

@@ -15,7 +15,9 @@ struct SpaceNavigationPage: NavigationPage {
     let spaceId: String
 
     /// The unique identifier for this navigation page which is the space ID hash.
-    var id: Int { spaceId.hashValue }
+    var id: Int {
+        spaceId.hashValue
+    }
 
     /// The localized display name for this navigation page.
     var name: String {
@@ -50,17 +52,17 @@ struct SpaceNavigationPage: NavigationPage {
 
     /// A view builder that returns the sidebar item view for this navigation page.
     @MainActor
-    @ViewBuilder
     var viewForSidebar: AnyView {
         AnyView(defaultViewForSidebar(icon))
     }
 
     /// The parent page of the navigation option.
-    var parentPage: (any NavigationPage)? { RootNavigationPage.spaces }
+    var parentPage: (any NavigationPage)? {
+        RootNavigationPage.spaces
+    }
 
     /// A view builder that returns the view for this navigation page.
     @MainActor
-    @ViewBuilder
     var viewForPage: PageView {
         PageView(SpacePageView(spaceId: spaceId))
     }

@@ -4,19 +4,19 @@ import AppKit
 import Data
 import Domain
 
-/// Dependency injection container for managing service dependencies.
-///
-/// This class provides a centralized container for managing all service dependencies
-/// in the application. It uses lazy initialization to ensure services are only created
-/// when needed and provides a clean interface for accessing dependencies.
-/// It runs on the main actor for thread safety.
+// Dependency injection container for managing service dependencies.
+//
+// This class provides a centralized container for managing all service dependencies
+// in the application. It uses lazy initialization to ensure services are only created
+// when needed and provides a clean interface for accessing dependencies.
+// It runs on the main actor for thread safety.
 
 @MainActor
 public final class DependencyContainer {
     /// The shared instance of the dependency container.
     public static let shared = DependencyContainer()
 
-    /// Private initializer to enforce singleton pattern.
+    // Private initializer to enforce singleton pattern.
 
     private init() { }
 

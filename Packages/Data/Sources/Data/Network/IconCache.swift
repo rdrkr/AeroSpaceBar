@@ -5,6 +5,12 @@ import Domain
 import Foundation
 import UniformTypeIdentifiers
 
+/// Protocol for icon caching operations.
+public protocol IconCacheProtocol: Sendable {
+    @MainActor
+    func icon(for appName: String) -> NSImage?
+}
+
 /// A thread-safe gateway for storing application icons.
 ///
 /// This class provides a centralized cache for application icons to improve performance
@@ -12,7 +18,7 @@ import UniformTypeIdentifiers
 /// and implements the IconCache for dependency injection support.
 /// This is the data layer implementation of the IconCache.
 @MainActor
-public final class IconCache {
+public final class IconCache: IconCacheProtocol {
     /// The underlying cache for storing application icons.
     ///
     /// This cache uses the application name as the key and stores NSImage objects.

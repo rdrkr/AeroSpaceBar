@@ -57,21 +57,27 @@ internal struct AeroSpaceConfiguration: Codable {
         return true
     }
 
-    /// Removes a command from the `on-focus-changed` array in the TOML at path if present
-    /// - Parameter fileURL: The path to the TOML file
-    /// - Parameter command: The command to remove
-    /// - Returns: `true` if the command was removed; `false` if it did not exist
-    /// - Throws: An error if the removing fails
+    // Removes a command from the `on-focus-changed` array in the TOML at path if present
+    // - Parameter fileURL: The path to the TOML file
+    // - Parameter command: The command to remove
+    // - Returns: `true` if the command was removed; `false` if it did not exist
+    // - Throws: An error if the removing fails
 
     @discardableResult
     static func removeOnFocusChanged(at fileURL: URL, command: String) throws -> Bool {
         var configuration = try decode(from: fileURL)
 
-        if let callbacks = configuration.onFocusChanged, !callbacks.contains(command) {
+        // If onFocusChanged is nil or empty, the command doesn't exist
+        guard let callbacks = configuration.onFocusChanged, !callbacks.isEmpty else {
             return false
         }
 
-        configuration.onFocusChanged = configuration.onFocusChanged?.filter { $0 != command }
+        // If the command is not in the callbacks, it doesn't exist
+        guard callbacks.contains(command) else {
+            return false
+        }
+
+        configuration.onFocusChanged = callbacks.filter { $0 != command }
         try configuration.encode(to: fileURL)
 
         return true

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
+   LastUpgradeVersion = "2620"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -60,6 +60,17 @@
                BlueprintIdentifier = "1A2C03F62E98FA17003C9FF9"
                BuildableName = "PresentationUITests"
                BlueprintName = "PresentationUITests"
+               ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1AB620202ED229940040A2F2"
+               BuildableName = "AeroSpaceBarUITests.xctest"
+               BlueprintName = "AeroSpaceBarUITests"
                ReferencedContainer = "container:AeroSpaceBar.xcodeproj">
             </BuildableReference>
          </TestableReference>

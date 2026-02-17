@@ -1,12 +1,14 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-enum TimeoutState<ResultType>: Sendable where ResultType: Sendable {
+enum TimeoutState<ResultType: Sendable>: Sendable {
     case operationResult(Result<ResultType, Error>)
     case sleepResult(Result<Bool, Error>)
 }
 
 /// An error indicating that the withTimeout has passed and the operation did not complete.
-public struct TimeoutExceededError: Error { }
+public struct TimeoutExceededError: Error {
+    public init() { }
+}
 
 /// Race the given operation against a withTimeout.
 ///
@@ -35,13 +37,13 @@ public struct TimeoutExceededError: Error { }
 ///
 /// - Important: The operation closure must support cooperative cancellation. Otherwise, the withTimeout will not be
 /// respected.
-public func withTimeout<ClockType, ResultType>(
+public func withTimeout<ClockType: Clock, ResultType: Sendable>(
     until instant: ClockType.Instant,
     tolerance: ClockType.Instant.Duration? = nil,
     clock: ClockType,
     isolation: isolated (any Actor)? = #isolation,
     operation: @Sendable () async throws -> ResultType
-) async throws -> ResultType where ClockType: Clock, ResultType: Sendable {
+) async throws -> ResultType {
     // NB: This is safe to use, because the closure will not escape the context of this function.
     let result = await withoutActuallyEscaping(operation) { operation in
         await withTaskGroup(
@@ -123,12 +125,12 @@ public func withTimeout<ClockType, ResultType>(
 ///
 /// - Important: The operation closure must support cooperative cancellation. Otherwise, the withTimeout will not be
 /// respected.
-public func withTimeout<ResultType>(
+public func withTimeout<ResultType: Sendable>(
     until instant: ContinuousClock.Instant,
     tolerance: ContinuousClock.Instant.Duration? = nil,
     isolation: isolated (any Actor)? = #isolation,
     operation: @Sendable () async throws -> ResultType
-) async throws -> ResultType where ResultType: Sendable {
+) async throws -> ResultType {
     try await withTimeout(
         until: instant,
         tolerance: tolerance,
@@ -164,13 +166,13 @@ public func withTimeout<ResultType>(
 ///
 /// - Important: The operation closure must support cooperative cancellation. Otherwise, the timeout will not be
 /// respected.
-public func withTimeout<ClockType, ResultType>(
+public func withTimeout<ClockType: Clock, ResultType: Sendable>(
     for duration: ClockType.Instant.Duration,
     tolerance: ClockType.Instant.Duration? = nil,
     clock: ClockType,
     isolation: isolated (any Actor)? = #isolation,
     operation: @Sendable () async throws -> ResultType
-) async throws -> ResultType where ClockType: Clock, ResultType: Sendable {
+) async throws -> ResultType {
     try await withTimeout(
         until: clock.now.advanced(by: duration),
         tolerance: tolerance,
@@ -206,12 +208,12 @@ public func withTimeout<ClockType, ResultType>(
 ///
 /// - Important: The operation closure must support cooperative cancellation. Otherwise, the timeout will not be
 /// respected.
-public func withTimeout<ResultType>(
+public func withTimeout<ResultType: Sendable>(
     for duration: ContinuousClock.Instant.Duration,
     tolerance: ContinuousClock.Instant.Duration? = nil,
     isolation: isolated (any Actor)? = #isolation,
     operation: @Sendable () async throws -> ResultType
-) async throws -> ResultType where ResultType: Sendable {
+) async throws -> ResultType {
     try await withTimeout(
         for: duration,
         tolerance: tolerance,

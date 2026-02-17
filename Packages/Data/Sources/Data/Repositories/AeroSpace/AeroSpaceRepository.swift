@@ -24,7 +24,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     """.replacingOccurrences(of: "\n", with: " ")
 
     /// The icon cache gateway for loading app icons.
-    private let iconCache: IconCache
+    private let iconCache: IconCacheProtocol
 
     /// Use case for getting the AeroSpace executable path.
     private let getAeroSpacePathUseCase: GetAeroSpacePathUseCase
@@ -37,6 +37,15 @@ public final class AeroSpaceRepository: SpacesGateway {
 
     /// Use case for getting the spaces color properties.
     private let getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase
+
+    /// Factory for creating AeroSpace CLI clients.
+    private let cliFactory: AeroSpaceCLIClientFactoryProtocol
+
+    /// Executor for generic commands.
+    private let commandExecutor: CommandExecutorProtocol
+
+    /// Checker for running applications.
+    private let runningAppChecker: RunningAppCheckerProtocol
 
     /// Cached AeroSpace executable path.
     private var aeroSpaceExecutable: String
@@ -76,17 +85,23 @@ public final class AeroSpaceRepository: SpacesGateway {
     ///   - getOptimizedPerformanceEnabledUseCase: Use case to get the optimized performance enabled setting
     ///   - getSpacesColorPropertiesUseCase: Use case to get the spaces color properties
     public init(
-        iconCache: IconCache,
+        iconCache: IconCacheProtocol,
         getAeroSpacePathUseCase: GetAeroSpacePathUseCase,
         getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase,
         getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase,
-        getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase
+        getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase,
+        cliFactory: AeroSpaceCLIClientFactoryProtocol = AeroSpaceCLIClientFactory(),
+        commandExecutor: CommandExecutorProtocol = CommandExecutor(),
+        runningAppChecker: RunningAppCheckerProtocol = RunningAppChecker()
     ) {
         self.iconCache = iconCache
         self.getAeroSpacePathUseCase = getAeroSpacePathUseCase
         self.getAeroSpaceConfigPathUseCase = getAeroSpaceConfigPathUseCase
         self.getOptimizedPerformanceEnabledUseCase = getOptimizedPerformanceEnabledUseCase
         self.getSpacesColorPropertiesUseCase = getSpacesColorPropertiesUseCase
+        self.cliFactory = cliFactory
+        self.commandExecutor = commandExecutor
+        self.runningAppChecker = runningAppChecker
 
         aeroSpaceExecutable = getAeroSpacePathUseCase.execute().blockingFirst()
         optimizedPerformanceEnabled = getOptimizedPerformanceEnabledUseCase.execute().blockingFirst()
@@ -127,7 +142,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         }
 
         do {
-            let cli = AeroSpaceCLIClient(executablePath: executablePath)
+            let cli = cliFactory.makeClient(executablePath: executablePath)
             _ = try await cli.execute(arguments: ["reload-config"])
             Logger.info("Successfully reloaded AeroSpace configuration", category: Logger.config)
         } catch {
@@ -295,7 +310,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         let executablePath = aeroSpaceExecutable
         try await Task.detached(priority: .userInitiated) {
             do {
-                let cli = AeroSpaceCLIClient(executablePath: executablePath)
+                let cli = self.cliFactory.makeClient(executablePath: executablePath)
                 _ = try await cli.execute(arguments: ["workspace", spaceId])
                 Logger.endInterval("Focus Space Operation", id: Logger.SignpostID.spaceFocus)
 
@@ -328,7 +343,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         let executablePath = aeroSpaceExecutable
         try await Task.detached(priority: .userInitiated) {
             do {
-                let cli = AeroSpaceCLIClient(executablePath: executablePath)
+                let cli = self.cliFactory.makeClient(executablePath: executablePath)
                 _ = try await cli.execute(arguments: ["focus", "--window-id", windowId])
                 Logger.endInterval("Focus Window Operation", id: Logger.SignpostID.windowFocus)
 
@@ -365,18 +380,11 @@ public final class AeroSpaceRepository: SpacesGateway {
         // Use 'open' command to launch AeroSpace app bundle
         // Note: We don't use AeroSpaceCLIClient here because 'open' is a system command,
         // not the AeroSpace CLI, and it returns immediately after launching the app
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["/Applications/AeroSpace.app"]
-        process.standardInput = FileHandle.nullDevice
-
         do {
-            try process.run()
-            process.waitUntilExit()
-
-            if process.terminationStatus != 0 {
-                throw AppError.commandExecutionError("Open command failed with exit code \(process.terminationStatus)")
-            }
+            try await commandExecutor.run(
+                executableURL: URL(fileURLWithPath: "/usr/bin/open"),
+                arguments: ["/Applications/AeroSpace.app"]
+            )
 
             Logger.info("AeroSpace launched successfully using open command", category: Logger.spaces)
         } catch {
@@ -396,12 +404,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// is currently active on the system.
     /// - Returns: True if AeroSpace is running, false otherwise
     nonisolated private func isAeroSpaceRunning() -> Bool {
-        // Check for various possible AeroSpace process names
-        let isRunning = NSWorkspace.shared
-            .runningApplications
-            .compactMap { $0.localizedName?.lowercased() }
-            .contains("aerospace")
-
+        let isRunning = runningAppChecker.isRunning(name: "aerospace")
         Logger.debug("AeroSpace running: \(isRunning)", category: Logger.spaces)
         return isRunning
     }
@@ -495,7 +498,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// - Returns: An array of spaces
     /// - Throws: AppError if the operation fails
     nonisolated private func fetchSpaces(executablePath: String) async throws -> [Space] {
-        let cli = AeroSpaceCLIClient(executablePath: executablePath)
+        let cli = cliFactory.makeClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: ["list-workspaces", "--all", "--json"])
 
         do {
@@ -509,7 +512,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// - Returns: An array of windows
     /// - Throws: AppError if the operation fails
     nonisolated private func fetchWindows(executablePath: String) async throws -> [Window] {
-        let cli = AeroSpaceCLIClient(executablePath: executablePath)
+        let cli = cliFactory.makeClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: [
             "list-windows", "--all", "--json", "--format",
             "%{window-id} %{app-name} %{window-title} %{workspace}"
@@ -526,7 +529,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// - Returns: The focused space, or nil if none
     /// - Throws: AppError if the operation fails
     nonisolated private func fetchFocusedSpace(executablePath: String) async throws -> Space? {
-        let cli = AeroSpaceCLIClient(executablePath: executablePath)
+        let cli = cliFactory.makeClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: ["list-workspaces", "--focused", "--json"])
 
         do {
@@ -541,7 +544,7 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// - Returns: The focused window, or nil if none
     /// - Throws: AppError if the operation fails
     nonisolated private func fetchFocusedWindow(executablePath: String) async throws -> Window? {
-        let cli = AeroSpaceCLIClient(executablePath: executablePath)
+        let cli = cliFactory.makeClient(executablePath: executablePath)
         let data = try await cli.execute(arguments: [
             "list-windows", "--focused", "--json", "--format",
             "%{window-id} %{app-name} %{window-title} %{workspace}"
@@ -602,7 +605,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         }
     }
 
-    // Add this new method that does the heavy work off-main
+    /// Add this new method that does the heavy work off-main
     nonisolated private func reconfigureAeroSpaceOffMain(executablePath: String, optimized: Bool) async {
         let success: Bool? = try? await {
             if optimized {

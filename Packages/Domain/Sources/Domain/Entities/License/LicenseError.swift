@@ -3,7 +3,7 @@
 import Foundation
 
 /// Errors that can occur during licensing operations.
-public enum LicenseError: LocalizedError {
+public enum LicenseError: LocalizedError, Equatable {
     /// Invalid license key provided.
     case invalidLicenseKey
 
@@ -41,6 +41,25 @@ public enum LicenseError: LocalizedError {
 
         case .licenseExpired:
             "License is expired or inactive."
+        }
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.invalidLicenseKey, .invalidLicenseKey),
+             (.validationFailed, .validationFailed),
+             (.trialAlreadyStarted, .trialAlreadyStarted),
+             (.trialAlreadyUsed, .trialAlreadyUsed),
+             (.licenseExpired, .licenseExpired):
+            true
+
+        case (.networkError, .networkError):
+            // Network errors are considered equal based on case, not content
+            // since Error doesn't conform to Equatable
+            true
+
+        default:
+            false
         }
     }
 }

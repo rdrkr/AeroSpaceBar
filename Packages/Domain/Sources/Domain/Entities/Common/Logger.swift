@@ -23,7 +23,7 @@ public enum Logger {
         case error
         case fault
 
-        var osLogType: OSLogType {
+        public var osLogType: OSLogType {
             switch self {
             case .debug: .debug
             case .info: .info
@@ -33,7 +33,7 @@ public enum Logger {
             }
         }
 
-        var name: String {
+        public var name: String {
             switch self {
             case .debug: "DEBUG"
             case .info: "INFO"
@@ -44,7 +44,7 @@ public enum Logger {
         }
 
         /// Numeric priority for level comparison (higher = more important)
-        var priority: Int {
+        public var priority: Int {
             switch self {
             case .debug: 0
             case .info: 1

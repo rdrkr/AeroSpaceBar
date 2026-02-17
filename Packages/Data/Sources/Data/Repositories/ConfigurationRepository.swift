@@ -559,6 +559,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         if level == logLevelSubject.value { return }
 
         logLevelSubject.send(level)
+        Logger.logLevel = level
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -587,7 +588,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     // MARK: - UI Configuration Async Setters
 
-    /// Sets the vertical padding for the menu bar interface in points.
+    // Sets the vertical padding for the menu bar interface in points.
 
     /// Sets the spaces configuration and emits update.
     public func setSpacesColorProperties(_ value: [ColorProperties]) {
@@ -675,9 +676,12 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the group configuration for menu bar applications and emits update.
     public func setGroups(_ value: [Domain.Group]) {
-        if value == groupsSubject.value { return }
+        // Ensure there is always at least one group
+        let groupsToSet = value.isEmpty ? ConfigurationDefaults.groups : value
 
-        groupsSubject.send(value)
+        if groupsToSet == groupsSubject.value { return }
+
+        groupsSubject.send(groupsToSet)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()

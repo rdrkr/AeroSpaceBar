@@ -27,7 +27,7 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-struct LazyVStackList<Content>: View where Content: View {
+struct LazyVStackList<Content: View>: View {
     /// The currently selected item identifier (optional for non-selection mode)
     @Binding private var selectionIdentifier: ObjectIdentifier?
 
@@ -35,18 +35,18 @@ struct LazyVStackList<Content>: View where Content: View {
     private let content: () -> Content
 
     /// Spacing between items
-    private let spacing: CGFloat?
+    internal let spacing: CGFloat?
 
     /// Whether to show hover effects
-    private let showHoverEffect: Bool
+    internal let showHoverEffect: Bool
 
     /// Whether selection is enabled
-    private var selectionEnabled: Bool {
+    internal var selectionEnabled: Bool {
         selection != nil
     }
 
     /// Whether to enable scrolling behavior
-    private let useNativeScrollView: Bool
+    internal let useNativeScrollView: Bool
 
     /// Collected navigation items from child views
     @State private var collectedItems: [NavigationItem] = []
@@ -313,25 +313,13 @@ private struct SelectionContext {
     let onSelectionChange: @MainActor (Any) -> Void
 }
 
-/// Environment key for passing selection context through the SwiftUI environment
-///
-/// This key allows LazyVStackList to pass selection state and callbacks down to
-/// LazyVStackNavigationLink and LazyVStackListRowItem components through the environment system.
-private struct LazyVStackListContextKey: EnvironmentKey {
-    /// Default value when no selection context is available
-    static let defaultValue: SelectionContext? = nil
-}
-
 /// Extension to add selection context to SwiftUI's EnvironmentValues
 private extension EnvironmentValues {
     /// The LazyVStackList selection context available in the current environment
     ///
     /// This property provides access to the selection state and callbacks
     /// for LazyVStackNavigationLink components.
-    var lazyVStackListContext: SelectionContext? {
-        get { self[LazyVStackListContextKey.self] }
-        set { self[LazyVStackListContextKey.self] = newValue }
-    }
+    @Entry var lazyVStackListContext: SelectionContext?
 }
 
 /// A conditional scroll view that switches between ScrollView and VStack based on configuration
@@ -498,7 +486,10 @@ struct LazyVStackNavigationLink<Value: Identifiable & Hashable>: View {
     enum MockRootNavigationPage: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case license, general, spaces, groups, advanced
 
-        var id: Int { rawValue }
+        var id: Int {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .license: "License"
@@ -531,7 +522,7 @@ struct LazyVStackNavigationLink<Value: Identifiable & Hashable>: View {
     struct PreviewView: View {
         @State private var selectedPage: MockRootNavigationPage? = .license
 
-        // Use mock enum cases
+        /// Use mock enum cases
         private let mockRootPages: [MockRootNavigationPage] = [
             .license,
             .general,

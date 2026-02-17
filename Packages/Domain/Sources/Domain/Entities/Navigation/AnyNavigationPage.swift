@@ -32,14 +32,12 @@ public struct AnyNavigationPage: NavigationPage {
     /// A view builder that returns the view for this navigation page.
     /// - Returns: The view associated with this navigation page
     @MainActor
-    @ViewBuilder
     public var viewForPage: PageView {
         _viewForPage()
     }
 
     /// A view builder that returns the sidebar item view for this navigation page.
     @MainActor
-    @ViewBuilder
     public var viewForSidebar: AnyView {
         AnyView(defaultViewForSidebar(AnyView(icon)))
     }

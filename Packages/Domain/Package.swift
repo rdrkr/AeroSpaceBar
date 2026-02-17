@@ -18,7 +18,8 @@ public let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/WilhelmOks/ModifiedCopyMacro.git", exact: "2.1.2")
+        .package(url: "https://github.com/WilhelmOks/ModifiedCopyMacro.git", exact: "2.1.2"),
+        .package(url: "https://github.com/Quick/Nimble.git", exact: "13.8.0")
     ],
     targets: [
         .target(
@@ -38,7 +39,8 @@ public let package = Package(
         .testTarget(
             name: "DomainTests",
             dependencies: [
-                .target(name: "Domain")
+                .target(name: "Domain"),
+                .product(name: "Nimble", package: "Nimble")
             ],
             path: "Tests/DomainTests",
             swiftSettings: [

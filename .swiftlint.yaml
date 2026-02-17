@@ -6,20 +6,19 @@
 # Disable all rules by default
 disabled_rules:
   # Add any rules you want to disable here
-  - trailing_whitespace  # We'll let SwiftFormat handle this
-  - trailing_newline  # We'll let SwiftFormat handle this
-  - vertical_whitespace  # We'll let SwiftFormat handle this
-  - opening_brace  # We'll let SwiftFormat handle brace spacing
+  - trailing_whitespace # We'll let SwiftFormat handle this
+  - trailing_newline # We'll let SwiftFormat handle this
+  - vertical_whitespace # We'll let SwiftFormat handle this
+  - opening_brace # We'll let SwiftFormat handle brace spacing
   - identifier_name
 
 # Enable specific rules
 opt_in_rules:
-#  - accessibility_label_for_image
-#  - accessibility_trait_for_button
+  #  - accessibility_label_for_image
+  #  - accessibility_trait_for_button
   - anonymous_argument_in_multiline_closure
   - array_init
   - async_without_await
-  - balanced_xctest_lifecycle
   - closure_end_indentation
   - closure_spacing
   - collection_alignment
@@ -39,15 +38,15 @@ opt_in_rules:
   - empty_string
   - enum_case_associated_values_count
   - expiring_todo
-#  - explicit_acl
+  #  - explicit_acl
   - explicit_init
-#  - explicit_top_level_acl
-#  - explicit_type_interface
+  #  - explicit_top_level_acl
+  #  - explicit_type_interface
   - extension_access_modifier
   - fallthrough
   - fatal_error_message
   - file_name_no_space
-#  - file_types_order
+  #  - file_types_order
   - final_test_case
   - first_where
   - flatmap_over_map_reduce
@@ -61,18 +60,17 @@ opt_in_rules:
   - legacy_multiple
   - let_var_whitespace
   - literal_expression_end_indentation
-  - local_doc_comment
+  #  - local_doc_comment
   - lower_acl_than_parent
-#  - missing_docs
+  #  - missing_docs
   - modifier_order
   - multiline_arguments
   - multiline_function_chains
   - multiline_literal_brackets
   - multiline_parameters
   - multiline_parameters_brackets
-  - nimble_operator
   - no_grouping_extension
-#  - no_magic_numbers
+  #  - no_magic_numbers
   - non_overridable_class_declaration
   - nslocalizedstring_key
   - nslocalizedstring_require_bundle
@@ -102,7 +100,7 @@ opt_in_rules:
   - raw_value_for_camel_cased_codable_enum
   - reduce_into
   - redundant_nil_coalescing
-  - redundant_self_in_closure
+  - redundant_self
   - redundant_type_annotation
   - required_enum_case
   - return_value_from_void_function
@@ -118,7 +116,7 @@ opt_in_rules:
   - superfluous_else
   - test_case_accessibility
   - toggle_bool
-#  - type_contents_order
+  #  - type_contents_order
   - unavailable_function
   - unhandled_throwing_task
   - unneeded_parentheses_in_closure_argument
@@ -203,7 +201,7 @@ excluded:
   - Packages/Data/.build
   - Packages/Domain/.build
   - Packages/Presentation/.build
-  - "**/Secrets.swift"  # Auto-generated secrets file
+  - "**/Secrets.swift" # Auto-generated secrets file
 
 # Include only specific file types
 included:

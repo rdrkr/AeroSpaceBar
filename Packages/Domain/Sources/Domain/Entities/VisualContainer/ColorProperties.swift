@@ -39,6 +39,13 @@ public struct ColorProperties: Codable, Equatable, Hashable, Sendable {
         self.foregroundColor = foregroundColor
     }
 
+    /// Creates a new color properties configuration with default values.
+    public init() {
+        backgroundTintColor = .clear
+        borderTintColor = .clear
+        foregroundColor = .primary
+    }
+
     // MARK: - Codable Implementation
 
     /// Coding keys for JSON serialization.
@@ -143,7 +150,7 @@ private struct ColorComponents: Codable {
 
 // MARK: - Color Extensions for Hex Support
 
-extension Color {
+public extension Color {
     /// Initialize a Color from a hex string
     /// - Parameter hex: Hex string (with or without #)
     init?(hex: String) {

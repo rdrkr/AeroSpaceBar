@@ -1,0 +1,51 @@
+{
+  "configurations" : [
+    {
+      "id" : "7876E490-C567-4BD6-BC70-3F4041ADE5DA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:AeroSpaceBar.xcodeproj",
+      "identifier" : "C10E2F892D41235900AC957C",
+      "name" : "AeroSpaceBar"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/Domain",
+        "identifier" : "DomainTests",
+        "name" : "DomainTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/Data",
+        "identifier" : "DataTests",
+        "name" : "DataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/Presentation",
+        "identifier" : "PresentationTests",
+        "name" : "PresentationTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:AeroSpaceBar.xcodeproj",
+        "identifier" : "1AB620202ED229940040A2F2",
+        "name" : "AeroSpaceBarUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

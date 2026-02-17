@@ -25,7 +25,17 @@ if [[ "$PUBLIC_REPO_PATH" != /* ]]; then
     PUBLIC_REPO_PATH="$PROJECT_ROOT/$PUBLIC_REPO_PATH"
 fi
 
+# Convert HOMEBREW_TAP_PATH to absolute path
+HOMEBREW_TAP_PATH_DEFAULT="$PROJECT_ROOT/../homebrew-tap"
+HOMEBREW_TAP_PATH="${HOMEBREW_TAP_PATH:-$HOMEBREW_TAP_PATH_DEFAULT}"
+
+# Convert to absolute path if relative
+if [[ "$HOMEBREW_TAP_PATH" != /* ]]; then
+    HOMEBREW_TAP_PATH="$PROJECT_ROOT/$HOMEBREW_TAP_PATH"
+fi
+
 PUBLIC_REPO="rdrkr/aerospacebar-app"
+HOMEBREW_TAP_REPO="rdrkr/homebrew-tap"
 
 # Options
 SKIP_BUILD=false
@@ -49,6 +59,7 @@ Options:
 
 Environment Variables:
     PUBLIC_REPO_PATH      Path to public repo (default: ../aerospacebar-app)
+    HOMEBREW_TAP_PATH     Path to homebrew-tap repo (default: ../homebrew-tap)
     PUBLIC_REPO_TOKEN     GitHub token for pushing to public repo
     SPARKLE_PRIVATE_KEY   Sparkle private key for signing updates
 
@@ -121,6 +132,35 @@ else
     cd "$PUBLIC_REPO_PATH"
     if git pull origin main; then
         echo -e "${GREEN}✓ Public repo updated${NC}"
+    else
+        echo -e "${YELLOW}⚠ Failed to pull latest changes (continuing anyway)${NC}"
+    fi
+    cd "$PROJECT_ROOT"
+fi
+echo ""
+
+# Ensure homebrew-tap repo is cloned
+echo -e "${BLUE}Checking homebrew-tap repository...${NC}"
+if [ ! -d "$HOMEBREW_TAP_PATH" ]; then
+    echo -e "${YELLOW}Homebrew-tap repo not found at: $HOMEBREW_TAP_PATH${NC}"
+    echo -e "${BLUE}Cloning homebrew-tap repository...${NC}"
+
+    PARENT_DIR="$(dirname "$HOMEBREW_TAP_PATH")"
+    mkdir -p "$PARENT_DIR"
+
+    if git clone "https://github.com/${HOMEBREW_TAP_REPO}.git" "$HOMEBREW_TAP_PATH"; then
+        echo -e "${GREEN}✓ Homebrew-tap repo cloned to: $HOMEBREW_TAP_PATH${NC}"
+    else
+        echo -e "${YELLOW}⚠ Failed to clone homebrew-tap repository (cask update will be skipped)${NC}"
+    fi
+else
+    echo -e "${GREEN}✓ Homebrew-tap repo found at: $HOMEBREW_TAP_PATH${NC}"
+
+    # Pull latest changes
+    echo -e "${BLUE}Pulling latest changes from homebrew-tap repo...${NC}"
+    cd "$HOMEBREW_TAP_PATH"
+    if git pull origin main; then
+        echo -e "${GREEN}✓ Homebrew-tap repo updated${NC}"
     else
         echo -e "${YELLOW}⚠ Failed to pull latest changes (continuing anyway)${NC}"
     fi

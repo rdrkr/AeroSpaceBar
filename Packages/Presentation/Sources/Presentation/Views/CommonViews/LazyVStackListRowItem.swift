@@ -39,22 +39,22 @@ public struct LazyVStackListRowItem<Item: Identifiable, Page>: View {
     @State private var isPressed = false
 
     /// The index of this item in the list (computed from item ID)
-    private var itemIndex: Int {
+    internal var itemIndex: Int {
         allItems.firstIndex(where: { $0.id == item.id }) ?? 0
     }
 
     /// The total number of items in the list
-    private var numberOfItems: Int {
+    internal var numberOfItems: Int {
         allItems.count
     }
 
     /// Whether this is the first item in the list
-    private var isFirstItem: Bool {
+    internal var isFirstItem: Bool {
         allItems.first?.id == item.id
     }
 
     /// Whether this is the last item in the list
-    private var isLastItem: Bool {
+    internal var isLastItem: Bool {
         allItems.last?.id == item.id
     }
 

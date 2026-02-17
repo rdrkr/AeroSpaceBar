@@ -7,7 +7,7 @@ import SwiftUI
 /// StickySlider provides enhanced user experience by automatically snapping to default values
 /// when the user drags within a specified stickiness range, making it easier to return to
 /// recommended settings without requiring precise positioning.
-struct StickySlider<V, Label>: View where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint, Label: View {
+struct StickySlider<V: BinaryFloatingPoint, Label: View>: View where V.Stride: BinaryFloatingPoint {
     /// The binding for the slider's current value.
     @Binding var value: V
 

@@ -17,13 +17,16 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../Data")
+        .package(path: "../Data"),
+        .package(path: "../Domain"),
+        .package(url: "https://github.com/Quick/Nimble.git", exact: "13.8.0")
     ],
     targets: [
         .target(
             name: "Presentation",
             dependencies: [
-                .product(name: "Data", package: "Data")
+                .product(name: "Data", package: "Data"),
+                .product(name: "Domain", package: "Domain")
             ],
             path: "Sources/Presentation",
             swiftSettings: [
@@ -34,20 +37,11 @@ let package = Package(
         .testTarget(
             name: "PresentationTests",
             dependencies: [
-                .target(name: "Presentation")
+                .target(name: "Presentation"),
+                .product(name: "Domain", package: "Domain"),
+                .product(name: "Nimble", package: "Nimble")
             ],
             path: "Tests/PresentationTests",
-            swiftSettings: [
-                .treatAllWarnings(as: .error),
-                .strictMemorySafety()
-            ]
-        ),
-        .testTarget(
-            name: "PresentationUITests",
-            dependencies: [
-                .target(name: "Presentation")
-            ],
-            path: "Tests/PresentationUITests",
             swiftSettings: [
                 .treatAllWarnings(as: .error),
                 .strictMemorySafety()

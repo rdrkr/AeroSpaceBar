@@ -23,6 +23,7 @@ public enum ThemeMode: String, CaseIterable, Codable, Sendable {
     public var isAvailable: Bool {
         switch self {
         case .glass: if #available(macOS 26.0, *) { true } else { false }
+
         case .preset,
              .custom: true
         }
@@ -32,6 +33,7 @@ public enum ThemeMode: String, CaseIterable, Codable, Sendable {
     public var isColorCustomizable: Bool {
         switch self {
         case .custom: true
+
         case .glass,
              .preset: false
         }
@@ -41,6 +43,7 @@ public enum ThemeMode: String, CaseIterable, Codable, Sendable {
     public var isEffectCustomizable: Bool {
         switch self {
         case .glass: false
+
         case .preset,
              .custom: true
         }
@@ -50,6 +53,7 @@ public enum ThemeMode: String, CaseIterable, Codable, Sendable {
     public var isGeometryCustomizable: Bool {
         switch self {
         case .glass: false
+
         case .preset,
              .custom: true
         }
