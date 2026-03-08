@@ -53,7 +53,7 @@ public enum HardwareIdentifier {
 
         // Query the IOPlatformUUID property
         guard
-            let uuidProperty = IORegistryEntryCreateCFProperty(
+            let uuidProperty = unsafe IORegistryEntryCreateCFProperty(
                 platformExpert,
                 "IOPlatformUUID" as CFString,
                 kCFAllocatorDefault,

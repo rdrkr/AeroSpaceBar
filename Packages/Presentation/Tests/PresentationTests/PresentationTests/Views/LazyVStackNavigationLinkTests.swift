@@ -15,7 +15,7 @@ import XCTest
 final class LazyVStackNavigationLinkTests: XCTestCase {
     // MARK: - Test Helpers
 
-    private struct MockItem: Identifiable, Hashable, Sendable {
+    private struct MockItem: Identifiable, Hashable {
         let id: Int
         let name: String
     }

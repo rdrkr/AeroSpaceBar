@@ -1,6 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
-enum TimeoutState<ResultType: Sendable>: Sendable {
+enum TimeoutState<ResultType: Sendable> {
     case operationResult(Result<ResultType, Error>)
     case sleepResult(Result<Bool, Error>)
 }

@@ -76,7 +76,7 @@ struct LazyVStackList<Content: View>: View {
 ///
 /// This wrapper allows storing heterogeneous selection bindings in a single dictionary
 /// by erasing the specific types while maintaining type safety at runtime.
-private struct SelectionWrapper: Sendable {
+private struct SelectionWrapper {
     /// Closure that returns the current selection value
     let getValue: @Sendable () -> Any?
 

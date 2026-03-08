@@ -9,6 +9,7 @@ disabled_rules:
   - trailing_whitespace # We'll let SwiftFormat handle this
   - trailing_newline # We'll let SwiftFormat handle this
   - vertical_whitespace # We'll let SwiftFormat handle this
+  - vertical_whitespace_between_cases # We'll let SwiftFormat handle this
   - opening_brace # We'll let SwiftFormat handle brace spacing
   - identifier_name
 
@@ -124,7 +125,6 @@ opt_in_rules:
   - untyped_error_in_catch
   - unused_parameter
   - vertical_parameter_alignment_on_call
-  - vertical_whitespace_between_cases
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - weak_delegate

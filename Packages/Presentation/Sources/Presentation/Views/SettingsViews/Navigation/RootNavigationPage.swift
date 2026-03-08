@@ -74,7 +74,6 @@ enum RootNavigationPage: Int, CaseIterable, NavigationPage {
         case .groups: "rectangle.3.group.fill"
         case .updates: "arrow.trianglehead.2.clockwise.rotate.90.circle.fill"
         case .advanced: "star.fill"
-
         #if DEBUG
             case .developer: "hammer.fill"
         #endif
