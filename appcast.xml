@@ -7,6 +7,27 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.0.0-beta.5</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.5</link>
+            <pubDate>Mon, 09 Mar 2026 10:44:58 +0000</pubDate>
+            <sparkle:version>5</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.5</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Changed</h3>
+
+<ul>
+<li>open source transition - single repo, disable paywall</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.5/AeroSpaceBar-v1.0.0-beta.5.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="YeBs3fvDzo8V8GVRG08YF50Zv2Z82y7hRN6FV6pf2NC64+eVFgxbAfGfNGUx21y+HadgYyhPQ2m+Ilxu6x36CA==" length="11636108" />
+        </item>
+        <item>
             <title>Version 1.0.0-beta.4</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.4</link>
             <pubDate>Tue, 17 Feb 2026 15:50:37 +0000</pubDate>
