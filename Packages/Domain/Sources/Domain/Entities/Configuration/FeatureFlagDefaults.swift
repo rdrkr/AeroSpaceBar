@@ -27,7 +27,7 @@ public enum FeatureFlagDefaults {
 
     /// Default state for licensing functionality.
     /// Set to true for debug builds to test licensing features, false for release builds.
-    public static let enableLicensing: Bool = true
+    public static let enableLicensing: Bool = false
 
     // Default state for trial request functionality.
     // Set to true for debug builds to allow testing, false for release builds.

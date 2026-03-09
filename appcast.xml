@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (c) 2025 AeroSpaceBar by Ronen Druker.-->
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>AeroSpaceBar Changelog</title>
+        <link>https://github.com/rdrkr/AeroSpaceBar</link>
+        <description>Most recent changes with links to updates for AeroSpaceBar</description>
+        <language>en</language>
+        <item>
+            <title>Version 1.0.0-beta.4</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.4</link>
+            <pubDate>Tue, 17 Feb 2026 15:50:37 +0000</pubDate>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.4</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    <p>Release version 1.0.0-beta.4. For full changelog, visit <a href="https://github.com/rdrkr/AeroSpaceBar/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+<p>Release version 1.0.0-beta.4</p>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.4/AeroSpaceBar-v1.0.0-beta.4.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="5uqM2UDuSTBgpRVtGUfwiW9JFBMUMtSo62cxNN3i8sMQo9Vj4pBMFVwkzYjAkBzkXleuS0mxGMEp44clx0fPDA==" length="11252156" />
+        </item>
+        <item>
+            <title>Version 1.0.0-beta.3</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.3</link>
+            <pubDate>Tue, 17 Feb 2026 13:22:52 +0000</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    <p>Release version 1.0.0-beta.3. For full changelog, visit <a href="https://github.com/rdrkr/AeroSpaceBar/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+<p>Release version 1.0.0-beta.3</p>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.3/AeroSpaceBar-v1.0.0-beta.3.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="fuWWX+NXH8NJMsbiGMzERkc9XvclQAgXHepYYIGGRIPpWP2Rnwy5NDmQY1ScrzgAbgEEedF3dmesYH4BwyKeDg==" length="11252164" />
+        </item>
+
+        <item>
+            <title>Version 1.0.0-beta.2</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.2</link>
+            <pubDate>Tue, 17 Feb 2026 10:30:00 +0000</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+
+<h3>Added</h3>
+
+<ul>
+<li>added lemon-squeezy integration</li>
+<li>added software update</li>
+<li>added optional screen sharing permission handling</li>
+<li>added theme selection mode</li>
+<li>added toml config file instead of UserDefaults</li>
+<li>added per space visual configurable properties</li>
+<li>added app licensing</li>
+<li>added groups appearance gloabl and spaces modes</li>
+<li>added menu bar groups widget</li>
+<li>added option to show empty spaces</li>
+<li>added hide functionality to match system menu bar hidden state</li>
+<li>added hide spaces with global keybind</li>
+<li>added appearance settings</li>
+
+<h3>Changed</h3>
+
+<li>add comprehensive test infrastructure and implementation</li>
+<li>removed license api key related logic</li>
+<li>license related types and clean code</li>
+<li>cleaned up IntoForm construction</li>
+<li>scrollable functionality from LazyVStackList</li>
+<li>replace DispatchQueue usage with modern Tasks</li>
+<li>consolidated group, window, and space logic</li>
+<li>changed project structure for better dependency management</li>
+<li>added confirmation promp to reset all settings</li>
+<li>code cleanup and re-org of presentation layer</li>
+<li>organized domain use cases</li>
+<li>improved presentation according to swiftui best practices</li>
+
+<h3>Fixed</h3>
+
+<li>resolved settings layout issues with scrolling</li>
+<li>incorrect group indexing handling</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.2/AeroSpaceBar-v1.0.0-beta.2.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="oh+O7hKwiGa97qPi5irqp0XaFaKLZBOVFctepz7nUMriFAIiiaS/KWT4DoIw34zznJQUwWNnYex0c5GnHieCBQ==" length="11252162" />
+        </item>
+    </channel>
+</rss>

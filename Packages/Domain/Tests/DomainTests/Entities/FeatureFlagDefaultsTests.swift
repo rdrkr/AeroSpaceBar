@@ -49,8 +49,8 @@ final class FeatureFlagDefaultsTests: XCTestCase {
         // Given default value for licensing
         let defaultValue = FeatureFlagDefaults.enableLicensing
 
-        // Then should be enabled
-        expect(defaultValue) == true
+        // Then should be disabled (open source - all features free)
+        expect(defaultValue) == false
     }
 
     // MARK: - Build Configuration Tests
@@ -105,19 +105,21 @@ final class FeatureFlagDefaultsTests: XCTestCase {
     // MARK: - Consistency Tests
 
     func testAllCoreFeatureDefaults() {
-        // Given all core feature defaults
+        // Given all core feature defaults (excluding licensing which is intentionally disabled)
         let coreDefaults = [
             FeatureFlagDefaults.enableSpaces,
             FeatureFlagDefaults.enableAdvancedSettings,
             FeatureFlagDefaults.enableGroups,
-            FeatureFlagDefaults.enableSoftwareUpdates,
-            FeatureFlagDefaults.enableLicensing
+            FeatureFlagDefaults.enableSoftwareUpdates
         ]
 
         // Then all core features should be enabled by default
         for defaultValue in coreDefaults {
             expect(defaultValue) == true
         }
+
+        // Licensing is intentionally disabled (open source)
+        expect(FeatureFlagDefaults.enableLicensing) == false
     }
 
     func testDefaultsAreStaticProperties() {

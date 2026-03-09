@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 1.0.0)'
+        description: "Version to release (e.g., 1.0.0)"
         required: true
         type: string
 
@@ -19,12 +19,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all history, required for changelog generation
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
 
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -58,15 +58,8 @@ jobs:
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           security default-keychain -s "$KEYCHAIN_PATH"
 
-      - name: Checkout public repo
-        uses: actions/checkout@v4
-        with:
-          repository: rdrkr/aerospacebar-app
-          path: aerospacebar-app
-          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
-
       - name: Checkout homebrew-tap repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: rdrkr/homebrew-tap
           path: homebrew-tap
@@ -75,9 +68,7 @@ jobs:
       - name: Run automated release
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
-          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
-          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
-          PUBLIC_REPO_PATH: aerospacebar-app
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_PATH: homebrew-tap
           NOTARIZATION_APPLE_ID: ${{ secrets.NOTARIZATION_APPLE_ID }}
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}

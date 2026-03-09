@@ -64,7 +64,10 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 │   ├── AeroSpaceBar.entitlements     # App entitlements
 │   └── Resources/                    # App resources
 ├── AeroSpaceBar.xcodeproj/            # Xcode project
-└── Scripts/                           # Automation scripts for release management
+├── Scripts/                           # Automation scripts for release management
+├── appcast.xml                        # Sparkle appcast feed for software updates
+├── CLAUDE.md                          # Claude Code development instructions
+└── README.md                          # Project documentation
 ```
 
 ### Key Architectural Patterns
@@ -106,9 +109,9 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 
 - For every change you make, verify your changes by building: `./Scripts/build.sh -c Debug`
 - **Unit Tests**:
-    - `Packages/Domain/Tests/DomainTests/` - Domain layer testing
-    - `Packages/Data/Tests/DataTests/` - Data layer testing
-    - `Packages/Presentation/Tests/PresentationTests/` - Presentation layer testing
+  - `Packages/Domain/Tests/DomainTests/` - Domain layer testing
+  - `Packages/Data/Tests/DataTests/` - Data layer testing
+  - `Packages/Presentation/Tests/PresentationTests/` - Presentation layer testing
 - **UI Tests**: `Packages/Presentation/Tests/PresentationUITests/` - End-to-end user flow testing
 - Test files mirror source structure for easy navigation
 - Run tests: `xcodebuild test -scheme AeroSpaceBar`
@@ -125,13 +128,13 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 ### SPM Package Dependencies
 
 - **Domain Package**:
-    - `ModifiedCopyMacro` - Swift macro for copy-on-write semantics
+  - `ModifiedCopyMacro` - Swift macro for copy-on-write semantics
 - **Data Package**:
-    - `TOMLKit` - TOML configuration file parsing for AeroSpace configs
-    - `AsyncFileMonitor` - Async file system monitoring
-    - `Sparkle` - Software update framework
+  - `TOMLKit` - TOML configuration file parsing for AeroSpace configs
+  - `AsyncFileMonitor` - Async file system monitoring
+  - `Sparkle` - Software update framework
 - **Presentation Package**:
-    - Depends on Data package (which transitively includes Domain)
+  - Depends on Data package (which transitively includes Domain)
 
 ### Platform Requirements
 
@@ -143,12 +146,12 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 ## Version Management
 
 - **Version Information**: Controlled exclusively by Xcode project settings
-    - `MARKETING_VERSION` - App version (e.g., "1.0.0")
-    - `CURRENT_PROJECT_VERSION` - Build number (e.g., "1")
+  - `MARKETING_VERSION` - App version (e.g., "1.0.0")
+  - `CURRENT_PROJECT_VERSION` - Build number (e.g., "1")
 - **Info.plist**: Contains only app customizations, NOT version information
 - **Version Scripts**:
-    - `./Scripts/version.sh` - Read current version from Xcode project
-    - `./Scripts/bump-version.sh <version>` - Update version in Xcode project only
+  - `./Scripts/version.sh` - Read current version from Xcode project
+  - `./Scripts/bump-version.sh <version>` - Update version in Xcode project only
 - **Important**: Never manually edit version in Info.plist - use scripts or Xcode project settings
 
 ## Special Considerations
@@ -200,10 +203,10 @@ When adding AeroSpace features:
   proper internationalization support. This includes button titles, labels, descriptions, error messages, and any text
   that users will see.
 - Examples:
-    - ✅ `LocalizedStringResource("Save Changes")`
-    - ❌ `"Save Changes"`
-    - ✅ `LocalizedStringResource("Choose the background color for \(entityType) elements.")`
-    - ❌ `"Choose the background color for \(entityType) elements."`
+  - ✅ `LocalizedStringResource("Save Changes")`
+  - ❌ `"Save Changes"`
+  - ✅ `LocalizedStringResource("Choose the background color for \(entityType) elements.")`
+  - ❌ `"Choose the background color for \(entityType) elements."`
 
 ### View Architecture
 
@@ -211,20 +214,20 @@ When adding AeroSpace features:
   ViewModels. The root view should pass only the relevant properties and functions to the subviews it uses. This ensures
   proper separation of concerns and makes components more reusable.
 - Examples:
-    - ✅ Root view passes specific bindings and callbacks to subviews
-    - ❌ Subview directly accesses `@EnvironmentObject private var viewModel: SomeViewModel`
-    - ✅ `SubView(value: $viewModel.specificProperty, onAction: viewModel.handleAction)`
-    - ❌ `SubView()` where `SubView` internally accesses the ViewModel
+  - ✅ Root view passes specific bindings and callbacks to subviews
+  - ❌ Subview directly accesses `@EnvironmentObject private var viewModel: SomeViewModel`
+  - ✅ `SubView(value: $viewModel.specificProperty, onAction: viewModel.handleAction)`
+  - ❌ `SubView()` where `SubView` internally accesses the ViewModel
 
 ### Concurrency
 
 - **Use modern Swift concurrency over DispatchQueue**: Replace all DispatchQueue usage with Swift 6 async/await patterns
   for better type safety and performance.
 - Examples:
-    - ✅ `Task { @MainActor in /* UI updates */ }`
-    - ❌ `DispatchQueue.main.async { /* UI updates */ }`
-    - ✅ `try await Task.sleep(for: .seconds(1))`
-    - ❌ `DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { }`
-    - ✅ `Task.detached(priority: .userInitiated) { /* background work */ }`
-    - ❌ `DispatchQueue(label: "background", qos: .userInitiated).async { }`
+  - ✅ `Task { @MainActor in /* UI updates */ }`
+  - ❌ `DispatchQueue.main.async { /* UI updates */ }`
+  - ✅ `try await Task.sleep(for: .seconds(1))`
+  - ❌ `DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { }`
+  - ✅ `Task.detached(priority: .userInitiated) { /* background work */ }`
+  - ❌ `DispatchQueue(label: "background", qos: .userInitiated).async { }`
 - Always update @README.md with relevant changes, such as, referenced files/directories, folder sturcture, dependendencies added/changed/removed, scripts, etc.

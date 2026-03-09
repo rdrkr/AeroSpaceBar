@@ -24,7 +24,7 @@
 	<key>SUEnableInstallerLauncherService</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>"https://raw.githubusercontent.com/rdrkr/aerospacebar-app/main/appcast.xml"</string>
+	<string>https://raw.githubusercontent.com/rdrkr/AeroSpaceBar/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>A3UHSIoAN1pQJaAsGpnDYMSRGWCSCmZI/Ovbl2jE9hM=</string>
 </dict>

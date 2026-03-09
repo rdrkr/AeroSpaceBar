@@ -16,15 +16,6 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Convert PUBLIC_REPO_PATH to absolute path
-PUBLIC_REPO_PATH_DEFAULT="$PROJECT_ROOT/../aerospacebar-app"
-PUBLIC_REPO_PATH="${PUBLIC_REPO_PATH:-$PUBLIC_REPO_PATH_DEFAULT}"
-
-# Convert to absolute path if relative
-if [[ "$PUBLIC_REPO_PATH" != /* ]]; then
-    PUBLIC_REPO_PATH="$PROJECT_ROOT/$PUBLIC_REPO_PATH"
-fi
-
 # Convert HOMEBREW_TAP_PATH to absolute path
 HOMEBREW_TAP_PATH_DEFAULT="$PROJECT_ROOT/../homebrew-tap"
 HOMEBREW_TAP_PATH="${HOMEBREW_TAP_PATH:-$HOMEBREW_TAP_PATH_DEFAULT}"
@@ -34,7 +25,7 @@ if [[ "$HOMEBREW_TAP_PATH" != /* ]]; then
     HOMEBREW_TAP_PATH="$PROJECT_ROOT/$HOMEBREW_TAP_PATH"
 fi
 
-PUBLIC_REPO="rdrkr/aerospacebar-app"
+PUBLIC_REPO="rdrkr/AeroSpaceBar"
 HOMEBREW_TAP_REPO="rdrkr/homebrew-tap"
 
 # Options
@@ -58,9 +49,7 @@ Options:
     -h, --help        Show this help message
 
 Environment Variables:
-    PUBLIC_REPO_PATH      Path to public repo (default: ../aerospacebar-app)
     HOMEBREW_TAP_PATH     Path to homebrew-tap repo (default: ../homebrew-tap)
-    PUBLIC_REPO_TOKEN     GitHub token for pushing to public repo
     SPARKLE_PRIVATE_KEY   Sparkle private key for signing updates
 
 Examples:
@@ -106,37 +95,6 @@ done
 echo -e "${BOLD}${BLUE}========================================${NC}"
 echo -e "${BOLD}${BLUE}AeroSpaceBar Automated Release${NC}"
 echo -e "${BOLD}${BLUE}========================================${NC}"
-echo ""
-
-# Ensure public repo is cloned
-echo -e "${BLUE}Checking public repository...${NC}"
-if [ ! -d "$PUBLIC_REPO_PATH" ]; then
-    echo -e "${YELLOW}Public repo not found at: $PUBLIC_REPO_PATH${NC}"
-    echo -e "${BLUE}Cloning public repository...${NC}"
-
-    PARENT_DIR="$(dirname "$PUBLIC_REPO_PATH")"
-    mkdir -p "$PARENT_DIR"
-
-    if git clone "https://github.com/${PUBLIC_REPO}.git" "$PUBLIC_REPO_PATH"; then
-        echo -e "${GREEN}✓ Public repo cloned to: $PUBLIC_REPO_PATH${NC}"
-    else
-        echo -e "${RED}✗ Failed to clone public repository${NC}"
-        echo -e "${YELLOW}Please clone manually: git clone https://github.com/${PUBLIC_REPO}.git $PUBLIC_REPO_PATH${NC}"
-        exit 1
-    fi
-else
-    echo -e "${GREEN}✓ Public repo found at: $PUBLIC_REPO_PATH${NC}"
-
-    # Pull latest changes
-    echo -e "${BLUE}Pulling latest changes from public repo...${NC}"
-    cd "$PUBLIC_REPO_PATH"
-    if git pull origin main; then
-        echo -e "${GREEN}✓ Public repo updated${NC}"
-    else
-        echo -e "${YELLOW}⚠ Failed to pull latest changes (continuing anyway)${NC}"
-    fi
-    cd "$PROJECT_ROOT"
-fi
 echo ""
 
 # Ensure homebrew-tap repo is cloned
@@ -412,12 +370,14 @@ echo -e "${BLUE}Step 7b: Creating GitHub release in $PUBLIC_REPO...${NC}"
 
 # Get GitHub token from keychain or environment
 PUBLIC_GH_REPO_TOKEN=""
-if PUBLIC_GH_REPO_TOKEN=$(security find-generic-password -s "aerospacebar-app-github-token" -w 2>/dev/null); then
+if PUBLIC_GH_REPO_TOKEN=$(security find-generic-password -s "AeroSpaceBar-github-token" -w 2>/dev/null); then
     :
 elif PUBLIC_GH_REPO_TOKEN=$(security find-generic-password -s "PUBLIC_REPO_TOKEN" -w 2>/dev/null); then
     :
 elif [ -n "${PUBLIC_REPO_TOKEN:-}" ]; then
     PUBLIC_GH_REPO_TOKEN="$PUBLIC_REPO_TOKEN"
+elif [ -n "${GH_TOKEN:-}" ]; then
+    PUBLIC_GH_REPO_TOKEN="$GH_TOKEN"
 fi
 
 RELEASE_ARGS=(
@@ -444,48 +404,26 @@ echo ""
 # Step 8: Update appcast
 echo -e "${BLUE}Step 8: Updating appcast.xml...${NC}"
 
-# Check if public repo is available
-if [ -d "$PUBLIC_REPO_PATH" ]; then
-    APPCAST_PATH="$PUBLIC_REPO_PATH/appcast.xml"
+APPCAST_PATH="$PROJECT_ROOT/appcast.xml"
 
-    if bash "$SCRIPT_DIR/update-appcast.sh" "$VERSION" "$BUILD" "$DISTRIBUTION_PATH" "$APPCAST_PATH"; then
-        echo -e "${GREEN}✓ Appcast updated and ZIP signed${NC}"
+if bash "$SCRIPT_DIR/update-appcast.sh" "$VERSION" "$BUILD" "$DISTRIBUTION_PATH" "$APPCAST_PATH"; then
+    echo -e "${GREEN}✓ Appcast updated and ZIP signed${NC}"
 
-        # Create tag in public repo
-        echo -e "${BLUE}Step 8a: Creating tag v$VERSION in public repo...${NC}"
-        cd "$PUBLIC_REPO_PATH"
+    # Commit appcast changes (will push at end)
+    echo -e "${BLUE}Step 8b: Committing appcast changes...${NC}"
+    git add "$APPCAST_PATH"
 
-        # Check if tag already exists
-        if git rev-parse "v$VERSION" >/dev/null 2>&1; then
-            echo -e "${YELLOW}⚠ Tag v$VERSION already exists in public repo${NC}"
-        else
-            git tag -a "v$VERSION" -m "Release $VERSION"
-            echo -e "${GREEN}✓ Tag v$VERSION created in public repo${NC}"
-        fi
-
-        # Commit appcast changes (will push at end)
-        echo -e "${BLUE}Step 8b: Committing appcast changes...${NC}"
-        git add appcast.xml
-
-        # Check if there are changes to commit
-        if git diff --staged --quiet; then
-            echo -e "${YELLOW}⚠ No changes to commit in appcast${NC}"
-            APPCAST_COMMITTED=false
-        else
-            git commit -m "Update appcast for v$VERSION"
-            echo -e "${GREEN}✓ Appcast changes committed locally (will push after all operations succeed)${NC}"
-            APPCAST_COMMITTED=true
-        fi
-
-        # Return to project root
-        cd "$PROJECT_ROOT"
+    # Check if there are changes to commit
+    if git diff --staged --quiet; then
+        echo -e "${YELLOW}⚠ No changes to commit in appcast${NC}"
+        APPCAST_COMMITTED=false
     else
-        echo -e "${RED}✗ Failed to update appcast${NC}"
-        exit 1
+        git commit -m "Update appcast for v$VERSION"
+        echo -e "${GREEN}✓ Appcast changes committed locally (will push after all operations succeed)${NC}"
+        APPCAST_COMMITTED=true
     fi
 else
-    echo -e "${RED}✗ Public repo not found at $PUBLIC_REPO_PATH${NC}"
-    echo -e "${YELLOW}  Clone it with: git clone https://github.com/$PUBLIC_REPO.git $PUBLIC_REPO_PATH${NC}"
+    echo -e "${RED}✗ Failed to update appcast${NC}"
     exit 1
 fi
 echo ""
@@ -522,58 +460,24 @@ echo ""
 # Step 9: Push all changes to repositories
 echo -e "${BLUE}Step 9: Pushing all changes to repositories...${NC}"
 
-# Push version bump commit to private repo
-if [ "$VERSION_COMMITTED" = true ]; then
-    echo -e "${BLUE}Step 9a: Pushing version bump to private repo...${NC}"
+# Push commits and tags to origin
+if [ "$VERSION_COMMITTED" = true ] || [ "${APPCAST_COMMITTED:-false}" = true ]; then
+    echo -e "${BLUE}Step 9a: Pushing changes to origin...${NC}"
     if git push origin "$(git branch --show-current)"; then
-        echo -e "${GREEN}✓ Version bump pushed to private repo${NC}"
+        echo -e "${GREEN}✓ Changes pushed to origin${NC}"
     else
-        echo -e "${RED}✗ Failed to push version bump to private repo${NC}"
+        echo -e "${RED}✗ Failed to push changes to origin${NC}"
         exit 1
-    fi
-
-    # Push tag to private repo
-    if git rev-parse "v$VERSION" >/dev/null 2>&1; then
-        if git push origin "v$VERSION" 2>/dev/null; then
-            echo -e "${GREEN}✓ Tag v$VERSION pushed to private repo${NC}"
-        else
-            echo -e "${YELLOW}⚠ Tag v$VERSION already exists in private repo${NC}"
-        fi
-    fi
-fi
-
-# Push appcast and tag to public repo
-if [ "${APPCAST_COMMITTED:-false}" = true ] || [ -n "${DISTRIBUTION_PATH:-}" ]; then
-    echo -e "${BLUE}Step 9b: Pushing changes to public repo...${NC}"
-    cd "$PUBLIC_REPO_PATH"
-
-    REMOTE_URL="https://${PUBLIC_GH_REPO_TOKEN}@github.com/${PUBLIC_REPO}.git"
-
-    # Push main branch
-    if [ "${APPCAST_COMMITTED:-false}" = true ]; then
-        if [ "$REMOTE_URL" = "origin" ]; then
-            git push
-        else
-            git push "$REMOTE_URL" main
-        fi
-        echo -e "${GREEN}✓ Appcast pushed to public repo${NC}"
     fi
 
     # Push tag
     if git rev-parse "v$VERSION" >/dev/null 2>&1; then
-        if ! git ls-remote --tags "$REMOTE_URL" "v$VERSION" | grep -q "v$VERSION"; then
-            if [ "$REMOTE_URL" = "origin" ]; then
-                git push origin "v$VERSION"
-            else
-                git push "$REMOTE_URL" "v$VERSION"
-            fi
-            echo -e "${GREEN}✓ Tag v$VERSION pushed to public repo${NC}"
+        if git push origin "v$VERSION" 2>/dev/null; then
+            echo -e "${GREEN}✓ Tag v$VERSION pushed to origin${NC}"
         else
-            echo -e "${YELLOW}⚠ Tag v$VERSION already exists in public repo${NC}"
+            echo -e "${YELLOW}⚠ Tag v$VERSION already exists on remote${NC}"
         fi
     fi
-
-    cd "$PROJECT_ROOT"
 fi
 
 # Push cask changes to homebrew-tap repo
@@ -607,5 +511,5 @@ echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo -e "  1. Verify the release at: ${BLUE}https://github.com/$PUBLIC_REPO/releases/tag/v$VERSION${NC}"
 echo -e "  2. Test the update from within the app"
-echo -e "  3. Monitor Sparkle update feed: ${BLUE}$PUBLIC_REPO_PATH/appcast.xml${NC}"
+echo -e "  3. Monitor Sparkle update feed: ${BLUE}$PROJECT_ROOT/appcast.xml${NC}"
 echo ""

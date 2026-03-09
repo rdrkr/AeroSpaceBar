@@ -202,7 +202,7 @@ fi
 
 # Check for GitHub token (keychain first, then environment variable)
 GITHUB_TOKEN_FOUND=false
-if security find-generic-password -s "aerospacebar-app-github-token" -w >/dev/null 2>&1; then
+if security find-generic-password -s "AeroSpaceBar-github-token" -w >/dev/null 2>&1; then
     check_pass "GitHub token found in keychain"
     GITHUB_TOKEN_FOUND=true
 elif security find-generic-password -s "PUBLIC_REPO_TOKEN" -w >/dev/null 2>&1; then
@@ -215,7 +215,7 @@ fi
 
 if [ "$GITHUB_TOKEN_FOUND" = false ]; then
     check_warn "GitHub token not found - may be needed for automated releases"
-    echo -e "   ${YELLOW}→${NC} Store in keychain: security add-generic-password -s 'aerospacebar-app-github-token' -a 'github' -w '<your-token>'"
+    echo -e "   ${YELLOW}→${NC} Store in keychain: security add-generic-password -s 'AeroSpaceBar-github-token' -a 'github' -w '<your-token>'"
 fi
 
 echo ""

@@ -5,6 +5,15 @@ All notable changes to AeroSpaceBar will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Transitioned project to open source under AGPL v3 license
+- Consolidated from multi-repo to single-repo architecture
+- Disabled licensing/paywall - all features now freely available
+- Updated Sparkle feed URL and release workflow for single-repo setup
+
 ## [1.0.0-beta.2] - 2026-02-17
 
 ### Added
@@ -43,9 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - resolved settings layout issues with scrolling
 - incorrect group indexing handling
 
-
 ## [1.0.0-beta.3] - 2026-02-17
 
-
 ## [1.0.0-beta.4] - 2026-02-17
-

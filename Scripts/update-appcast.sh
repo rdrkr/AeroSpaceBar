@@ -33,7 +33,7 @@ Prerequisites:
     - SPARKLE_PRIVATE_KEY environment variable (for signing)
 
 Examples:
-    $(basename "$0") 1.0.0 100 AeroSpaceBar-v1.0.0.zip ../aerospacebar-app/appcast.xml
+    $(basename "$0") 1.0.0 100 AeroSpaceBar-v1.0.0.zip appcast.xml
 EOF
 }
 
@@ -144,14 +144,14 @@ echo -e "${BLUE}3. Creating appcast entry...${NC}"
 
 # Build enclosure tag with or without signature
 ENCLOSURE_TAG="            <enclosure
-            url=\"https://github.com/rdrkr/aerospacebar-app/releases/download/v$VERSION/$DISTRIBUTION_NAME\"
+            url=\"https://github.com/rdrkr/AeroSpaceBar/releases/download/v$VERSION/$DISTRIBUTION_NAME\"
             type=\"application/octet-stream\"
             $SIGNATURE />"
 
 NEW_ITEM=$(cat <<EOF
         <item>
             <title>Version $VERSION</title>
-            <link>https://github.com/rdrkr/aerospacebar-app/releases/tag/v$VERSION</link>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v$VERSION</link>
             <pubDate>$PUB_DATE</pubDate>
             <sparkle:version>$BUILD_NUMBER</sparkle:version>
             <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>
@@ -193,7 +193,7 @@ else
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>AeroSpaceBar Changelog</title>
-        <link>https://github.com/rdrkr/aerospacebar-app</link>
+        <link>https://github.com/rdrkr/AeroSpaceBar</link>
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
 

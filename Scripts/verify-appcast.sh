@@ -29,7 +29,7 @@ Checks performed:
     - Signature presence
 
 Examples:
-    $(basename "$0") ../aerospacebar-app/appcast.xml
+    $(basename "$0") appcast.xml
 EOF
 }
 

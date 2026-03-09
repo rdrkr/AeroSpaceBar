@@ -16,7 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # GitHub repository info
-PUBLIC_REPO="rdrkr/aerospacebar-app"
+PUBLIC_REPO="rdrkr/AeroSpaceBar"
 
 # Usage information
 usage() {
@@ -97,7 +97,7 @@ fi
     echo '<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">'
     echo '    <channel>'
     echo '        <title>AeroSpaceBar Changelog</title>'
-    echo '        <link>https://github.com/rdrkr/aerospacebar-app</link>'
+    echo '        <link>https://github.com/rdrkr/AeroSpaceBar</link>'
     echo '        <description>Most recent changes with links to updates for AeroSpaceBar</description>'
     echo '        <language>en</language>'
     echo ''
@@ -171,7 +171,7 @@ fi
             # Output item
             echo '        <item>'
             echo "            <title>Version $VERSION</title>"
-            echo "            <link>https://github.com/rdrkr/aerospacebar-app/releases/tag/$TAG</link>"
+            echo "            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/$TAG</link>"
             echo "            <pubDate>$RFC_DATE</pubDate>"
             echo "            <sparkle:version>$BUILD_NUMBER</sparkle:version>"
             echo "            <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>"
@@ -183,7 +183,7 @@ fi
             echo '                ]]>'
             echo '            </description>'
             echo "            <enclosure"
-            echo "                url=\"https://github.com/rdrkr/aerospacebar-app/releases/download/$TAG/$ZIP_NAME\""
+            echo "                url=\"https://github.com/rdrkr/AeroSpaceBar/releases/download/$TAG/$ZIP_NAME\""
             echo '                type="application/octet-stream"'
             if [ -n "$SIGNATURE" ]; then
                 echo "                sparkle:edSignature=\"$SIGNATURE\""
