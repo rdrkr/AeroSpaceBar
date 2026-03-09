@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled licensing/paywall - all features now freely available
 - Updated Sparkle feed URL and release workflow for single-repo setup
 
+
+## [1.0.0-beta.5] - 2026-03-09
+
+### Changed
+
+- open source transition - single repo, disable paywall
+
+
 ## [1.0.0-beta.2] - 2026-02-17
 
 ### Added
