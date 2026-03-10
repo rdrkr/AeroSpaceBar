@@ -386,7 +386,7 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
             item: entity,
             allItems: entities,
             content: { entity in
-                Text(LocalizedStringResource(stringLiteral: "\(metadata.entityName) \(getEntityDisplayId(entity))"))
+                Text(LocalizedStringResource(stringLiteral: getEntityDisplayLabel(entity, metadata: metadata)))
             },
             createPage: createNavigationPage,
             onRegisterDynamicSubPage: onRegisterDynamicSubPage,
@@ -415,6 +415,21 @@ struct VisualSettingsContainerView<Entity: VisualContainer, PrependContent: View
     /// Handles when the feature is disabled.
     private func handleFeatureDisabled() {
         onFeatureDisabled?()
+    }
+
+    /// Gets the full display label for an entity in the settings list.
+    ///
+    /// For most entities this returns "\(entityName) \(displayId)", but for special
+    /// entities like the Apple Button it returns a custom label.
+    /// - Parameters:
+    ///   - entity: The entity to get the display label for
+    ///   - metadata: The entity metadata containing the entity name
+    /// - Returns: The full display label string
+    private func getEntityDisplayLabel(_ entity: Entity, metadata: VisualContainerMetadata) -> String {
+        if let space = entity as? Domain.Space, space.id == Space.appleButtonId {
+            return "\u{F8FF} Button"
+        }
+        return "\(metadata.entityName) \(getEntityDisplayId(entity))"
     }
 
     /// Gets the display ID for an entity.

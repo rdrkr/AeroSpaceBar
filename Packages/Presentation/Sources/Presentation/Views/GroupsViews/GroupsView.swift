@@ -17,9 +17,38 @@ struct GroupsView: View {
 
     // MARK: - Computed Properties
 
-    /// Whether the view should be shown
+    /// Whether the groups view should be shown.
     private var shouldShowView: Bool {
         viewModel.isGroupsFeatureEnabled && viewModel.showGroups && !viewModel.menuBarApps.isEmpty
+    }
+
+    /// Whether the Apple Button background should be shown.
+    private var shouldShowAppleButton: Bool {
+        viewModel.showAppleButtonAsSpace && viewModel.appleButtonFrame != .zero
+    }
+
+    /// The color properties used for the Apple Button based on the current spaces appearance mode.
+    private var appleButtonColorProperties: ColorProperties {
+        switch viewModel.spacesAppearanceMode {
+        case .perSpace: viewModel.appleButtonColorProperties
+        case .allSpaces: viewModel.globalSpacesColorProperties
+        }
+    }
+
+    /// The geometric properties used for the Apple Button based on the current spaces appearance mode.
+    private var appleButtonGeometricProperties: GeometricProperties {
+        switch viewModel.spacesAppearanceMode {
+        case .perSpace: viewModel.appleButtonGeometricProperties
+        case .allSpaces: viewModel.globalSpacesGeometricProperties
+        }
+    }
+
+    /// The effect properties used for the Apple Button based on the current spaces appearance mode.
+    private var appleButtonEffectProperties: EffectProperties {
+        switch viewModel.spacesAppearanceMode {
+        case .perSpace: viewModel.appleButtonEffectProperties
+        case .allSpaces: viewModel.globalSpacesEffectProperties
+        }
     }
 
     /// The body of the groups view.
@@ -57,11 +86,26 @@ struct GroupsView: View {
                 }
             }
             .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
+
+            // Apple Button background - rendered independently of groups
+            if shouldShowAppleButton {
+                AppleButtonBackgroundView(
+                    frame: viewModel.appleButtonFrame,
+                    colorProperties: appleButtonColorProperties,
+                    geometricProperties: appleButtonGeometricProperties,
+                    effectProperties: appleButtonEffectProperties,
+                    themeMode: viewModel.themeMode,
+                    themePresetColorProperties: viewModel.themePresetColorProperties,
+                    themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+                    themePresetEffectProperties: viewModel.themePresetEffectProperties
+                )
+            }
         }
         .animation(.themeEaseInOutFast, value: viewModel.groups.map(\.id))
         .ignoresSafeArea()
-        .opacity(shouldShowView ? 1.0 : 0.0)
+        .opacity(shouldShowView || shouldShowAppleButton ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)
+        .animation(.themeEaseInOutFast, value: shouldShowAppleButton)
         .animation(.themeEaseInOutFast, value: viewModel.groupsAppearanceMode)
         .animation(.themeEaseInOutFast, value: viewModel.themeMode)
         .tag("groups-container")

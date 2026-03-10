@@ -32,6 +32,10 @@ public protocol SystemMenuBarGateway {
     /// Emits `true` when screen capture permissions are granted, `false` when denied.
     var screenCapturePermissionGrantedPublisher: AnyPublisher<Bool, Never> { get }
 
+    /// Publisher that emits Apple Button (Apple menu icon) frame updates.
+    /// Emits `CGRect.zero` when the Apple Button is not detected.
+    var appleButtonFramePublisher: AnyPublisher<CGRect, Never> { get }
+
     // MARK: - Permission Management
 
     /// Requests screen capture permissions from the user if not already asked.

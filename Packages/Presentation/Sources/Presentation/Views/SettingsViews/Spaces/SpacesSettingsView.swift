@@ -11,11 +11,19 @@ struct SpacesSettingsView: View {
     /// The spaces view model
     @EnvironmentObject private var spacesViewModel: SpacesViewModel
 
+    /// Binding that returns `spacesWithAppleButton` for reads and writes back to `allSpaces`.
+    private var spacesWithAppleButtonBinding: Binding<[Domain.Space]> {
+        Binding(
+            get: { spacesViewModel.spacesWithAppleButton },
+            set: { spacesViewModel.allSpaces = $0.filter { $0.id != Space.appleButtonId } }
+        )
+    }
+
     var body: some View {
         VisualSettingsContainerView(
             navigationPage: .spaces,
             appearanceMode: $spacesViewModel.spacesAppearanceMode,
-            entities: $spacesViewModel.allSpaces,
+            entities: spacesWithAppleButtonBinding,
             globalColorProperties: $spacesViewModel.globalSpacesColorProperties,
             globalGeometricProperties: $spacesViewModel.globalSpacesGeometricProperties,
             globalEffectProperties: $spacesViewModel.globalSpacesEffectProperties,
@@ -57,6 +65,15 @@ struct SpacesSettingsView: View {
                         isOn: $spacesViewModel.showEmptySpaces
                     )
                     .tag("advanced-show-empty-spaces-toggle")
+
+                    SettingsToggle(
+                        title: LocalizedStringResource("Show Apple Button as Space"),
+                        description: LocalizedStringResource(
+                            "Render a background behind the macOS Apple menu icon using the spaces visual system."
+                        ),
+                        isOn: $spacesViewModel.showAppleButtonAsSpace
+                    )
+                    .tag("advanced-show-apple-button-as-space-toggle")
                 }
             }
         )

@@ -58,6 +58,42 @@ public final class SpacesViewModel: ObservableObject {
         }
     }
 
+    /// Whether to show the Apple Button as a space background.
+    @Published var showAppleButtonAsSpace: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowAppleButtonAsSpaceUseCase.execute(value: showAppleButtonAsSpace)
+            }
+        }
+    }
+
+    /// The color properties for the Apple Button space element.
+    @Published var appleButtonColorProperties: ColorProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setAppleButtonColorPropertiesUseCase.execute(value: appleButtonColorProperties)
+            }
+        }
+    }
+
+    /// The geometric properties for the Apple Button space element.
+    @Published var appleButtonGeometricProperties: GeometricProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setAppleButtonGeometricPropertiesUseCase.execute(value: appleButtonGeometricProperties)
+            }
+        }
+    }
+
+    /// The effect properties for the Apple Button space element.
+    @Published var appleButtonEffectProperties: EffectProperties {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setAppleButtonEffectPropertiesUseCase.execute(value: appleButtonEffectProperties)
+            }
+        }
+    }
+
     @Published var globalSpacesColorProperties: ColorProperties {
         didSet {
             Task.detached(priority: .utility) { [self] in
@@ -159,6 +195,16 @@ public final class SpacesViewModel: ObservableObject {
     private let setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase
     private let getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
 
+    /// Use cases for Apple Button configuration properties.
+    private let getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase
+    private let setShowAppleButtonAsSpaceUseCase: SetShowAppleButtonAsSpaceUseCase
+    private let getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase
+    private let setAppleButtonColorPropertiesUseCase: SetAppleButtonColorPropertiesUseCase
+    private let getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase
+    private let setAppleButtonGeometricPropertiesUseCase: SetAppleButtonGeometricPropertiesUseCase
+    private let getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase
+    private let setAppleButtonEffectPropertiesUseCase: SetAppleButtonEffectPropertiesUseCase
+
     /// Use cases for Spaces-related UI configuration properties.
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
     private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
@@ -200,6 +246,14 @@ public final class SpacesViewModel: ObservableObject {
     ///   - getThemePresetEffectPropertiesUseCase: Use case for getting theme preset effect properties
     ///   - setThemePresetEffectPropertiesUseCase: Use case for setting theme preset effect properties
     ///   - getGlobeKeyPressStateUseCase: Use case for getting globe key press state
+    ///   - getShowAppleButtonAsSpaceUseCase: Use case for getting show Apple Button as space setting
+    ///   - setShowAppleButtonAsSpaceUseCase: Use case for setting show Apple Button as space setting
+    ///   - getAppleButtonColorPropertiesUseCase: Use case for getting Apple Button color properties
+    ///   - setAppleButtonColorPropertiesUseCase: Use case for setting Apple Button color properties
+    ///   - getAppleButtonGeometricPropertiesUseCase: Use case for getting Apple Button geometric properties
+    ///   - setAppleButtonGeometricPropertiesUseCase: Use case for setting Apple Button geometric properties
+    ///   - getAppleButtonEffectPropertiesUseCase: Use case for getting Apple Button effect properties
+    ///   - setAppleButtonEffectPropertiesUseCase: Use case for setting Apple Button effect properties
     init(
         getSpacesUseCase: GetSpacesUseCase,
         setFocusSpaceUseCase: SetFocusSpaceUseCase,
@@ -236,7 +290,15 @@ public final class SpacesViewModel: ObservableObject {
         setThemePresetGeometricPropertiesUseCase: SetThemePresetGeometricPropertiesUseCase,
         getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase,
         setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase,
-        getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
+        getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase,
+        getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase,
+        setShowAppleButtonAsSpaceUseCase: SetShowAppleButtonAsSpaceUseCase,
+        getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase,
+        setAppleButtonColorPropertiesUseCase: SetAppleButtonColorPropertiesUseCase,
+        getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase,
+        setAppleButtonGeometricPropertiesUseCase: SetAppleButtonGeometricPropertiesUseCase,
+        getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase,
+        setAppleButtonEffectPropertiesUseCase: SetAppleButtonEffectPropertiesUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -279,6 +341,14 @@ public final class SpacesViewModel: ObservableObject {
         self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
         self.setThemePresetEffectPropertiesUseCase = setThemePresetEffectPropertiesUseCase
         self.getGlobeKeyPressStateUseCase = getGlobeKeyPressStateUseCase
+        self.getShowAppleButtonAsSpaceUseCase = getShowAppleButtonAsSpaceUseCase
+        self.setShowAppleButtonAsSpaceUseCase = setShowAppleButtonAsSpaceUseCase
+        self.getAppleButtonColorPropertiesUseCase = getAppleButtonColorPropertiesUseCase
+        self.setAppleButtonColorPropertiesUseCase = setAppleButtonColorPropertiesUseCase
+        self.getAppleButtonGeometricPropertiesUseCase = getAppleButtonGeometricPropertiesUseCase
+        self.setAppleButtonGeometricPropertiesUseCase = setAppleButtonGeometricPropertiesUseCase
+        self.getAppleButtonEffectPropertiesUseCase = getAppleButtonEffectPropertiesUseCase
+        self.setAppleButtonEffectPropertiesUseCase = setAppleButtonEffectPropertiesUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
@@ -303,6 +373,10 @@ public final class SpacesViewModel: ObservableObject {
         themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
         themePresetGeometricProperties = getThemePresetGeometricPropertiesUseCase.execute().blockingFirst()
         themePresetEffectProperties = getThemePresetEffectPropertiesUseCase.execute().blockingFirst()
+        showAppleButtonAsSpace = getShowAppleButtonAsSpaceUseCase.execute().blockingFirst()
+        appleButtonColorProperties = getAppleButtonColorPropertiesUseCase.execute().blockingFirst()
+        appleButtonGeometricProperties = getAppleButtonGeometricPropertiesUseCase.execute().blockingFirst()
+        appleButtonEffectProperties = getAppleButtonEffectPropertiesUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
 
@@ -460,6 +534,22 @@ public final class SpacesViewModel: ObservableObject {
         getGlobeKeyPressStateUseCase.execute()
             .assign(to: \.isGlobeKeyPressed, on: self)
             .store(in: &cancellables)
+
+        getShowAppleButtonAsSpaceUseCase.execute()
+            .assign(to: \.showAppleButtonAsSpace, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonColorPropertiesUseCase.execute()
+            .assign(to: \.appleButtonColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonGeometricPropertiesUseCase.execute()
+            .assign(to: \.appleButtonGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonEffectPropertiesUseCase.execute()
+            .assign(to: \.appleButtonEffectProperties, on: self)
+            .store(in: &cancellables)
     }
 
     /// Focuses a specific space.
@@ -554,6 +644,41 @@ public final class SpacesViewModel: ObservableObject {
         }
     }
 
+    /// The list of all spaces with the Apple Button prepended when enabled in per-space mode.
+    ///
+    /// Used by SpacesSettingsView for the entities list in per-space mode.
+    var spacesWithAppleButton: [Space] {
+        guard showAppleButtonAsSpace else { return allSpaces }
+
+        let appleButtonSpace = Space(
+            id: Space.appleButtonId,
+            isFocused: false,
+            windows: [],
+            colorProperties: appleButtonColorProperties,
+            geometricProperties: appleButtonGeometricProperties,
+            effectProperties: appleButtonEffectProperties
+        )
+        return [appleButtonSpace] + allSpaces
+    }
+
+    /// Updates the Apple Button color properties.
+    /// - Parameter colorProperties: The new color properties for the Apple Button
+    func updateAppleButtonColorProperties(_ colorProperties: ColorProperties) {
+        appleButtonColorProperties = colorProperties
+    }
+
+    /// Updates the Apple Button geometric properties.
+    /// - Parameter geometricProperties: The new geometric properties for the Apple Button
+    func updateAppleButtonGeometricProperties(_ geometricProperties: GeometricProperties) {
+        appleButtonGeometricProperties = geometricProperties
+    }
+
+    /// Updates the Apple Button effect properties.
+    /// - Parameter effectProperties: The new effect properties for the Apple Button
+    func updateAppleButtonEffectProperties(_ effectProperties: EffectProperties) {
+        appleButtonEffectProperties = effectProperties
+    }
+
     /// Resets all spaces-related settings to their default values.
     ///
     /// This method resets spaces color properties, appearance mode, and related UI settings
@@ -576,6 +701,13 @@ public final class SpacesViewModel: ObservableObject {
         await setShowWindowTitlesUseCase.execute(value: ConfigurationDefaults.showWindowTitles)
         await setShowEmptySpacesUseCase.execute(value: ConfigurationDefaults.showEmptySpaces)
         await setFocusWindowOnClickUseCase.execute(enabled: ConfigurationDefaults.focusWindowOnClick)
+
+        await setShowAppleButtonAsSpaceUseCase.execute(value: ConfigurationDefaults.showAppleButtonAsSpace)
+        await setAppleButtonColorPropertiesUseCase.execute(value: ConfigurationDefaults.appleButtonColorProperties)
+        await setAppleButtonGeometricPropertiesUseCase.execute(
+            value: ConfigurationDefaults.appleButtonGeometricProperties
+        )
+        await setAppleButtonEffectPropertiesUseCase.execute(value: ConfigurationDefaults.appleButtonEffectProperties)
     }
 
     /// Updates the filtered spaces list based on the showEmptySpaces setting.

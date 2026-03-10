@@ -21,7 +21,16 @@ struct SpaceNavigationPage: NavigationPage {
 
     /// The localized display name for this navigation page.
     var name: String {
-        String(
+        if spaceId == Space.appleButtonId {
+            return String(
+                localized: LocalizedStringResource(
+                    "\u{F8FF} Apple Button",
+                    comment: "Title for Apple Button detail page"
+                )
+            )
+        }
+
+        return String(
             localized: LocalizedStringResource(
                 "\(Self.namePrefix)\(spaceId)",
                 comment: "Title for space detail page"

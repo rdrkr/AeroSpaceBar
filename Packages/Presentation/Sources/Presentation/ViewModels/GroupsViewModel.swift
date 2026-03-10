@@ -104,6 +104,21 @@ public final class GroupsViewModel: ObservableObject {
     /// The current menu bar height.
     @Published var menuBarHeight: Double
 
+    /// Whether to show the Apple Button as a space background.
+    @Published var showAppleButtonAsSpace: Bool
+
+    /// The detected Apple Button (Apple menu icon) frame.
+    @Published var appleButtonFrame: CGRect
+
+    /// The color properties for the Apple Button space element (per-space mode).
+    @Published var appleButtonColorProperties: ColorProperties
+
+    /// The geometric properties for the Apple Button space element (per-space mode).
+    @Published var appleButtonGeometricProperties: GeometricProperties
+
+    /// The effect properties for the Apple Button space element (per-space mode).
+    @Published var appleButtonEffectProperties: EffectProperties
+
     // MARK: - Dependencies
 
     private let getShowGroupsUseCase: GetShowGroupsUseCase
@@ -129,6 +144,11 @@ public final class GroupsViewModel: ObservableObject {
     private let getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase
     private let getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
     private let getMenuBarHeightUseCase: GetMenuBarHeightUseCase
+    private let getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase
+    private let getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase
+    private let getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase
+    private let getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase
+    private let getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -158,6 +178,11 @@ public final class GroupsViewModel: ObservableObject {
     ///   - getThemePresetColorPropertiesUseCase: The use case for getting theme preset
     ///   - getThemePresetGeometricPropertiesUseCase: The use case for getting theme preset geometric properties
     ///   - getMenuBarHeightUseCase: Use case for getting menu bar height
+    ///   - getShowAppleButtonAsSpaceUseCase: Use case for getting show Apple Button as space setting
+    ///   - getAppleButtonFrameUseCase: Use case for getting Apple Button frame
+    ///   - getAppleButtonColorPropertiesUseCase: Use case for getting Apple Button color properties
+    ///   - getAppleButtonGeometricPropertiesUseCase: Use case for getting Apple Button geometric properties
+    ///   - getAppleButtonEffectPropertiesUseCase: Use case for getting Apple Button effect properties
     init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         setShowGroupsUseCase: SetShowGroupsUseCase,
@@ -181,7 +206,12 @@ public final class GroupsViewModel: ObservableObject {
         getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase,
         getThemePresetGeometricPropertiesUseCase: GetThemePresetGeometricPropertiesUseCase,
         getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase,
-        getMenuBarHeightUseCase: GetMenuBarHeightUseCase
+        getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
+        getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase,
+        getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase,
+        getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase,
+        getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase,
+        getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.setShowGroupsUseCase = setShowGroupsUseCase
@@ -206,6 +236,11 @@ public final class GroupsViewModel: ObservableObject {
         self.getThemePresetGeometricPropertiesUseCase = getThemePresetGeometricPropertiesUseCase
         self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
+        self.getShowAppleButtonAsSpaceUseCase = getShowAppleButtonAsSpaceUseCase
+        self.getAppleButtonFrameUseCase = getAppleButtonFrameUseCase
+        self.getAppleButtonColorPropertiesUseCase = getAppleButtonColorPropertiesUseCase
+        self.getAppleButtonGeometricPropertiesUseCase = getAppleButtonGeometricPropertiesUseCase
+        self.getAppleButtonEffectPropertiesUseCase = getAppleButtonEffectPropertiesUseCase
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
@@ -225,6 +260,11 @@ public final class GroupsViewModel: ObservableObject {
         themePresetGeometricProperties = getThemePresetGeometricPropertiesUseCase.execute().blockingFirst()
         themePresetEffectProperties = getThemePresetEffectPropertiesUseCase.execute().blockingFirst()
         menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
+        showAppleButtonAsSpace = getShowAppleButtonAsSpaceUseCase.execute().blockingFirst()
+        appleButtonFrame = getAppleButtonFrameUseCase.execute().blockingFirst()
+        appleButtonColorProperties = getAppleButtonColorPropertiesUseCase.execute().blockingFirst()
+        appleButtonGeometricProperties = getAppleButtonGeometricPropertiesUseCase.execute().blockingFirst()
+        appleButtonEffectProperties = getAppleButtonEffectPropertiesUseCase.execute().blockingFirst()
 
         availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
         if spacesAppearanceMode == .perSpace {
@@ -577,6 +617,26 @@ public final class GroupsViewModel: ObservableObject {
 
         getMenuBarHeightUseCase.execute()
             .assign(to: \.menuBarHeight, on: self)
+            .store(in: &cancellables)
+
+        getShowAppleButtonAsSpaceUseCase.execute()
+            .assign(to: \.showAppleButtonAsSpace, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonFrameUseCase.execute()
+            .assign(to: \.appleButtonFrame, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonColorPropertiesUseCase.execute()
+            .assign(to: \.appleButtonColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonGeometricPropertiesUseCase.execute()
+            .assign(to: \.appleButtonGeometricProperties, on: self)
+            .store(in: &cancellables)
+
+        getAppleButtonEffectPropertiesUseCase.execute()
+            .assign(to: \.appleButtonEffectProperties, on: self)
             .store(in: &cancellables)
     }
 

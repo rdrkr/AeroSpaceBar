@@ -22,11 +22,28 @@ struct SpacePageView: View {
     /// The unique identifier of the space being configured.
     let spaceId: String
 
+    /// Whether this page is configuring the Apple Button virtual space.
+    private var isAppleButton: Bool {
+        spaceId == Space.appleButtonId
+    }
+
     /// The current space configuration for this space ID.
     /// Returns a default instance if the space is not found.
+    /// Handles the Apple Button ID specially by reading/writing from the view model's apple button properties.
     private var space: Binding<Domain.Space> {
         Binding(
             get: {
+                if isAppleButton {
+                    return Domain.Space(
+                        id: Space.appleButtonId,
+                        isFocused: false,
+                        windows: [],
+                        colorProperties: spacesViewModel.appleButtonColorProperties,
+                        geometricProperties: spacesViewModel.appleButtonGeometricProperties,
+                        effectProperties: spacesViewModel.appleButtonEffectProperties
+                    )
+                }
+
                 guard let foundSpace = spacesViewModel.allSpaces.first(where: { $0.id == spaceId }) else {
                     // Return a default space if not found
                     return Domain.Space(
@@ -41,6 +58,13 @@ struct SpacePageView: View {
                 return foundSpace
             },
             set: { newSpace in
+                if isAppleButton {
+                    spacesViewModel.updateAppleButtonColorProperties(newSpace.colorProperties)
+                    spacesViewModel.updateAppleButtonEffectProperties(newSpace.effectProperties)
+                    spacesViewModel.updateAppleButtonGeometricProperties(newSpace.geometricProperties)
+                    return
+                }
+
                 spacesViewModel.updateSpaceColorProperties(
                     spaceId: spaceId,
                     colorProperties: newSpace.colorProperties
@@ -76,6 +100,6 @@ struct SpacePageView: View {
             }
         }
         .settingsFormStyle()
-        .navigationTitle("Space \(spaceId)")
+        .navigationTitle(isAppleButton ? "\u{F8FF} Apple Button" : "Space \(spaceId)")
     }
 }

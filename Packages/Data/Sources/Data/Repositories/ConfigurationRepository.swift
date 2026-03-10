@@ -67,6 +67,26 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.showEmptySpaces
     )
 
+    /// Subject for show Apple Button as space.
+    private let showAppleButtonAsSpaceSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showAppleButtonAsSpace
+    )
+
+    /// Subject for Apple Button color properties.
+    private let appleButtonColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.appleButtonColorProperties
+    )
+
+    /// Subject for Apple Button geometric properties.
+    private let appleButtonGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.appleButtonGeometricProperties
+    )
+
+    /// Subject for Apple Button effect properties.
+    private let appleButtonEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.appleButtonEffectProperties
+    )
+
     /// Subject for show groups.
     private let showGroupsSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showGroups
@@ -229,6 +249,22 @@ public final class ConfigurationRepository: ConfigurationGateway {
         spacesAppearanceModeSubject.eraseToAnyPublisher()
     }
 
+    public var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> {
+        showAppleButtonAsSpaceSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        appleButtonColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        appleButtonGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        appleButtonEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
     public var groupsPublisher: AnyPublisher<[Domain.Group], Never> {
         groupsSubject.eraseToAnyPublisher()
     }
@@ -345,7 +381,11 @@ public final class ConfigurationRepository: ConfigurationGateway {
                 spacesAppearanceMode: spacesAppearanceModeSubject.value.rawValue,
                 globalSpacesColorProperties: globalSpacesColorPropertiesSubject.value,
                 globalSpacesGeometricProperties: globalSpacesGeometricPropertiesSubject.value,
-                globalSpacesEffectProperties: globalSpacesEffectPropertiesSubject.value
+                globalSpacesEffectProperties: globalSpacesEffectPropertiesSubject.value,
+                showAppleButtonAsSpace: showAppleButtonAsSpaceSubject.value,
+                appleButtonColorProperties: appleButtonColorPropertiesSubject.value,
+                appleButtonGeometricProperties: appleButtonGeometricPropertiesSubject.value,
+                appleButtonEffectProperties: appleButtonEffectPropertiesSubject.value
             )
         }
 
@@ -362,6 +402,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
             globalSpacesColorPropertiesSubject.send(newValue.globalSpacesColorProperties)
             globalSpacesGeometricPropertiesSubject.send(newValue.globalSpacesGeometricProperties)
             globalSpacesEffectPropertiesSubject.send(newValue.globalSpacesEffectProperties)
+            showAppleButtonAsSpaceSubject.send(newValue.showAppleButtonAsSpace)
+            appleButtonColorPropertiesSubject.send(newValue.appleButtonColorProperties)
+            appleButtonGeometricPropertiesSubject.send(newValue.appleButtonGeometricProperties)
+            appleButtonEffectPropertiesSubject.send(newValue.appleButtonEffectProperties)
         }
     }
 
@@ -435,6 +479,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
         globalSpacesColorPropertiesSubject.send(ConfigurationDefaults.spaceColorProperties)
         globalSpacesGeometricPropertiesSubject.send(ConfigurationDefaults.spaceGeometricProperties)
         globalSpacesEffectPropertiesSubject.send(ConfigurationDefaults.spaceEffectProperties)
+        showAppleButtonAsSpaceSubject.send(ConfigurationDefaults.showAppleButtonAsSpace)
+        appleButtonColorPropertiesSubject.send(ConfigurationDefaults.appleButtonColorProperties)
+        appleButtonGeometricPropertiesSubject.send(ConfigurationDefaults.appleButtonGeometricProperties)
+        appleButtonEffectPropertiesSubject.send(ConfigurationDefaults.appleButtonEffectProperties)
         groupsSubject.send(ConfigurationDefaults.groups)
         groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
         globalGroupsColorPropertiesSubject.send(ConfigurationDefaults.groupsGlobalColorProperties)
@@ -511,6 +559,54 @@ public final class ConfigurationRepository: ConfigurationGateway {
         if value == showEmptySpacesSubject.value { return }
 
         showEmptySpacesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets whether to show the Apple Button as a space and emits update.
+    public func setShowAppleButtonAsSpace(_ value: Bool) {
+        if value == showAppleButtonAsSpaceSubject.value { return }
+
+        showAppleButtonAsSpaceSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the Apple Button color properties and emits update.
+    public func setAppleButtonColorProperties(_ value: ColorProperties) {
+        if value == appleButtonColorPropertiesSubject.value { return }
+
+        appleButtonColorPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the Apple Button geometric properties and emits update.
+    public func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        if value == appleButtonGeometricPropertiesSubject.value { return }
+
+        appleButtonGeometricPropertiesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the Apple Button effect properties and emits update.
+    public func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        if value == appleButtonEffectPropertiesSubject.value { return }
+
+        appleButtonEffectPropertiesSubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -912,6 +1008,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
         globalSpacesColorPropertiesSubject.send(ConfigurationDefaults.spaceColorProperties)
         globalSpacesGeometricPropertiesSubject.send(ConfigurationDefaults.spaceGeometricProperties)
         globalSpacesEffectPropertiesSubject.send(ConfigurationDefaults.spaceEffectProperties)
+        showAppleButtonAsSpaceSubject.send(ConfigurationDefaults.showAppleButtonAsSpace)
+        appleButtonColorPropertiesSubject.send(ConfigurationDefaults.appleButtonColorProperties)
+        appleButtonGeometricPropertiesSubject.send(ConfigurationDefaults.appleButtonGeometricProperties)
+        appleButtonEffectPropertiesSubject.send(ConfigurationDefaults.appleButtonEffectProperties)
         groupsSubject.send(ConfigurationDefaults.groups)
         groupsAppearanceModeSubject.send(ConfigurationDefaults.groupsAppearanceMode)
         globalGroupsColorPropertiesSubject.send(ConfigurationDefaults.groupsGlobalColorProperties)

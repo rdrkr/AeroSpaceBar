@@ -138,7 +138,15 @@ public final class DependencyContainer {
         setThemePresetGeometricPropertiesUseCase: makeSetThemePresetGeometricPropertiesUseCase(),
         getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase(),
         setThemePresetEffectPropertiesUseCase: makeSetThemePresetEffectPropertiesUseCase(),
-        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase()
+        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase(),
+        getShowAppleButtonAsSpaceUseCase: makeGetShowAppleButtonAsSpaceUseCase(),
+        setShowAppleButtonAsSpaceUseCase: makeSetShowAppleButtonAsSpaceUseCase(),
+        getAppleButtonColorPropertiesUseCase: makeGetAppleButtonColorPropertiesUseCase(),
+        setAppleButtonColorPropertiesUseCase: makeSetAppleButtonColorPropertiesUseCase(),
+        getAppleButtonGeometricPropertiesUseCase: makeGetAppleButtonGeometricPropertiesUseCase(),
+        setAppleButtonGeometricPropertiesUseCase: makeSetAppleButtonGeometricPropertiesUseCase(),
+        getAppleButtonEffectPropertiesUseCase: makeGetAppleButtonEffectPropertiesUseCase(),
+        setAppleButtonEffectPropertiesUseCase: makeSetAppleButtonEffectPropertiesUseCase()
     )
 
     /// The LicenseViewModel instance.
@@ -178,7 +186,12 @@ public final class DependencyContainer {
         getThemePresetColorPropertiesUseCase: makeGetThemePresetColorPropertiesUseCase(),
         getThemePresetGeometricPropertiesUseCase: makeGetThemePresetGeometricPropertiesUseCase(),
         getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase(),
-        getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase()
+        getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
+        getShowAppleButtonAsSpaceUseCase: makeGetShowAppleButtonAsSpaceUseCase(),
+        getAppleButtonFrameUseCase: makeGetAppleButtonFrameUseCase(),
+        getAppleButtonColorPropertiesUseCase: makeGetAppleButtonColorPropertiesUseCase(),
+        getAppleButtonGeometricPropertiesUseCase: makeGetAppleButtonGeometricPropertiesUseCase(),
+        getAppleButtonEffectPropertiesUseCase: makeGetAppleButtonEffectPropertiesUseCase()
     )
 
     /// The license gateway for managing application license.
@@ -343,6 +356,62 @@ public final class DependencyContainer {
     /// - Returns: A new SetShowEmptySpacesUseCase instance
     func makeSetShowEmptySpacesUseCase() -> SetShowEmptySpacesUseCase {
         SetShowEmptySpacesUseCase(configurationGateway: configurationGateway)
+    }
+
+    // MARK: - Apple Button Use Cases
+
+    /// Creates a new GetShowAppleButtonAsSpaceUseCase instance.
+    /// - Returns: A new GetShowAppleButtonAsSpaceUseCase instance
+    func makeGetShowAppleButtonAsSpaceUseCase() -> GetShowAppleButtonAsSpaceUseCase {
+        GetShowAppleButtonAsSpaceUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetShowAppleButtonAsSpaceUseCase instance.
+    /// - Returns: A new SetShowAppleButtonAsSpaceUseCase instance
+    func makeSetShowAppleButtonAsSpaceUseCase() -> SetShowAppleButtonAsSpaceUseCase {
+        SetShowAppleButtonAsSpaceUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetAppleButtonColorPropertiesUseCase instance.
+    /// - Returns: A new GetAppleButtonColorPropertiesUseCase instance
+    func makeGetAppleButtonColorPropertiesUseCase() -> GetAppleButtonColorPropertiesUseCase {
+        GetAppleButtonColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetAppleButtonColorPropertiesUseCase instance.
+    /// - Returns: A new SetAppleButtonColorPropertiesUseCase instance
+    func makeSetAppleButtonColorPropertiesUseCase() -> SetAppleButtonColorPropertiesUseCase {
+        SetAppleButtonColorPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetAppleButtonGeometricPropertiesUseCase instance.
+    /// - Returns: A new GetAppleButtonGeometricPropertiesUseCase instance
+    func makeGetAppleButtonGeometricPropertiesUseCase() -> GetAppleButtonGeometricPropertiesUseCase {
+        GetAppleButtonGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetAppleButtonGeometricPropertiesUseCase instance.
+    /// - Returns: A new SetAppleButtonGeometricPropertiesUseCase instance
+    func makeSetAppleButtonGeometricPropertiesUseCase() -> SetAppleButtonGeometricPropertiesUseCase {
+        SetAppleButtonGeometricPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetAppleButtonEffectPropertiesUseCase instance.
+    /// - Returns: A new GetAppleButtonEffectPropertiesUseCase instance
+    func makeGetAppleButtonEffectPropertiesUseCase() -> GetAppleButtonEffectPropertiesUseCase {
+        GetAppleButtonEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetAppleButtonEffectPropertiesUseCase instance.
+    /// - Returns: A new SetAppleButtonEffectPropertiesUseCase instance
+    func makeSetAppleButtonEffectPropertiesUseCase() -> SetAppleButtonEffectPropertiesUseCase {
+        SetAppleButtonEffectPropertiesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetAppleButtonFrameUseCase instance.
+    /// - Returns: A new GetAppleButtonFrameUseCase instance
+    func makeGetAppleButtonFrameUseCase() -> GetAppleButtonFrameUseCase {
+        GetAppleButtonFrameUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 
     /// Creates a new GetShowGroupsUseCase instance.

@@ -31,6 +31,9 @@ public enum ConfigurationDefaults {
     /// Whether to show empty spaces in the interface.
     public static let showEmptySpaces = false
 
+    /// Whether to show the Apple Button as a space background.
+    public static let showAppleButtonAsSpace = false
+
     /// Whether to show groups in the interface.
     public static let showGroups = true
 
@@ -78,6 +81,26 @@ public enum ConfigurationDefaults {
 
     /// Default effect properties for space elements.
     public static let spaceEffectProperties: EffectProperties = .init(
+        backgroundOpacity: 0.2,
+        backgroundBlurRadius: 0.0,
+        borderOpacity: 0.8
+    )
+
+    /// Default color properties for the Apple Button element.
+    public static let appleButtonColorProperties: ColorProperties = .init(
+        backgroundTintColor: .white,
+        borderTintColor: .white,
+        foregroundColor: .white
+    )
+
+    /// Default geometric properties for the Apple Button element.
+    public static let appleButtonGeometricProperties: GeometricProperties = .init(
+        cornerRadius: 14,
+        borderWidth: 0.0
+    )
+
+    /// Default effect properties for the Apple Button element.
+    public static let appleButtonEffectProperties: EffectProperties = .init(
         backgroundOpacity: 0.2,
         backgroundBlurRadius: 0.0,
         borderOpacity: 0.8

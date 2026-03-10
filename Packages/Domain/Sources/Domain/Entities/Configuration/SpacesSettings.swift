@@ -81,6 +81,21 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     /// settings like opacity and blur radius.
     public let globalSpacesEffectProperties: Mode.EffectPropertiesType
 
+    /// Whether to show the Apple Button as a space background.
+    ///
+    /// When enabled, a background is rendered behind the macOS Apple menu icon
+    /// using the same visual system as spaces.
+    public let showAppleButtonAsSpace: Mode.BoolType
+
+    /// The color properties for the Apple Button space element.
+    public let appleButtonColorProperties: Mode.ColorPropertiesType
+
+    /// The geometric properties for the Apple Button space element.
+    public let appleButtonGeometricProperties: Mode.GeometricPropertiesType
+
+    /// The effect properties for the Apple Button space element.
+    public let appleButtonEffectProperties: Mode.EffectPropertiesType
+
     /// Initializes a new SpacesSettings instance.
     ///
     /// - Parameters:
@@ -92,6 +107,10 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     ///   - globalSpacesColorProperties: Global visual properties for all spaces
     ///   - globalSpacesGeometricProperties: Global geometric properties for all spaces
     ///   - globalSpacesEffectProperties: Global effect properties for all spaces
+    ///   - showAppleButtonAsSpace: Whether to show the Apple Button as a space background
+    ///   - appleButtonColorProperties: Color properties for the Apple Button
+    ///   - appleButtonGeometricProperties: Geometric properties for the Apple Button
+    ///   - appleButtonEffectProperties: Effect properties for the Apple Button
     public init(
         showEmptySpaces: Mode.BoolType,
         spacesColorProperties: Mode.ColorPropertiesArrayType,
@@ -100,7 +119,11 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
         spacesAppearanceMode: Mode.StringType,
         globalSpacesColorProperties: Mode.ColorPropertiesType,
         globalSpacesGeometricProperties: Mode.GeometricPropertiesType,
-        globalSpacesEffectProperties: Mode.EffectPropertiesType
+        globalSpacesEffectProperties: Mode.EffectPropertiesType,
+        showAppleButtonAsSpace: Mode.BoolType,
+        appleButtonColorProperties: Mode.ColorPropertiesType,
+        appleButtonGeometricProperties: Mode.GeometricPropertiesType,
+        appleButtonEffectProperties: Mode.EffectPropertiesType
     ) {
         self.showEmptySpaces = showEmptySpaces
         self.spacesColorProperties = spacesColorProperties
@@ -110,6 +133,10 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
         self.globalSpacesColorProperties = globalSpacesColorProperties
         self.globalSpacesGeometricProperties = globalSpacesGeometricProperties
         self.globalSpacesEffectProperties = globalSpacesEffectProperties
+        self.showAppleButtonAsSpace = showAppleButtonAsSpace
+        self.appleButtonColorProperties = appleButtonColorProperties
+        self.appleButtonGeometricProperties = appleButtonGeometricProperties
+        self.appleButtonEffectProperties = appleButtonEffectProperties
     }
 
     enum CodingKeys: String, CodingKey {
@@ -121,6 +148,10 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
         case globalSpacesColorProperties = "global-visual-config"
         case globalSpacesGeometricProperties = "global-geometric-config"
         case globalSpacesEffectProperties = "global-effect-config"
+        case showAppleButtonAsSpace = "show-apple-button-as-space"
+        case appleButtonColorProperties = "apple-button-visual-config"
+        case appleButtonGeometricProperties = "apple-button-geometric-config"
+        case appleButtonEffectProperties = "apple-button-effect-config"
     }
 
     /// Decodes optional settings and merges with required defaults.
@@ -150,7 +181,14 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
             globalSpacesGeometricProperties: decodedValue.globalSpacesGeometricProperties ?? defaultValue
                 .globalSpacesGeometricProperties,
             globalSpacesEffectProperties: decodedValue.globalSpacesEffectProperties ?? defaultValue
-                .globalSpacesEffectProperties
+                .globalSpacesEffectProperties,
+            showAppleButtonAsSpace: decodedValue.showAppleButtonAsSpace ?? defaultValue.showAppleButtonAsSpace,
+            appleButtonColorProperties: decodedValue.appleButtonColorProperties ?? defaultValue
+                .appleButtonColorProperties,
+            appleButtonGeometricProperties: decodedValue.appleButtonGeometricProperties ?? defaultValue
+                .appleButtonGeometricProperties,
+            appleButtonEffectProperties: decodedValue.appleButtonEffectProperties ?? defaultValue
+                .appleButtonEffectProperties
         )
     }
 }

@@ -25,6 +25,9 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Publisher that emits screen capture permission status updates.
     private let screenCapturePermissionGrantedSubject = CurrentValueSubject<Bool, Never>(false)
 
+    /// Publisher that emits Apple Button (Apple menu icon) frame updates.
+    private let appleButtonFrameSubject = CurrentValueSubject<CGRect, Never>(.zero)
+
     /// The last captured wallpaper image data for comparison.
     private var lastWallpaperData: Data?
 
@@ -178,6 +181,12 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         screenCapturePermissionGrantedSubject.eraseToAnyPublisher()
     }
 
+    /// Publisher that emits Apple Button (Apple menu icon) frame updates.
+    /// - Returns: A publisher that emits CGRect instances representing the Apple Button frame.
+    public var appleButtonFramePublisher: AnyPublisher<CGRect, Never> {
+        appleButtonFrameSubject.eraseToAnyPublisher()
+    }
+
     /// Starts periodic tasks for window recognition and wallpaper capture.
     private func startPeriodicTasks() {
         stopPeriodicTasks()
@@ -200,6 +209,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         let screenWindows = WindowInfo.getOnScreenWindows(excludeDesktopWindows: true)
 
         recognizeSystemMenuBar(windows: screenWindows)
+        recognizeAppleButtonWindow(windows: screenWindows)
 
         // Only recognize menu bar apps if show groups is enabled
         if showGroupsEnabled {
@@ -275,6 +285,38 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             if menuBarFrame.height != menuBarHeightSubject.value {
                 menuBarHeightSubject.send(menuBarFrame.height)
             }
+        }
+    }
+
+    /// Updates the Apple Button (Apple menu icon) frame based on the menu bar dimensions.
+    ///
+    /// The Apple menu icon is always at the leftmost position of the macOS menu bar.
+    /// Since macOS does not expose window information for the Apple menu icon via
+    /// the CGWindowList APIs, the frame is calculated from the known menu bar height
+    /// and a fixed width that matches the standard Apple menu icon area.
+    /// - Parameter windows: The current list of on-screen windows (used for menu bar visibility check).
+    private func recognizeAppleButtonWindow(windows _: [WindowInfo]) {
+        let menuBarHeight = menuBarHeightSubject.value
+
+        // Only provide a frame when the menu bar is visible
+        guard menuBarHeight > 0, menuBarVisibilitySubject.value else {
+            if appleButtonFrameSubject.value != .zero {
+                appleButtonFrameSubject.send(.zero)
+            }
+            return
+        }
+
+        // The Apple menu icon area is approximately 54 points wide on standard macOS displays.
+        let appleButtonWidth: CGFloat = 39.0
+        let appleButtonFrame = CGRect(
+            x: 8,
+            y: 0,
+            width: appleButtonWidth,
+            height: menuBarHeight
+        )
+
+        if appleButtonFrame != appleButtonFrameSubject.value {
+            appleButtonFrameSubject.send(appleButtonFrame)
         }
     }
 

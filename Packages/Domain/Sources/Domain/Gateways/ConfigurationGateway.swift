@@ -70,6 +70,18 @@ public protocol ConfigurationGateway {
     /// Publisher that emits global space effect properties updates.
     var globalSpacesEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
 
+    /// Publisher that emits show Apple Button as space updates.
+    var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> { get }
+
+    /// Publisher that emits Apple Button color properties updates.
+    var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> { get }
+
+    /// Publisher that emits Apple Button geometric properties updates.
+    var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> { get }
+
+    /// Publisher that emits Apple Button effect properties updates.
+    var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
+
     /// Publisher that emits group configuration updates.
     var groupsPublisher: AnyPublisher<[Domain.Group], Never> { get }
 
@@ -140,6 +152,14 @@ public protocol ConfigurationGateway {
     func setGlobalSpacesGeometricProperties(_ value: GeometricProperties) async
 
     func setGlobalSpacesEffectProperties(_ value: EffectProperties) async
+
+    func setShowAppleButtonAsSpace(_ value: Bool) async
+
+    func setAppleButtonColorProperties(_ value: ColorProperties) async
+
+    func setAppleButtonGeometricProperties(_ value: GeometricProperties) async
+
+    func setAppleButtonEffectProperties(_ value: EffectProperties) async
 
     func setGlobalGroupsGeometricProperties(_ value: GeometricProperties) async
 

@@ -9,6 +9,10 @@ import SwiftUI
 /// focus state, associated windows, and color properties.
 public struct Space: VisualContainer {
     public typealias AppearanceMode = SpacesAppearanceMode
+
+    /// The unique identifier used for the Apple Button virtual space.
+    public static let appleButtonId = "\u{F8FF}"
+
     /// The metadata configuration for Space entities.
     public static let metadata = VisualContainerMetadata(
         entityName: String(localized: LocalizedStringResource("Space")),
