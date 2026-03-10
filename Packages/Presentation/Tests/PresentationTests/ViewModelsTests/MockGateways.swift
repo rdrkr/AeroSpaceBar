@@ -327,6 +327,8 @@ final class MockConfigurationGateway: ConfigurationGateway {
         Never
     >(GeometricProperties())
     private let themePresetEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(EffectProperties())
+    private let quickHideEnabledSubject = CurrentValueSubject<Bool, Never>(true)
+    private let quickHideTriggerKeySubject = CurrentValueSubject<QuickHideTriggerKey, Never>(.fn)
     private let automaticCheckForUpdatesEnabledSubject = CurrentValueSubject<Bool, Never>(true)
     private let automaticDownloadUpdatesEnabledSubject = CurrentValueSubject<Bool, Never>(false)
     private let lastUpdateCheckDateSubject = CurrentValueSubject<Date?, Never>(nil)
@@ -453,6 +455,14 @@ final class MockConfigurationGateway: ConfigurationGateway {
         themePresetEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
+    var quickHideEnabledPublisher: AnyPublisher<Bool, Never> {
+        quickHideEnabledSubject.eraseToAnyPublisher()
+    }
+
+    var quickHideTriggerKeyPublisher: AnyPublisher<QuickHideTriggerKey, Never> {
+        quickHideTriggerKeySubject.eraseToAnyPublisher()
+    }
+
     var automaticCheckForUpdatesEnabledPublisher: AnyPublisher<Bool, Never> {
         automaticCheckForUpdatesEnabledSubject.eraseToAnyPublisher()
     }
@@ -574,6 +584,14 @@ final class MockConfigurationGateway: ConfigurationGateway {
         themePresetEffectPropertiesSubject.send(value)
     }
 
+    func setQuickHideEnabled(_ value: Bool) {
+        quickHideEnabledSubject.send(value)
+    }
+
+    func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
+        quickHideTriggerKeySubject.send(value)
+    }
+
     func setAutomaticCheckForUpdatesEnabled(_ value: Bool) {
         automaticCheckForUpdatesEnabledSubject.send(value)
     }
@@ -597,27 +615,22 @@ final class MockConfigurationGateway: ConfigurationGateway {
 }
 
 final class MockKeyboardShortcutsGateway: KeyboardShortcutsGateway {
-    private let globeKeyPressStateSubject: CurrentValueSubject<Bool, Never>
+    private let quickHideTriggerKeyPressStateSubject: CurrentValueSubject<Bool, Never>
 
-    init(globeKeyPressState: Bool = false) {
-        globeKeyPressStateSubject = CurrentValueSubject(globeKeyPressState)
+    init(quickHideTriggerKeyPressState: Bool = false) {
+        quickHideTriggerKeyPressStateSubject = CurrentValueSubject(quickHideTriggerKeyPressState)
     }
 
     /// Backward compatibility init
     init(isPressed: Bool) {
-        globeKeyPressStateSubject = CurrentValueSubject(isPressed)
+        quickHideTriggerKeyPressStateSubject = CurrentValueSubject(isPressed)
     }
 
-    var globeKeyPressStatePublisher: AnyPublisher<Bool, Never> {
-        globeKeyPressStateSubject.eraseToAnyPublisher()
+    var quickHideTriggerKeyPressStatePublisher: AnyPublisher<Bool, Never> {
+        quickHideTriggerKeyPressStateSubject.eraseToAnyPublisher()
     }
 
-    func emitGlobeKeyPressState(_ pressed: Bool) {
-        globeKeyPressStateSubject.send(pressed)
-    }
-
-    /// Backward compatibility method
-    func setGlobeKeyPressed(_ pressed: Bool) {
-        globeKeyPressStateSubject.send(pressed)
+    func emitQuickHideTriggerKeyPressState(_ pressed: Bool) {
+        quickHideTriggerKeyPressStateSubject.send(pressed)
     }
 }

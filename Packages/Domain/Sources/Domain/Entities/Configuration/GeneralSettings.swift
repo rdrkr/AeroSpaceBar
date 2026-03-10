@@ -16,7 +16,8 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
     Mode.ThemeModeType: Codable,
     Mode.ThemePresetColorPropertiesType: Codable,
     Mode.GeometricPropertiesType: Codable,
-    Mode.EffectPropertiesType: Codable
+    Mode.EffectPropertiesType: Codable,
+    Mode.QuickHideTriggerKeyType: Codable
 {
     /// Type alias for the optional variant used during TOML decoding.
     public typealias OptionalVariant = GeneralSettings<OptionalMode>
@@ -62,6 +63,18 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
     /// used by preset theme elements. Only used when themeMode is set to .preset.
     public let themePresetEffectProperties: Mode.EffectPropertiesType
 
+    /// Whether the Quick Hide feature is enabled.
+    ///
+    /// When enabled, holding the configured modifier key while hovering
+    /// over the menu bar will temporarily hide the spaces display.
+    public let quickHideEnabled: Mode.BoolType
+
+    /// The modifier key that triggers the Quick Hide feature.
+    ///
+    /// Determines which modifier key must be held while hovering over the
+    /// menu bar to temporarily hide the spaces display.
+    public let quickHideTriggerKey: Mode.QuickHideTriggerKeyType
+
     /// Initializes a new GeneralSettings instance.
     ///
     /// - Parameters:
@@ -71,13 +84,17 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
     ///   - themePresetColorProperties: The selected theme preset
     ///   - themePresetGeometricProperties: The geometric properties for theme preset elements
     ///   - themePresetEffectProperties: The effect properties for theme preset elements
+    ///   - quickHideEnabled: Whether the Quick Hide feature is enabled
+    ///   - quickHideTriggerKey: The modifier key that triggers the Quick Hide feature
     public init(
         showWindowTitles: Mode.BoolType,
         aeroSpacePath: Mode.StringType,
         themeMode: Mode.ThemeModeType,
         themePresetColorProperties: Mode.ThemePresetColorPropertiesType,
         themePresetGeometricProperties: Mode.GeometricPropertiesType,
-        themePresetEffectProperties: Mode.EffectPropertiesType
+        themePresetEffectProperties: Mode.EffectPropertiesType,
+        quickHideEnabled: Mode.BoolType,
+        quickHideTriggerKey: Mode.QuickHideTriggerKeyType
     ) {
         self.showWindowTitles = showWindowTitles
         self.aeroSpacePath = aeroSpacePath
@@ -85,6 +102,8 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
         self.themePresetColorProperties = themePresetColorProperties
         self.themePresetGeometricProperties = themePresetGeometricProperties
         self.themePresetEffectProperties = themePresetEffectProperties
+        self.quickHideEnabled = quickHideEnabled
+        self.quickHideTriggerKey = quickHideTriggerKey
     }
 
     enum CodingKeys: String, CodingKey {
@@ -94,6 +113,8 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
         case themePresetColorProperties = "theme-preset"
         case themePresetGeometricProperties = "theme-preset-geometric"
         case themePresetEffectProperties = "theme-preset-effect"
+        case quickHideEnabled = "quick-hide-enabled"
+        case quickHideTriggerKey = "quick-hide-trigger-key"
     }
 
     /// Decodes optional settings and merges with required defaults.
@@ -120,7 +141,9 @@ public class GeneralSettings<Mode: OptionalTypeMapping>: OptionalType
             themePresetGeometricProperties: decodedValue.themePresetGeometricProperties ?? defaultValue
                 .themePresetGeometricProperties,
             themePresetEffectProperties: decodedValue.themePresetEffectProperties ?? defaultValue
-                .themePresetEffectProperties
+                .themePresetEffectProperties,
+            quickHideEnabled: decodedValue.quickHideEnabled ?? defaultValue.quickHideEnabled,
+            quickHideTriggerKey: decodedValue.quickHideTriggerKey ?? defaultValue.quickHideTriggerKey
         )
     }
 }

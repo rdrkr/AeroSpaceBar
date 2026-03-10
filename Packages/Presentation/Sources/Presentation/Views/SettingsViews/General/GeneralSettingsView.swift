@@ -24,6 +24,28 @@ struct GeneralSettingsView: View {
         viewModel.themeMode == .preset
     }
 
+    /// A comma-separated list of all Quick Hide trigger keys with their unicode symbols and display names.
+    private var quickHideTriggerKeyList: Text {
+        QuickHideTriggerKey.allCases
+            .enumerated()
+            .map { index, key -> Text in
+                let entry = Text(Image(systemName: key.systemImageName)) + Text(verbatim: " ") + Text(key.displayName)
+                return index == 0 ? entry : Text(verbatim: ", ") + entry
+            }
+            .reduce(Text(verbatim: ""), +)
+    }
+
+    /// The footer description for the Quick Hide section, including all available modifier keys.
+    private var quickHideFooterDescription: Text {
+        Text(LocalizedStringResource("Hold the selected modifier key (")) +
+            quickHideTriggerKeyList +
+            Text(
+                LocalizedStringResource(
+                    ") and hover over the menu bar to temporarily hide spaces. Release to show them again."
+                )
+            )
+    }
+
     var body: some View {
         IntroForm(
             navigationTitle: navigationOption.name,
@@ -232,41 +254,27 @@ struct GeneralSettingsView: View {
                 .tag("general-aerospace-section")
             }
 
-            Section(LocalizedStringResource("Tips")) {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .top) {
-                        Image(systemName: "lightbulb.fill")
-                            .foregroundColor(.orange)
-                            .font(.system(size: 14))
-                            .tag("general-tip-icon")
+            Section {
+                SettingsToggle(
+                    title: LocalizedStringResource("Quick Hide"),
+                    description: LocalizedStringResource(
+                        "Hold the trigger key and hover over the menu bar to temporarily hide spaces."
+                    ),
+                    isOn: $viewModel.quickHideEnabled
+                )
+                .tag("general-quick-hide-toggle")
 
-                        VStack(alignment: .leading) {
-                            Text(LocalizedStringResource("Quick Hide Feature"))
-                                .font(.callout)
-                                .tag("general-tip-title")
-
-                            Group {
-                                HStack(alignment: .firstTextBaseline) {
-                                    Text(LocalizedStringResource("Hold"))
-                                    Image(systemName: "globe").foregroundColor(.secondary)
-                                    Text(
-                                        LocalizedStringResource(
-                                            "(Globe or Fn key) and hover over the menu bar to hide spaces."
-                                        )
-                                    )
-                                }
-
-                                Text(LocalizedStringResource("Release to show."))
-                            }
-                            .secondaryText()
-                            .fixedSize(horizontal: false, vertical: true)
-                            .tag("general-tip-description")
-                        }
-                    }
-                }
-                .tag("general-tips-container")
+                TriggerKeyRecorderView(triggerKey: $viewModel.quickHideTriggerKey)
+                    .disabled(!viewModel.quickHideEnabled)
+                    .opacity(viewModel.quickHideEnabled ? 1.0 : 0.5)
+                    .tag("general-quick-hide-trigger-key")
+            } header: {
+                Text(LocalizedStringResource("Quick Hide"))
+            } footer: {
+                quickHideFooterDescription
+                    .tag("general-quick-hide-description")
             }
-            .tag("general-tips-section")
+            .tag("general-quick-hide-section")
         }
         .animation(.themeEaseInOutFast, value: shouldShowThemePresetColorProperties)
         .tag("general-settings-view")

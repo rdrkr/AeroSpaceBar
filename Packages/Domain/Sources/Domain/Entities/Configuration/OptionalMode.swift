@@ -19,4 +19,5 @@ public struct OptionalMode: OptionalTypeMapping {
     public typealias ColorPropertiesType = ColorProperties?
     public typealias GeometricPropertiesType = GeometricProperties?
     public typealias EffectPropertiesType = EffectProperties?
+    public typealias QuickHideTriggerKeyType = QuickHideTriggerKey?
 }

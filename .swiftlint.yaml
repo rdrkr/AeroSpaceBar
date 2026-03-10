@@ -193,6 +193,7 @@ type_name:
 # Exclude files and directories
 excluded:
   - .build
+  - .claude
   - .generated.swift
   - build
   - Carthage

@@ -76,6 +76,24 @@ public class SettingsViewModel: ObservableObject {
         ThemeMode.allCases.filter(\.isAvailable)
     }
 
+    /// Whether the Quick Hide feature is enabled.
+    @Published var quickHideEnabled: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setQuickHideEnabledUseCase.execute(value: quickHideEnabled)
+            }
+        }
+    }
+
+    /// The modifier key that triggers the Quick Hide feature.
+    @Published var quickHideTriggerKey: QuickHideTriggerKey {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setQuickHideTriggerKeyUseCase.execute(value: quickHideTriggerKey)
+            }
+        }
+    }
+
     /// The current theme preset.
     @Published var themePresetColorProperties: ThemePresetColorProperties {
         didSet {
@@ -227,6 +245,13 @@ public class SettingsViewModel: ObservableObject {
     private let getThemePresetColorPropertiesUseCase: GetThemePresetColorPropertiesUseCase
     private let setThemePresetColorPropertiesUseCase: SetThemePresetColorPropertiesUseCase
 
+    // MARK: - Quick Hide Use Cases
+
+    private let getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase
+    private let setQuickHideEnabledUseCase: SetQuickHideEnabledUseCase
+    private let getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase
+    private let setQuickHideTriggerKeyUseCase: SetQuickHideTriggerKeyUseCase
+
     // MARK: - Software Update Use Cases
 
     private let getAutomaticCheckForUpdatesEnabledUseCase: GetAutomaticCheckForUpdatesEnabledUseCase
@@ -273,6 +298,10 @@ public class SettingsViewModel: ObservableObject {
     ///   - setAutomaticDownloadUpdatesEnabledUseCase: Use case to set automatic download updates enabled setting.
     ///   - getLastUpdateCheckDateUseCase: Use case to get last update check date.
     ///   - checkForUpdatesUseCase: Use case to manually check for updates.
+    ///   - getQuickHideEnabledUseCase: Use case to get Quick Hide enabled state.
+    ///   - setQuickHideEnabledUseCase: Use case to set Quick Hide enabled state.
+    ///   - getQuickHideTriggerKeyUseCase: Use case to get Quick Hide trigger key.
+    ///   - setQuickHideTriggerKeyUseCase: Use case to set Quick Hide trigger key.
     init(
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getScreenCapturePermissionGrantedUseCase: GetScreenCapturePermissionGrantedUseCase,
@@ -303,7 +332,11 @@ public class SettingsViewModel: ObservableObject {
         getAutomaticDownloadUpdatesEnabledUseCase: GetAutomaticDownloadUpdatesEnabledUseCase,
         setAutomaticDownloadUpdatesEnabledUseCase: SetAutomaticDownloadUpdatesEnabledUseCase,
         getLastUpdateCheckDateUseCase: GetLastUpdateCheckDateUseCase,
-        checkForUpdatesUseCase: CheckForUpdatesUseCase
+        checkForUpdatesUseCase: CheckForUpdatesUseCase,
+        getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase,
+        setQuickHideEnabledUseCase: SetQuickHideEnabledUseCase,
+        getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase,
+        setQuickHideTriggerKeyUseCase: SetQuickHideTriggerKeyUseCase
     ) {
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
@@ -333,6 +366,12 @@ public class SettingsViewModel: ObservableObject {
         self.getThemePresetColorPropertiesUseCase = getThemePresetColorPropertiesUseCase
         self.setThemePresetColorPropertiesUseCase = setThemePresetColorPropertiesUseCase
 
+        // Initialize Quick Hide Use Cases
+        self.getQuickHideEnabledUseCase = getQuickHideEnabledUseCase
+        self.setQuickHideEnabledUseCase = setQuickHideEnabledUseCase
+        self.getQuickHideTriggerKeyUseCase = getQuickHideTriggerKeyUseCase
+        self.setQuickHideTriggerKeyUseCase = setQuickHideTriggerKeyUseCase
+
         // Initialize Software Update Use Cases
         self.getAutomaticCheckForUpdatesEnabledUseCase = getAutomaticCheckForUpdatesEnabledUseCase
         self.setAutomaticCheckForUpdatesEnabledUseCase = setAutomaticCheckForUpdatesEnabledUseCase
@@ -353,6 +392,8 @@ public class SettingsViewModel: ObservableObject {
         configFilePath = getConfigFilePathUseCase.execute().blockingFirst()
         themeMode = getThemeModeUseCase.execute().blockingFirst()
         themePresetColorProperties = getThemePresetColorPropertiesUseCase.execute().blockingFirst()
+        quickHideEnabled = getQuickHideEnabledUseCase.execute().blockingFirst()
+        quickHideTriggerKey = getQuickHideTriggerKeyUseCase.execute().blockingFirst()
         automaticCheckForUpdatesEnabled = getAutomaticCheckForUpdatesEnabledUseCase.execute().blockingFirst()
         automaticDownloadUpdatesEnabled = getAutomaticDownloadUpdatesEnabledUseCase.execute().blockingFirst()
         lastUpdateCheckDate = getLastUpdateCheckDateUseCase.execute().blockingFirst()
@@ -641,6 +682,14 @@ public class SettingsViewModel: ObservableObject {
 
         getThemePresetColorPropertiesUseCase.execute()
             .assign(to: \.themePresetColorProperties, on: self)
+            .store(in: &cancellables)
+
+        getQuickHideEnabledUseCase.execute()
+            .assign(to: \.quickHideEnabled, on: self)
+            .store(in: &cancellables)
+
+        getQuickHideTriggerKeyUseCase.execute()
+            .assign(to: \.quickHideTriggerKey, on: self)
             .store(in: &cancellables)
 
         getAutomaticCheckForUpdatesEnabledUseCase.execute()

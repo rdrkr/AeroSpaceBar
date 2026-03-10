@@ -165,8 +165,11 @@ final class SpacesViewModelTests: XCTestCase {
             setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase(
                 configurationGateway: mockConfigurationGateway
             ),
-            getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase(
+            getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase(
                 keyboardShortcutsGateway: mockKeyboardShortcutsGateway
+            ),
+            getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase(
+                configurationGateway: mockConfigurationGateway
             )
         )
     }

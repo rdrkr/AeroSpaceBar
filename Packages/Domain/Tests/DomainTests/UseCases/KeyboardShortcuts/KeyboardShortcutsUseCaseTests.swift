@@ -8,7 +8,7 @@ import XCTest
 /// Tests for KeyboardShortcuts UseCases.
 ///
 /// These tests verify:
-/// - GetGlobeKeyPressStateUseCase
+/// - GetQuickHideTriggerKeyPressStateUseCase
 @MainActor
 final class KeyboardShortcutsUseCaseTests: XCTestCase {
     private var mockGateway: MockKeyboardShortcutsGateway?
@@ -20,17 +20,17 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         cancellables = []
     }
 
-    // MARK: - GetGlobeKeyPressStateUseCase Tests
+    // MARK: - GetQuickHideTriggerKeyPressStateUseCase Tests
 
-    func testGetGlobeKeyPressStateWhenReleased() {
+    func testGetQuickHideTriggerKeyPressStateWhenReleased() {
         guard let mockGateway, var cancellables else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(false)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var receivedState: Bool?
 
         // When
@@ -43,15 +43,15 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         expect(receivedState ?? true) == false
     }
 
-    func testGetGlobeKeyPressStateWhenPressed() {
+    func testGetQuickHideTriggerKeyPressStateWhenPressed() {
         guard let mockGateway, var cancellables else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(true)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var receivedState: Bool?
 
         // When
@@ -66,15 +66,15 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
 
     // MARK: - State Toggle Tests
 
-    func testGlobeKeyStateTransitionFromReleasedToPressed() {
+    func testQuickHideTriggerKeyStateTransitionFromReleasedToPressed() {
         guard let mockGateway, var cancellables else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(false)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var receivedStateInitial: Bool?
 
         // When - Get initial state (released)
@@ -86,7 +86,7 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         expect(receivedStateInitial ?? true) == false
 
         // When - Simulate key press
-        mockGateway.emitGlobeKeyPressState(true)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
         cancellables.removeAll()
         var receivedStatePressed: Bool?
         useCase.execute()
@@ -97,15 +97,15 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         expect(receivedStatePressed ?? false) == true
     }
 
-    func testGlobeKeyStateTransitionFromPressedToReleased() {
+    func testQuickHideTriggerKeyStateTransitionFromPressedToReleased() {
         guard let mockGateway, var cancellables else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(true)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var receivedStateInitial: Bool?
 
         // When - Get initial state (pressed)
@@ -117,7 +117,7 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         expect(receivedStateInitial ?? false) == true
 
         // When - Simulate key release
-        mockGateway.emitGlobeKeyPressState(false)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
         cancellables.removeAll()
         var receivedStateReleased: Bool?
         useCase.execute()
@@ -137,8 +137,8 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(false)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var emittedValues: [Bool] = []
 
         // When
@@ -151,7 +151,7 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         expect(emittedValues[0]) == false
 
         // When - Change state and re-subscribe
-        mockGateway.emitGlobeKeyPressState(true)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
         cancellables.removeAll()
         var emittedValuesAfterChange: [Bool] = []
         useCase.execute()
@@ -172,8 +172,8 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         }
 
         // Given
-        mockGateway.emitGlobeKeyPressState(true)
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
 
         var receivedValue1: Bool?
         var receivedValue2: Bool?
@@ -209,11 +209,11 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         }
 
         // Given
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockGateway)
         var stateHistory: [Bool] = []
 
         // When - Perform multiple state changes
-        mockGateway.emitGlobeKeyPressState(false)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
         var receivedValue: Bool?
         useCase.execute()
             .sink { value in receivedValue = value }
@@ -221,7 +221,7 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         stateHistory.append(receivedValue ?? false)
 
         // Simulate press
-        mockGateway.emitGlobeKeyPressState(true)
+        mockGateway.emitQuickHideTriggerKeyPressState(true)
         cancellables.removeAll()
         useCase.execute()
             .sink { value in receivedValue = value }
@@ -229,7 +229,7 @@ final class KeyboardShortcutsUseCaseTests: XCTestCase {
         stateHistory.append(receivedValue ?? false)
 
         // Simulate release
-        mockGateway.emitGlobeKeyPressState(false)
+        mockGateway.emitQuickHideTriggerKeyPressState(false)
         cancellables.removeAll()
         useCase.execute()
             .sink { value in receivedValue = value }

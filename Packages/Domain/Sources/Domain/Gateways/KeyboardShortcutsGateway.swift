@@ -12,7 +12,7 @@ import Combine
 public protocol KeyboardShortcutsGateway {
     // MARK: - Publishers for Reactive Data Flow
 
-    /// Publisher that emits globe key press state updates.
-    /// Emits true when the globe/fn key is pressed, false when released.
-    var globeKeyPressStatePublisher: AnyPublisher<Bool, Never> { get }
+    /// Publisher that emits Quick Hide trigger key press state updates.
+    /// Emits true when the configured trigger key is pressed, false when released.
+    var quickHideTriggerKeyPressStatePublisher: AnyPublisher<Bool, Never> { get }
 }

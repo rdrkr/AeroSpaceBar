@@ -60,11 +60,15 @@ public final class DependencyContainer {
     ///
     /// This gateway is lazily initialized and provides monitoring of
     /// keyboard shortcuts and key press states.
-    private lazy var keyboardShortcutsGateway: KeyboardShortcutsGateway = KeyboardShortcutsRepository()
+    private lazy var keyboardShortcutsGateway: KeyboardShortcutsGateway = KeyboardShortcutsRepository(
+        getQuickHideTriggerKeyUseCase: makeGetQuickHideTriggerKeyUseCase()
+    )
 
     /// The AppViewModel instance.
     private lazy var appViewModel: AppViewModel = .init(
-        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase()
+        getQuickHideTriggerKeyPressStateUseCase: makeGetQuickHideTriggerKeyPressStateUseCase(),
+        getQuickHideEnabledUseCase: makeGetQuickHideEnabledUseCase(),
+        getQuickHideTriggerKeyUseCase: makeGetQuickHideTriggerKeyUseCase()
     )
 
     /// The SettingsViewModel instance.
@@ -98,7 +102,11 @@ public final class DependencyContainer {
         getAutomaticDownloadUpdatesEnabledUseCase: makeGetAutomaticDownloadUpdatesEnabledUseCase(),
         setAutomaticDownloadUpdatesEnabledUseCase: makeSetAutomaticDownloadUpdatesEnabledUseCase(),
         getLastUpdateCheckDateUseCase: makeGetLastUpdateCheckDateUseCase(),
-        checkForUpdatesUseCase: makeCheckForUpdatesUseCase()
+        checkForUpdatesUseCase: makeCheckForUpdatesUseCase(),
+        getQuickHideEnabledUseCase: makeGetQuickHideEnabledUseCase(),
+        setQuickHideEnabledUseCase: makeSetQuickHideEnabledUseCase(),
+        getQuickHideTriggerKeyUseCase: makeGetQuickHideTriggerKeyUseCase(),
+        setQuickHideTriggerKeyUseCase: makeSetQuickHideTriggerKeyUseCase()
     )
 
     /// The SpacesViewModel instance.
@@ -138,7 +146,6 @@ public final class DependencyContainer {
         setThemePresetGeometricPropertiesUseCase: makeSetThemePresetGeometricPropertiesUseCase(),
         getThemePresetEffectPropertiesUseCase: makeGetThemePresetEffectPropertiesUseCase(),
         setThemePresetEffectPropertiesUseCase: makeSetThemePresetEffectPropertiesUseCase(),
-        getGlobeKeyPressStateUseCase: makeGetGlobeKeyPressStateUseCase(),
         getShowAppleButtonAsSpaceUseCase: makeGetShowAppleButtonAsSpaceUseCase(),
         setShowAppleButtonAsSpaceUseCase: makeSetShowAppleButtonAsSpaceUseCase(),
         getAppleButtonColorPropertiesUseCase: makeGetAppleButtonColorPropertiesUseCase(),
@@ -146,7 +153,9 @@ public final class DependencyContainer {
         getAppleButtonGeometricPropertiesUseCase: makeGetAppleButtonGeometricPropertiesUseCase(),
         setAppleButtonGeometricPropertiesUseCase: makeSetAppleButtonGeometricPropertiesUseCase(),
         getAppleButtonEffectPropertiesUseCase: makeGetAppleButtonEffectPropertiesUseCase(),
-        setAppleButtonEffectPropertiesUseCase: makeSetAppleButtonEffectPropertiesUseCase()
+        setAppleButtonEffectPropertiesUseCase: makeSetAppleButtonEffectPropertiesUseCase(),
+        getQuickHideTriggerKeyPressStateUseCase: makeGetQuickHideTriggerKeyPressStateUseCase(),
+        getQuickHideEnabledUseCase: makeGetQuickHideEnabledUseCase()
     )
 
     /// The LicenseViewModel instance.
@@ -747,12 +756,38 @@ public final class DependencyContainer {
         GetMenuBarVisibilityUseCase(systemMenuBarGateway: systemMenuBarGateway)
     }
 
+    // MARK: - Quick Hide Use Cases
+
+    /// Creates a new GetQuickHideEnabledUseCase instance.
+    /// - Returns: A new GetQuickHideEnabledUseCase instance
+    func makeGetQuickHideEnabledUseCase() -> GetQuickHideEnabledUseCase {
+        GetQuickHideEnabledUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetQuickHideEnabledUseCase instance.
+    /// - Returns: A new SetQuickHideEnabledUseCase instance
+    func makeSetQuickHideEnabledUseCase() -> SetQuickHideEnabledUseCase {
+        SetQuickHideEnabledUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetQuickHideTriggerKeyUseCase instance.
+    /// - Returns: A new GetQuickHideTriggerKeyUseCase instance
+    func makeGetQuickHideTriggerKeyUseCase() -> GetQuickHideTriggerKeyUseCase {
+        GetQuickHideTriggerKeyUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetQuickHideTriggerKeyUseCase instance.
+    /// - Returns: A new SetQuickHideTriggerKeyUseCase instance
+    func makeSetQuickHideTriggerKeyUseCase() -> SetQuickHideTriggerKeyUseCase {
+        SetQuickHideTriggerKeyUseCase(configurationGateway: configurationGateway)
+    }
+
     // MARK: - Keyboard Shortcuts Use Cases
 
-    /// Creates a new GetGlobeKeyPressStateUseCase instance.
-    /// - Returns: A new GetGlobeKeyPressStateUseCase instance
-    func makeGetGlobeKeyPressStateUseCase() -> GetGlobeKeyPressStateUseCase {
-        GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: keyboardShortcutsGateway)
+    /// Creates a new GetQuickHideTriggerKeyPressStateUseCase instance.
+    /// - Returns: A new GetQuickHideTriggerKeyPressStateUseCase instance
+    func makeGetQuickHideTriggerKeyPressStateUseCase() -> GetQuickHideTriggerKeyPressStateUseCase {
+        GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: keyboardShortcutsGateway)
     }
 
     // MARK: - Feature Flags Use Cases

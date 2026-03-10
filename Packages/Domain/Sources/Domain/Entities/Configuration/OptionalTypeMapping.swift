@@ -51,6 +51,10 @@ public protocol OptionalTypeMapping: Codable {
     /// Associated type for effect properties (EffectProperties for required, EffectProperties? for optional).
     associatedtype EffectPropertiesType
 
+    /// Associated type for quick hide trigger key (QuickHideTriggerKey for required, QuickHideTriggerKey? for
+    /// optional).
+    associatedtype QuickHideTriggerKeyType: Codable
+
     /// Associated type for general settings (GeneralSettings<RequiredMode> for required, GeneralSettings<RequiredMode>?
     /// for optional).
     associatedtype GeneralSettingsType

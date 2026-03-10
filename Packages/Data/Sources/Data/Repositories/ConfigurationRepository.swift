@@ -173,6 +173,16 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.themePresetEffectProperties
     )
 
+    /// Subject for Quick Hide enabled state.
+    private let quickHideEnabledSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.quickHideEnabled
+    )
+
+    /// Subject for Quick Hide trigger key.
+    private let quickHideTriggerKeySubject = CurrentValueSubject<QuickHideTriggerKey, Never>(
+        ConfigurationDefaults.quickHideTriggerKey
+    )
+
     // MARK: - Publishers
 
     public var showWindowTitlesPublisher: AnyPublisher<Bool, Never> {
@@ -301,6 +311,14 @@ public final class ConfigurationRepository: ConfigurationGateway {
         themePresetEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
+    public var quickHideEnabledPublisher: AnyPublisher<Bool, Never> {
+        quickHideEnabledSubject.eraseToAnyPublisher()
+    }
+
+    public var quickHideTriggerKeyPublisher: AnyPublisher<QuickHideTriggerKey, Never> {
+        quickHideTriggerKeySubject.eraseToAnyPublisher()
+    }
+
     private var advancedSettings: AdvancedSettings<RequiredMode> {
         get {
             AdvancedSettings<RequiredMode>(
@@ -331,7 +349,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
                 themeMode: themeModeSubject.value,
                 themePresetColorProperties: themePresetColorPropertiesSubject.value,
                 themePresetGeometricProperties: themePresetGeometricPropertiesSubject.value,
-                themePresetEffectProperties: themePresetEffectPropertiesSubject.value
+                themePresetEffectProperties: themePresetEffectPropertiesSubject.value,
+                quickHideEnabled: quickHideEnabledSubject.value,
+                quickHideTriggerKey: quickHideTriggerKeySubject.value
             )
         }
 
@@ -342,6 +362,8 @@ public final class ConfigurationRepository: ConfigurationGateway {
             themePresetColorPropertiesSubject.send(newValue.themePresetColorProperties)
             themePresetGeometricPropertiesSubject.send(newValue.themePresetGeometricProperties)
             themePresetEffectPropertiesSubject.send(newValue.themePresetEffectProperties)
+            quickHideEnabledSubject.send(newValue.quickHideEnabled)
+            quickHideTriggerKeySubject.send(newValue.quickHideTriggerKey)
         }
     }
 
@@ -881,6 +903,30 @@ public final class ConfigurationRepository: ConfigurationGateway {
         }
     }
 
+    /// Sets the Quick Hide enabled state and emits update.
+    public func setQuickHideEnabled(_ value: Bool) {
+        if value == quickHideEnabledSubject.value { return }
+
+        quickHideEnabledSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the Quick Hide trigger key and emits update.
+    public func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
+        if value == quickHideTriggerKeySubject.value { return }
+
+        quickHideTriggerKeySubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
     // MARK: - AeroSpace Integration
 
     /// Sets up observers for the configuration repository.
@@ -1021,6 +1067,8 @@ public final class ConfigurationRepository: ConfigurationGateway {
         themePresetColorPropertiesSubject.send(ConfigurationDefaults.themePresetColorProperties)
         themePresetGeometricPropertiesSubject.send(ConfigurationDefaults.themePresetGeometricProperties)
         themePresetEffectPropertiesSubject.send(ConfigurationDefaults.themePresetEffectProperties)
+        quickHideEnabledSubject.send(ConfigurationDefaults.quickHideEnabled)
+        quickHideTriggerKeySubject.send(ConfigurationDefaults.quickHideTriggerKey)
 
         isUpdatingFromFile = false
 

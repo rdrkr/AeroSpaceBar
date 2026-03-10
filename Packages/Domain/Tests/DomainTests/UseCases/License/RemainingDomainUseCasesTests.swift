@@ -144,7 +144,7 @@ final class RemainingDomainUseCasesTests: XCTestCase {
 
     // MARK: - KeyboardShortcuts Use Case Tests
 
-    func testGetGlobeKeyPressState() async {
+    func testGetQuickHideTriggerKeyPressState() async {
         guard
             let mockKeyboardGateway,
             var cancellables
@@ -154,8 +154,8 @@ final class RemainingDomainUseCasesTests: XCTestCase {
         }
 
         // Given
-        mockKeyboardGateway.globeKeyPressStateToEmit = true
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockKeyboardGateway)
+        mockKeyboardGateway.quickHideTriggerKeyPressStateToEmit = true
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockKeyboardGateway)
 
         // When
         var result: Bool?
@@ -457,13 +457,13 @@ final class RemainingDomainUseCasesTests: XCTestCase {
         }
 
         // Given keyboard shortcut use case
-        let useCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: mockKeyboardGateway)
+        let useCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: mockKeyboardGateway)
 
         // When - Monitor different states
         let states: [Bool] = [true, false, true]
 
         for state in states {
-            mockKeyboardGateway.globeKeyPressStateToEmit = state
+            mockKeyboardGateway.quickHideTriggerKeyPressStateToEmit = state
 
             var result: Bool?
             useCase.execute()

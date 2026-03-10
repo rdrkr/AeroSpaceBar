@@ -9,34 +9,46 @@ import XCTest
 /// Tests for AppViewModel.
 ///
 /// These tests verify app-level state management including:
-/// - Initialization with globe key state
+/// - Initialization with Quick Hide trigger key state
 /// - Reactive updates from keyboard shortcuts
 /// - Publisher subscriptions
 @MainActor
 final class AppViewModelTests: XCTestCase {
     private var viewModel: AppViewModel?
     private var mockKeyboardShortcutsGateway: MockKeyboardShortcutsGateway?
+    private var mockConfigurationGateway: MockConfigurationGateway?
     private var cancellables: Set<AnyCancellable>?
 
     override func setUp() async throws {
         try await super.setUp()
         cancellables = Set<AnyCancellable>()
 
-        // Initialize with globe key not pressed using real use case with mock gateway
+        // Initialize with trigger key not pressed using real use cases with mock gateways
         mockKeyboardShortcutsGateway = MockKeyboardShortcutsGateway(isPressed: false)
-        guard let keyboardGateway = mockKeyboardShortcutsGateway else {
-            XCTFail("MockKeyboardShortcutsGateway should be initialized")
+        mockConfigurationGateway = MockConfigurationGateway()
+        guard
+            let keyboardGateway = mockKeyboardShortcutsGateway,
+            let configGateway = mockConfigurationGateway
+        else {
+            XCTFail("Mock gateways should be initialized")
             return
         }
 
-        let realUseCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: keyboardGateway)
+        let pressStateUseCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: keyboardGateway)
+        let enabledUseCase = GetQuickHideEnabledUseCase(configurationGateway: configGateway)
+        let triggerKeyUseCase = GetQuickHideTriggerKeyUseCase(configurationGateway: configGateway)
 
-        viewModel = AppViewModel(getGlobeKeyPressStateUseCase: realUseCase)
+        viewModel = AppViewModel(
+            getQuickHideTriggerKeyPressStateUseCase: pressStateUseCase,
+            getQuickHideEnabledUseCase: enabledUseCase,
+            getQuickHideTriggerKeyUseCase: triggerKeyUseCase
+        )
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
         viewModel = nil
+        mockConfigurationGateway = nil
         cancellables = nil
     }
 
@@ -49,30 +61,37 @@ final class AppViewModelTests: XCTestCase {
             return
         }
 
-        // Then should have initial globe key state
-        expect(viewModel.isGlobeKeyPressed) == false
+        // Then should have initial trigger key state
+        expect(viewModel.isQuickHideTriggerKeyPressed) == false
     }
 
-    func testInitializationWithGlobeKeyPressed() {
-        // Given globe key is pressed
+    func testInitializationWithQuickHideTriggerKeyPressed() {
+        // Given trigger key is pressed
         mockKeyboardShortcutsGateway = MockKeyboardShortcutsGateway(isPressed: true)
+        let configGateway = MockConfigurationGateway()
         guard let keyboardGateway = mockKeyboardShortcutsGateway else {
             XCTFail("MockKeyboardShortcutsGateway should be initialized")
             return
         }
 
-        let realUseCase = GetGlobeKeyPressStateUseCase(keyboardShortcutsGateway: keyboardGateway)
+        let pressStateUseCase = GetQuickHideTriggerKeyPressStateUseCase(keyboardShortcutsGateway: keyboardGateway)
+        let enabledUseCase = GetQuickHideEnabledUseCase(configurationGateway: configGateway)
+        let triggerKeyUseCase = GetQuickHideTriggerKeyUseCase(configurationGateway: configGateway)
 
         // When initializing view model
-        viewModel = AppViewModel(getGlobeKeyPressStateUseCase: realUseCase)
+        viewModel = AppViewModel(
+            getQuickHideTriggerKeyPressStateUseCase: pressStateUseCase,
+            getQuickHideEnabledUseCase: enabledUseCase,
+            getQuickHideTriggerKeyUseCase: triggerKeyUseCase
+        )
 
         // Then should reflect pressed state
-        expect(self.viewModel?.isGlobeKeyPressed) == true
+        expect(self.viewModel?.isQuickHideTriggerKeyPressed) == true
     }
 
     // MARK: - Reactive Updates Tests
 
-    func testGlobeKeyPressStateUpdates() {
+    func testQuickHideTriggerKeyPressStateUpdates() {
         // Given view model subscribed to state
         guard let viewModel else {
             XCTFail("ViewModel should be initialized")
@@ -84,11 +103,11 @@ final class AppViewModelTests: XCTestCase {
             return
         }
 
-        let expectation = XCTestExpectation(description: "Globe key state updates")
+        let expectation = XCTestExpectation(description: "Quick Hide trigger key state updates")
         expectation.expectedFulfillmentCount = 2 // Initial + update
 
         var receivedStates: [Bool] = []
-        viewModel.$isGlobeKeyPressed
+        viewModel.$isQuickHideTriggerKeyPressed
             .sink { state in
                 receivedStates.append(state)
                 expectation.fulfill()
@@ -98,8 +117,8 @@ final class AppViewModelTests: XCTestCase {
         // Assign updated cancellables back to class property
         self.cancellables = cancellables
 
-        // When globe key state changes
-        mockKeyboardShortcutsGateway?.setGlobeKeyPressed(true)
+        // When trigger key state changes
+        mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(true)
 
         wait(for: [expectation], timeout: 1.0)
 
@@ -109,7 +128,7 @@ final class AppViewModelTests: XCTestCase {
         expect(receivedStates[1]) == true
     }
 
-    func testGlobeKeyPressStateMultipleUpdates() {
+    func testQuickHideTriggerKeyPressStateMultipleUpdates() {
         // Given view model
         guard let viewModel else {
             XCTFail("ViewModel should be initialized")
@@ -124,7 +143,7 @@ final class AppViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Multiple updates")
         var updateCount = 0
 
-        viewModel.$isGlobeKeyPressed
+        viewModel.$isQuickHideTriggerKeyPressed
             .dropFirst() // Skip initial value
             .sink { _ in
                 updateCount += 1
@@ -138,9 +157,9 @@ final class AppViewModelTests: XCTestCase {
         self.cancellables = cancellables
 
         // When state changes multiple times
-        mockKeyboardShortcutsGateway?.setGlobeKeyPressed(true)
-        mockKeyboardShortcutsGateway?.setGlobeKeyPressed(false)
-        mockKeyboardShortcutsGateway?.setGlobeKeyPressed(true)
+        mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(true)
+        mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(false)
+        mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(true)
 
         wait(for: [expectation], timeout: 1.0)
 
@@ -184,8 +203,8 @@ final class AppViewModelTests: XCTestCase {
         // Assign updated cancellables back to class property
         self.cancellables = cancellables
 
-        // When globe key state changes
-        mockKeyboardShortcutsGateway?.setGlobeKeyPressed(true)
+        // When trigger key state changes
+        mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(true)
 
         // Allow RunLoop to process updates
         RunLoop.main.run(until: Date().addingTimeInterval(0.1))
@@ -212,7 +231,7 @@ final class AppViewModelTests: XCTestCase {
 
         var receivedStates: [Bool] = []
 
-        viewModel.$isGlobeKeyPressed
+        viewModel.$isQuickHideTriggerKeyPressed
             .sink { state in
                 receivedStates.append(state)
             }
@@ -223,7 +242,7 @@ final class AppViewModelTests: XCTestCase {
 
         // When rapid state changes occur
         for i in 0 ..< 10 {
-            mockKeyboardShortcutsGateway?.setGlobeKeyPressed(i.isMultiple(of: 2))
+            mockKeyboardShortcutsGateway?.emitQuickHideTriggerKeyPressState(i.isMultiple(of: 2))
         }
 
         // Wait for updates to propagate
@@ -240,6 +259,7 @@ final class AppViewModelTests: XCTestCase {
         // When deallocating view model and breaking all references
         cancellables = nil
         mockKeyboardShortcutsGateway = nil
+        mockConfigurationGateway = nil
         viewModel = nil
 
         // Then should be deallocated

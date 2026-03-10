@@ -10,7 +10,7 @@ import XCTest
 ///
 /// These tests verify NSEvent monitoring for keyboard shortcuts including:
 /// - Repository initialization and monitor setup
-/// - Globe key press state publisher
+/// - Quick Hide trigger key press state publisher
 /// - Monitor cleanup on deinitialization
 ///
 /// Note: Actual NSEvent behavior is difficult to test in unit tests as it
@@ -19,17 +19,26 @@ import XCTest
 @MainActor
 final class KeyboardShortcutsRepositoryTests: XCTestCase {
     private var repository: KeyboardShortcutsRepository?
+    private var mockConfigGateway: MockConfigurationGateway?
     private var cancellables = Set<AnyCancellable>()
 
     override func setUp() async throws {
         try await super.setUp()
         cancellables = []
-        repository = KeyboardShortcutsRepository()
+        mockConfigGateway = MockConfigurationGateway()
+        guard let configGateway = mockConfigGateway else {
+            XCTFail("MockConfigurationGateway should be initialized")
+            return
+        }
+
+        let useCase = GetQuickHideTriggerKeyUseCase(configurationGateway: configGateway)
+        repository = KeyboardShortcutsRepository(getQuickHideTriggerKeyUseCase: useCase)
     }
 
     override func tearDown() async throws {
         cancellables.removeAll()
         repository = nil
+        mockConfigGateway = nil
         try await super.tearDown()
     }
 
@@ -44,8 +53,8 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
 
     func testInitializationSetsUpPublisher() {
         // Given repository initialized
-        // When accessing globe key publisher
-        let publisher = repository?.globeKeyPressStatePublisher
+        // When accessing trigger key publisher
+        let publisher = repository?.quickHideTriggerKeyPressStatePublisher
 
         // Then publisher should be available
         expect(publisher).toNot(beNil())
@@ -53,21 +62,21 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
 
     // MARK: - Publisher Tests
 
-    func testGlobeKeyPressStatePublisherType() {
+    func testQuickHideTriggerKeyPressStatePublisherType() {
         // Given repository with publisher
-        let publisher = repository?.globeKeyPressStatePublisher
+        let publisher = repository?.quickHideTriggerKeyPressStatePublisher
 
         // When checking publisher type
         // Then should be correct type
         expect(publisher).to(beAKindOf(AnyPublisher<Bool, Never>?.self))
     }
 
-    func testGlobeKeyPressStatePublisherEmitsValues() {
+    func testQuickHideTriggerKeyPressStatePublisherEmitsValues() {
         // Given repository with publisher
         var receivedValue: Bool?
 
         // When subscribing to publisher
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 receivedValue = state
             }
@@ -83,13 +92,13 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
         var received2 = false
 
         // When multiple subscribers subscribe
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { _ in
                 received1 = true
             }
             .store(in: &cancellables)
 
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { _ in
                 received2 = true
             }
@@ -104,7 +113,12 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
 
     func testRepositoryDeinitializationCleansUpMonitors() {
         // Given repository instance
-        var testRepository: KeyboardShortcutsRepository? = KeyboardShortcutsRepository()
+        guard let mockConfigGateway else { return }
+
+        let useCase = GetQuickHideTriggerKeyUseCase(configurationGateway: mockConfigGateway)
+        var testRepository: KeyboardShortcutsRepository? = KeyboardShortcutsRepository(
+            getQuickHideTriggerKeyUseCase: useCase
+        )
         expect(testRepository).toNot(beNil())
 
         // When deallocating repository
@@ -115,18 +129,22 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
     }
 
     func testMultipleRepositoryInstances() {
+        guard let mockConfigGateway else { return }
+
         // Given multiple repository instances
-        let repository1 = KeyboardShortcutsRepository()
-        let repository2 = KeyboardShortcutsRepository()
+        let useCase1 = GetQuickHideTriggerKeyUseCase(configurationGateway: mockConfigGateway)
+        let useCase2 = GetQuickHideTriggerKeyUseCase(configurationGateway: mockConfigGateway)
+        let repository1 = KeyboardShortcutsRepository(getQuickHideTriggerKeyUseCase: useCase1)
+        let repository2 = KeyboardShortcutsRepository(getQuickHideTriggerKeyUseCase: useCase2)
         var received1 = false
         var received2 = false
 
         // When accessing both publishers
-        repository1.globeKeyPressStatePublisher
+        repository1.quickHideTriggerKeyPressStatePublisher
             .sink { _ in received1 = true }
             .store(in: &cancellables)
 
-        repository2.globeKeyPressStatePublisher
+        repository2.quickHideTriggerKeyPressStatePublisher
             .sink { _ in received2 = true }
             .store(in: &cancellables)
 
@@ -143,7 +161,7 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
         var value2: Bool?
 
         // When subscribing twice at different times
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 value1 = state
             }
@@ -152,7 +170,7 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
         // Wait for first value
         expect(value1).toEventuallyNot(beNil())
 
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 value2 = state
             }
@@ -167,7 +185,7 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
 
     func testPublisherAfterCancellation() {
         // Given repository with cancelled subscription
-        var cancellable: AnyCancellable? = repository?.globeKeyPressStatePublisher
+        var cancellable: AnyCancellable? = repository?.quickHideTriggerKeyPressStatePublisher
             .sink { _ in }
 
         cancellable?.cancel()
@@ -176,7 +194,7 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
         // When subscribing again
         var received = false
 
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { _ in
                 received = true
             }
@@ -194,14 +212,14 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
         for _ in 0 ..< 10 {
             guard let repository else { return }
 
-            let cancellable = repository.globeKeyPressStatePublisher.sink { _ in }
+            let cancellable = repository.quickHideTriggerKeyPressStatePublisher.sink { _ in }
             cancellable.cancel()
         }
 
         // Then should remain stable
         var stillWorks = false
 
-        repository?.globeKeyPressStatePublisher
+        repository?.quickHideTriggerKeyPressStatePublisher
             .sink { _ in
                 stillWorks = true
             }
@@ -221,7 +239,7 @@ final class KeyboardShortcutsRepositoryTests: XCTestCase {
             var taskCancellables = Set<AnyCancellable>()
 
             repository
-                .globeKeyPressStatePublisher
+                .quickHideTriggerKeyPressStatePublisher
                 .sink { _ in
                     received = true
                 }

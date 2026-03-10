@@ -10,7 +10,7 @@ import XCTest
 /// These tests verify:
 /// - Protocol conformance
 /// - Publisher requirements
-/// - Globe key press state monitoring
+/// - Quick Hide trigger key press state monitoring
 /// - Mock implementation behavior
 @MainActor
 final class KeyboardShortcutsGatewayTests: XCTestCase {
@@ -31,18 +31,18 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
 
     // MARK: - Publisher Tests
 
-    func testGlobeKeyPressStatePublisher() async {
+    func testQuickHideTriggerKeyPressStatePublisher() async {
         guard let sut else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        let expectation = expectation(description: "Publisher emits globe key state")
+        let expectation = expectation(description: "Publisher emits trigger key state")
         var receivedState: Bool?
 
         // When
-        sut.globeKeyPressStatePublisher
+        sut.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 receivedState = state
                 expectation.fulfill()
@@ -55,17 +55,17 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
         expect(receivedState) == false // Default state
     }
 
-    func testGlobeKeyPressed() async {
+    func testTriggerKeyPressed() async {
         guard let sut else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        let expectation = expectation(description: "Globe key pressed state")
+        let expectation = expectation(description: "Trigger key pressed state")
         var receivedStates: [Bool] = []
 
-        sut.globeKeyPressStatePublisher
+        sut.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 receivedStates.append(state)
                 if receivedStates.count == 2 {
@@ -75,26 +75,26 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        sut.emitGlobeKeyPressState(true)
+        sut.emitQuickHideTriggerKeyPressState(true)
 
         // Then
         await fulfillment(of: [expectation], timeout: 1.0)
         expect(receivedStates) == [false, true]
     }
 
-    func testGlobeKeyReleased() async {
+    func testTriggerKeyReleased() async {
         guard let sut else {
             fail("Test dependencies not initialized")
             return
         }
 
         // Given
-        sut.emitGlobeKeyPressState(true)
+        sut.emitQuickHideTriggerKeyPressState(true)
 
-        let expectation = expectation(description: "Globe key released state")
+        let expectation = expectation(description: "Trigger key released state")
         var receivedState: Bool?
 
-        sut.globeKeyPressStatePublisher
+        sut.quickHideTriggerKeyPressStatePublisher
             .dropFirst() // Skip current pressed state
             .sink { state in
                 receivedState = state
@@ -103,7 +103,7 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        sut.emitGlobeKeyPressState(false)
+        sut.emitQuickHideTriggerKeyPressState(false)
 
         // Then
         await fulfillment(of: [expectation], timeout: 1.0)
@@ -120,7 +120,7 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
         let expectation = expectation(description: "Multiple key press/release events")
         var receivedStates: [Bool] = []
 
-        sut.globeKeyPressStatePublisher
+        sut.quickHideTriggerKeyPressStatePublisher
             .sink { state in
                 receivedStates.append(state)
                 if receivedStates.count == 5 {
@@ -130,10 +130,10 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        sut.emitGlobeKeyPressState(true) // Press
-        sut.emitGlobeKeyPressState(false) // Release
-        sut.emitGlobeKeyPressState(true) // Press
-        sut.emitGlobeKeyPressState(false) // Release
+        sut.emitQuickHideTriggerKeyPressState(true) // Press
+        sut.emitQuickHideTriggerKeyPressState(false) // Release
+        sut.emitQuickHideTriggerKeyPressState(true) // Press
+        sut.emitQuickHideTriggerKeyPressState(false) // Release
 
         // Then
         await fulfillment(of: [expectation], timeout: 1.0)
@@ -152,6 +152,6 @@ final class KeyboardShortcutsGatewayTests: XCTestCase {
         let gateway: any KeyboardShortcutsGateway = sut
 
         // When/Then - Should compile and not crash
-        expect(gateway.globeKeyPressStatePublisher).toNot(beNil())
+        expect(gateway.quickHideTriggerKeyPressStatePublisher).toNot(beNil())
     }
 }

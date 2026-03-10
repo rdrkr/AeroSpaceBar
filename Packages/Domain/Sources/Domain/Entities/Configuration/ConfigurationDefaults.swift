@@ -43,6 +43,12 @@ public enum ConfigurationDefaults {
     /// Whether to enable optimized performance behavior.
     public static let isOptimizedPerformanceEnabled = true
 
+    /// Whether the Quick Hide feature is enabled by default.
+    public static let quickHideEnabled = true
+
+    /// Default modifier key for the Quick Hide feature.
+    public static let quickHideTriggerKey: QuickHideTriggerKey = .fn
+
     /// Default log level for application logging.
     public static let logLevel = debugMode ? Logger.Level.debug : Logger.Level.info
 

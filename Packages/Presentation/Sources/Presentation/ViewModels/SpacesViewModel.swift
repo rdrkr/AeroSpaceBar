@@ -120,8 +120,11 @@ public final class SpacesViewModel: ObservableObject {
         }
     }
 
-    /// Whether the globe key is currently being held.
-    @Published var isGlobeKeyPressed: Bool = false
+    /// Whether the Quick Hide trigger key is currently being held.
+    @Published var isQuickHideTriggerKeyPressed: Bool = false
+
+    /// Whether the Quick Hide feature is enabled.
+    @Published var isQuickHideEnabled: Bool
 
     /// Whether the system menu bar is currently visible.
     @Published var isMenuBarVisible: Bool
@@ -193,7 +196,8 @@ public final class SpacesViewModel: ObservableObject {
     private let setThemePresetGeometricPropertiesUseCase: SetThemePresetGeometricPropertiesUseCase
     private let getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase
     private let setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase
-    private let getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
+    private let getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase
+    private let getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase
 
     /// Use cases for Apple Button configuration properties.
     private let getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase
@@ -254,6 +258,8 @@ public final class SpacesViewModel: ObservableObject {
     ///   - setAppleButtonGeometricPropertiesUseCase: Use case for setting Apple Button geometric properties
     ///   - getAppleButtonEffectPropertiesUseCase: Use case for getting Apple Button effect properties
     ///   - setAppleButtonEffectPropertiesUseCase: Use case for setting Apple Button effect properties
+    ///   - getQuickHideTriggerKeyPressStateUseCase: Use case for getting Quick Hide trigger key press state
+    ///   - getQuickHideEnabledUseCase: Use case for getting Quick Hide enabled state
     init(
         getSpacesUseCase: GetSpacesUseCase,
         setFocusSpaceUseCase: SetFocusSpaceUseCase,
@@ -290,7 +296,6 @@ public final class SpacesViewModel: ObservableObject {
         setThemePresetGeometricPropertiesUseCase: SetThemePresetGeometricPropertiesUseCase,
         getThemePresetEffectPropertiesUseCase: GetThemePresetEffectPropertiesUseCase,
         setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase,
-        getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase,
         getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase,
         setShowAppleButtonAsSpaceUseCase: SetShowAppleButtonAsSpaceUseCase,
         getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase,
@@ -298,7 +303,9 @@ public final class SpacesViewModel: ObservableObject {
         getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase,
         setAppleButtonGeometricPropertiesUseCase: SetAppleButtonGeometricPropertiesUseCase,
         getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase,
-        setAppleButtonEffectPropertiesUseCase: SetAppleButtonEffectPropertiesUseCase
+        setAppleButtonEffectPropertiesUseCase: SetAppleButtonEffectPropertiesUseCase,
+        getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase,
+        getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase
     ) {
         // Initialize spaces use cases
         self.getSpacesUseCase = getSpacesUseCase
@@ -340,7 +347,6 @@ public final class SpacesViewModel: ObservableObject {
         self.setThemePresetGeometricPropertiesUseCase = setThemePresetGeometricPropertiesUseCase
         self.getThemePresetEffectPropertiesUseCase = getThemePresetEffectPropertiesUseCase
         self.setThemePresetEffectPropertiesUseCase = setThemePresetEffectPropertiesUseCase
-        self.getGlobeKeyPressStateUseCase = getGlobeKeyPressStateUseCase
         self.getShowAppleButtonAsSpaceUseCase = getShowAppleButtonAsSpaceUseCase
         self.setShowAppleButtonAsSpaceUseCase = setShowAppleButtonAsSpaceUseCase
         self.getAppleButtonColorPropertiesUseCase = getAppleButtonColorPropertiesUseCase
@@ -349,6 +355,8 @@ public final class SpacesViewModel: ObservableObject {
         self.setAppleButtonGeometricPropertiesUseCase = setAppleButtonGeometricPropertiesUseCase
         self.getAppleButtonEffectPropertiesUseCase = getAppleButtonEffectPropertiesUseCase
         self.setAppleButtonEffectPropertiesUseCase = setAppleButtonEffectPropertiesUseCase
+        self.getQuickHideTriggerKeyPressStateUseCase = getQuickHideTriggerKeyPressStateUseCase
+        self.getQuickHideEnabledUseCase = getQuickHideEnabledUseCase
 
         // Load initial values from use cases
         isAeroSpaceRunning = getAeroSpaceStatusUseCase.execute().blockingFirst()
@@ -377,6 +385,7 @@ public final class SpacesViewModel: ObservableObject {
         appleButtonColorProperties = getAppleButtonColorPropertiesUseCase.execute().blockingFirst()
         appleButtonGeometricProperties = getAppleButtonGeometricPropertiesUseCase.execute().blockingFirst()
         appleButtonEffectProperties = getAppleButtonEffectPropertiesUseCase.execute().blockingFirst()
+        isQuickHideEnabled = getQuickHideEnabledUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
 
@@ -531,8 +540,12 @@ public final class SpacesViewModel: ObservableObject {
             .assign(to: \.themePresetEffectProperties, on: self)
             .store(in: &cancellables)
 
-        getGlobeKeyPressStateUseCase.execute()
-            .assign(to: \.isGlobeKeyPressed, on: self)
+        getQuickHideTriggerKeyPressStateUseCase.execute()
+            .assign(to: \.isQuickHideTriggerKeyPressed, on: self)
+            .store(in: &cancellables)
+
+        getQuickHideEnabledUseCase.execute()
+            .assign(to: \.isQuickHideEnabled, on: self)
             .store(in: &cancellables)
 
         getShowAppleButtonAsSpaceUseCase.execute()

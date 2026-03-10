@@ -10,26 +10,59 @@ import Domain
 /// and uses Combine for reactive updates.
 @MainActor
 public final class AppViewModel: ObservableObject {
-    /// Whether the globe key is currently being held.
-    @Published public private(set) var isGlobeKeyPressed: Bool
+    /// Whether the Quick Hide trigger key is currently being held.
+    @Published public private(set) var isQuickHideTriggerKeyPressed: Bool
+
+    /// Whether the Quick Hide feature is enabled.
+    @Published public private(set) var isQuickHideEnabled: Bool
+
+    /// The currently configured Quick Hide trigger key.
+    @Published public private(set) var quickHideTriggerKey: QuickHideTriggerKey
+
+    /// The glyph symbol name for the menu bar icon when the trigger key is active.
+    ///
+    /// Returns the glyph image name matching the current trigger key when Quick Hide
+    /// is enabled and the key is pressed, or the default icon should be used.
+    public var activeMenuBarGlyphSymbolName: String {
+        guard isQuickHideEnabled, isQuickHideTriggerKeyPressed else { return "AppGlyph" }
+
+        return quickHideTriggerKey.glyphSymbol
+    }
 
     // MARK: - Use Cases
 
-    /// The use case for getting globe key press state.
-    private let getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase
+    /// The use case for getting Quick Hide trigger key press state.
+    private let getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase
+
+    /// The use case for getting Quick Hide enabled state.
+    private let getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase
+
+    /// The use case for getting the Quick Hide trigger key setting.
+    private let getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
 
     /// Initializes the app ViewModel with the specified dependencies.
     ///
-    /// This initializer sets up the use case and begins monitoring for state updates.
-    /// - Parameter getGlobeKeyPressStateUseCase: Use case for getting globe key press state
-    init(getGlobeKeyPressStateUseCase: GetGlobeKeyPressStateUseCase) {
-        self.getGlobeKeyPressStateUseCase = getGlobeKeyPressStateUseCase
+    /// This initializer sets up all use cases and begins monitoring for state updates.
+    /// - Parameters:
+    ///   - getQuickHideTriggerKeyPressStateUseCase: Use case for getting trigger key press state
+    ///   - getQuickHideEnabledUseCase: Use case for getting Quick Hide enabled state
+    ///   - getQuickHideTriggerKeyUseCase: Use case for getting the configured trigger key
+    init(
+        getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase,
+        getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase,
+        getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase
+    ) {
+        self.getQuickHideTriggerKeyPressStateUseCase = getQuickHideTriggerKeyPressStateUseCase
+        self.getQuickHideEnabledUseCase = getQuickHideEnabledUseCase
+        self.getQuickHideTriggerKeyUseCase = getQuickHideTriggerKeyUseCase
 
-        // Load initial value from use case
-        isGlobeKeyPressed = getGlobeKeyPressStateUseCase.execute().blockingFirst()
+        // Load initial values from use cases
+        isQuickHideTriggerKeyPressed = getQuickHideTriggerKeyPressStateUseCase.execute().blockingFirst()
+        isQuickHideEnabled = getQuickHideEnabledUseCase.execute().blockingFirst()
+        quickHideTriggerKey = getQuickHideTriggerKeyUseCase.execute().blockingFirst()
 
         setupReactiveSubscriptions()
     }
@@ -39,12 +72,18 @@ public final class AppViewModel: ObservableObject {
     /// Sets up reactive bindings for state changes.
     ///
     /// This method establishes Combine subscriptions to monitor changes
-    /// in globe key press state and update the published properties accordingly.
+    /// in Quick Hide trigger key press state, enabled state, and trigger key setting.
     private func setupReactiveSubscriptions() {
-        getGlobeKeyPressStateUseCase.execute()
-            .sink { [weak self] isPressed in
-                self?.isGlobeKeyPressed = isPressed
-            }
+        getQuickHideTriggerKeyPressStateUseCase.execute()
+            .assign(to: \.isQuickHideTriggerKeyPressed, on: self)
+            .store(in: &cancellables)
+
+        getQuickHideEnabledUseCase.execute()
+            .assign(to: \.isQuickHideEnabled, on: self)
+            .store(in: &cancellables)
+
+        getQuickHideTriggerKeyUseCase.execute()
+            .assign(to: \.quickHideTriggerKey, on: self)
             .store(in: &cancellables)
     }
 }

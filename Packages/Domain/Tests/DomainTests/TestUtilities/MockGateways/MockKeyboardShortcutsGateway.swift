@@ -12,31 +12,31 @@ import Foundation
 public final class MockKeyboardShortcutsGateway: KeyboardShortcutsGateway {
     // MARK: - Configurable Values
 
-    public var globeKeyPressStateToEmit: Bool = false {
+    public var quickHideTriggerKeyPressStateToEmit: Bool = false {
         didSet {
-            globeKeyPressStateSubject.send(globeKeyPressStateToEmit)
+            quickHideTriggerKeyPressStateSubject.send(quickHideTriggerKeyPressStateToEmit)
         }
     }
 
     // MARK: - Subject
 
-    private let globeKeyPressStateSubject: CurrentValueSubject<Bool, Never>
+    private let quickHideTriggerKeyPressStateSubject: CurrentValueSubject<Bool, Never>
 
     // MARK: - Initialization
 
     public init() {
-        globeKeyPressStateSubject = CurrentValueSubject(globeKeyPressStateToEmit)
+        quickHideTriggerKeyPressStateSubject = CurrentValueSubject(quickHideTriggerKeyPressStateToEmit)
     }
 
     // MARK: - Publisher
 
-    public var globeKeyPressStatePublisher: AnyPublisher<Bool, Never> {
-        globeKeyPressStateSubject.eraseToAnyPublisher()
+    public var quickHideTriggerKeyPressStatePublisher: AnyPublisher<Bool, Never> {
+        quickHideTriggerKeyPressStateSubject.eraseToAnyPublisher()
     }
 
     // MARK: - Test Helpers
 
-    public func emitGlobeKeyPressState(_ pressed: Bool) {
-        globeKeyPressStateSubject.send(pressed)
+    public func emitQuickHideTriggerKeyPressState(_ pressed: Bool) {
+        quickHideTriggerKeyPressStateSubject.send(pressed)
     }
 }

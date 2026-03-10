@@ -179,3 +179,4 @@ TestResults/
 build
 default.profraw
 .env
+/.claude/worktrees

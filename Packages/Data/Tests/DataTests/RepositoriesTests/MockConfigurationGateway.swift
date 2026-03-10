@@ -37,6 +37,8 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public private(set) var setThemePresetColorPropertiesCalls: [ThemePresetColorProperties] = []
     public private(set) var setThemePresetGeometricPropertiesCalls: [GeometricProperties] = []
     public private(set) var setThemePresetEffectPropertiesCalls: [EffectProperties] = []
+    public private(set) var setQuickHideEnabledCalls: [Bool] = []
+    public private(set) var setQuickHideTriggerKeyCalls: [QuickHideTriggerKey] = []
     public private(set) var openAeroSpaceConfigCalls: Int = 0
     public private(set) var getAeroSpaceConfigPathCalls: Int = 0
     public private(set) var getConfigFilePathCalls: Int = 0
@@ -72,6 +74,8 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public var themePresetColorPropertiesToEmit = ConfigurationDefaults.themePresetColorProperties
     public var themePresetGeometricPropertiesToEmit = GeometricProperties()
     public var themePresetEffectPropertiesToEmit = EffectProperties()
+    public var quickHideEnabledToEmit: Bool = true
+    public var quickHideTriggerKeyToEmit: QuickHideTriggerKey = .fn
     public var aeroSpaceConfigPathToReturn = URL(fileURLWithPath: "/Users/test/.aerospace.toml")
 
     // MARK: - Subjects
@@ -103,6 +107,8 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let themePresetColorPropertiesSubject: CurrentValueSubject<ThemePresetColorProperties, Never>
     private let themePresetGeometricPropertiesSubject: CurrentValueSubject<GeometricProperties, Never>
     private let themePresetEffectPropertiesSubject: CurrentValueSubject<EffectProperties, Never>
+    private let quickHideEnabledSubject: CurrentValueSubject<Bool, Never>
+    private let quickHideTriggerKeySubject: CurrentValueSubject<QuickHideTriggerKey, Never>
 
     // MARK: - Initialization
 
@@ -134,6 +140,8 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         themePresetColorPropertiesSubject = CurrentValueSubject(themePresetColorPropertiesToEmit)
         themePresetGeometricPropertiesSubject = CurrentValueSubject(themePresetGeometricPropertiesToEmit)
         themePresetEffectPropertiesSubject = CurrentValueSubject(themePresetEffectPropertiesToEmit)
+        quickHideEnabledSubject = CurrentValueSubject(quickHideEnabledToEmit)
+        quickHideTriggerKeySubject = CurrentValueSubject(quickHideTriggerKeyToEmit)
     }
 
     // MARK: - Publishers
@@ -244,6 +252,14 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public var themePresetEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
         themePresetEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var quickHideEnabledPublisher: AnyPublisher<Bool, Never> {
+        quickHideEnabledSubject.eraseToAnyPublisher()
+    }
+
+    public var quickHideTriggerKeyPublisher: AnyPublisher<QuickHideTriggerKey, Never> {
+        quickHideTriggerKeySubject.eraseToAnyPublisher()
     }
 
     // MARK: - Async Setters
@@ -378,6 +394,16 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         themePresetEffectPropertiesSubject.send(value)
     }
 
+    public func setQuickHideEnabled(_ value: Bool) {
+        setQuickHideEnabledCalls.append(value)
+        quickHideEnabledSubject.send(value)
+    }
+
+    public func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
+        setQuickHideTriggerKeyCalls.append(value)
+        quickHideTriggerKeySubject.send(value)
+    }
+
     // MARK: - Configuration Management
 
     public func openAeroSpaceConfig() {
@@ -431,6 +457,8 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         setThemePresetColorPropertiesCalls.removeAll()
         setThemePresetGeometricPropertiesCalls.removeAll()
         setThemePresetEffectPropertiesCalls.removeAll()
+        setQuickHideEnabledCalls.removeAll()
+        setQuickHideTriggerKeyCalls.removeAll()
         openAeroSpaceConfigCalls = 0
         getAeroSpaceConfigPathCalls = 0
         getConfigFilePathCalls = 0

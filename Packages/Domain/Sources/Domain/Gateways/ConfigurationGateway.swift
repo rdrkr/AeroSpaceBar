@@ -109,6 +109,12 @@ public protocol ConfigurationGateway {
     /// Publisher that emits theme preset effect properties updates.
     var themePresetEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> { get }
 
+    /// Publisher that emits Quick Hide enabled state updates.
+    var quickHideEnabledPublisher: AnyPublisher<Bool, Never> { get }
+
+    /// Publisher that emits Quick Hide trigger key updates.
+    var quickHideTriggerKeyPublisher: AnyPublisher<QuickHideTriggerKey, Never> { get }
+
     // MARK: - Async Setters (trigger updates via publishers)
 
     func setShowWindowTitles(_ value: Bool) async
@@ -172,6 +178,10 @@ public protocol ConfigurationGateway {
     func setThemePresetGeometricProperties(_ value: GeometricProperties) async
 
     func setThemePresetEffectProperties(_ value: EffectProperties) async
+
+    func setQuickHideEnabled(_ value: Bool) async
+
+    func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) async
 
     // MARK: - AeroSpace Configuration Management
 

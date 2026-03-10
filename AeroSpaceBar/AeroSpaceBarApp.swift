@@ -25,7 +25,7 @@ private struct AeroSpaceBarApp: App {
                 .environmentObject(DependencyContainer.shared.getLicenseViewModel())
                 .environmentObject(DependencyContainer.shared.getSettingsViewModel())
         } label: {
-            Image(appViewModel.isGlobeKeyPressed ? "AppGlyphGlobe" : "AppGlyph")
+            Image(appViewModel.activeMenuBarGlyphSymbolName)
         }
         .menuBarExtraStyle(.window)
 

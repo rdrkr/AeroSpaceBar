@@ -1017,14 +1017,14 @@ final class DependencyContainerTests: XCTestCase {
 
     // MARK: - Keyboard Shortcuts Use Case Factory Tests
 
-    func testMakeGetGlobeKeyPressStateUseCase() {
+    func testMakeGetQuickHideTriggerKeyPressStateUseCase() {
         guard let container else {
             fail("Container not initialized")
             return
         }
 
-        // When creating GetGlobeKeyPressStateUseCase
-        let useCase = container.makeGetGlobeKeyPressStateUseCase()
+        // When creating GetQuickHideTriggerKeyPressStateUseCase
+        let useCase = container.makeGetQuickHideTriggerKeyPressStateUseCase()
 
         // Then should return valid instance
         expect(useCase).toNot(beNil())
