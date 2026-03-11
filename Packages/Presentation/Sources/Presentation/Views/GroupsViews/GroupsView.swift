@@ -79,12 +79,11 @@ struct GroupsView: View {
     /// positioned on the top right below the menu bar with similar styling to SpacesView.
     var body: some View {
         ZStack {
-            // Display grouped apps with their group styling, only when enabled
-            if shouldShowView {
-                groupsContent
-                    .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
-                    .transition(.opacity)
-            }
+            // Groups content always stays in the view hierarchy to survive sleep/wake
+            // cycles. Opacity is applied directly to hide it when disabled.
+            groupsContent
+                .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
+                .opacity(shouldShowView ? 1.0 : 0.0)
 
             // Apple Button background - rendered independently of groups
             if shouldShowAppleButton {
