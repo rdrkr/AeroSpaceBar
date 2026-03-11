@@ -51,41 +51,40 @@ struct GroupsView: View {
         }
     }
 
+    /// The groups content view that renders all group backgrounds using a single Canvas.
+    ///
+    /// Uses `GroupsCanvasView` to draw all group backgrounds in one programmatic draw pass,
+    /// bypassing SwiftUI's layout engine which incorrectly divides ForEach children vertically.
+    private var groupsContent: some View {
+        GroupsCanvasView(
+            groups: viewModel.groups,
+            menuBarApps: viewModel.menuBarApps,
+            appearanceMode: viewModel.groupsAppearanceMode,
+            globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
+            globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
+            globalGroupsEffectProperties: viewModel.globalGroupsEffectProperties,
+            globalSpacesColorProperties: viewModel.globalSpacesColorProperties,
+            globalSpacesGeometricProperties: viewModel.globalSpacesGeometricProperties,
+            globalSpacesEffectProperties: viewModel.globalSpacesEffectProperties,
+            themeMode: viewModel.themeMode,
+            themePresetColorProperties: viewModel.themePresetColorProperties,
+            themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+            themePresetEffectProperties: viewModel.themePresetEffectProperties
+        )
+    }
+
     /// The body of the groups view.
     ///
     /// This view creates a container for grouped menu bar applications,
     /// positioned on the top right below the menu bar with similar styling to SpacesView.
     var body: some View {
-        GeometryReader { _ in
-            // Display grouped apps with their group styling
-            let groupViews = ForEach(viewModel.groups, id: \.id) { group in
-                GroupView(
-                    group: group,
-                    menuBarApps: viewModel.menuBarApps,
-                    appearanceMode: viewModel.groupsAppearanceMode,
-                    globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
-                    globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
-                    globalGroupsEffectProperties: viewModel.globalGroupsEffectProperties,
-                    globalSpacesColorProperties: viewModel.globalSpacesColorProperties,
-                    globalSpacesGeometricProperties: viewModel.globalSpacesGeometricProperties,
-                    globalSpacesEffectProperties: viewModel.globalSpacesEffectProperties,
-                    themeMode: viewModel.themeMode,
-                    themePresetColorProperties: viewModel.themePresetColorProperties,
-                    themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
-                    themePresetEffectProperties: viewModel.themePresetEffectProperties
-                )
+        ZStack {
+            // Display grouped apps with their group styling, only when enabled
+            if shouldShowView {
+                groupsContent
+                    .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
+                    .transition(.opacity)
             }
-
-            Group {
-                if #available(macOS 26.0, *) {
-                    GlassEffectContainer {
-                        groupViews
-                    }
-                } else {
-                    groupViews
-                }
-            }
-            .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
 
             // Apple Button background - rendered independently of groups
             if shouldShowAppleButton {
@@ -101,7 +100,7 @@ struct GroupsView: View {
                 )
             }
         }
-        .animation(.themeEaseInOutFast, value: viewModel.groups.map(\.id))
+        .animation(.themeEaseInOutFast, value: viewModel.groups)
         .ignoresSafeArea()
         .opacity(shouldShowView || shouldShowAppleButton ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)
