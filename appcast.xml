@@ -7,6 +7,32 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.0.0-beta.6</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.6</link>
+            <pubDate>Wed, 11 Mar 2026 16:28:51 +0000</pubDate>
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.6</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Added</h3>
+
+<ul>
+<li>added a customizable quick hide keybind trigger</li>
+<li>added apple button background option</li>
+
+<h3>Fixed</h3>
+
+<li>replace ForEach group views with animated Canvas to fix vertical positioning bug</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.6/AeroSpaceBar-v1.0.0-beta.6.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="wVIYmFQOIj5SecNsGC0fmXIpu8niNxTJrnpLdLaavnBxonVZRVqxs6N1SUEOc2xtYgDPnAOMyaXEYKjGad0pBQ==" length="11818817" />
+        </item>
+        <item>
             <title>Version 1.0.0-beta.5</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.5</link>
             <pubDate>Mon, 09 Mar 2026 10:44:58 +0000</pubDate>
