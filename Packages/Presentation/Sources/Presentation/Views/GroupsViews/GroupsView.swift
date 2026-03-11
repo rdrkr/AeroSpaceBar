@@ -100,6 +100,7 @@ struct GroupsView: View {
             }
         }
         .animation(.themeEaseInOutFast, value: viewModel.groups)
+        .animation(.themeEaseInOutFast, value: viewModel.menuBarApps)
         .ignoresSafeArea()
         .opacity(shouldShowView || shouldShowAppleButton ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)
