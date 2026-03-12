@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0-beta.9] - 2026-03-12
+
+### Fixed
+
+- animations not applied when apps updated
+
+
 ## [1.0.0-beta.8] - 2026-03-11
 
 ### Fixed
