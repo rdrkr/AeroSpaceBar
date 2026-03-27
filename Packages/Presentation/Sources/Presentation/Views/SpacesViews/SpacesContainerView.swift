@@ -76,6 +76,7 @@ struct SpacesContainerView: View {
                 .tag("space-\(space.id)")
             }
         }
+        .padding(.leading, -(ConfigurationDefaults.widgetSpacing + spacingGeometricProperties.borderWidth))
         .tag("spaces-container")
     }
 
