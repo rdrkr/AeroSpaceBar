@@ -12,6 +12,9 @@ struct AppleButtonBackgroundView: View {
     /// The detected Apple Button frame from the system menu bar.
     let frame: CGRect
 
+    /// Whether the foreground overlay is enabled (affects background compensation).
+    let showForegroundOverlay: Bool
+
     /// The color properties for the Apple Button.
     let colorProperties: ColorProperties
 
@@ -62,14 +65,34 @@ struct AppleButtonBackgroundView: View {
         }
     }
 
-    /// The background tint color.
+    /// The background tint color, adjusted for foreground overlay compensation if needed.
     private var backgroundTintColor: Color {
-        currentColorProperties.backgroundTintColor
+        let fgColor = currentColorProperties.foregroundColor
+        guard showForegroundOverlay, !GroupsForegroundOverlayView.isDefaultPrimaryColor(fgColor) else {
+            return currentColorProperties.backgroundTintColor
+        }
+
+        return GroupsForegroundOverlayView.adjustedBackground(
+            wantedColor: currentColorProperties.backgroundTintColor,
+            wantedOpacity: currentEffectProperties.backgroundOpacity,
+            foregroundColor: fgColor
+        )
+        .color
     }
 
-    /// The background opacity.
+    /// The background opacity, adjusted for foreground overlay compensation if needed.
     private var backgroundOpacity: Double {
-        currentEffectProperties.backgroundOpacity
+        let fgColor = currentColorProperties.foregroundColor
+        guard showForegroundOverlay, !GroupsForegroundOverlayView.isDefaultPrimaryColor(fgColor) else {
+            return currentEffectProperties.backgroundOpacity
+        }
+
+        return GroupsForegroundOverlayView.adjustedBackground(
+            wantedColor: currentColorProperties.backgroundTintColor,
+            wantedOpacity: currentEffectProperties.backgroundOpacity,
+            foregroundColor: fgColor
+        )
+        .opacity
     }
 
     /// The background blur radius.

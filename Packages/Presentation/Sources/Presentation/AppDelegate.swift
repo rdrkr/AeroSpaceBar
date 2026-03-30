@@ -19,6 +19,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     /// The groups panel that displays the groups interface.
     private var groupsPanel: NSPanel?
 
+    /// The foreground overlay panel that draws colored rectangles above system menu bar icons.
+    private var groupsForegroundOverlayPanel: NSPanel?
+
     /// The About window instance to prevent multiple windows.
     private var aboutWindow: NSPanel?
 
@@ -97,6 +100,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
 
         setupSpacesPanel(screenFrame: screenFrame)
         setupGroupsPanel(screenFrame: screenFrame)
+        setupGroupsForegroundOverlayPanel(screenFrame: screenFrame)
     }
 
     /// Configures and displays the menu bar panel.
@@ -159,7 +163,42 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             &groupsPanel,
             frame: groupsFrame,
             level: Int(CGWindowLevelForKey(.utilityWindow)),
-            hostingRootView: AnyView(groupsView)
+            hostingRootView: AnyView(groupsView),
+            ignoresMouseEvents: true
+        )
+    }
+
+    /// Configures and displays the groups foreground overlay panel.
+    ///
+    /// This panel draws semi-transparent foreground color rectangles above the system menu bar icons.
+    /// It sits at `statusWindow` level (above system menu bar icons) and ignores mouse events
+    /// so clicks pass through to the actual menu bar icons underneath. The foreground color
+    /// tints the menu bar icons, while the background (drawn in GroupsCanvasView) is adjusted
+    /// so the combined result shows the user's desired background color.
+    /// - Parameter screenFrame: The frame of the main screen.
+    @MainActor
+    private func setupGroupsForegroundOverlayPanel(screenFrame: CGRect) {
+        let overlayFrame = NSRect(
+            x: screenFrame.origin.x,
+            y: screenFrame.origin.y,
+            width: screenFrame.width,
+            height: screenFrame.height
+        )
+
+        guard let groupsViewModel else {
+            Logger.warning("GroupsViewModel not initialized yet for foreground overlay", category: Logger.app)
+            return
+        }
+
+        let overlayView = GroupsForegroundOverlayHostView()
+            .environmentObject(groupsViewModel)
+
+        setupPanel(
+            &groupsForegroundOverlayPanel,
+            frame: overlayFrame,
+            level: Int(CGWindowLevelForKey(.statusWindow)),
+            hostingRootView: AnyView(overlayView),
+            ignoresMouseEvents: true
         )
     }
 
@@ -172,7 +211,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     ///   - frame: The frame for the panel
     ///   - level: The window level for the panel
     ///   - hostingRootView: The SwiftUI view to host in the panel
-    private func setupPanel(_ panel: inout NSPanel?, frame: CGRect, level: Int, hostingRootView: AnyView) {
+    ///   - ignoresMouseEvents: Whether the panel should ignore mouse events (default: false)
+    private func setupPanel(
+        _ panel: inout NSPanel?,
+        frame: CGRect,
+        level: Int,
+        hostingRootView: AnyView,
+        ignoresMouseEvents: Bool = false
+    ) {
         if let existingPanel = panel {
             existingPanel.setFrame(frame, display: true)
             return
@@ -187,6 +233,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
         newPanel.level = NSWindow.Level(rawValue: level)
         newPanel.backgroundColor = .clear
         newPanel.hasShadow = false
+        newPanel.ignoresMouseEvents = ignoresMouseEvents
         newPanel.collectionBehavior = [.canJoinAllSpaces]
         newPanel.contentView = NSHostingView(rootView: hostingRootView)
         newPanel.orderFront(nil)

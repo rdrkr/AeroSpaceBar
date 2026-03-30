@@ -17,6 +17,11 @@ struct IntroForm<Content: View, HeaderContent: View>: View {
         case compact
     }
 
+    /// The coordinate space name used to track intro section scroll position.
+    private static var scrollCoordinateSpace: String {
+        "introFormScroll"
+    }
+
     /// The title of the navigation bar.
     let navigationTitle: String
 
@@ -37,6 +42,9 @@ struct IntroForm<Content: View, HeaderContent: View>: View {
 
     /// Additional content to append to the header section.
     let appendToHeader: (() -> HeaderContent)?
+
+    /// Whether the navigation title should be shown based on scroll position.
+    @State private var showNavigationTitle = false
 
     init(
         navigationTitle: String,
@@ -135,6 +143,19 @@ struct IntroForm<Content: View, HeaderContent: View>: View {
                     }
                     .padding(8)
                     .tag("intro-form-intro-section")
+                    .background(
+                        GeometryReader { geometry in
+                            Color.clear
+                                .onChange(of: geometry.frame(in: .named(Self.scrollCoordinateSpace))
+                                    .midY)
+                                { _, newMidY in
+                                    let shouldShow = newMidY < 0
+                                    if shouldShow != showNavigationTitle {
+                                        showNavigationTitle = shouldShow
+                                    }
+                                }
+                        }
+                    )
 
                 case .compact:
                     HStack(alignment: .top) {
@@ -162,10 +183,14 @@ struct IntroForm<Content: View, HeaderContent: View>: View {
 
             content()
         }
+        .coordinateSpace(name: Self.scrollCoordinateSpace)
         .settingsFormStyle()
         .navigationTitle(
-            style == .intro ? "" : navigationTitle
+            style == .intro
+                ? (showNavigationTitle ? navigationTitle : "")
+                : navigationTitle
         )
+        .animation(.easeInOut(duration: 0.2), value: showNavigationTitle)
         .tag("intro-form")
     }
 }

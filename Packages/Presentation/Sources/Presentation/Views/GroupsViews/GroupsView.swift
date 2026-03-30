@@ -51,25 +51,85 @@ struct GroupsView: View {
         }
     }
 
-    /// The groups content view that renders all group backgrounds using a single Canvas.
+    /// The groups content view that renders all group backgrounds.
     ///
-    /// Uses `GroupsCanvasView` to draw all group backgrounds in one programmatic draw pass,
-    /// bypassing SwiftUI's layout engine which incorrectly divides ForEach children vertically.
+    /// In glass mode, renders SwiftUI glass effect views per group.
+    /// Otherwise, uses `GroupsCanvasView` for a single Canvas draw pass.
+    @ViewBuilder
     private var groupsContent: some View {
-        GroupsCanvasView(
-            groups: viewModel.groups,
-            menuBarApps: viewModel.menuBarApps,
-            appearanceMode: viewModel.groupsAppearanceMode,
-            globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
-            globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
-            globalGroupsEffectProperties: viewModel.globalGroupsEffectProperties,
-            globalSpacesColorProperties: viewModel.globalSpacesColorProperties,
-            globalSpacesGeometricProperties: viewModel.globalSpacesGeometricProperties,
-            globalSpacesEffectProperties: viewModel.globalSpacesEffectProperties,
-            themeMode: viewModel.themeMode,
-            themePresetColorProperties: viewModel.themePresetColorProperties,
-            themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
-            themePresetEffectProperties: viewModel.themePresetEffectProperties
+        if viewModel.themeMode == .glass, #available(macOS 26.0, *) {
+            glassGroupsContent
+        } else {
+            GroupsCanvasView(
+                groups: viewModel.groups,
+                menuBarApps: viewModel.menuBarApps,
+                appearanceMode: viewModel.groupsAppearanceMode,
+                showForegroundOverlay: viewModel.showForegroundOverlay,
+                globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
+                globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
+                globalGroupsEffectProperties: viewModel.globalGroupsEffectProperties,
+                globalSpacesColorProperties: viewModel.globalSpacesColorProperties,
+                globalSpacesGeometricProperties: viewModel.globalSpacesGeometricProperties,
+                globalSpacesEffectProperties: viewModel.globalSpacesEffectProperties,
+                themeMode: viewModel.themeMode,
+                themePresetColorProperties: viewModel.themePresetColorProperties,
+                themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+                themePresetEffectProperties: viewModel.themePresetEffectProperties
+            )
+        }
+    }
+
+    /// Glass effect backgrounds for all groups, rendered as individual SwiftUI views.
+    @available(macOS 26.0, *)
+    private var glassGroupsContent: some View {
+        ZStack {
+            ForEach(viewModel.groups, id: \.id) { group in
+                let frame = glassGroupFrame(for: group)
+                if frame.width > 0, frame.height > 0 {
+                    Text("")
+                        .frame(width: frame.width, height: frame.height)
+                        .glassEffect(.clear.interactive(true))
+                        .position(x: frame.midX, y: frame.midY)
+                }
+            }
+        }
+    }
+
+    /// Computes the frame rectangle for a group for glass mode rendering.
+    /// - Parameter group: The group to compute the frame for.
+    /// - Returns: The computed frame rectangle, or `.zero` if the group has no visible apps.
+    private func glassGroupFrame(for group: Domain.Group) -> CGRect {
+        let actualEndIndex = group.getEndIndex(menuBarAppsCount: viewModel.menuBarApps.count)
+        guard
+            group.startIndex > 0,
+            actualEndIndex >= group.startIndex,
+            actualEndIndex <= viewModel.menuBarApps.count
+        else {
+            return .zero
+        }
+
+        let range = group.startIndex ... actualEndIndex
+        let apps = Array(viewModel.menuBarApps.dropFirst(range.lowerBound - 1).prefix(range.count))
+        guard !apps.isEmpty else { return .zero }
+
+        let minX = apps.map(\.frame.minX).min() ?? 0
+        let maxX = apps.map(\.frame.maxX).max() ?? 0
+        let minY = apps.map(\.frame.minY).min() ?? 0
+        let maxY = apps.map(\.frame.maxY).max() ?? 0
+
+        let fullWidth = maxX - minX
+        let fullHeight = maxY - minY
+        let reduceWidth = fullWidth - ConfigurationDefaults.widgetSpacing
+        let reducedHeight = ConfigurationDefaults.windowIconSize
+            + (ConfigurationDefaults.menuBarVerticalPadding * 2)
+        let horizontalMargin = (fullWidth - reduceWidth) / 2
+        let verticalMargin = (fullHeight - reducedHeight) / 2
+
+        return CGRect(
+            x: minX + horizontalMargin,
+            y: minY + verticalMargin,
+            width: reduceWidth,
+            height: reducedHeight
         )
     }
 
@@ -89,6 +149,7 @@ struct GroupsView: View {
             if shouldShowAppleButton {
                 AppleButtonBackgroundView(
                     frame: viewModel.appleButtonFrame,
+                    showForegroundOverlay: viewModel.showForegroundOverlay,
                     colorProperties: appleButtonColorProperties,
                     geometricProperties: appleButtonGeometricProperties,
                     effectProperties: appleButtonEffectProperties,

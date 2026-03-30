@@ -31,6 +31,15 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     /// When disabled, individual applications are shown without grouping.
     public let showGroups: Mode.BoolType
 
+    /// Whether to show the foreground color overlay on groups and the Apple Button.
+    ///
+    /// When enabled, a semi-transparent foreground color rectangle is drawn above the
+    /// system menu bar icons within each group, tinting them with the configured
+    /// foreground color. The background layer compensates so the combined result
+    /// matches the user's configured background color. May not produce accurate
+    /// results for all color combinations.
+    public let showForegroundOverlay: Mode.BoolType
+
     /// Array of group definitions for organizing applications.
     ///
     /// Each group contains a collection of applications that should be
@@ -69,6 +78,7 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     ///
     /// - Parameters:
     ///   - showGroups: Whether to display groups in the menu bar interface
+    ///   - showForegroundOverlay: Whether to show the foreground color overlay
     ///   - groups: Array of group definitions for organizing applications
     ///   - groupsAppearanceMode: The appearance mode for groups display
     ///   - globalGroupsColorProperties: Global visual properties for all groups
@@ -76,6 +86,7 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     ///   - globalGroupsEffectProperties: Global effect properties for all groups
     public init(
         showGroups: Mode.BoolType,
+        showForegroundOverlay: Mode.BoolType,
         groups: Mode.GroupArrayType,
         groupsAppearanceMode: Mode.StringType,
         globalGroupsColorProperties: Mode.ColorPropertiesType,
@@ -83,6 +94,7 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
         globalGroupsEffectProperties: Mode.EffectPropertiesType
     ) {
         self.showGroups = showGroups
+        self.showForegroundOverlay = showForegroundOverlay
         self.groups = groups
         self.groupsAppearanceMode = groupsAppearanceMode
         self.globalGroupsColorProperties = globalGroupsColorProperties
@@ -92,6 +104,7 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
 
     enum CodingKeys: String, CodingKey {
         case showGroups = "show-groups"
+        case showForegroundOverlay = "show-foreground-overlay"
         case groups
         case groupsAppearanceMode = "appearance-mode"
         case globalGroupsColorProperties = "global-visual-config"
@@ -116,6 +129,7 @@ public class GroupsSettings<Mode: OptionalTypeMapping>: OptionalType
     ) throws -> GroupsSettings<RequiredMode> {
         GroupsSettings<RequiredMode>(
             showGroups: decodedValue.showGroups ?? defaultValue.showGroups,
+            showForegroundOverlay: decodedValue.showForegroundOverlay ?? defaultValue.showForegroundOverlay,
             groups: decodedValue.groups ?? defaultValue.groups,
             groupsAppearanceMode: decodedValue.groupsAppearanceMode ?? defaultValue.groupsAppearanceMode,
             globalGroupsColorProperties: decodedValue.globalGroupsColorProperties ?? defaultValue

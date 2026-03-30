@@ -29,6 +29,9 @@ public protocol ConfigurationGateway {
     /// Publisher that emits show groups updates.
     var showGroupsPublisher: AnyPublisher<Bool, Never> { get }
 
+    /// Publisher that emits show foreground overlay updates.
+    var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> { get }
+
     /// Publisher that emits enable performance metrics updates.
     var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> { get }
 
@@ -126,6 +129,8 @@ public protocol ConfigurationGateway {
     func setShowEmptySpaces(_ value: Bool) async
 
     func setShowGroups(_ value: Bool) async
+
+    func setShowForegroundOverlay(_ value: Bool) async
 
     func setEnablePerformanceMetrics(_ value: Bool) async
 

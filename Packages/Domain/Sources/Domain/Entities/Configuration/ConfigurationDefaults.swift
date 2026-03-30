@@ -37,6 +37,9 @@ public enum ConfigurationDefaults {
     /// Whether to show groups in the interface.
     public static let showGroups = true
 
+    /// Whether to show the foreground color overlay on groups and the Apple Button.
+    public static let showForegroundOverlay = true
+
     /// Whether to enable performance metrics collection.
     public static let enablePerformanceMetrics = debugMode
 

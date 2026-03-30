@@ -33,33 +33,48 @@ struct GroupsSettingsView: View {
             onResetEntities: resetGroups,
             canAddMoreEntities: groupsViewModel.canAddMoreGroups,
             onFeatureDisabled: {
-                // When groups feature is disabled, remove all group pages from navigation history
                 settingsViewModel.removeAllSubPagesOfType { page in
-                    // Check if this is a GroupNavigationPage by checking if it has .groups as parent
                     page.parentPage?.id == RootNavigationPage.groups.id
                 }
+            },
+            prepend: {
+                foregroundOverlaySection
             }
         )
     }
 
-    /// Delete a group and renumber the remaining groups
-    private func deleteGroup(at group: Domain.Group) {
-        // Unregister the specific group page from navigation
-        settingsViewModel.unregisterDynamicSubPage(withId: group.id)
+    /// The foreground overlay toggle section with description and note.
+    private var foregroundOverlaySection: some View {
+        Section {
+            SettingsToggle(
+                title: LocalizedStringResource("Foreground Color Overlay"),
+                description: LocalizedStringResource(
+                    "Tints menu bar icons with a colored overlay."
+                ),
+                isOn: $groupsViewModel.showForegroundOverlay
+            )
+            .tag("groups-foreground-overlay-toggle")
+        } footer: {
+            Text(
+                LocalizedStringResource(
+                    "Note: may not produce accurate results for all color combinations."
+                )
+            )
+        }
+    }
 
-        // Use the view model to remove the group
+    /// Delete a group and renumber the remaining groups.
+    private func deleteGroup(at group: Domain.Group) {
+        settingsViewModel.unregisterDynamicSubPage(withId: group.id)
         groupsViewModel.removeGroup(at: group.id)
     }
 
-    /// Reset all groups
+    /// Reset all groups.
     private func resetGroups() {
-        // Remove all group pages from navigation history before resetting
         settingsViewModel.removeAllSubPagesOfType { page in
-            // Check if this is a GroupNavigationPage by checking if it has .groups as parent
             page.parentPage?.id == RootNavigationPage.groups.id
         }
 
-        // Reset groups configuration and visual settings via GroupsViewModel
         Task {
             withAnimation(.themeEaseInOutFast) {
                 Task {

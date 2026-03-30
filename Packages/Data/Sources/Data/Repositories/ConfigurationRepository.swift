@@ -92,6 +92,11 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.showGroups
     )
 
+    /// Subject for show foreground overlay.
+    private let showForegroundOverlaySubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showForegroundOverlay
+    )
+
     /// Subject for enable performance metrics.
     private let enablePerformanceMetricsSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.enablePerformanceMetrics
@@ -207,6 +212,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     public var showGroupsPublisher: AnyPublisher<Bool, Never> {
         showGroupsSubject.eraseToAnyPublisher()
+    }
+
+    public var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> {
+        showForegroundOverlaySubject.eraseToAnyPublisher()
     }
 
     public var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> {
@@ -371,6 +380,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         get {
             GroupsSettings<RequiredMode>(
                 showGroups: showGroupsSubject.value,
+                showForegroundOverlay: showForegroundOverlaySubject.value,
                 groups: groupsSubject.value,
                 groupsAppearanceMode: groupsAppearanceModeSubject.value.rawValue,
                 globalGroupsColorProperties: globalGroupsColorPropertiesSubject.value,
@@ -381,6 +391,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
         set {
             showGroupsSubject.send(newValue.showGroups)
+            showForegroundOverlaySubject.send(newValue.showForegroundOverlay)
             groupsSubject.send(newValue.groups)
             groupsAppearanceModeSubject.send(
                 GroupsAppearanceMode.allCases.first(
@@ -641,6 +652,18 @@ public final class ConfigurationRepository: ConfigurationGateway {
         if value == showGroupsSubject.value { return }
 
         showGroupsSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets whether to show the foreground color overlay and emits update.
+    public func setShowForegroundOverlay(_ value: Bool) {
+        if value == showForegroundOverlaySubject.value { return }
+
+        showForegroundOverlaySubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -1042,6 +1065,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
         showEmptySpacesSubject.send(ConfigurationDefaults.showEmptySpaces)
         showGroupsSubject.send(ConfigurationDefaults.showGroups)
+        showForegroundOverlaySubject.send(ConfigurationDefaults.showForegroundOverlay)
         enablePerformanceMetricsSubject.send(ConfigurationDefaults.enablePerformanceMetrics)
         isOptimizedPerformanceEnabledSubject.send(ConfigurationDefaults.isOptimizedPerformanceEnabled)
         logLevelSubject.send(ConfigurationDefaults.logLevel)

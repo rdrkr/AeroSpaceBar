@@ -14,7 +14,7 @@ public struct Group: VisualContainer {
         tagPrefix: "groups",
         canAddEntities: true,
         canDeleteEntities: true,
-        showForegroundSection: false,
+        showForegroundSection: true,
         defaultGlobalColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
         defaultGlobalEffectProperties: ConfigurationDefaults.groupsGlobalEffectProperties,
         defaultGlobalGeometricProperties: ConfigurationDefaults.groupsGlobalGeometricProperties,

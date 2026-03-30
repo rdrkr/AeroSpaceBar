@@ -200,7 +200,9 @@ public final class DependencyContainer {
         getAppleButtonFrameUseCase: makeGetAppleButtonFrameUseCase(),
         getAppleButtonColorPropertiesUseCase: makeGetAppleButtonColorPropertiesUseCase(),
         getAppleButtonGeometricPropertiesUseCase: makeGetAppleButtonGeometricPropertiesUseCase(),
-        getAppleButtonEffectPropertiesUseCase: makeGetAppleButtonEffectPropertiesUseCase()
+        getAppleButtonEffectPropertiesUseCase: makeGetAppleButtonEffectPropertiesUseCase(),
+        getShowForegroundOverlayUseCase: makeGetShowForegroundOverlayUseCase(),
+        setShowForegroundOverlayUseCase: makeSetShowForegroundOverlayUseCase()
     )
 
     /// The license gateway for managing application license.
@@ -433,6 +435,18 @@ public final class DependencyContainer {
     /// - Returns: A new SetShowGroupsUseCase instance
     func makeSetShowGroupsUseCase() -> SetShowGroupsUseCase {
         SetShowGroupsUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetShowForegroundOverlayUseCase instance.
+    /// - Returns: A new GetShowForegroundOverlayUseCase instance
+    func makeGetShowForegroundOverlayUseCase() -> GetShowForegroundOverlayUseCase {
+        GetShowForegroundOverlayUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetShowForegroundOverlayUseCase instance.
+    /// - Returns: A new SetShowForegroundOverlayUseCase instance
+    func makeSetShowForegroundOverlayUseCase() -> SetShowForegroundOverlayUseCase {
+        SetShowForegroundOverlayUseCase(configurationGateway: configurationGateway)
     }
 
     //////////

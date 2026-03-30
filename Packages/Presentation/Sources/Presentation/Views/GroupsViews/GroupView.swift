@@ -75,6 +75,9 @@ struct GroupsCanvasView: View, Animatable {
     /// The appearance mode determining which styling properties to use.
     let appearanceMode: GroupsAppearanceMode
 
+    /// Whether the foreground overlay is enabled (affects background compensation).
+    let showForegroundOverlay: Bool
+
     /// The color properties for global groups appearance mode.
     let globalGroupsColorProperties: ColorProperties
 
@@ -124,6 +127,7 @@ struct GroupsCanvasView: View, Animatable {
     ///   - groups: The groups to render backgrounds for.
     ///   - menuBarApps: The complete list of menu bar applications used to compute group frames.
     ///   - appearanceMode: The appearance mode determining which styling properties to use.
+    ///   - showForegroundOverlay: Whether the foreground overlay is enabled.
     ///   - globalGroupsColorProperties: The color properties for global groups appearance mode.
     ///   - globalGroupsGeometricProperties: The geometric properties for global groups appearance mode.
     ///   - globalGroupsEffectProperties: The effect properties for global groups appearance mode.
@@ -138,6 +142,7 @@ struct GroupsCanvasView: View, Animatable {
         groups: [Domain.Group],
         menuBarApps: [MenuBarApp],
         appearanceMode: GroupsAppearanceMode,
+        showForegroundOverlay: Bool,
         globalGroupsColorProperties: ColorProperties,
         globalGroupsGeometricProperties: GeometricProperties,
         globalGroupsEffectProperties: EffectProperties,
@@ -152,6 +157,7 @@ struct GroupsCanvasView: View, Animatable {
         self.groups = groups
         self.menuBarApps = menuBarApps
         self.appearanceMode = appearanceMode
+        self.showForegroundOverlay = showForegroundOverlay
         self.globalGroupsColorProperties = globalGroupsColorProperties
         self.globalGroupsGeometricProperties = globalGroupsGeometricProperties
         self.globalGroupsEffectProperties = globalGroupsEffectProperties
@@ -177,6 +183,9 @@ struct GroupsCanvasView: View, Animatable {
 
     var body: some View {
         Canvas { context, _ in
+            // Glass mode uses SwiftUI glass effect views instead of Canvas drawing
+            guard themeMode != .glass else { return }
+
             for (index, group) in groups.enumerated() {
                 let baseIndex = index * 4
                 guard baseIndex + 3 < frameData.values.count else { continue }
@@ -283,7 +292,7 @@ struct GroupsCanvasView: View, Animatable {
 
     /// Resolved appearance properties for a group, combining theme mode and appearance mode settings.
     private struct ResolvedProperties {
-        /// The background tint color.
+        /// The background tint color, adjusted for any foreground overlay compensation.
         let backgroundTintColor: Color
         /// The background opacity level.
         let backgroundOpacity: Double
@@ -300,6 +309,10 @@ struct GroupsCanvasView: View, Animatable {
     }
 
     /// Resolves the appearance properties for a group based on theme mode and appearance mode.
+    ///
+    /// When a non-default foreground color is configured, the background tint color is adjusted
+    /// to compensate for the foreground overlay so the combined visible result matches
+    /// the user's configured background color.
     /// - Parameter group: The group to resolve properties for.
     /// - Returns: The resolved appearance properties.
     private func resolvedProperties(for group: Domain.Group) -> ResolvedProperties {
@@ -333,9 +346,29 @@ struct GroupsCanvasView: View, Animatable {
             }
         }
 
+        // Adjust background color and opacity to compensate for the foreground overlay
+        let hasForeground = showForegroundOverlay
+            && !GroupsForegroundOverlayView.isDefaultPrimaryColor(colorProps.foregroundColor)
+
+        let adjustedBgColor: Color
+        let adjustedBgOpacity: Double
+
+        if hasForeground {
+            let adjusted = GroupsForegroundOverlayView.adjustedBackground(
+                wantedColor: colorProps.backgroundTintColor,
+                wantedOpacity: effectProps.backgroundOpacity,
+                foregroundColor: colorProps.foregroundColor
+            )
+            adjustedBgColor = adjusted.color
+            adjustedBgOpacity = adjusted.opacity
+        } else {
+            adjustedBgColor = colorProps.backgroundTintColor
+            adjustedBgOpacity = effectProps.backgroundOpacity
+        }
+
         return ResolvedProperties(
-            backgroundTintColor: colorProps.backgroundTintColor,
-            backgroundOpacity: effectProps.backgroundOpacity,
+            backgroundTintColor: adjustedBgColor,
+            backgroundOpacity: adjustedBgOpacity,
             backgroundBlurRadius: effectProps.backgroundBlurRadius,
             borderTintColor: colorProps.borderTintColor,
             borderOpacity: effectProps.borderOpacity,

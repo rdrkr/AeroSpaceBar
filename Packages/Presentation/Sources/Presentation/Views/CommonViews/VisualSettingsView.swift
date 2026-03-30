@@ -148,9 +148,9 @@ struct VisualSettingsView: View {
     private var foregroundSection: some View {
         Section(LocalizedStringResource(stringLiteral: "\(metadata.entityName) Foreground")) {
             SettingsColorPicker(
-                title: LocalizedStringResource("Color"),
+                title: LocalizedStringResource("Tint Color"),
                 description: LocalizedStringResource(stringLiteral:
-                    "Choose the foreground color for \(metadata.entityName.lowercased())) " +
+                    "Choose the foreground tint color for \(metadata.entityName.lowercased()) " +
                         "text and icons."
                 ),
                 selectedColor: colorProperties.foregroundColor,

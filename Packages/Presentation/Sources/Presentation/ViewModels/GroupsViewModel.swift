@@ -119,6 +119,15 @@ public final class GroupsViewModel: ObservableObject {
     /// The effect properties for the Apple Button space element (per-space mode).
     @Published var appleButtonEffectProperties: EffectProperties
 
+    /// Whether the foreground color overlay is enabled.
+    @Published var showForegroundOverlay: Bool {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setShowForegroundOverlayUseCase.execute(value: showForegroundOverlay)
+            }
+        }
+    }
+
     // MARK: - Dependencies
 
     private let getShowGroupsUseCase: GetShowGroupsUseCase
@@ -149,6 +158,8 @@ public final class GroupsViewModel: ObservableObject {
     private let getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase
     private let getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase
     private let getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase
+    private let getShowForegroundOverlayUseCase: GetShowForegroundOverlayUseCase
+    private let setShowForegroundOverlayUseCase: SetShowForegroundOverlayUseCase
 
     /// Cancellable subscriptions for Combine publishers.
     private var cancellables: Set<AnyCancellable> = []
@@ -183,6 +194,8 @@ public final class GroupsViewModel: ObservableObject {
     ///   - getAppleButtonColorPropertiesUseCase: Use case for getting Apple Button color properties
     ///   - getAppleButtonGeometricPropertiesUseCase: Use case for getting Apple Button geometric properties
     ///   - getAppleButtonEffectPropertiesUseCase: Use case for getting Apple Button effect properties
+    ///   - getShowForegroundOverlayUseCase: Use case for getting show foreground overlay setting
+    ///   - setShowForegroundOverlayUseCase: Use case for setting show foreground overlay setting
     init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         setShowGroupsUseCase: SetShowGroupsUseCase,
@@ -211,7 +224,9 @@ public final class GroupsViewModel: ObservableObject {
         getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase,
         getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase,
         getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase,
-        getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase
+        getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase,
+        getShowForegroundOverlayUseCase: GetShowForegroundOverlayUseCase,
+        setShowForegroundOverlayUseCase: SetShowForegroundOverlayUseCase
     ) {
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.setShowGroupsUseCase = setShowGroupsUseCase
@@ -241,6 +256,8 @@ public final class GroupsViewModel: ObservableObject {
         self.getAppleButtonColorPropertiesUseCase = getAppleButtonColorPropertiesUseCase
         self.getAppleButtonGeometricPropertiesUseCase = getAppleButtonGeometricPropertiesUseCase
         self.getAppleButtonEffectPropertiesUseCase = getAppleButtonEffectPropertiesUseCase
+        self.getShowForegroundOverlayUseCase = getShowForegroundOverlayUseCase
+        self.setShowForegroundOverlayUseCase = setShowForegroundOverlayUseCase
 
         // Initialize with current values
         showGroups = getShowGroupsUseCase.execute().blockingFirst()
@@ -265,6 +282,7 @@ public final class GroupsViewModel: ObservableObject {
         appleButtonColorProperties = getAppleButtonColorPropertiesUseCase.execute().blockingFirst()
         appleButtonGeometricProperties = getAppleButtonGeometricPropertiesUseCase.execute().blockingFirst()
         appleButtonEffectProperties = getAppleButtonEffectPropertiesUseCase.execute().blockingFirst()
+        showForegroundOverlay = getShowForegroundOverlayUseCase.execute().blockingFirst()
 
         availableGroupsAppearanceModes = GroupsAppearanceMode.allCases
         if spacesAppearanceMode == .perSpace {
@@ -411,6 +429,9 @@ public final class GroupsViewModel: ObservableObject {
         )
         await setGlobalGroupsEffectPropertiesUseCase.execute(
             value: ConfigurationDefaults.groupsGlobalEffectProperties
+        )
+        await setShowForegroundOverlayUseCase.execute(
+            value: ConfigurationDefaults.showForegroundOverlay
         )
     }
 
@@ -637,6 +658,14 @@ public final class GroupsViewModel: ObservableObject {
 
         getAppleButtonEffectPropertiesUseCase.execute()
             .assign(to: \.appleButtonEffectProperties, on: self)
+            .store(in: &cancellables)
+
+        getShowForegroundOverlayUseCase.execute()
+            .sink { [weak self] value in
+                if self?.showForegroundOverlay != value {
+                    self?.showForegroundOverlay = value
+                }
+            }
             .store(in: &cancellables)
     }
 
