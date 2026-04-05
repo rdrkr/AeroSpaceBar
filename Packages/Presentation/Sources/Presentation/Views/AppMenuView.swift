@@ -33,6 +33,7 @@ public struct AppMenuView: View {
                 keyboardShortcut: ","
             ) {
                 openSettings()
+                NSApplication.shared.activate()
                 dismiss()
             }
             .tag("app-menu-settings-item")

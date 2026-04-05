@@ -172,9 +172,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     ///
     /// This panel draws semi-transparent foreground color rectangles above the system menu bar icons.
     /// It sits at `statusWindow` level (above system menu bar icons) and ignores mouse events
-    /// so clicks pass through to the actual menu bar icons underneath. The foreground color
-    /// tints the menu bar icons, while the background (drawn in GroupsCanvasView) is adjusted
-    /// so the combined result shows the user's desired background color.
+    /// so clicks pass through to the actual menu bar icons underneath. The panel only covers the
+    /// right half of the screen (where groups reside) to avoid interfering with the system menu
+    /// bar event handling on the left side where the spaces panel operates.
     /// - Parameter screenFrame: The frame of the main screen.
     @MainActor
     private func setupGroupsForegroundOverlayPanel(screenFrame: CGRect) {
@@ -233,7 +233,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
         newPanel.level = NSWindow.Level(rawValue: level)
         newPanel.backgroundColor = .clear
         newPanel.hasShadow = false
-        newPanel.ignoresMouseEvents = ignoresMouseEvents
+        if ignoresMouseEvents {
+            newPanel.ignoresMouseEvents = true
+        }
         newPanel.collectionBehavior = [.canJoinAllSpaces]
         newPanel.contentView = NSHostingView(rootView: hostingRootView)
         newPanel.orderFront(nil)
