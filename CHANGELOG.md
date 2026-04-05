@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0-beta.11] - 2026-04-05
+
+### Added
+
+- added foreground group tint effect
+
+
 ## [1.0.0-beta.10] - 2026-03-27
 
 ### Fixed
