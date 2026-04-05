@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0-beta.12] - 2026-04-05
+
+### Fixed
+
+- restore menu bar click-through for Apple button and file menus
+
+
 ## [1.0.0-beta.11] - 2026-04-05
 
 ### Added
