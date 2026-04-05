@@ -7,6 +7,27 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.0.0-beta.11</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.11</link>
+            <pubDate>Sun, 05 Apr 2026 07:48:40 +0000</pubDate>
+            <sparkle:version>11</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.11</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Added</h3>
+
+<ul>
+<li>added foreground group tint effect</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.11/AeroSpaceBar-v1.0.0-beta.11.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="+B048lHc9j8F+CjjYKI0Czkn9n/JkjOpxLJ9z3JvdchIHgjo/lIzHJvmB5S8ZgJefufT4ntmi9ng3PYAF+7LDw==" length="11904305" />
+        </item>
+        <item>
             <title>Version 1.0.0-beta.10</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.10</link>
             <pubDate>Fri, 27 Mar 2026 16:33:52 +0000</pubDate>
