@@ -1,21 +1,24 @@
-# 🚀 AeroSpaceBar
+<!-- Copyright (c) 2026 AeroSpaceBar by Ronen Druker. -->
 
-<!--suppress HtmlDeprecatedAttribute -->
+<!-- markdownlint-disable-next-line MD041 -->
 <div align="center">
-  <!--suppress CheckImageSize -->
 <img src="Docs/Assets/AeroSpaceBar-macOS-Default-512x512@1x.png" alt="AeroSpaceBar App Icon" width="128" height="128">
 </div>
 
-> **A modern macOS menu bar application for managing AeroSpace window manager spaces and windows with a beautiful
-> SwiftUI interface**
-
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Swift](https://img.shields.io/badge/Swift-6.2+-blue.svg)](https://swift.org)
-[![macOS](https://img.shields.io/badge/macOS-15.0+-gold.svg)](https://www.apple.com/macos/)
-[![Architecture](https://img.shields.io/badge/Architecture-MVVM%20Clean%20Architecture-green.svg)](https://github.com/kudoleh/iOS-Clean-Architecture-MVVM)
-[![Release](https://github.com/rdrkr/AeroSpaceBar/actions/workflows/release.yaml/badge.svg)](https://github.com/rdrkr/AeroSpaceBar/actions/workflows/release.yaml)
+<h1 align="center">🚀 AeroSpaceBar</h1>
 
 <div align="center">
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![macOS](https://img.shields.io/badge/macOS-15.0+-gold.svg)](https://www.apple.com/macos/)
+![Downloads](https://img.shields.io/github/downloads/rdrkr/AeroSpaceBar/total)
+[![Swift](https://img.shields.io/badge/Swift-6.2+-purple.svg)](https://swift.org)
+[![Architecture](https://img.shields.io/badge/Architecture-MVVM%20Clean%20Architecture-red.svg)](https://github.com/kudoleh/iOS-Clean-Architecture-MVVM)
+[![Release](https://github.com/rdrkr/AeroSpaceBar/actions/workflows/release.yaml/badge.svg)](https://github.com/rdrkr/AeroSpaceBar/actions/workflows/release.yaml)
+
+**A modern macOS menu bar application for managing AeroSpace window manager spaces and windows with a beautiful
+SwiftUI interface**
+
   <img src="Docs/Assets/demo.gif" alt="Demo">
 </div>
 
