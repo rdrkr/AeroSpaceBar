@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0-beta.13] - 2026-04-15
+
+### Added
+
+- cover empty-space and last-window-closed edge cases
+
+### Changed
+
+- updated README.md badges
+
+
 ## [1.0.0-beta.12] - 2026-04-05
 
 ### Fixed
