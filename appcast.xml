@@ -7,6 +7,31 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.0.0-beta.13</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.13</link>
+            <pubDate>Wed, 15 Apr 2026 13:47:28 +0000</pubDate>
+            <sparkle:version>13</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.13</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Added</h3>
+
+<ul>
+<li>cover empty-space and last-window-closed edge cases</li>
+
+<h3>Changed</h3>
+
+<li>updated README.md badges</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.13/AeroSpaceBar-v1.0.0-beta.13.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="s6bkeRBZGJtuokiBSNyvQTk+RcQt2yOHQPuZTskG9Pa4wFXW6mzbuJFPmxiKqUyKrol8SIlFajyYPE06uPAMAA==" length="11935534" />
+        </item>
+        <item>
             <title>Version 1.0.0-beta.12</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.12</link>
             <pubDate>Sun, 05 Apr 2026 09:29:27 +0000</pubDate>
