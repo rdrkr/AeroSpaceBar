@@ -131,24 +131,29 @@ struct SpaceView: View {
                 .textShadow()
                 .tag("space-\(space.id)-identifier")
 
-            Spacer().frame(width: 4)
+            // When the space has no windows, omit the windows container and its
+            // leading spacer so the title stays visually centered in the pill
+            // instead of hugging the left edge.
+            if !space.windows.isEmpty {
+                Spacer().frame(width: 4)
 
-            HStack(spacing: 2) {
-                ForEach(space.windows) { window in
-                    WindowView(
-                        window: window,
-                        space: space,
-                        showWindowTitles: showWindowTitles,
-                        focusWindowOnClick: focusWindowOnClick,
-                        spaceForegroundColor: currentColorProperties.foregroundColor,
-                        spaceBackgroundTintColor: currentColorProperties.backgroundTintColor,
-                        onSwitchToSpace: onSwitchToSpace,
-                        onSwitchToWindow: onSwitchToWindow
-                    )
-                    .tag("window-\(window.id)")
+                HStack(spacing: 2) {
+                    ForEach(space.windows) { window in
+                        WindowView(
+                            window: window,
+                            space: space,
+                            showWindowTitles: showWindowTitles,
+                            focusWindowOnClick: focusWindowOnClick,
+                            spaceForegroundColor: currentColorProperties.foregroundColor,
+                            spaceBackgroundTintColor: currentColorProperties.backgroundTintColor,
+                            onSwitchToSpace: onSwitchToSpace,
+                            onSwitchToWindow: onSwitchToWindow
+                        )
+                        .tag("window-\(window.id)")
+                    }
                 }
+                .tag("space-\(space.id)-windows-container")
             }
-            .tag("space-\(space.id)-windows-container")
 
             Spacer().frame(width: 8)
         }

@@ -14,14 +14,27 @@ import Foundation
 /// This is the data layer implementation of the SpacesGateway.
 @MainActor
 public final class AeroSpaceRepository: SpacesGateway {
-    /// The callback to update AeroSpaceBar on focus change
-    private static let onFocusChangedCallback = """
+    /// The callback to update AeroSpaceBar on focus change.
+    /// `nonisolated` so the off-main reconfiguration path can read it without hopping actors.
+    nonisolated private static let onFocusChangedCallback = """
     exec-and-forget osascript -e \"
     tell application \\\"System Events\\\" to
         if (get name of every process) contains \\\"AeroSpaceBar\\\" then
             tell application \\\"AeroSpaceBar\\\" to «event ascrpsbr» \\\"updateOnFocusChanged\\\"
     \"
     """.replacingOccurrences(of: "\n", with: " ")
+
+    /// The `exec-on-workspace-change` process spec that notifies AeroSpaceBar of workspace transitions.
+    ///
+    /// Needed in addition to `on-focus-changed` because switching to an empty workspace
+    /// may not always fire `on-focus-changed` (no window to focus). Directly exec's osascript
+    /// (no shell) with a one-liner that only dispatches the event if AeroSpaceBar is already running.
+    nonisolated private static let execOnWorkspaceChangeCallback: [String] = [
+        "/usr/bin/osascript",
+        "-e",
+        // swiftlint:disable:next line_length
+        #"tell application "System Events" to if (get name of every process) contains "AeroSpaceBar" then tell application "AeroSpaceBar" to «event ascrpsbr» "updateOnFocusChanged""#
+    ]
 
     /// The icon cache gateway for loading app icons.
     private let iconCache: IconCacheProtocol
@@ -58,6 +71,15 @@ public final class AeroSpaceRepository: SpacesGateway {
 
     /// Task for window focus monitoring.
     private var windowFocusMonitoringTask: Task<Void, Never>?
+
+    /// NSWorkspace observer tokens for app lifecycle notifications.
+    ///
+    /// Used to catch window-close edge cases that AeroSpace callbacks do not cover
+    /// (e.g. closing the last window in a space by quitting its app).
+    private var workspaceObservers: [NSObjectProtocol] = []
+
+    /// Debounced-refresh task; coalesces bursts of lifecycle notifications.
+    private var pendingRefreshTask: Task<Void, Never>?
 
     /// Cancellables for publisher subscriptions.
     private var cancellables: Set<AnyCancellable> = []
@@ -164,6 +186,9 @@ public final class AeroSpaceRepository: SpacesGateway {
             andEventID: AEEventID(0x7073_6272) // 'psbr'
         )
 
+        // Tear down any previous NSWorkspace observers so toggling optimized mode is idempotent
+        removeAppLifecycleObservers()
+
         Logger.info("Event handlers removed", category: Logger.spaces)
 
         // Set up event handlers for optimized performance
@@ -175,27 +200,31 @@ public final class AeroSpaceRepository: SpacesGateway {
                 andEventID: AEEventID(0x7073_6272) // 'psbr'
             )
 
+            // Safety-net poll: AeroSpace callbacks and NSWorkspace notifications
+            // do not cover every edge case (e.g. Cmd+W closing an app's last window
+            // without shifting focus to another app). A 2s refresh ensures the UI
+            // eventually reflects reality even when every other signal misses.
             windowFocusMonitoringTask = Task.detached(priority: .utility) { [weak self] in
                 guard let self else { return }
 
-                // Continuously monitor AeroSpace running state
                 repeat {
                     let isRunning = isAeroSpaceRunning()
-
-                    Task { @MainActor in
-                        let wasRunning = self.aeroSpaceRunningSubject.value
-
-                        if isRunning != wasRunning {
-                            if isRunning {
-                                await self.updateSpacesData()
-                            } else {
+                    if isRunning {
+                        await updateSpacesData()
+                    } else {
+                        await MainActor.run {
+                            if self.aeroSpaceRunningSubject.value {
                                 self.aeroSpaceRunningSubject.send(false)
                             }
                         }
                     }
-                    try? await Task.sleep(for: .seconds(5))
+                    try? await Task.sleep(for: .seconds(2))
                 } while !Task.isCancelled
             }
+
+            // Catch window-close edge cases (e.g. closing the last window by quitting its app)
+            // that neither on-focus-changed nor exec-on-workspace-change report.
+            installAppLifecycleObservers()
 
             Logger.info("Event handlers set up", category: Logger.spaces)
         } else {
@@ -218,7 +247,12 @@ public final class AeroSpaceRepository: SpacesGateway {
         Task.detached(priority: .utility) { [weak self] in
             guard let self else { return }
 
-            await reconfigureAeroSpaceOffMain(executablePath: executable, optimized: optimized)
+            let configPath = await getAeroSpaceConfigPathUseCase.execute()
+            await reconfigureAeroSpaceOffMain(
+                configPath: configPath,
+                executablePath: executable,
+                optimized: optimized
+            )
             await updateSpacesData()
         }
 
@@ -242,8 +276,63 @@ public final class AeroSpaceRepository: SpacesGateway {
         }
     }
 
+    /// Registers NSWorkspace observers that trigger a debounced refresh on app
+    /// lifecycle events. Covers edge cases AeroSpace callbacks miss:
+    /// - `didTerminate` / `didHide`: Cmd+Q or Cmd+H empties a space.
+    /// - `didActivate` / `didDeactivate`: Cmd+W on an app's last window keeps the app
+    ///   running without firing termination — focus shifts to another app, which
+    ///   surfaces here.
+    /// - `didLaunch`: a newly launched app's first window may not yet be visible to
+    ///   AeroSpace when `on-window-detected` fires.
+    ///
+    /// The observer closures hop to the main actor, where all repository state lives.
+    private func installAppLifecycleObservers() {
+        let center = NSWorkspace.shared.notificationCenter
+        let names: [Notification.Name] = [
+            NSWorkspace.didTerminateApplicationNotification,
+            NSWorkspace.didHideApplicationNotification,
+            NSWorkspace.didActivateApplicationNotification,
+            NSWorkspace.didDeactivateApplicationNotification,
+            NSWorkspace.didLaunchApplicationNotification
+        ]
+
+        workspaceObservers = names.map { name in
+            center.addObserver(forName: name, object: nil, queue: nil) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.scheduleDebouncedRefresh()
+                }
+            }
+        }
+    }
+
+    /// Removes any previously installed NSWorkspace observers.
+    private func removeAppLifecycleObservers() {
+        let center = NSWorkspace.shared.notificationCenter
+        workspaceObservers.forEach { center.removeObserver($0) }
+        workspaceObservers.removeAll()
+
+        pendingRefreshTask?.cancel()
+        pendingRefreshTask = nil
+    }
+
+    /// Coalesces bursts of lifecycle notifications into a single refresh.
+    ///
+    /// NSWorkspace often fires multiple related notifications back-to-back when an
+    /// app quits; a short debounce avoids redundant `updateSpacesData` calls.
+    private func scheduleDebouncedRefresh() {
+        pendingRefreshTask?.cancel()
+        pendingRefreshTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(150))
+            guard !Task.isCancelled else { return }
+
+            await self?.updateSpacesData()
+        }
+    }
+
     deinit {
-        // Apple Events cleanup is handled automatically when the object is deallocated
+        // Apple Events cleanup is handled automatically when the object is deallocated.
+        // NSWorkspace observers are torn down via configureWindowFocusMonitoring toggles;
+        // for a long-lived @MainActor gateway, any residual observer is released at process exit.
     }
 
     // MARK: - SpacesGateway Implementation
@@ -425,7 +514,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         let spaces = try await fetchSpaces(executablePath: executablePath)
         let windows = try await fetchWindows(executablePath: executablePath)
         let focusedSpace = try await fetchFocusedSpace(executablePath: executablePath)
-        let focusedWindow = try await fetchFocusedWindow(executablePath: executablePath)
+        let focusedWindow = await fetchFocusedWindow(executablePath: executablePath)
 
         return try buildSpacesWithWindows(
             spaces: spaces,
@@ -541,21 +630,26 @@ public final class AeroSpaceRepository: SpacesGateway {
     }
 
     /// Fetches the currently focused window from AeroSpace.
-    /// - Returns: The focused window, or nil if none
-    /// - Throws: AppError if the operation fails
-    nonisolated private func fetchFocusedWindow(executablePath: String) async throws -> Window? {
+    ///
+    /// When the focused workspace has no windows, `aerospace list-windows --focused`
+    /// exits non-zero with the stderr message "No window is focused". This is not an
+    /// error condition for us — it just means there is no focused window — so any
+    /// failure here is mapped to `nil` rather than propagated. Letting the error
+    /// escape aborts the entire spaces refresh and leaves the UI frozen on the
+    /// previous state whenever the user navigates to an empty workspace.
+    /// - Returns: The focused window, or nil if none / the query failed
+    nonisolated private func fetchFocusedWindow(executablePath: String) async -> Window? {
         let cli = cliFactory.makeClient(executablePath: executablePath)
-        let data = try await cli.execute(arguments: [
-            "list-windows", "--focused", "--json", "--format",
-            "%{window-id} %{app-name} %{window-title} %{workspace}"
-        ])
-
-        do {
-            let windows = try JSONDecoder().decode([Window].self, from: data)
-            return windows.first
-        } catch {
-            throw AppError.decodingError(error.localizedDescription)
+        guard
+            let data = try? await cli.execute(arguments: [
+                "list-windows", "--focused", "--json", "--format",
+                "%{window-id} %{app-name} %{window-title} %{workspace}"
+            ])
+        else {
+            return nil
         }
+
+        return (try? JSONDecoder().decode([Window].self, from: data))?.first
     }
 
     /// Loads icons for all windows in the given spaces.
@@ -606,29 +700,78 @@ public final class AeroSpaceRepository: SpacesGateway {
     }
 
     /// Add this new method that does the heavy work off-main
-    nonisolated private func reconfigureAeroSpaceOffMain(executablePath: String, optimized: Bool) async {
-        let success: Bool? = try? await {
-            if optimized {
-                try await AeroSpaceConfiguration.appendOnFocusChanged(
-                    at: getAeroSpaceConfigPathUseCase.execute(),
-                    command: Self.onFocusChangedCallback
-                )
-            } else {
-                try await AeroSpaceConfiguration.removeOnFocusChanged(
-                    at: getAeroSpaceConfigPathUseCase.execute(),
-                    command: Self.onFocusChangedCallback
-                )
-            }
-        }()
+    nonisolated private func reconfigureAeroSpaceOffMain(
+        configPath: URL,
+        executablePath: String,
+        optimized: Bool
+    ) async {
+        let focusChanged = updateOnFocusChangedCallback(at: configPath, optimized: optimized)
+        let workspaceChanged = updateExecOnWorkspaceChangeCallback(at: configPath, optimized: optimized)
 
-        if success == true, !executablePath.isEmpty {
-            do {
-                let cli = AeroSpaceCLIClient(executablePath: executablePath)
-                _ = try await cli.execute(arguments: ["reload-config"])
-                Logger.info("Successfully reloaded AeroSpace configuration", category: Logger.config)
-            } catch {
-                Logger.error("Failed to reload AeroSpace configuration", error: error, category: Logger.config)
+        guard focusChanged || workspaceChanged, !executablePath.isEmpty else { return }
+
+        do {
+            let cli = AeroSpaceCLIClient(executablePath: executablePath)
+            _ = try await cli.execute(arguments: ["reload-config"])
+            Logger.info("Successfully reloaded AeroSpace configuration", category: Logger.config)
+        } catch {
+            Logger.error("Failed to reload AeroSpace configuration", error: error, category: Logger.config)
+        }
+    }
+
+    /// Installs or removes the `on-focus-changed` callback based on optimized state.
+    /// - Returns: `true` if the TOML file was modified
+    nonisolated private func updateOnFocusChangedCallback(at configPath: URL, optimized: Bool) -> Bool {
+        do {
+            if optimized {
+                return try AeroSpaceConfiguration.appendOnFocusChanged(
+                    at: configPath,
+                    command: Self.onFocusChangedCallback
+                )
             }
+            return try AeroSpaceConfiguration.removeOnFocusChanged(
+                at: configPath,
+                command: Self.onFocusChangedCallback
+            )
+        } catch {
+            Logger.error("Failed to update on-focus-changed callback", error: error, category: Logger.config)
+            return false
+        }
+    }
+
+    /// Installs or removes the `exec-on-workspace-change` callback based on optimized state.
+    ///
+    /// On conflict (user has a custom value), the file is left untouched.
+    /// - Returns: `true` if the TOML file was modified
+    nonisolated private func updateExecOnWorkspaceChangeCallback(at configPath: URL, optimized: Bool) -> Bool {
+        do {
+            if optimized {
+                let result = try AeroSpaceConfiguration.installExecOnWorkspaceChange(
+                    at: configPath,
+                    command: Self.execOnWorkspaceChangeCallback
+                )
+                switch result {
+                case .installed:
+                    return true
+                case .alreadyInstalled:
+                    return false
+                case let .conflict(existing):
+                    Logger.warning(
+                        "User has a custom exec-on-workspace-change; leaving it untouched",
+                        category: Logger.config,
+                        metadata: ["existing": existing.joined(separator: " ")]
+                    )
+                    return false
+                }
+            } else {
+                return try AeroSpaceConfiguration.removeExecOnWorkspaceChange(
+                    at: configPath,
+                    command: Self.execOnWorkspaceChangeCallback
+                )
+            }
+        } catch {
+            Logger.error("Failed to update exec-on-workspace-change callback", error: error, category: Logger.config)
+            return false
         }
     }
 }

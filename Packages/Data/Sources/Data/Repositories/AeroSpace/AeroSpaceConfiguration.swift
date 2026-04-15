@@ -9,9 +9,32 @@ internal struct AeroSpaceConfiguration: Codable {
     /// On-focus-changed callbacks
     private var onFocusChanged: [String]?
 
+    /// Exec-on-workspace-change callback (single process spec: `[bin, arg, ...]`).
+    ///
+    /// Decoded so we can detect user-managed values and avoid clobbering them,
+    /// but intentionally excluded from the generic `encode(to:)` iteration so
+    /// that editing `onFocusChanged` does not rewrite this key. It is written
+    /// exclusively through `installExecOnWorkspaceChange` / `removeExecOnWorkspaceChange`.
+    private var execOnWorkspaceChange: [String]?
+
     /// Coding keys
-    private enum CodingKeys: String, CodingKey, CaseIterable {
+    private enum CodingKeys: String, CodingKey {
         case onFocusChanged = "on-focus-changed"
+        case execOnWorkspaceChange = "exec-on-workspace-change"
+    }
+
+    /// Keys that the generic `encode(to:)` flow is allowed to write.
+    /// `execOnWorkspaceChange` is intentionally omitted — see property docs.
+    private static let encodedKeys: [CodingKeys] = [.onFocusChanged]
+
+    /// Result of attempting to install `exec-on-workspace-change`.
+    internal enum ExecOnWorkspaceChangeResult: Equatable {
+        /// Key was absent; our value was written.
+        case installed
+        /// Key was already present with our exact value; nothing changed.
+        case alreadyInstalled
+        /// Key was present with a different value (user-managed); nothing changed.
+        case conflict(existing: [String])
     }
 
     /// Decodes an `AeroSpaceConfiguration` from a TOML file at the provided path
@@ -83,6 +106,186 @@ internal struct AeroSpaceConfiguration: Codable {
         return true
     }
 
+    /// Installs the `exec-on-workspace-change` callback if absent or empty.
+    ///
+    /// AeroSpace allows only a single `exec-on-workspace-change` value (one process spec).
+    /// A commented-out placeholder (e.g. `exec-on-workspace-change = [ # ... ]`) decodes
+    /// to an empty array; we treat that as absent and insert our entries inside the
+    /// existing block without touching any pre-existing comments or blank lines.
+    /// A non-empty value that differs from ours is treated as user-managed and left alone.
+    /// - Parameters:
+    ///   - fileURL: The path to the TOML file
+    ///   - command: The process spec to install (e.g. `['/usr/bin/osascript', '-e', '...']`)
+    /// - Returns: An `ExecOnWorkspaceChangeResult` describing the outcome
+    /// - Throws: An error if decoding or writing fails
+    @discardableResult
+    internal static func installExecOnWorkspaceChange(
+        at fileURL: URL,
+        command: [String]
+    ) throws -> ExecOnWorkspaceChangeResult {
+        let configuration = try decode(from: fileURL)
+
+        if let existing = configuration.execOnWorkspaceChange, !existing.isEmpty {
+            return existing == command ? .alreadyInstalled : .conflict(existing: existing)
+        }
+
+        // Value is nil or an empty array — either way, install ours.
+        let key = CodingKeys.execOnWorkspaceChange.rawValue
+        let content = (try? String(contentsOf: fileURL, encoding: .utf8)) ?? ""
+
+        let newContent: String = if let region = findKeyValueRegion(for: key, in: content) {
+            // Block already exists (possibly with user comments). Insert our entries
+            // before the closing `]`, preserving everything already inside.
+            insertEntriesInArrayBlock(in: content, region: region, entries: command)
+        } else {
+            // Key absent entirely — prepend a new block.
+            formatMultilineArray(key: key, values: command) + "\n\n" + content
+        }
+
+        try newContent.write(to: fileURL, atomically: false, encoding: .utf8)
+        return .installed
+    }
+
+    /// Removes the `exec-on-workspace-change` callback if it matches `command`.
+    ///
+    /// Only removes the key when its current value exactly equals `command` — this
+    /// prevents removing a user-customized callback. When the block also contains
+    /// user comments/blank lines, only our entry lines are stripped and the block
+    /// (with its comments) is preserved. If nothing non-whitespace remains, the
+    /// entire block is removed.
+    /// - Parameters:
+    ///   - fileURL: The path to the TOML file
+    ///   - command: The process spec previously installed
+    /// - Returns: `true` if the key was removed; `false` if absent or different
+    /// - Throws: An error if decoding or writing fails
+    @discardableResult
+    internal static func removeExecOnWorkspaceChange(
+        at fileURL: URL,
+        command: [String]
+    ) throws -> Bool {
+        let configuration = try decode(from: fileURL)
+        guard configuration.execOnWorkspaceChange == command else { return false }
+
+        let content = (try? String(contentsOf: fileURL, encoding: .utf8)) ?? ""
+        guard
+            let region = findKeyValueRegion(
+                for: CodingKeys.execOnWorkspaceChange.rawValue,
+                in: content
+            )
+        else {
+            return false
+        }
+
+        let updated = removeOurEntriesFromArrayBlock(in: content, region: region, entries: command)
+        try updated.write(to: fileURL, atomically: false, encoding: .utf8)
+        return true
+    }
+
+    /// Inserts `entries` as TOML string-array values just before the closing `]`
+    /// of an existing array block, preserving all pre-existing lines (including
+    /// comments and blank lines). For single-line blocks (e.g. `key = []`), the
+    /// block is replaced by a fresh multi-line array since there's nothing to preserve.
+    /// - Parameters:
+    ///   - content: The full TOML file contents
+    ///   - region: The region describing the existing key-value block
+    ///   - entries: The string values to insert
+    /// - Returns: The updated TOML content
+    private static func insertEntriesInArrayBlock(
+        in content: String,
+        region: KeyValueRegion,
+        entries: [String]
+    ) -> String {
+        // Single-line block like `key = []` — replace with a fresh multi-line block.
+        if region.startLine == region.endLine {
+            let blockText = String(content[region.startIndex ..< region.endIndex])
+            let key = blockText
+                .split(separator: "=", maxSplits: 1)
+                .first
+                .map { $0.trimmingCharacters(in: .whitespaces) } ?? CodingKeys.execOnWorkspaceChange.rawValue
+            return replaceRegion(
+                in: content,
+                region: region,
+                with: formatMultilineArray(key: key, values: entries)
+            )
+        }
+
+        var lines = content.components(separatedBy: "\n")
+        let closingLineIndex = region.endLine
+
+        // Detect indentation from any existing non-blank content line within the block.
+        // Fall back to 4 spaces (matches formatMultilineArray) if the block is empty.
+        var indent = "    "
+        for idx in (region.startLine + 1) ..< closingLineIndex {
+            let line = lines[idx]
+            if !line.trimmingCharacters(in: .whitespaces).isEmpty {
+                indent = String(line.prefix(while: { $0 == " " || $0 == "\t" }))
+                break
+            }
+        }
+
+        let newEntryLines = entries.map { "\(indent)'\($0)'," }
+        lines.insert(contentsOf: newEntryLines, at: closingLineIndex)
+
+        return lines.joined(separator: "\n")
+    }
+
+    /// Removes lines inside the array block that exactly match one of our entry
+    /// values (comparing trimmed text against known TOML quote/comma variants).
+    /// All other lines (including user comments and blank lines) are preserved.
+    /// If the block body becomes empty (no non-whitespace lines), the whole block is removed.
+    /// - Parameters:
+    ///   - content: The full TOML file contents
+    ///   - region: The region describing the existing key-value block
+    ///   - entries: Our entry string values to remove
+    /// - Returns: The updated TOML content
+    private static func removeOurEntriesFromArrayBlock(
+        in content: String,
+        region: KeyValueRegion,
+        entries: [String]
+    ) -> String {
+        // Single-line block — the whole block was written by us; remove it entirely.
+        if region.startLine == region.endLine {
+            return removeRegion(in: content, region: region)
+        }
+
+        let lines = content.components(separatedBy: "\n")
+
+        // Match all plausible TOML string representations, with or without trailing comma.
+        let patterns: Set<String> = Set(entries.flatMap { value in
+            ["'\(value)',", "'\(value)'", "\"\(value)\",", "\"\(value)\""]
+        })
+
+        var remainingBody: [String] = []
+        for idx in (region.startLine + 1) ..< region.endLine {
+            let trimmed = lines[idx].trimmingCharacters(in: .whitespaces)
+            if patterns.contains(trimmed) { continue }
+            remainingBody.append(lines[idx])
+        }
+
+        // If nothing non-whitespace remains inside the block, drop the whole block.
+        let hasContent = remainingBody.contains { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        if !hasContent {
+            return removeRegion(in: content, region: region)
+        }
+
+        var newLines = Array(lines[0 ... region.startLine])
+        newLines.append(contentsOf: remainingBody)
+        newLines.append(contentsOf: lines[region.endLine ..< lines.count])
+
+        return newLines.joined(separator: "\n")
+    }
+
+    /// Formats a TOML multi-line array of string values.
+    /// - Parameters:
+    ///   - key: The TOML key
+    ///   - values: The array values
+    /// - Returns: The formatted TOML snippet
+    private static func formatMultilineArray(key: String, values: [String]) -> String {
+        "\(key) = [\n" +
+            values.map { "    '\($0)'" }.joined(separator: ",\n") +
+            "\n]"
+    }
+
     /// Encodes only this struct's keys into the TOML file at `fileURL`, preserving other keys.
     /// Behavior:
     /// - If a key exists, it is replaced in-place (position preserved)
@@ -97,10 +300,10 @@ internal struct AeroSpaceConfiguration: Codable {
 
         let originalContent = (try? String(contentsOf: fileURL, encoding: .utf8)) ?? ""
 
-        // Process all CodingKeys dynamically
+        // Process only keys owned by the generic encode flow.
         var finalContent = originalContent
 
-        for codingKey in CodingKeys.allCases {
+        for codingKey in Self.encodedKeys {
             let key = codingKey.rawValue
             let value = getValue(for: codingKey)
 
@@ -143,6 +346,8 @@ internal struct AeroSpaceConfiguration: Codable {
         switch codingKey {
         case .onFocusChanged:
             onFocusChanged
+        case .execOnWorkspaceChange:
+            execOnWorkspaceChange
         }
     }
 

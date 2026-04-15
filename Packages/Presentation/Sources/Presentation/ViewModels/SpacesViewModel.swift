@@ -365,7 +365,9 @@ public final class SpacesViewModel: ObservableObject {
         let initialSpaces = getSpacesUseCase.execute().blockingFirst()
         allSpaces = initialSpaces
         let initialShowEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
-        spaces = initialShowEmptySpaces ? initialSpaces : initialSpaces.filter { !$0.windows.isEmpty }
+        spaces = initialShowEmptySpaces
+            ? initialSpaces
+            : initialSpaces.filter { !$0.windows.isEmpty || $0.isFocused }
 
         menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
@@ -726,8 +728,12 @@ public final class SpacesViewModel: ObservableObject {
     /// Updates the filtered spaces list based on the showEmptySpaces setting.
     ///
     /// This method filters the allSpaces array based on the showEmptySpaces setting
-    /// and updates the spaces property accordingly.
+    /// and updates the spaces property accordingly. The currently focused space is
+    /// always included even when empty, so navigating to an empty workspace still
+    /// surfaces it in the menu bar.
     private func updateFilteredSpaces() {
-        spaces = showEmptySpaces ? allSpaces : allSpaces.filter { !$0.windows.isEmpty }
+        spaces = showEmptySpaces
+            ? allSpaces
+            : allSpaces.filter { !$0.windows.isEmpty || $0.isFocused }
     }
 }

@@ -48,9 +48,19 @@ the menu bar.
 - **macOS 15.0+** (Sequoia or later)
 - **[AeroSpace window manager](https://github.com/nikitabobko/aerospace)** installed and running
 
-> **Note on Notarization**
+> [!NOTE]
+> By using AeroSpaceBar, you acknowledge that it's
+> not [notarized](https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution).
 >
-> AeroSpaceBar is not notarized by Apple. If macOS blocks the app from launching:
+> Notarization is a "security" feature by Apple. You send binaries to Apple,
+> and they either approve them or not. In reality, notarization is about
+> building binaries the way Apple likes it.
+>
+> The [Homebrew installation script](https://github.com/rdrkr/homebrew-tap/blob/main/Casks/aerospacebar.rb) is configured to
+> automatically delete the `com.apple.quarantine` attribute, that's why when installed via Homebrew the app should work out of
+> the box, without any warnings that "Apple cannot check AeroSpaceBar for malicious software".
+>
+> If you install manually and macOS blocks the app from launching:
 >
 > - Right-click the app in Finder and choose "Open", then click "Open" again in the dialog
 > - Or go to System Settings → Privacy & Security → click "Allow Anyway" for AeroSpaceBar
