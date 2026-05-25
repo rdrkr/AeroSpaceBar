@@ -15,6 +15,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public private(set) var setAeroSpacePathCalls: [String] = []
     public private(set) var setFocusWindowOnClickCalls: [Bool] = []
     public private(set) var setShowEmptySpacesCalls: [Bool] = []
+    public private(set) var setHiddenSpacesCalls: [[String]] = []
     public private(set) var setShowGroupsCalls: [Bool] = []
     public private(set) var setEnablePerformanceMetricsCalls: [Bool] = []
     public private(set) var setIsOptimizedPerformanceEnabledCalls: [Bool] = []
@@ -51,6 +52,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public var aeroSpacePathToEmit: String = "/opt/homebrew/bin/aerospace"
     public var focusWindowOnClickToEmit: Bool = true
     public var showEmptySpacesToEmit: Bool = false
+    public var hiddenSpacesToEmit: [String] = []
     public var showGroupsToEmit: Bool = false
     public var enablePerformanceMetricsToEmit: Bool = false
     public var isOptimizedPerformanceEnabledToEmit: Bool = true
@@ -84,6 +86,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let aeroSpacePathSubject: CurrentValueSubject<String, Never>
     private let focusWindowOnClickSubject: CurrentValueSubject<Bool, Never>
     private let showEmptySpacesSubject: CurrentValueSubject<Bool, Never>
+    private let hiddenSpacesSubject: CurrentValueSubject<[String], Never>
     private let showGroupsSubject: CurrentValueSubject<Bool, Never>
     private let enablePerformanceMetricsSubject: CurrentValueSubject<Bool, Never>
     private let isOptimizedPerformanceEnabledSubject: CurrentValueSubject<Bool, Never>
@@ -117,6 +120,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         aeroSpacePathSubject = CurrentValueSubject(aeroSpacePathToEmit)
         focusWindowOnClickSubject = CurrentValueSubject(focusWindowOnClickToEmit)
         showEmptySpacesSubject = CurrentValueSubject(showEmptySpacesToEmit)
+        hiddenSpacesSubject = CurrentValueSubject(hiddenSpacesToEmit)
         showGroupsSubject = CurrentValueSubject(showGroupsToEmit)
         enablePerformanceMetricsSubject = CurrentValueSubject(enablePerformanceMetricsToEmit)
         isOptimizedPerformanceEnabledSubject = CurrentValueSubject(isOptimizedPerformanceEnabledToEmit)
@@ -160,6 +164,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
         showEmptySpacesSubject.eraseToAnyPublisher()
+    }
+
+    public var hiddenSpacesPublisher: AnyPublisher<[String], Never> {
+        hiddenSpacesSubject.eraseToAnyPublisher()
     }
 
     public var showGroupsPublisher: AnyPublisher<Bool, Never> {
@@ -282,6 +290,11 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public func setShowEmptySpaces(_ value: Bool) {
         setShowEmptySpacesCalls.append(value)
         showEmptySpacesSubject.send(value)
+    }
+
+    public func setHiddenSpaces(_ value: [String]) {
+        setHiddenSpacesCalls.append(value)
+        hiddenSpacesSubject.send(value)
     }
 
     public func setShowGroups(_ value: Bool) {
@@ -435,6 +448,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         setAeroSpacePathCalls.removeAll()
         setFocusWindowOnClickCalls.removeAll()
         setShowEmptySpacesCalls.removeAll()
+        setHiddenSpacesCalls.removeAll()
         setShowGroupsCalls.removeAll()
         setEnablePerformanceMetricsCalls.removeAll()
         setIsOptimizedPerformanceEnabledCalls.removeAll()
@@ -480,6 +494,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public func emitShowEmptySpaces(_ value: Bool) {
         showEmptySpacesSubject.send(value)
+    }
+
+    public func emitHiddenSpaces(_ value: [String]) {
+        hiddenSpacesSubject.send(value)
     }
 
     public func emitShowGroups(_ value: Bool) {

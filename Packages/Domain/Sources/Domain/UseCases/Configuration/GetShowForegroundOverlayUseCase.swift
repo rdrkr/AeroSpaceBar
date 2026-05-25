@@ -1,4 +1,4 @@
-// Copyright (c) 2026 AeroSpaceBar by Ronen Druker.
+// Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Combine
 import Foundation

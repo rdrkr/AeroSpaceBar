@@ -291,6 +291,7 @@ final class MockConfigurationGateway: ConfigurationGateway {
     private let aeroSpacePathSubject = CurrentValueSubject<String, Never>("/usr/local/bin/aerospace")
     private let focusWindowOnClickSubject = CurrentValueSubject<Bool, Never>(false)
     private let showEmptySpacesSubject = CurrentValueSubject<Bool, Never>(true)
+    private let hiddenSpacesSubject = CurrentValueSubject<[String], Never>([])
     private let showGroupsSubject = CurrentValueSubject<Bool, Never>(true)
     private let enablePerformanceMetricsSubject = CurrentValueSubject<Bool, Never>(false)
     private let isOptimizedPerformanceEnabledSubject = CurrentValueSubject<Bool, Never>(true)
@@ -361,6 +362,10 @@ final class MockConfigurationGateway: ConfigurationGateway {
 
     var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
         showEmptySpacesSubject.eraseToAnyPublisher()
+    }
+
+    var hiddenSpacesPublisher: AnyPublisher<[String], Never> {
+        hiddenSpacesSubject.eraseToAnyPublisher()
     }
 
     var showGroupsPublisher: AnyPublisher<Bool, Never> {
@@ -490,6 +495,10 @@ final class MockConfigurationGateway: ConfigurationGateway {
 
     func setShowEmptySpaces(_ value: Bool) {
         showEmptySpacesSubject.send(value)
+    }
+
+    func setHiddenSpaces(_ value: [String]) {
+        hiddenSpacesSubject.send(value)
     }
 
     func setShowGroups(_ value: Bool) {

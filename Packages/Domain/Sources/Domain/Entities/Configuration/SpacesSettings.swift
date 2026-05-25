@@ -12,6 +12,7 @@ import Foundation
 public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     where
     Mode.BoolType: Codable,
+    Mode.StringArrayType: Codable,
     Mode.ColorPropertiesArrayType: Codable,
     Mode.GeometricPropertiesArrayType: Codable,
     Mode.EffectPropertiesArrayType: Codable,
@@ -32,6 +33,12 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     /// allowing users to see and interact with all available workspaces.
     /// When disabled, only spaces containing windows are shown.
     public let showEmptySpaces: Mode.BoolType
+
+    /// The list of space IDs to hide from the menu bar interface.
+    ///
+    /// Spaces whose IDs appear in this array are excluded from the menu bar widget,
+    /// regardless of whether they contain windows or are focused.
+    public let hiddenSpaces: Mode.StringArrayType
 
     /// Array of visual properties for individual spaces.
     ///
@@ -100,6 +107,7 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     ///
     /// - Parameters:
     ///   - showEmptySpaces: Whether to display empty spaces in the menu bar
+    ///   - hiddenSpaces: The list of space IDs to hide from the menu bar
     ///   - spacesColorProperties: Array of visual properties for individual spaces
     ///   - spacesGeometricProperties: Array of geometric properties for individual spaces
     ///   - spacesEffectProperties: Array of effect properties for individual spaces
@@ -113,6 +121,7 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     ///   - appleButtonEffectProperties: Effect properties for the Apple Button
     public init(
         showEmptySpaces: Mode.BoolType,
+        hiddenSpaces: Mode.StringArrayType,
         spacesColorProperties: Mode.ColorPropertiesArrayType,
         spacesGeometricProperties: Mode.GeometricPropertiesArrayType,
         spacesEffectProperties: Mode.EffectPropertiesArrayType,
@@ -126,6 +135,7 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
         appleButtonEffectProperties: Mode.EffectPropertiesType
     ) {
         self.showEmptySpaces = showEmptySpaces
+        self.hiddenSpaces = hiddenSpaces
         self.spacesColorProperties = spacesColorProperties
         self.spacesGeometricProperties = spacesGeometricProperties
         self.spacesEffectProperties = spacesEffectProperties
@@ -141,6 +151,7 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
 
     enum CodingKeys: String, CodingKey {
         case showEmptySpaces = "show-empty-spaces"
+        case hiddenSpaces = "hidden-spaces"
         case spacesColorProperties = "visual-config"
         case spacesGeometricProperties = "geometric-config"
         case spacesEffectProperties = "effect-config"
@@ -171,6 +182,7 @@ public class SpacesSettings<Mode: OptionalTypeMapping>: OptionalType
     ) throws -> SpacesSettings<RequiredMode> {
         SpacesSettings<RequiredMode>(
             showEmptySpaces: decodedValue.showEmptySpaces ?? defaultValue.showEmptySpaces,
+            hiddenSpaces: decodedValue.hiddenSpaces ?? defaultValue.hiddenSpaces,
             spacesColorProperties: decodedValue.spacesColorProperties ?? defaultValue.spacesColorProperties,
             spacesGeometricProperties: decodedValue.spacesGeometricProperties ?? defaultValue
                 .spacesGeometricProperties,

@@ -26,6 +26,9 @@ public protocol ConfigurationGateway {
     /// Publisher that emits show empty spaces updates.
     var showEmptySpacesPublisher: AnyPublisher<Bool, Never> { get }
 
+    /// Publisher that emits hidden spaces updates.
+    var hiddenSpacesPublisher: AnyPublisher<[String], Never> { get }
+
     /// Publisher that emits show groups updates.
     var showGroupsPublisher: AnyPublisher<Bool, Never> { get }
 
@@ -127,6 +130,8 @@ public protocol ConfigurationGateway {
     func setFocusWindowOnClick(_ value: Bool) async
 
     func setShowEmptySpaces(_ value: Bool) async
+
+    func setHiddenSpaces(_ value: [String]) async
 
     func setShowGroups(_ value: Bool) async
 

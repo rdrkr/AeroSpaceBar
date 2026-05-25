@@ -31,6 +31,9 @@ public enum ConfigurationDefaults {
     /// Whether to show empty spaces in the interface.
     public static let showEmptySpaces = false
 
+    /// The list of space IDs to hide from the menu bar interface.
+    public static let hiddenSpaces: [String] = []
+
     /// Whether to show the Apple Button as a space background.
     public static let showAppleButtonAsSpace = false
 

@@ -32,6 +32,7 @@ final class ConfigurationDataTests: XCTestCase {
             ),
             spaces: SpacesSettings<RequiredMode>(
                 showEmptySpaces: false,
+                hiddenSpaces: [],
                 spacesColorProperties: [],
                 spacesGeometricProperties: [],
                 spacesEffectProperties: [],
@@ -93,6 +94,7 @@ final class ConfigurationDataTests: XCTestCase {
 
         let spaces: SpacesSettings<RequiredMode>? = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -196,6 +198,7 @@ final class ConfigurationDataTests: XCTestCase {
 
         let customSpaces = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [ConfigurationDefaults.spaceColorProperties],
             spacesGeometricProperties: [GeometricProperties()],
             spacesEffectProperties: [EffectProperties()],
@@ -395,6 +398,7 @@ final class ConfigurationDataTests: XCTestCase {
 
         let spaces = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [
                 ConfigurationDefaults.spaceColorProperties,
                 ConfigurationDefaults.spaceColorProperties

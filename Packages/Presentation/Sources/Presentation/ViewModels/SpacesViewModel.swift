@@ -58,6 +58,15 @@ public final class SpacesViewModel: ObservableObject {
         }
     }
 
+    /// The set of space IDs that are hidden from the menu bar interface.
+    @Published var hiddenSpaces: Set<String> {
+        didSet {
+            Task.detached(priority: .utility) { [self] in
+                await setHiddenSpacesUseCase.execute(value: Array(hiddenSpaces))
+            }
+        }
+    }
+
     /// Whether to show the Apple Button as a space background.
     @Published var showAppleButtonAsSpace: Bool {
         didSet {
@@ -213,6 +222,8 @@ public final class SpacesViewModel: ObservableObject {
     private let setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase
     private let getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase
     private let setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase
+    private let getHiddenSpacesUseCase: GetHiddenSpacesUseCase
+    private let setHiddenSpacesUseCase: SetHiddenSpacesUseCase
     private let setShowWindowTitlesUseCase: SetShowWindowTitlesUseCase
 
     /// Cancellable subscriptions for Combine publishers.
@@ -272,6 +283,8 @@ public final class SpacesViewModel: ObservableObject {
         setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase,
         getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase,
         setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase,
+        getHiddenSpacesUseCase: GetHiddenSpacesUseCase,
+        setHiddenSpacesUseCase: SetHiddenSpacesUseCase,
         getWallpaperUseCase: GetWallpaperUseCase,
         getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
@@ -323,6 +336,8 @@ public final class SpacesViewModel: ObservableObject {
         self.setFocusWindowOnClickUseCase = setFocusWindowOnClickUseCase
         self.getShowEmptySpacesUseCase = getShowEmptySpacesUseCase
         self.setShowEmptySpacesUseCase = setShowEmptySpacesUseCase
+        self.getHiddenSpacesUseCase = getHiddenSpacesUseCase
+        self.setHiddenSpacesUseCase = setHiddenSpacesUseCase
 
         // Initialize UI configuration use cases
         self.getMenuBarHeightUseCase = getMenuBarHeightUseCase
@@ -365,14 +380,18 @@ public final class SpacesViewModel: ObservableObject {
         let initialSpaces = getSpacesUseCase.execute().blockingFirst()
         allSpaces = initialSpaces
         let initialShowEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
-        spaces = initialShowEmptySpaces
-            ? initialSpaces
-            : initialSpaces.filter { !$0.windows.isEmpty || $0.isFocused }
+        let initialHiddenSpaces = Set(getHiddenSpacesUseCase.execute().blockingFirst())
+        spaces = initialSpaces.filter { space in
+            guard !initialHiddenSpaces.contains(space.id) else { return false }
+
+            return initialShowEmptySpaces || !space.windows.isEmpty || space.isFocused
+        }
 
         menuBarHeight = getMenuBarHeightUseCase.execute().blockingFirst()
         showWindowTitles = getShowWindowTitlesUseCase.execute().blockingFirst()
         focusWindowOnClick = getFocusWindowOnClickUseCase.execute().blockingFirst()
         showEmptySpaces = getShowEmptySpacesUseCase.execute().blockingFirst()
+        hiddenSpaces = Set(getHiddenSpacesUseCase.execute().blockingFirst())
         isMenuBarVisible = getMenuBarVisibilityUseCase.execute().blockingFirst()
         isSpacesEnabled = getFeatureFlagsUseCase.execute().blockingFirst().enableSpaces
         spacesAppearanceMode = getSpacesAppearanceModeUseCase.execute().blockingFirst()
@@ -492,6 +511,13 @@ public final class SpacesViewModel: ObservableObject {
         getShowEmptySpacesUseCase.execute()
             .sink { [weak self] showEmpty in
                 self?.showEmptySpaces = showEmpty
+                self?.updateFilteredSpaces()
+            }
+            .store(in: &cancellables)
+
+        getHiddenSpacesUseCase.execute()
+            .sink { [weak self] hidden in
+                self?.hiddenSpaces = Set(hidden)
                 self?.updateFilteredSpaces()
             }
             .store(in: &cancellables)
@@ -715,6 +741,7 @@ public final class SpacesViewModel: ObservableObject {
         await setSpacesAppearanceModeUseCase.execute(value: ConfigurationDefaults.spacesAppearanceMode)
         await setShowWindowTitlesUseCase.execute(value: ConfigurationDefaults.showWindowTitles)
         await setShowEmptySpacesUseCase.execute(value: ConfigurationDefaults.showEmptySpaces)
+        await setHiddenSpacesUseCase.execute(value: ConfigurationDefaults.hiddenSpaces)
         await setFocusWindowOnClickUseCase.execute(enabled: ConfigurationDefaults.focusWindowOnClick)
 
         await setShowAppleButtonAsSpaceUseCase.execute(value: ConfigurationDefaults.showAppleButtonAsSpace)
@@ -732,8 +759,12 @@ public final class SpacesViewModel: ObservableObject {
     /// always included even when empty, so navigating to an empty workspace still
     /// surfaces it in the menu bar.
     private func updateFilteredSpaces() {
-        spaces = showEmptySpaces
-            ? allSpaces
-            : allSpaces.filter { !$0.windows.isEmpty || $0.isFocused }
+        spaces = allSpaces.filter { space in
+            // Always exclude hidden spaces
+            guard !hiddenSpaces.contains(space.id) else { return false }
+
+            // Apply showEmptySpaces filter
+            return showEmptySpaces || !space.windows.isEmpty || space.isFocused
+        }
     }
 }

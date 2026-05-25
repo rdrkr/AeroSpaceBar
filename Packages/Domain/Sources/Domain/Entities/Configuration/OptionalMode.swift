@@ -10,6 +10,7 @@ import Foundation
 public struct OptionalMode: OptionalTypeMapping {
     public typealias BoolType = Bool?
     public typealias StringType = String?
+    public typealias StringArrayType = [String]?
     public typealias ThemeModeType = ThemeMode?
     public typealias ThemePresetColorPropertiesType = ThemePresetColorProperties?
     public typealias ColorPropertiesArrayType = [ColorProperties]?

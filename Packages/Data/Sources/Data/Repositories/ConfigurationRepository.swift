@@ -67,6 +67,11 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.showEmptySpaces
     )
 
+    /// Subject for hidden spaces.
+    private let hiddenSpacesSubject = CurrentValueSubject<[String], Never>(
+        ConfigurationDefaults.hiddenSpaces
+    )
+
     /// Subject for show Apple Button as space.
     private let showAppleButtonAsSpaceSubject = CurrentValueSubject<Bool, Never>(
         ConfigurationDefaults.showAppleButtonAsSpace
@@ -208,6 +213,10 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     public var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
         showEmptySpacesSubject.eraseToAnyPublisher()
+    }
+
+    public var hiddenSpacesPublisher: AnyPublisher<[String], Never> {
+        hiddenSpacesSubject.eraseToAnyPublisher()
     }
 
     public var showGroupsPublisher: AnyPublisher<Bool, Never> {
@@ -408,6 +417,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         get {
             SpacesSettings<RequiredMode>(
                 showEmptySpaces: showEmptySpacesSubject.value,
+                hiddenSpaces: hiddenSpacesSubject.value,
                 spacesColorProperties: spacesColorPropertiesSubject.value,
                 spacesGeometricProperties: spacesGeometricPropertiesSubject.value,
                 spacesEffectProperties: spacesEffectPropertiesSubject.value,
@@ -424,6 +434,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
         set {
             showEmptySpacesSubject.send(newValue.showEmptySpaces)
+            hiddenSpacesSubject.send(newValue.hiddenSpaces)
             spacesColorPropertiesSubject.send(newValue.spacesColorProperties)
             spacesGeometricPropertiesSubject.send(newValue.spacesGeometricProperties)
             spacesEffectPropertiesSubject.send(newValue.spacesEffectProperties)
@@ -592,6 +603,18 @@ public final class ConfigurationRepository: ConfigurationGateway {
         if value == showEmptySpacesSubject.value { return }
 
         showEmptySpacesSubject.send(value)
+        Task {
+            if !isUpdatingFromFile {
+                saveConfigurationToFile()
+            }
+        }
+    }
+
+    /// Sets the list of hidden space IDs and emits update.
+    public func setHiddenSpaces(_ value: [String]) {
+        if value == hiddenSpacesSubject.value { return }
+
+        hiddenSpacesSubject.send(value)
         Task {
             if !isUpdatingFromFile {
                 saveConfigurationToFile()
@@ -1064,6 +1087,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         showWindowTitlesSubject.send(ConfigurationDefaults.showWindowTitles)
         focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
         showEmptySpacesSubject.send(ConfigurationDefaults.showEmptySpaces)
+        hiddenSpacesSubject.send(ConfigurationDefaults.hiddenSpaces)
         showGroupsSubject.send(ConfigurationDefaults.showGroups)
         showForegroundOverlaySubject.send(ConfigurationDefaults.showForegroundOverlay)
         enablePerformanceMetricsSubject.send(ConfigurationDefaults.enablePerformanceMetrics)

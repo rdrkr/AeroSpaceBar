@@ -122,6 +122,8 @@ public final class DependencyContainer {
         setFocusWindowOnClickUseCase: makeSetFocusWindowOnClickUseCase(),
         getShowEmptySpacesUseCase: makeGetShowEmptySpacesUseCase(),
         setShowEmptySpacesUseCase: makeSetShowEmptySpacesUseCase(),
+        getHiddenSpacesUseCase: makeGetHiddenSpacesUseCase(),
+        setHiddenSpacesUseCase: makeSetHiddenSpacesUseCase(),
         getWallpaperUseCase: makeGetWallpaperUseCase(),
         getMenuBarVisibilityUseCase: makeGetMenuBarVisibilityUseCase(),
         getMenuBarHeightUseCase: makeGetMenuBarHeightUseCase(),
@@ -367,6 +369,18 @@ public final class DependencyContainer {
     /// - Returns: A new SetShowEmptySpacesUseCase instance
     func makeSetShowEmptySpacesUseCase() -> SetShowEmptySpacesUseCase {
         SetShowEmptySpacesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new GetHiddenSpacesUseCase instance.
+    /// - Returns: A new GetHiddenSpacesUseCase instance
+    func makeGetHiddenSpacesUseCase() -> GetHiddenSpacesUseCase {
+        GetHiddenSpacesUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates a new SetHiddenSpacesUseCase instance.
+    /// - Returns: A new SetHiddenSpacesUseCase instance
+    func makeSetHiddenSpacesUseCase() -> SetHiddenSpacesUseCase {
+        SetHiddenSpacesUseCase(configurationGateway: configurationGateway)
     }
 
     // MARK: - Apple Button Use Cases

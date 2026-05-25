@@ -57,6 +57,16 @@ struct SpacesSettingsView: View {
                         isOn: $spacesViewModel.showWindowTitles
                     )
 
+                    SettingsMultiSelectMenu(
+                        title: LocalizedStringResource("Hide Spaces"),
+                        description: LocalizedStringResource(
+                            "Select spaces to exclude from the menu bar interface."
+                        ),
+                        options: spacesViewModel.allSpaces.map(\.id),
+                        selection: $spacesViewModel.hiddenSpaces
+                    )
+                    .tag("advanced-hide-spaces-menu")
+
                     SettingsToggle(
                         title: LocalizedStringResource("Show Empty Spaces"),
                         description: LocalizedStringResource(

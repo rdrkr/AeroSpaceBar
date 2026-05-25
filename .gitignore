@@ -180,3 +180,4 @@ build
 default.profraw
 .env
 /.claude/worktrees
+/.antigravitycli

@@ -217,6 +217,7 @@ final class OptionalTypeMappingTests: XCTestCase {
 
         let optionalSpaces = SpacesSettings<OptionalMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -254,6 +255,7 @@ final class OptionalTypeMappingTests: XCTestCase {
 
         let defaultSpaces = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],

@@ -27,6 +27,9 @@ public protocol OptionalTypeMapping: Codable {
     /// optional).
     associatedtype ThemePresetColorPropertiesType: Codable
 
+    /// Associated type for string arrays ([String] for required, [String]? for optional).
+    associatedtype StringArrayType
+
     /// Associated type for visual properties arrays ([ColorProperties] for required, [ColorProperties]? for
     /// optional).
     associatedtype ColorPropertiesArrayType

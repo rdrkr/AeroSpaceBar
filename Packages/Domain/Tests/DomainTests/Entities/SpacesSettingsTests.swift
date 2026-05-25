@@ -28,6 +28,7 @@ final class SpacesSettingsTests: XCTestCase {
         // When creating required settings
         let settings = SpacesSettings<RequiredMode>(
             showEmptySpaces: showEmptySpaces,
+            hiddenSpaces: [],
             spacesColorProperties: colorProps,
             spacesGeometricProperties: geometricProps,
             spacesEffectProperties: effectProps,
@@ -64,6 +65,7 @@ final class SpacesSettingsTests: XCTestCase {
         // When creating optional settings
         let settings = SpacesSettings<OptionalMode>(
             showEmptySpaces: showEmptySpaces,
+            hiddenSpaces: [],
             spacesColorProperties: colorProps,
             spacesGeometricProperties: geometricProps,
             spacesEffectProperties: effectProps,
@@ -88,6 +90,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given optional mode with nil values
         let settings = SpacesSettings<OptionalMode>(
             showEmptySpaces: nil,
+            hiddenSpaces: nil,
             spacesColorProperties: nil,
             spacesGeometricProperties: nil,
             spacesEffectProperties: nil,
@@ -114,6 +117,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given optional settings with all nil values
         let optional = SpacesSettings<OptionalMode>(
             showEmptySpaces: nil,
+            hiddenSpaces: nil,
             spacesColorProperties: nil,
             spacesGeometricProperties: nil,
             spacesEffectProperties: nil,
@@ -126,6 +130,7 @@ final class SpacesSettingsTests: XCTestCase {
         // And default settings
         let defaultSettings = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -166,6 +171,7 @@ final class SpacesSettingsTests: XCTestCase {
 
         let optional = SpacesSettings<OptionalMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: customColorProps,
             spacesGeometricProperties: customGeometricProps,
             spacesEffectProperties: customEffectProps,
@@ -186,6 +192,7 @@ final class SpacesSettingsTests: XCTestCase {
         // And default settings (different values)
         let defaultSettings = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -221,6 +228,7 @@ final class SpacesSettingsTests: XCTestCase {
 
         let optional = SpacesSettings<OptionalMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: nil, // Will use default
             spacesGeometricProperties: [GeometricProperties(cornerRadius: 6, borderWidth: 1)],
             spacesEffectProperties: nil, // Will use default
@@ -233,6 +241,7 @@ final class SpacesSettingsTests: XCTestCase {
         // And default settings
         let defaultSettings = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: [ConfigurationDefaults.spaceColorProperties],
             spacesGeometricProperties: [],
             spacesEffectProperties: [EffectProperties()],
@@ -278,6 +287,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given empty arrays
         let settings = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -303,6 +313,7 @@ final class SpacesSettingsTests: XCTestCase {
 
         let settings = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: colorProps,
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -327,6 +338,7 @@ final class SpacesSettingsTests: XCTestCase {
             // When creating settings with each mode
             let settings = SpacesSettings<RequiredMode>(
                 showEmptySpaces: true,
+                hiddenSpaces: [],
                 spacesColorProperties: [],
                 spacesGeometricProperties: [],
                 spacesEffectProperties: [],
@@ -347,6 +359,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given OptionalVariant type alias
         let settings: SpacesSettings<RequiredMode>.OptionalVariant = SpacesSettings<OptionalMode>(
             showEmptySpaces: nil,
+            hiddenSpaces: nil,
             spacesColorProperties: nil,
             spacesGeometricProperties: nil,
             spacesEffectProperties: nil,
@@ -364,6 +377,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given RequiredVariant type alias
         let settings: SpacesSettings<OptionalMode>.RequiredVariant = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -383,6 +397,7 @@ final class SpacesSettingsTests: XCTestCase {
         // Given empty spaces enabled
         let settings = SpacesSettings<RequiredMode>(
             showEmptySpaces: true,
+            hiddenSpaces: [],
             spacesColorProperties: [],
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
@@ -408,6 +423,7 @@ final class SpacesSettingsTests: XCTestCase {
 
         let settings = SpacesSettings<RequiredMode>(
             showEmptySpaces: false,
+            hiddenSpaces: [],
             spacesColorProperties: colorProps,
             spacesGeometricProperties: [],
             spacesEffectProperties: [],
