@@ -177,8 +177,8 @@ rm ~/Library/Preferences/com.rdrkr.AeroSpaceBar.plist
 - **SwiftFormat** and **SwiftLint**: `brew install swiftformat swiftlint`
 - **pre-commit** (optional): `brew install pre-commit && pre-commit install`
 
-For compile-only verification after running formatting and tests separately, pass
-`SKIP_CODE_QUALITY_CHECKS=YES` to `xcodebuild`. Normal Xcode builds continue to run the repository's pre-build checks.
+Debug builds skip the pre-build formatter/linter phase so the app can be run iteratively from Xcode. Release builds run the
+checks by default; pass `SKIP_CODE_QUALITY_CHECKS=YES` only for compile-only verification after checking the code separately.
 
 ### Architecture
 

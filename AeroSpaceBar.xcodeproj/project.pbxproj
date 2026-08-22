@@ -543,7 +543,7 @@
 				"",
 				"set -e",
 				"",
-				"if [ \"$SKIP_CODE_QUALITY_CHECKS\" = \"YES\" ]; then",
+				"if [ \"$CONFIGURATION\" = \"Debug\" ] || [ \"$SKIP_CODE_QUALITY_CHECKS\" = \"YES\" ]; then",
 				"    echo \"⏭️ Skipping pre-build code quality checks\"",
 				"    exit 0",
 				"fi",
