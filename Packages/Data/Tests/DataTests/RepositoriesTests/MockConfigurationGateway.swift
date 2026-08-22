@@ -17,6 +17,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public private(set) var setShowEmptySpacesCalls: [Bool] = []
     public private(set) var setHiddenSpacesCalls: [[String]] = []
     public private(set) var setShowGroupsCalls: [Bool] = []
+    public private(set) var setShowForegroundOverlayCalls: [Bool] = []
     public private(set) var setEnablePerformanceMetricsCalls: [Bool] = []
     public private(set) var setIsOptimizedPerformanceEnabledCalls: [Bool] = []
     public private(set) var setLogLevelCalls: [Logger.Level] = []
@@ -29,6 +30,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public private(set) var setGlobalSpacesColorPropertiesCalls: [ColorProperties] = []
     public private(set) var setGlobalSpacesGeometricPropertiesCalls: [GeometricProperties] = []
     public private(set) var setGlobalSpacesEffectPropertiesCalls: [EffectProperties] = []
+    public private(set) var setShowAppleButtonAsSpaceCalls: [Bool] = []
+    public private(set) var setAppleButtonColorPropertiesCalls: [ColorProperties] = []
+    public private(set) var setAppleButtonGeometricPropertiesCalls: [GeometricProperties] = []
+    public private(set) var setAppleButtonEffectPropertiesCalls: [EffectProperties] = []
     public private(set) var setGroupsCalls: [[Domain.Group]] = []
     public private(set) var setGroupsAppearanceModeCalls: [GroupsAppearanceMode] = []
     public private(set) var setGlobalGroupsColorPropertiesCalls: [ColorProperties] = []
@@ -54,6 +59,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public var showEmptySpacesToEmit: Bool = false
     public var hiddenSpacesToEmit: [String] = []
     public var showGroupsToEmit: Bool = false
+    public var showForegroundOverlayToEmit: Bool = false
     public var enablePerformanceMetricsToEmit: Bool = false
     public var isOptimizedPerformanceEnabledToEmit: Bool = true
     public var logLevelToEmit: Logger.Level = .info
@@ -67,6 +73,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public var globalSpacesColorPropertiesToEmit = ConfigurationDefaults.spaceColorProperties
     public var globalSpacesGeometricPropertiesToEmit = GeometricProperties()
     public var globalSpacesEffectPropertiesToEmit = EffectProperties()
+    public var showAppleButtonAsSpaceToEmit: Bool = false
+    public var appleButtonColorPropertiesToEmit = ConfigurationDefaults.spaceColorProperties
+    public var appleButtonGeometricPropertiesToEmit = GeometricProperties()
+    public var appleButtonEffectPropertiesToEmit = EffectProperties()
     public var groupsToEmit: [Domain.Group] = []
     public var groupsAppearanceModeToEmit: GroupsAppearanceMode = .allGroups
     public var globalGroupsColorPropertiesToEmit = ConfigurationDefaults.groupsGlobalColorProperties
@@ -88,6 +98,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let showEmptySpacesSubject: CurrentValueSubject<Bool, Never>
     private let hiddenSpacesSubject: CurrentValueSubject<[String], Never>
     private let showGroupsSubject: CurrentValueSubject<Bool, Never>
+    private let showForegroundOverlaySubject: CurrentValueSubject<Bool, Never>
     private let enablePerformanceMetricsSubject: CurrentValueSubject<Bool, Never>
     private let isOptimizedPerformanceEnabledSubject: CurrentValueSubject<Bool, Never>
     private let logLevelSubject: CurrentValueSubject<Logger.Level, Never>
@@ -101,6 +112,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let globalSpacesColorPropertiesSubject: CurrentValueSubject<ColorProperties, Never>
     private let globalSpacesGeometricPropertiesSubject: CurrentValueSubject<GeometricProperties, Never>
     private let globalSpacesEffectPropertiesSubject: CurrentValueSubject<EffectProperties, Never>
+    private let showAppleButtonAsSpaceSubject: CurrentValueSubject<Bool, Never>
+    private let appleButtonColorPropertiesSubject: CurrentValueSubject<ColorProperties, Never>
+    private let appleButtonGeometricPropertiesSubject: CurrentValueSubject<GeometricProperties, Never>
+    private let appleButtonEffectPropertiesSubject: CurrentValueSubject<EffectProperties, Never>
     private let groupsSubject: CurrentValueSubject<[Domain.Group], Never>
     private let groupsAppearanceModeSubject: CurrentValueSubject<GroupsAppearanceMode, Never>
     private let globalGroupsColorPropertiesSubject: CurrentValueSubject<ColorProperties, Never>
@@ -122,6 +137,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         showEmptySpacesSubject = CurrentValueSubject(showEmptySpacesToEmit)
         hiddenSpacesSubject = CurrentValueSubject(hiddenSpacesToEmit)
         showGroupsSubject = CurrentValueSubject(showGroupsToEmit)
+        showForegroundOverlaySubject = CurrentValueSubject(showForegroundOverlayToEmit)
         enablePerformanceMetricsSubject = CurrentValueSubject(enablePerformanceMetricsToEmit)
         isOptimizedPerformanceEnabledSubject = CurrentValueSubject(isOptimizedPerformanceEnabledToEmit)
         logLevelSubject = CurrentValueSubject(logLevelToEmit)
@@ -135,6 +151,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         globalSpacesColorPropertiesSubject = CurrentValueSubject(globalSpacesColorPropertiesToEmit)
         globalSpacesGeometricPropertiesSubject = CurrentValueSubject(globalSpacesGeometricPropertiesToEmit)
         globalSpacesEffectPropertiesSubject = CurrentValueSubject(globalSpacesEffectPropertiesToEmit)
+        showAppleButtonAsSpaceSubject = CurrentValueSubject(showAppleButtonAsSpaceToEmit)
+        appleButtonColorPropertiesSubject = CurrentValueSubject(appleButtonColorPropertiesToEmit)
+        appleButtonGeometricPropertiesSubject = CurrentValueSubject(appleButtonGeometricPropertiesToEmit)
+        appleButtonEffectPropertiesSubject = CurrentValueSubject(appleButtonEffectPropertiesToEmit)
         groupsSubject = CurrentValueSubject(groupsToEmit)
         groupsAppearanceModeSubject = CurrentValueSubject(groupsAppearanceModeToEmit)
         globalGroupsColorPropertiesSubject = CurrentValueSubject(globalGroupsColorPropertiesToEmit)
@@ -172,6 +192,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public var showGroupsPublisher: AnyPublisher<Bool, Never> {
         showGroupsSubject.eraseToAnyPublisher()
+    }
+
+    public var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> {
+        showForegroundOverlaySubject.eraseToAnyPublisher()
     }
 
     public var enablePerformanceMetricsPublisher: AnyPublisher<Bool, Never> {
@@ -224,6 +248,22 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public var globalSpacesEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
         globalSpacesEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> {
+        showAppleButtonAsSpaceSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        appleButtonColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        appleButtonGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        appleButtonEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
     public var groupsPublisher: AnyPublisher<[Domain.Group], Never> {
@@ -302,6 +342,11 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         showGroupsSubject.send(value)
     }
 
+    public func setShowForegroundOverlay(_ value: Bool) {
+        setShowForegroundOverlayCalls.append(value)
+        showForegroundOverlaySubject.send(value)
+    }
+
     public func setEnablePerformanceMetrics(_ value: Bool) {
         setEnablePerformanceMetricsCalls.append(value)
         enablePerformanceMetricsSubject.send(value)
@@ -360,6 +405,26 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public func setGlobalSpacesEffectProperties(_ value: EffectProperties) {
         setGlobalSpacesEffectPropertiesCalls.append(value)
         globalSpacesEffectPropertiesSubject.send(value)
+    }
+
+    public func setShowAppleButtonAsSpace(_ value: Bool) {
+        setShowAppleButtonAsSpaceCalls.append(value)
+        showAppleButtonAsSpaceSubject.send(value)
+    }
+
+    public func setAppleButtonColorProperties(_ value: ColorProperties) {
+        setAppleButtonColorPropertiesCalls.append(value)
+        appleButtonColorPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        setAppleButtonGeometricPropertiesCalls.append(value)
+        appleButtonGeometricPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        setAppleButtonEffectPropertiesCalls.append(value)
+        appleButtonEffectPropertiesSubject.send(value)
     }
 
     public func setGlobalGroupsColorProperties(_ value: ColorProperties) {
@@ -450,6 +515,7 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         setShowEmptySpacesCalls.removeAll()
         setHiddenSpacesCalls.removeAll()
         setShowGroupsCalls.removeAll()
+        setShowForegroundOverlayCalls.removeAll()
         setEnablePerformanceMetricsCalls.removeAll()
         setIsOptimizedPerformanceEnabledCalls.removeAll()
         setLogLevelCalls.removeAll()
@@ -462,6 +528,10 @@ public final class MockConfigurationGateway: ConfigurationGateway {
         setGlobalSpacesColorPropertiesCalls.removeAll()
         setGlobalSpacesGeometricPropertiesCalls.removeAll()
         setGlobalSpacesEffectPropertiesCalls.removeAll()
+        setShowAppleButtonAsSpaceCalls.removeAll()
+        setAppleButtonColorPropertiesCalls.removeAll()
+        setAppleButtonGeometricPropertiesCalls.removeAll()
+        setAppleButtonEffectPropertiesCalls.removeAll()
         setGroupsCalls.removeAll()
         setGroupsAppearanceModeCalls.removeAll()
         setGlobalGroupsColorPropertiesCalls.removeAll()

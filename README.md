@@ -32,7 +32,7 @@ the menu bar.
 ### ✨ Key Features
 
 - 🎨 **Beautiful UI**: Modern SwiftUI interface with smooth animations and hover effects
-- ⚡ **Lightning Fast**: Optimized performance with efficient data refresh and icon caching
+- ⚡ **Real-time Updates**: AeroSpace focus events update the bar immediately without per-switch AppleScript processes
 - 🔒 **Privacy Focused**: Runs entirely locally, no data sent to external servers
 - 🔧 **Spaces & Groups**: Organize and manage workspace windows and menubar groups with custom ranges and settings
 - 🎨 **Advanced Theming**: Comprehensive theme system with presets and per-space customization
@@ -46,7 +46,10 @@ the menu bar.
 ### Prerequisites
 
 - **macOS 15.0+** (Sequoia or later)
-- **[AeroSpace window manager](https://github.com/nikitabobko/aerospace)** installed and running
+- **[AeroSpace window manager](https://github.com/nikitabobko/aerospace) 0.21.0+** installed and running
+
+  AeroSpaceBar uses the public `aerospace subscribe` event stream introduced in AeroSpace 0.21. Older versions fall
+  back to periodic reconciliation and do not receive immediate focus updates.
 
 > [!NOTE]
 > By using AeroSpaceBar, you acknowledge that it's
@@ -173,6 +176,9 @@ rm ~/Library/Preferences/com.rdrkr.AeroSpaceBar.plist
 - **Xcode 16.3+** with **Swift 6.2+**
 - **SwiftFormat** and **SwiftLint**: `brew install swiftformat swiftlint`
 - **pre-commit** (optional): `brew install pre-commit && pre-commit install`
+
+For compile-only verification after running formatting and tests separately, pass
+`SKIP_CODE_QUALITY_CHECKS=YES` to `xcodebuild`. Normal Xcode builds continue to run the repository's pre-build checks.
 
 ### Architecture
 

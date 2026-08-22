@@ -13,6 +13,7 @@ final class AeroSpaceRepositoryTests: XCTestCase {
     private var mockIconCache: MockIconCache?
     private var mockCLIFactory: MockAeroSpaceCLIClientFactory?
     private var mockCLIClient: MockAeroSpaceCLIClient?
+    private var mockEventClient: MockAeroSpaceEventClient?
     private var mockCommandExecutor: MockCommandExecutor?
     private var mockRunningAppChecker: MockRunningAppChecker?
     private var mockConfigGateway: MockConfigurationGateway?
@@ -30,6 +31,7 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         mockCLIFactory = MockAeroSpaceCLIClientFactory()
         // Use the client instance from the factory so we can verify calls on it
         mockCLIClient = mockCLIFactory?.mockClient as? MockAeroSpaceCLIClient
+        mockEventClient = MockAeroSpaceEventClient()
 
         mockCommandExecutor = MockCommandExecutor()
         mockRunningAppChecker = MockRunningAppChecker()
@@ -47,6 +49,7 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         guard
             let mockIconCache, let getAeroSpacePathUseCase, let getAeroSpaceConfigPathUseCase,
             let getOptimizedPerformanceEnabledUseCase, let getSpacesColorPropertiesUseCase, let mockCLIFactory,
+            let mockEventClient,
             let mockCommandExecutor, let mockRunningAppChecker else { return }
 
         repository = AeroSpaceRepository(
@@ -56,6 +59,7 @@ final class AeroSpaceRepositoryTests: XCTestCase {
             getOptimizedPerformanceEnabledUseCase: getOptimizedPerformanceEnabledUseCase,
             getSpacesColorPropertiesUseCase: getSpacesColorPropertiesUseCase,
             cliFactory: mockCLIFactory,
+            eventClient: mockEventClient,
             commandExecutor: mockCommandExecutor,
             runningAppChecker: mockRunningAppChecker
         )
@@ -66,6 +70,7 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         mockIconCache = nil
         mockCLIFactory = nil
         mockCLIClient = nil
+        mockEventClient = nil
         mockCommandExecutor = nil
         mockRunningAppChecker = nil
         mockConfigGateway = nil
