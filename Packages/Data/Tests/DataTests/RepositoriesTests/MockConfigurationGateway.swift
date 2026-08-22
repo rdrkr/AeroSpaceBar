@@ -1,4 +1,6 @@
 // Copyright (c) 2026 AeroSpaceBar by Ronen Druker.
+// Modifications Copyright (c) 2026 Jakub Kubiak.
+// Modified 2026-08-22 by Jakub Kubiak: Supported real-time AeroSpace event tests.
 
 import AppKit
 import Combine

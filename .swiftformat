@@ -1,4 +1,6 @@
 # Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+# Modifications Copyright (c) 2026 Jakub Kubiak.
+# Modified 2026-08-22 by Jakub Kubiak: Preserve per-file contributor notices.
 
 # SwiftFormat Configuration for AeroSpaceBar
 # https://github.com/nicklockwood/SwiftFormat
@@ -40,7 +42,8 @@
 --importgrouping alphabetized
 
 # Comments
---header "Copyright (c) {created.year} AeroSpaceBar by Ronen Druker."
+# Copyright notices vary by file; do not overwrite original or contributor attribution.
+--header ignore
 --stripunusedargs always
 
 # Swift version

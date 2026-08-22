@@ -1,4 +1,4 @@
-// Copyright (c) 2026 AeroSpaceBar by Ronen Druker.
+// Copyright (c) 2026 Jakub Kubiak.
 
 import Domain
 import Foundation
@@ -26,6 +26,26 @@ internal enum AeroSpaceFocusReducer {
                 return updatedWindow
             }
 
+            return updatedSpace
+        }
+    }
+
+    /// Replaces the cached title for one window while preserving its icon,
+    /// focus state, and visual configuration.
+    internal static func replacingWindowTitle(
+        in spaces: [Space],
+        windowId: Int,
+        title: String
+    ) -> [Space] {
+        spaces.map { space in
+            var updatedSpace = space
+            updatedSpace.windows = space.windows.map { window in
+                guard window.id == windowId else { return window }
+
+                var updatedWindow = window
+                updatedWindow.title = title
+                return updatedWindow
+            }
             return updatedSpace
         }
     }

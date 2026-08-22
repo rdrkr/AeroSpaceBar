@@ -1,4 +1,4 @@
-// Copyright (c) 2026 AeroSpaceBar by Ronen Druker.
+// Copyright (c) 2026 Jakub Kubiak.
 
 @testable import Data
 import Domain
@@ -38,6 +38,23 @@ final class AeroSpaceFocusReducerTests: XCTestCase {
 
         expect(result[0].windows[0].isFocused) == false
         expect(result[1].isFocused) == true
+    }
+
+    func testReplacesWindowTitleWithoutChangingFocusState() {
+        let spaces = [
+            Space(id: "1", isFocused: true, windows: [makeWindow(id: 10, workspace: "1", isFocused: true)]),
+            Space(id: "2", windows: [makeWindow(id: 20, workspace: "2")])
+        ]
+
+        let result = AeroSpaceFocusReducer.replacingWindowTitle(
+            in: spaces,
+            windowId: 10,
+            title: "Updated title"
+        )
+
+        expect(result[0].windows[0].title) == "Updated title"
+        expect(result[0].windows[0].isFocused) == true
+        expect(result[1]) == spaces[1]
     }
 
     private func makeWindow(id: Int, workspace: String, isFocused: Bool = false) -> Window {

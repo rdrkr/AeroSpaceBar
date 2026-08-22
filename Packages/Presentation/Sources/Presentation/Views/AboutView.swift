@@ -1,4 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+// Modifications Copyright (c) 2026 Jakub Kubiak.
+// Modified 2026-08-22 by Jakub Kubiak: Added fork attribution.
 
 import SwiftUI
 
@@ -138,25 +140,47 @@ struct AboutView: View {
 
             Color.clear.frame(height: 0)
 
-            // Made with love credit
-            HStack(spacing: 4) {
-                Text(LocalizedStringResource("Made with ❤️ by"))
-                    .secondaryText()
-                    .tag("about-made-with-love")
+            // Original author and fork maintainer credits
+            VStack(spacing: 6) {
+                HStack(spacing: 4) {
+                    Text(LocalizedStringResource("Originally created by"))
+                        .secondaryText()
+                        .tag("about-original-author-label")
 
-                Button(
-                    action: {
-                        if let url = URL(string: "https://github.com/rdrkr") {
-                            NSWorkspace.shared.open(url)
+                    Button(
+                        action: {
+                            if let url = URL(string: "https://github.com/rdrkr") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        },
+                        label: {
+                            Text(LocalizedStringResource("Ronen Druker"))
+                                .font(.subheadline)
                         }
-                    },
-                    label: {
-                        Text(LocalizedStringResource("Ronen Druker"))
-                            .font(.subheadline)
-                    }
-                )
-                .settingsButton()
-                .tag("about-author-link")
+                    )
+                    .settingsButton()
+                    .tag("about-original-author-link")
+                }
+
+                HStack(spacing: 4) {
+                    Text(LocalizedStringResource("Fork maintained by"))
+                        .secondaryText()
+                        .tag("about-fork-maintainer-label")
+
+                    Button(
+                        action: {
+                            if let url = URL(string: "https://github.com/Coderbeep") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        },
+                        label: {
+                            Text(LocalizedStringResource("Jakub Kubiak"))
+                                .font(.subheadline)
+                        }
+                    )
+                    .settingsButton()
+                    .tag("about-fork-maintainer-link")
+                }
             }
             .padding(.bottom, 10)
         }

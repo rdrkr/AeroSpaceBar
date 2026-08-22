@@ -1,4 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+// Modifications Copyright (c) 2026 Jakub Kubiak.
+// Modified 2026-08-22 by Jakub Kubiak: Added real-time AeroSpace focus events.
 
 import AppKit
 import Combine
@@ -89,6 +91,9 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Debounced-refresh task; coalesces bursts of lifecycle notifications.
     private var pendingRefreshTask: Task<Void, Never>?
 
+    /// Refreshes metadata for the newest focused window without delaying focus UI updates.
+    private var focusedWindowRefreshTask: Task<Void, Never>?
+
     /// Cancellables for publisher subscriptions.
     private var cancellables: Set<AnyCancellable> = []
 
@@ -152,6 +157,8 @@ public final class AeroSpaceRepository: SpacesGateway {
         eventMonitoringTask = nil
         reconciliationTask?.cancel()
         reconciliationTask = nil
+        focusedWindowRefreshTask?.cancel()
+        focusedWindowRefreshTask = nil
 
         // Remove any existing event handlers
         NSAppleEventManager.shared().removeEventHandler(
@@ -259,15 +266,60 @@ public final class AeroSpaceRepository: SpacesGateway {
         switch event.name {
         case "focus-changed":
             publishFocus(focusedWorkspace: event.workspace, focusedWindowId: event.windowId)
+            scheduleFocusedWindowRefresh(expectedWindowId: event.windowId)
 
         case "focused-workspace-changed":
             publishFocus(focusedWorkspace: event.workspace, focusedWindowId: nil)
+            scheduleFocusedWindowRefresh(expectedWindowId: nil)
 
         case "window-detected":
             scheduleDebouncedRefresh(delay: .milliseconds(75))
 
         default:
             Logger.debug("Ignoring AeroSpace event: \(event.name)", category: Logger.spaces)
+        }
+    }
+
+    /// Fetches the focused window after an event and merges only its latest title.
+    ///
+    /// The event-driven focus update remains immediate. This small, cancellable
+    /// follow-up query prevents title changes from waiting for the five-second
+    /// reconciliation pass and coalesces the workspace/focus event pair.
+    private func scheduleFocusedWindowRefresh(expectedWindowId: UInt32?) {
+        focusedWindowRefreshTask?.cancel()
+        let executablePath = aeroSpaceExecutable
+
+        focusedWindowRefreshTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            try? await Task.sleep(for: .milliseconds(25))
+            guard !Task.isCancelled else { return }
+
+            guard let focusedWindow = await fetchFocusedWindow(executablePath: executablePath) else { return }
+
+            guard !Task.isCancelled else { return }
+
+            if let expectedWindowId, focusedWindow.id != Int(expectedWindowId) {
+                return
+            }
+
+            if let focusedWindowId = UInt32(exactly: focusedWindow.id) {
+                publishFocus(
+                    focusedWorkspace: focusedWindow.workspace,
+                    focusedWindowId: focusedWindowId
+                )
+            }
+
+            let currentSpaces = spacesWithWindowsSubject.value
+            let updatedSpaces = AeroSpaceFocusReducer.replacingWindowTitle(
+                in: currentSpaces,
+                windowId: focusedWindow.id,
+                title: focusedWindow.title
+            )
+
+            guard updatedSpaces != currentSpaces else { return }
+
+            spacesWithWindowsSubject.send(updatedSpaces)
         }
     }
 
@@ -345,6 +397,7 @@ public final class AeroSpaceRepository: SpacesGateway {
         eventMonitoringTask?.cancel()
         reconciliationTask?.cancel()
         pendingRefreshTask?.cancel()
+        focusedWindowRefreshTask?.cancel()
     }
 
     // MARK: - SpacesGateway Implementation

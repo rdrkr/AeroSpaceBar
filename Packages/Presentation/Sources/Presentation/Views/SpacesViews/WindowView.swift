@@ -1,4 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+// Modifications Copyright (c) 2026 Jakub Kubiak.
+// Modified 2026-08-22 by Jakub Kubiak: Display focused window titles without transition latency.
 
 import Domain
 import SwiftUI
@@ -73,6 +75,10 @@ struct WindowView: View {
                     windowId: window.id,
                     spaceForegroundColor: spaceForegroundColor
                 )
+                .transition(.identity)
+                .transaction { transaction in
+                    transaction.animation = nil
+                }
             }
         }
         .padding(.vertical, ConfigurationDefaults.menuBarVerticalPadding)

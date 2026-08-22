@@ -1,4 +1,5 @@
 <!-- Copyright (c) 2026 AeroSpaceBar by Ronen Druker. -->
+<!-- Modifications Copyright (c) 2026 Jakub Kubiak. -->
 
 <!-- markdownlint-disable-next-line MD041 -->
 <div align="center">
@@ -6,6 +7,10 @@
 </div>
 
 <h1 align="center">🚀 AeroSpaceBar</h1>
+
+> **Modified fork:** AeroSpaceBar was originally created by [Ronen Druker](https://github.com/rdrkr). This fork is
+> maintained by [Jakub Kubiak](https://github.com/Coderbeep) and contains modifications made since 2026-08-22. It
+> remains distributed under the [GNU Affero General Public License v3.0](LICENSE).
 
 <div align="center">
 
@@ -32,7 +37,8 @@ the menu bar.
 ### ✨ Key Features
 
 - 🎨 **Beautiful UI**: Modern SwiftUI interface with smooth animations and hover effects
-- ⚡ **Real-time Updates**: AeroSpace focus events update the bar immediately without per-switch AppleScript processes
+- ⚡ **Real-time Updates**: Focus changes render immediately, with an asynchronous focused-title refresh and no
+  per-switch AppleScript processes
 - 🔒 **Privacy Focused**: Runs entirely locally, no data sent to external servers
 - 🔧 **Spaces & Groups**: Organize and manage workspace windows and menubar groups with custom ranges and settings
 - 🎨 **Advanced Theming**: Comprehensive theme system with presets and per-space customization
@@ -393,7 +399,9 @@ We welcome contributions! Here's how:
 
 <div align="center">
 
-**Made with ❤️ by [Ronen Druker](https://github.com/rdrkr)**
+**Originally created with ❤️ by [Ronen Druker](https://github.com/rdrkr)**
+
+**Fork maintained by [Jakub Kubiak](https://github.com/Coderbeep)**
 
 [⭐ Star this repo](https://github.com/rdrkr/AeroSpaceBar/stargazers) | [🐛 Report a bug](https://github.com/rdrkr/AeroSpaceBar/issues) | [💡 Request a feature](https://github.com/rdrkr/AeroSpaceBar/issues/new) | [💬 Discussions](https://github.com/rdrkr/AeroSpaceBar/discussions)
 

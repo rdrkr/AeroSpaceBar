@@ -1,4 +1,4 @@
-// Copyright (c) 2026 AeroSpaceBar by Ronen Druker.
+// Copyright (c) 2026 Jakub Kubiak.
 
 @testable import Data
 import Foundation
