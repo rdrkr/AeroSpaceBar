@@ -49,7 +49,7 @@ struct ProfileSection: View {
                         if let profileImage {
                             Image(nsImage: profileImage)
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
+                                .scaledToFill()
                         } else {
                             Image(systemName: "person.circle.fill")
                                 .resizable()

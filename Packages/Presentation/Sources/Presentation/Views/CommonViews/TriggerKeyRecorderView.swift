@@ -126,11 +126,21 @@ struct TriggerKeyRecorderView: View {
     /// - Returns: The matching QuickHideTriggerKey, or nil if no match
     private func mapModifierFlags(_ flags: NSEvent.ModifierFlags) -> QuickHideTriggerKey? {
         // Check each modifier flag in order of specificity
-        if flags.contains(.function) { return .fn }
-        if flags.contains(.control) { return .control }
-        if flags.contains(.option) { return .option }
-        if flags.contains(.command) { return .command }
-        if flags.contains(.shift) { return .shift }
+        if flags.contains(.function) {
+            return .fn
+        }
+        if flags.contains(.control) {
+            return .control
+        }
+        if flags.contains(.option) {
+            return .option
+        }
+        if flags.contains(.command) {
+            return .command
+        }
+        if flags.contains(.shift) {
+            return .shift
+        }
         return nil
     }
 

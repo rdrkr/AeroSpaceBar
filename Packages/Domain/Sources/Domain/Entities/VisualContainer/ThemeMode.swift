@@ -22,7 +22,11 @@ public enum ThemeMode: String, CaseIterable, Codable, Sendable {
     /// Whether this theme mode is available or not.
     public var isAvailable: Bool {
         switch self {
-        case .glass: if #available(macOS 26.0, *) { true } else { false }
+        case .glass: if #available(macOS 26.0, *) {
+                true
+            } else {
+                false
+            }
 
         case .preset,
              .custom: true

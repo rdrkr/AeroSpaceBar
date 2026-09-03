@@ -34,6 +34,7 @@ final class GroupsSettingsTests: XCTestCase {
         // When creating required settings
         let settings = GroupsSettings<RequiredMode>(
             showGroups: showGroups,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: groups,
             groupsAppearanceMode: appearanceMode,
             globalGroupsColorProperties: colorProps,
@@ -73,6 +74,7 @@ final class GroupsSettingsTests: XCTestCase {
         // When creating optional settings
         let settings = GroupsSettings<OptionalMode>(
             showGroups: showGroups,
+            showForegroundOverlay: nil,
             groups: groups,
             groupsAppearanceMode: appearanceMode,
             globalGroupsColorProperties: colorProps,
@@ -93,6 +95,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given optional mode with nil values
         let settings = GroupsSettings<OptionalMode>(
             showGroups: nil,
+            showForegroundOverlay: nil,
             groups: nil,
             groupsAppearanceMode: nil,
             globalGroupsColorProperties: nil,
@@ -115,6 +118,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given optional settings with all nil values
         let optional = GroupsSettings<OptionalMode>(
             showGroups: nil,
+            showForegroundOverlay: nil,
             groups: nil,
             groupsAppearanceMode: nil,
             globalGroupsColorProperties: nil,
@@ -125,6 +129,7 @@ final class GroupsSettingsTests: XCTestCase {
         // And default settings
         let defaultSettings = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -173,6 +178,7 @@ final class GroupsSettingsTests: XCTestCase {
 
         let optional = GroupsSettings<OptionalMode>(
             showGroups: true,
+            showForegroundOverlay: nil,
             groups: customGroups,
             groupsAppearanceMode: "all-groups",
             globalGroupsColorProperties: colorProps,
@@ -183,6 +189,7 @@ final class GroupsSettingsTests: XCTestCase {
         // And default settings (different values)
         let defaultSettings = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -220,6 +227,7 @@ final class GroupsSettingsTests: XCTestCase {
 
         let optional = GroupsSettings<OptionalMode>(
             showGroups: true,
+            showForegroundOverlay: nil,
             groups: nil, // Will use default
             groupsAppearanceMode: "all-groups",
             globalGroupsColorProperties: nil, // Will use default
@@ -230,6 +238,7 @@ final class GroupsSettingsTests: XCTestCase {
         // And default settings
         let defaultSettings = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [
                 Group(
                     id: 0,
@@ -276,6 +285,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given empty groups array
         let settings = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -318,6 +328,7 @@ final class GroupsSettingsTests: XCTestCase {
 
         let settings = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: groups,
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -340,6 +351,7 @@ final class GroupsSettingsTests: XCTestCase {
             // When creating settings with each mode
             let settings = GroupsSettings<RequiredMode>(
                 showGroups: true,
+                showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
                 groups: [],
                 groupsAppearanceMode: mode,
                 globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -358,6 +370,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given OptionalVariant type alias
         let settings: GroupsSettings<RequiredMode>.OptionalVariant = GroupsSettings<OptionalMode>(
             showGroups: nil,
+            showForegroundOverlay: nil,
             groups: nil,
             groupsAppearanceMode: nil,
             globalGroupsColorProperties: nil,
@@ -373,6 +386,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given RequiredVariant type alias
         let settings: GroupsSettings<OptionalMode>.RequiredVariant = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -390,6 +404,7 @@ final class GroupsSettingsTests: XCTestCase {
         // Given groups disabled
         let settings = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -425,6 +440,7 @@ final class GroupsSettingsTests: XCTestCase {
 
         let settings = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: groups,
             groupsAppearanceMode: "all-groups",
             globalGroupsColorProperties: ColorProperties(

@@ -31,7 +31,8 @@ public final class DependencyContainer {
         getAeroSpacePathUseCase: makeGetAeroSpacePathUseCase(),
         getAeroSpaceConfigPathUseCase: makeGetAeroSpaceConfigPathUseCase(),
         getOptimizedPerformanceEnabledUseCase: makeGetOptimizedPerformanceEnabledUseCase(),
-        getSpacesColorPropertiesUseCase: makeGetSpacesColorPropertiesUseCase()
+        getSpacesColorPropertiesUseCase: makeGetSpacesColorPropertiesUseCase(),
+        getAeroSpaceVersionUseCase: makeGetAeroSpaceVersionUseCase()
     )
 
     /// The configuration gateway for managing application settings.

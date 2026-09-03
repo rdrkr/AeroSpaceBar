@@ -275,13 +275,13 @@ final class LicenseStatusTests: XCTestCase {
         let trialResults = allStatuses.compactMap { status -> Int? in
             switch status {
             case let .trial(days):
-                return days
+                days
 
             case .licensed,
                  .expired,
                  .validating,
                  .unknown:
-                return nil
+                nil
             }
         }
 

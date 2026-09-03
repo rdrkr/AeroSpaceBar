@@ -186,7 +186,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: nil,
             themePresetColorProperties: nil,
             themePresetGeometricProperties: nil,
-            themePresetEffectProperties: nil
+            themePresetEffectProperties: nil,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         let defaultValue = GeneralSettings<RequiredMode>(
@@ -195,7 +198,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then decode method should exist and work
@@ -212,7 +218,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .preset,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         let optionalSpaces = SpacesSettings<OptionalMode>(
@@ -224,11 +233,17 @@ final class OptionalTypeMappingTests: XCTestCase {
             spacesAppearanceMode: "all-spaces",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         let optionalGroups = GroupsSettings<OptionalMode>(
             showGroups: true,
+            showForegroundOverlay: nil,
             groups: [],
             groupsAppearanceMode: "all-groups",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -250,7 +265,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         let defaultSpaces = SpacesSettings<RequiredMode>(
@@ -262,11 +280,17 @@ final class OptionalTypeMappingTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         let defaultGroups = GroupsSettings<RequiredMode>(
             showGroups: false,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -313,7 +337,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: nil,
             themePresetColorProperties: nil,
             themePresetGeometricProperties: nil,
-            themePresetEffectProperties: nil
+            themePresetEffectProperties: nil,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         let required = GeneralSettings<RequiredMode>(
@@ -322,7 +349,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then types should be distinct
@@ -344,7 +374,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .preset, // Present in TOML
             themePresetColorProperties: .nord, // Present in TOML
             themePresetGeometricProperties: nil, // Missing from TOML
-            themePresetEffectProperties: nil // Missing from TOML
+            themePresetEffectProperties: nil, // Missing from TOML
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // Can represent partial TOML data
@@ -361,7 +394,10 @@ final class OptionalTypeMappingTests: XCTestCase {
             themeMode: .preset,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // All fields are guaranteed to have values at runtime

@@ -558,7 +558,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to show window titles and emits update.
     public func setShowWindowTitles(_ value: Bool) {
-        if value == showWindowTitlesSubject.value { return }
+        if value == showWindowTitlesSubject.value {
+            return
+        }
 
         Logger.debug(
             "setShowWindowTitles(\(value)) called, isUpdatingFromFile: \(isUpdatingFromFile)",
@@ -575,7 +577,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the AeroSpace path and emits update.
     public func setAeroSpacePath(_ path: String) {
-        if path == aeroSpacePathSubject.value { return }
+        if path == aeroSpacePathSubject.value {
+            return
+        }
 
         let resolvedPath = path.isEmpty ? resolveAeroSpacePath() : path
         aeroSpacePathSubject.send(resolvedPath)
@@ -588,7 +592,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to focus window on click and emits update.
     public func setFocusWindowOnClick(_ value: Bool) {
-        if value == focusWindowOnClickSubject.value { return }
+        if value == focusWindowOnClickSubject.value {
+            return
+        }
 
         focusWindowOnClickSubject.send(value)
         Task {
@@ -600,7 +606,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to show empty spaces and emits update.
     public func setShowEmptySpaces(_ value: Bool) {
-        if value == showEmptySpacesSubject.value { return }
+        if value == showEmptySpacesSubject.value {
+            return
+        }
 
         showEmptySpacesSubject.send(value)
         Task {
@@ -612,7 +620,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the list of hidden space IDs and emits update.
     public func setHiddenSpaces(_ value: [String]) {
-        if value == hiddenSpacesSubject.value { return }
+        if value == hiddenSpacesSubject.value {
+            return
+        }
 
         hiddenSpacesSubject.send(value)
         Task {
@@ -624,7 +634,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to show the Apple Button as a space and emits update.
     public func setShowAppleButtonAsSpace(_ value: Bool) {
-        if value == showAppleButtonAsSpaceSubject.value { return }
+        if value == showAppleButtonAsSpaceSubject.value {
+            return
+        }
 
         showAppleButtonAsSpaceSubject.send(value)
         Task {
@@ -636,7 +648,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the Apple Button color properties and emits update.
     public func setAppleButtonColorProperties(_ value: ColorProperties) {
-        if value == appleButtonColorPropertiesSubject.value { return }
+        if value == appleButtonColorPropertiesSubject.value {
+            return
+        }
 
         appleButtonColorPropertiesSubject.send(value)
         Task {
@@ -648,7 +662,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the Apple Button geometric properties and emits update.
     public func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
-        if value == appleButtonGeometricPropertiesSubject.value { return }
+        if value == appleButtonGeometricPropertiesSubject.value {
+            return
+        }
 
         appleButtonGeometricPropertiesSubject.send(value)
         Task {
@@ -660,7 +676,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the Apple Button effect properties and emits update.
     public func setAppleButtonEffectProperties(_ value: EffectProperties) {
-        if value == appleButtonEffectPropertiesSubject.value { return }
+        if value == appleButtonEffectPropertiesSubject.value {
+            return
+        }
 
         appleButtonEffectPropertiesSubject.send(value)
         Task {
@@ -672,7 +690,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to show groups and emits update.
     public func setShowGroups(_ value: Bool) {
-        if value == showGroupsSubject.value { return }
+        if value == showGroupsSubject.value {
+            return
+        }
 
         showGroupsSubject.send(value)
         Task {
@@ -684,7 +704,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether to show the foreground color overlay and emits update.
     public func setShowForegroundOverlay(_ value: Bool) {
-        if value == showForegroundOverlaySubject.value { return }
+        if value == showForegroundOverlaySubject.value {
+            return
+        }
 
         showForegroundOverlaySubject.send(value)
         Task {
@@ -696,7 +718,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether performance metrics are enabled and emits update.
     public func setEnablePerformanceMetrics(_ value: Bool) {
-        if value == enablePerformanceMetricsSubject.value { return }
+        if value == enablePerformanceMetricsSubject.value {
+            return
+        }
 
         enablePerformanceMetricsSubject.send(value)
         Task {
@@ -708,7 +732,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether optimized performance is enabled and emits update.
     public func setIsOptimizedPerformanceEnabled(_ value: Bool) {
-        if value == isOptimizedPerformanceEnabledSubject.value { return }
+        if value == isOptimizedPerformanceEnabledSubject.value {
+            return
+        }
 
         isOptimizedPerformanceEnabledSubject.send(value)
         Task {
@@ -720,7 +746,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the log level and emits update.
     public func setLogLevel(_ level: Logger.Level) {
-        if level == logLevelSubject.value { return }
+        if level == logLevelSubject.value {
+            return
+        }
 
         logLevelSubject.send(level)
         Logger.logLevel = level
@@ -733,7 +761,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the config file path and emits update.
     public func setConfigFilePath(_ path: String) {
-        if path == configFilePathSubject.value { return }
+        if path == configFilePathSubject.value {
+            return
+        }
 
         UserDefaults.standard.set(path, forKey: UserDefaultsKeys.configFilePath.rawValue)
         configFilePathSubject.send(path)
@@ -744,7 +774,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets whether the user has been asked for screen capture permissions.
     public func setHasAskedForScreenCapturePermissions(_ value: Bool) {
-        if value == hasAskedForScreenCapturePermissionsSubject.value { return }
+        if value == hasAskedForScreenCapturePermissionsSubject.value {
+            return
+        }
 
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.hasAskedForScreenCapturePermissions.rawValue)
         hasAskedForScreenCapturePermissionsSubject.send(value)
@@ -756,7 +788,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the spaces configuration and emits update.
     public func setSpacesColorProperties(_ value: [ColorProperties]) {
-        if value == spacesColorPropertiesSubject.value { return }
+        if value == spacesColorPropertiesSubject.value {
+            return
+        }
 
         spacesColorPropertiesSubject.send(value)
         Task {
@@ -768,7 +802,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the spaces geometric properties and emits update.
     public func setSpacesGeometricProperties(_ value: [GeometricProperties]) {
-        if value == spacesGeometricPropertiesSubject.value { return }
+        if value == spacesGeometricPropertiesSubject.value {
+            return
+        }
 
         spacesGeometricPropertiesSubject.send(value)
         Task {
@@ -780,7 +816,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the spaces effect properties and emits update.
     public func setSpacesEffectProperties(_ value: [EffectProperties]) {
-        if value == spacesEffectPropertiesSubject.value { return }
+        if value == spacesEffectPropertiesSubject.value {
+            return
+        }
 
         spacesEffectPropertiesSubject.send(value)
         Task {
@@ -792,7 +830,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the spaces appearance mode and emits update.
     public func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) {
-        if value == spacesAppearanceModeSubject.value { return }
+        if value == spacesAppearanceModeSubject.value {
+            return
+        }
 
         spacesAppearanceModeSubject.send(value)
         Task {
@@ -804,7 +844,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global space color properties and emits update.
     public func setGlobalSpacesColorProperties(_ value: ColorProperties) {
-        if value == globalSpacesColorPropertiesSubject.value { return }
+        if value == globalSpacesColorPropertiesSubject.value {
+            return
+        }
 
         globalSpacesColorPropertiesSubject.send(value)
         Task {
@@ -816,7 +858,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global space geometric properties and emits update.
     public func setGlobalSpacesGeometricProperties(_ value: GeometricProperties) {
-        if value == globalSpacesGeometricPropertiesSubject.value { return }
+        if value == globalSpacesGeometricPropertiesSubject.value {
+            return
+        }
 
         globalSpacesGeometricPropertiesSubject.send(value)
         Task {
@@ -828,7 +872,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global space effect properties and emits update.
     public func setGlobalSpacesEffectProperties(_ value: EffectProperties) {
-        if value == globalSpacesEffectPropertiesSubject.value { return }
+        if value == globalSpacesEffectPropertiesSubject.value {
+            return
+        }
 
         globalSpacesEffectPropertiesSubject.send(value)
         Task {
@@ -843,7 +889,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
         // Ensure there is always at least one group
         let groupsToSet = value.isEmpty ? ConfigurationDefaults.groups : value
 
-        if groupsToSet == groupsSubject.value { return }
+        if groupsToSet == groupsSubject.value {
+            return
+        }
 
         groupsSubject.send(groupsToSet)
         Task {
@@ -855,7 +903,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the groups appearance mode and emits update.
     public func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) {
-        if value == groupsAppearanceModeSubject.value { return }
+        if value == groupsAppearanceModeSubject.value {
+            return
+        }
 
         groupsAppearanceModeSubject.send(value)
         Task {
@@ -867,7 +917,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global groups color properties and emits update.
     public func setGlobalGroupsColorProperties(_ value: ColorProperties) {
-        if value == globalGroupsColorPropertiesSubject.value { return }
+        if value == globalGroupsColorPropertiesSubject.value {
+            return
+        }
 
         globalGroupsColorPropertiesSubject.send(value)
         Task {
@@ -879,7 +931,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global groups geometric properties and emits update.
     public func setGlobalGroupsGeometricProperties(_ value: GeometricProperties) {
-        if value == globalGroupsGeometricPropertiesSubject.value { return }
+        if value == globalGroupsGeometricPropertiesSubject.value {
+            return
+        }
 
         globalGroupsGeometricPropertiesSubject.send(value)
         Task {
@@ -891,7 +945,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the global groups effect properties and emits update.
     public func setGlobalGroupsEffectProperties(_ value: EffectProperties) {
-        if value == globalGroupsEffectPropertiesSubject.value { return }
+        if value == globalGroupsEffectPropertiesSubject.value {
+            return
+        }
 
         globalGroupsEffectPropertiesSubject.send(value)
         Task {
@@ -903,7 +959,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the theme mode and emits update.
     public func setThemeMode(_ value: ThemeMode) {
-        if value == themeModeSubject.value { return }
+        if value == themeModeSubject.value {
+            return
+        }
 
         themeModeSubject.send(value)
         Task {
@@ -915,7 +973,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the theme preset and emits update.
     public func setThemePresetColorProperties(_ value: ThemePresetColorProperties) {
-        if value == themePresetColorPropertiesSubject.value { return }
+        if value == themePresetColorPropertiesSubject.value {
+            return
+        }
 
         themePresetColorPropertiesSubject.send(value)
         Task {
@@ -927,7 +987,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the theme preset geometric properties and emits update.
     public func setThemePresetGeometricProperties(_ value: GeometricProperties) {
-        if value == themePresetGeometricPropertiesSubject.value { return }
+        if value == themePresetGeometricPropertiesSubject.value {
+            return
+        }
 
         themePresetGeometricPropertiesSubject.send(value)
         Task {
@@ -939,7 +1001,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the theme preset effect properties and emits update.
     public func setThemePresetEffectProperties(_ value: EffectProperties) {
-        if value == themePresetEffectPropertiesSubject.value { return }
+        if value == themePresetEffectPropertiesSubject.value {
+            return
+        }
 
         themePresetEffectPropertiesSubject.send(value)
         Task {
@@ -951,7 +1015,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the Quick Hide enabled state and emits update.
     public func setQuickHideEnabled(_ value: Bool) {
-        if value == quickHideEnabledSubject.value { return }
+        if value == quickHideEnabledSubject.value {
+            return
+        }
 
         quickHideEnabledSubject.send(value)
         Task {
@@ -963,7 +1029,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
 
     /// Sets the Quick Hide trigger key and emits update.
     public func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
-        if value == quickHideTriggerKeySubject.value { return }
+        if value == quickHideTriggerKeySubject.value {
+            return
+        }
 
         quickHideTriggerKeySubject.send(value)
         Task {
@@ -991,7 +1059,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
     /// - Parameter path: The path to check for AeroSpace version
     /// - Returns: The version string if found, nil otherwise
     private func getAeroSpaceVersion(at path: String) async -> String? {
-        if path.isEmpty { return nil }
+        if path.isEmpty {
+            return nil
+        }
 
         do {
             let cli = AeroSpaceCLIClient(executablePath: path)
@@ -1276,77 +1346,6 @@ public final class ConfigurationRepository: ConfigurationGateway {
                 Logger.error("Failed to save configuration to file: \\(error)", category: Logger.config)
             }
         }
-    }
-
-    /// Adds helpful comments to TOML string for enum values and configuration guidance.
-    private func addEnumComments(to tomlString: String) -> String {
-        var annotatedString = tomlString
-
-        // Add header comment
-        let header = """
-        # AeroSpaceBar Configuration File
-        # This file stores all your settings in TOML format.
-        # Changes are automatically saved when modified through the UI.
-        # You can edit this file directly - changes will be reflected immediately.
-
-
-        """
-
-        // Generate enum comments dynamically using generics
-        let enumCommentMappings: [(String, String)] = [
-            ("[spaces]", generateSectionComment(
-                "Spaces appearance mode",
-                for: SpacesAppearanceMode.self,
-                key: "appearance-mode"
-            )),
-            ("[groups]", generateSectionComment(
-                "Groups appearance mode",
-                for: GroupsAppearanceMode.self,
-                key: "appearance-mode"
-            )),
-            ("log-level =", generateEnumComment(for: Logger.Level.self))
-        ]
-
-        for (pattern, comment) in enumCommentMappings {
-            if let range = annotatedString.range(of: pattern) {
-                if pattern.hasPrefix("["), pattern.hasSuffix("]") {
-                    // For section headers, add comment after the section
-                    let endIndex = annotatedString.lineRange(for: range).upperBound
-                    annotatedString.insert(contentsOf: comment + "\n", at: endIndex)
-                } else {
-                    // For regular keys, add comment before the line
-                    let insertIndex = annotatedString.lineRange(for: range).lowerBound
-                    annotatedString.insert(contentsOf: comment + "\n", at: insertIndex)
-                }
-            }
-        }
-
-        return header + annotatedString
-    }
-
-    /// Generates a comment string for an enum type that conforms to CaseIterable and RawRepresentable.
-    /// - Parameter enumType: The enum type to generate comments for
-    /// - Returns: A formatted comment string with all possible enum values
-    private func generateEnumComment<T: CaseIterable & RawRepresentable>(
-        for enumType: T.Type
-    ) -> String where T.RawValue == String {
-        let values = enumType.allCases.map { "\"\($0.rawValue)\"" }.joined(separator: ", ")
-        return "# Supported values: \(values)"
-    }
-
-    /// Generates a section-specific comment for an enum type.
-    /// - Parameters:
-    ///   - description: Description of what the enum controls
-    ///   - enumType: The enum type to generate comments for
-    ///   - key: The TOML key name for this enum
-    /// - Returns: A formatted comment string with description and all possible enum values
-    private func generateSectionComment<T: CaseIterable & RawRepresentable>(
-        _ description: String,
-        for enumType: T.Type,
-        key: String
-    ) -> String where T.RawValue == String {
-        let values = enumType.allCases.map { "\"\($0.rawValue)\"" }.joined(separator: ", ")
-        return "# \(description): \(key) = <value>\n# Supported values: \(values)"
     }
 }
 

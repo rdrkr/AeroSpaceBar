@@ -195,6 +195,16 @@ final class GroupsViewModelTests: XCTestCase {
     }
 
     private func createViewModel(with config: GroupsViewModelConfiguration) {
+        // The Apple Button and foreground-overlay use cases are built here rather
+        // than threaded through the configuration struct, which predates them.
+        guard
+            let configurationGateway = mockConfigurationGateway,
+            let systemMenuBarGateway = mockSystemMenuBarGateway
+        else {
+            XCTFail("Mock gateways should be initialized")
+            return
+        }
+
         viewModel = GroupsViewModel(
             getShowGroupsUseCase: config.getShowGroupsUseCase,
             setShowGroupsUseCase: config.setShowGroupsUseCase,
@@ -218,7 +228,26 @@ final class GroupsViewModelTests: XCTestCase {
             getThemePresetColorPropertiesUseCase: config.getThemePresetColorPropertiesUseCase,
             getThemePresetGeometricPropertiesUseCase: config.getThemePresetGeometricPropertiesUseCase,
             getThemePresetEffectPropertiesUseCase: config.getThemePresetEffectPropertiesUseCase,
-            getMenuBarHeightUseCase: config.getMenuBarHeightUseCase
+            getMenuBarHeightUseCase: config.getMenuBarHeightUseCase,
+            getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase(
+                configurationGateway: configurationGateway
+            ),
+            getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase(systemMenuBarGateway: systemMenuBarGateway),
+            getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase(
+                configurationGateway: configurationGateway
+            ),
+            getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase(
+                configurationGateway: configurationGateway
+            ),
+            getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase(
+                configurationGateway: configurationGateway
+            ),
+            getShowForegroundOverlayUseCase: GetShowForegroundOverlayUseCase(
+                configurationGateway: configurationGateway
+            ),
+            setShowForegroundOverlayUseCase: SetShowForegroundOverlayUseCase(
+                configurationGateway: configurationGateway
+            )
         )
     }
 

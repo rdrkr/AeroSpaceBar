@@ -433,11 +433,15 @@ struct GroupsForegroundOverlayView: View, Animatable {
         for (w, f) in components {
             if f > lo {
                 let limit = bgOp * (w - lo) / (f - lo)
-                if limit < maxFgEff { maxFgEff = limit }
+                if limit < maxFgEff {
+                    maxFgEff = limit
+                }
             }
             if f < hi {
                 let limit = bgOp * (hi - w) / (hi - f)
-                if limit < maxFgEff { maxFgEff = limit }
+                if limit < maxFgEff {
+                    maxFgEff = limit
+                }
             }
         }
 

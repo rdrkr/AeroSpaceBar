@@ -51,6 +51,11 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public var showWindowTitlesToEmit: Bool = false
     public var aeroSpacePathToEmit: String = "/opt/homebrew/bin/aerospace"
     public var focusWindowOnClickToEmit: Bool = true
+    public var setShowForegroundOverlayCalls: [Bool] = []
+    public var setShowAppleButtonAsSpaceCalls: [Bool] = []
+    public var setAppleButtonColorPropertiesCalls: [ColorProperties] = []
+    public var setAppleButtonGeometricPropertiesCalls: [GeometricProperties] = []
+    public var setAppleButtonEffectPropertiesCalls: [EffectProperties] = []
     public var showEmptySpacesToEmit: Bool = false
     public var hiddenSpacesToEmit: [String] = []
     public var showGroupsToEmit: Bool = false
@@ -87,6 +92,19 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let focusWindowOnClickSubject: CurrentValueSubject<Bool, Never>
     private let showEmptySpacesSubject: CurrentValueSubject<Bool, Never>
     private let hiddenSpacesSubject: CurrentValueSubject<[String], Never>
+    private let showForegroundOverlaySubject = CurrentValueSubject<Bool, Never>(false)
+    private let showAppleButtonAsSpaceSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showAppleButtonAsSpace
+    )
+    private let appleButtonColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.appleButtonColorProperties
+    )
+    private let appleButtonGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.appleButtonGeometricProperties
+    )
+    private let appleButtonEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.appleButtonEffectProperties
+    )
     private let showGroupsSubject: CurrentValueSubject<Bool, Never>
     private let enablePerformanceMetricsSubject: CurrentValueSubject<Bool, Never>
     private let isOptimizedPerformanceEnabledSubject: CurrentValueSubject<Bool, Never>
@@ -168,6 +186,26 @@ public final class MockConfigurationGateway: ConfigurationGateway {
 
     public var hiddenSpacesPublisher: AnyPublisher<[String], Never> {
         hiddenSpacesSubject.eraseToAnyPublisher()
+    }
+
+    public var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> {
+        showForegroundOverlaySubject.eraseToAnyPublisher()
+    }
+
+    public var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> {
+        showAppleButtonAsSpaceSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        appleButtonColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        appleButtonGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        appleButtonEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
     public var showGroupsPublisher: AnyPublisher<Bool, Never> {
@@ -290,6 +328,31 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public func setShowEmptySpaces(_ value: Bool) {
         setShowEmptySpacesCalls.append(value)
         showEmptySpacesSubject.send(value)
+    }
+
+    public func setShowForegroundOverlay(_ value: Bool) {
+        setShowForegroundOverlayCalls.append(value)
+        showForegroundOverlaySubject.send(value)
+    }
+
+    public func setShowAppleButtonAsSpace(_ value: Bool) {
+        setShowAppleButtonAsSpaceCalls.append(value)
+        showAppleButtonAsSpaceSubject.send(value)
+    }
+
+    public func setAppleButtonColorProperties(_ value: ColorProperties) {
+        setAppleButtonColorPropertiesCalls.append(value)
+        appleButtonColorPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        setAppleButtonGeometricPropertiesCalls.append(value)
+        appleButtonGeometricPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        setAppleButtonEffectPropertiesCalls.append(value)
+        appleButtonEffectPropertiesSubject.send(value)
     }
 
     public func setHiddenSpaces(_ value: [String]) {

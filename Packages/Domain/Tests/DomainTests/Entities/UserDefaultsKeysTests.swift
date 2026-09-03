@@ -26,11 +26,12 @@ final class UserDefaultsKeysTests: XCTestCase {
         let allCases = UserDefaultsKeys.allCases
 
         // Then should have all cases
-        expect(allCases.count) == 4
+        expect(allCases.count) == 5
         expect(allCases.contains(.logLevel)) == true
         expect(allCases.contains(.enablePerformanceMetrics)) == true
         expect(allCases.contains(.configFilePath)) == true
         expect(allCases.contains(.hasAskedForScreenCapturePermissions)) == true
+        expect(allCases.contains(.hasRemovedLegacyAeroSpaceCallbacks)) == true
     }
 
     // MARK: - Logger Configuration Keys Tests

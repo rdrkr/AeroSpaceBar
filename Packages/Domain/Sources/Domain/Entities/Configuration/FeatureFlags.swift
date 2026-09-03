@@ -1,13 +1,11 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
-internal import ModifiedCopy
 
 /// Represents feature flags for development and experimental features.
 ///
 /// This struct defines feature flags that can be toggled during development
 /// to enable or disable specific functionality. Only available in debug builds.
-@CopyableCombi
 public struct FeatureFlags: Equatable, Sendable {
     // MARK: - Core Features
 
@@ -41,6 +39,32 @@ public struct FeatureFlags: Equatable, Sendable {
         self.enableSpaces = enableSpaces
         self.enableSoftwareUpdates = enableSoftwareUpdates
         self.enableAdvancedSettings = enableAdvancedSettings
+    }
+
+    // MARK: - Copying
+
+    /// Returns a copy of this instance with the given flags replaced.
+    ///
+    /// Every parameter defaults to `nil`, meaning "leave unchanged". Since all
+    /// flags are non-optional `Bool`s, `nil` is unambiguous.
+    /// - Parameters:
+    ///   - enableGroups: The new value for `enableGroups`, or `nil` to keep the current one
+    ///   - enableSpaces: The new value for `enableSpaces`, or `nil` to keep the current one
+    ///   - enableSoftwareUpdates: The new value for `enableSoftwareUpdates`, or `nil` to keep the current one
+    ///   - enableAdvancedSettings: The new value for `enableAdvancedSettings`, or `nil` to keep the current one
+    /// - Returns: A copy with the supplied flags replaced
+    public func copy(
+        enableGroups: Bool? = nil,
+        enableSpaces: Bool? = nil,
+        enableSoftwareUpdates: Bool? = nil,
+        enableAdvancedSettings: Bool? = nil
+    ) -> Self {
+        Self(
+            enableGroups: enableGroups ?? self.enableGroups,
+            enableSpaces: enableSpaces ?? self.enableSpaces,
+            enableSoftwareUpdates: enableSoftwareUpdates ?? self.enableSoftwareUpdates,
+            enableAdvancedSettings: enableAdvancedSettings ?? self.enableAdvancedSettings
+        )
     }
 
     // MARK: - Convenience Methods

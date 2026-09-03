@@ -35,7 +35,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: appearanceMode,
             globalSpacesColorProperties: globalColor,
             globalSpacesGeometricProperties: globalGeometric,
-            globalSpacesEffectProperties: globalEffect
+            globalSpacesEffectProperties: globalEffect,
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then all properties should be set
@@ -72,7 +77,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: appearanceMode,
             globalSpacesColorProperties: globalColor,
             globalSpacesGeometricProperties: globalGeometric,
-            globalSpacesEffectProperties: globalEffect
+            globalSpacesEffectProperties: globalEffect,
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // Then all properties should be set
@@ -97,7 +107,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: nil,
             globalSpacesColorProperties: nil,
             globalSpacesGeometricProperties: nil,
-            globalSpacesEffectProperties: nil
+            globalSpacesEffectProperties: nil,
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // Then all properties should be nil
@@ -124,7 +139,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: nil,
             globalSpacesColorProperties: nil,
             globalSpacesGeometricProperties: nil,
-            globalSpacesEffectProperties: nil
+            globalSpacesEffectProperties: nil,
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // And default settings
@@ -137,7 +157,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // When decoding
@@ -186,7 +211,12 @@ final class SpacesSettingsTests: XCTestCase {
                 backgroundOpacity: 0.7,
                 backgroundBlurRadius: 8,
                 borderOpacity: 0.9
-            )
+            ),
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // And default settings (different values)
@@ -199,7 +229,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // When decoding
@@ -235,7 +270,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "all-spaces",
             globalSpacesColorProperties: nil, // Will use default
             globalSpacesGeometricProperties: GeometricProperties(cornerRadius: 7, borderWidth: 2),
-            globalSpacesEffectProperties: nil // Will use default
+            globalSpacesEffectProperties: nil, // Will use default
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // And default settings
@@ -248,7 +288,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // When decoding
@@ -294,7 +339,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then should accept empty arrays
@@ -320,7 +370,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then should store all properties
@@ -345,7 +400,12 @@ final class SpacesSettingsTests: XCTestCase {
                 spacesAppearanceMode: mode,
                 globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
                 globalSpacesGeometricProperties: GeometricProperties(),
-                globalSpacesEffectProperties: EffectProperties()
+                globalSpacesEffectProperties: EffectProperties(),
+
+                showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+                appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+                appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+                appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
             )
 
             // Then should accept the mode
@@ -366,7 +426,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: nil,
             globalSpacesColorProperties: nil,
             globalSpacesGeometricProperties: nil,
-            globalSpacesEffectProperties: nil
+            globalSpacesEffectProperties: nil,
+
+            showAppleButtonAsSpace: nil,
+            appleButtonColorProperties: nil,
+            appleButtonGeometricProperties: nil,
+            appleButtonEffectProperties: nil
         )
 
         // Then should be correct type
@@ -384,7 +449,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then should be correct type
@@ -404,7 +474,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "all-spaces",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then should show empty spaces
@@ -430,7 +505,12 @@ final class SpacesSettingsTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         // Then should have all custom colors

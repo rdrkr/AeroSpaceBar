@@ -258,7 +258,9 @@ internal struct AeroSpaceConfiguration: Codable {
         var remainingBody: [String] = []
         for idx in (region.startLine + 1) ..< region.endLine {
             let trimmed = lines[idx].trimmingCharacters(in: .whitespaces)
-            if patterns.contains(trimmed) { continue }
+            if patterns.contains(trimmed) {
+                continue
+            }
             remainingBody.append(lines[idx])
         }
 

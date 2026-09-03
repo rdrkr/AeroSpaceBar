@@ -37,6 +37,8 @@ the menu bar.
 - 🔧 **Spaces & Groups**: Organize and manage workspace windows and menubar groups with custom ranges and settings
 - 🎨 **Advanced Theming**: Comprehensive theme system with presets and per-space customization
 - 🌐 **System Integration**: Automatic menu bar visibility matching and wallpaper detection
+- 📡 **Event-Driven**: Subscribes to AeroSpace's native event stream (v0.21.0+) instead of polling,
+  and leaves your AeroSpace config untouched
 - 🔄 **Software Updates**: Automatic update checking and installation via Sparkle
 - ⚙️ **TOML Configuration**: Native support for AeroSpace TOML configuration file monitoring
 - ⌨️ **Keyboard Shortcuts**: Global key detection and shortcut support
@@ -47,6 +49,10 @@ the menu bar.
 
 - **macOS 15.0+** (Sequoia or later)
 - **[AeroSpace window manager](https://github.com/nikitabobko/aerospace)** installed and running
+  - **v0.21.0-Beta or newer recommended.** From this version AeroSpaceBar subscribes to AeroSpace's
+    event stream over its unix socket, so the UI updates the moment something changes and the app
+    never modifies your `aerospace.toml`. On older versions it falls back to the legacy path, which
+    installs `on-focus-changed` / `exec-on-workspace-change` callbacks into your config and polls.
 
 > [!NOTE]
 > By using AeroSpaceBar, you acknowledge that it's
@@ -112,6 +118,10 @@ You can also open `AeroSpaceBar.xcodeproj` in Xcode and build with `Cmd + R`.
 - **Spaces**: Per-space visual properties and appearance
 - **Advanced**: Theme presets, TOML configuration, and software updates
 - **Developer**: Logging, performance metrics, and feature flags
+
+> [!NOTE]
+> **Enable Optimized Performance** (Settings → Advanced) only affects the legacy polling path. On
+> AeroSpace v0.21.0-Beta and newer the app is driven by AeroSpace events, so the toggle is disabled.
 
 ### Keyboard Shortcuts
 
@@ -179,7 +189,8 @@ rm ~/Library/Preferences/com.rdrkr.AeroSpaceBar.plist
 AeroSpaceBar follows the **MVVM Clean Architecture** pattern with three SPM packages:
 
 - **Domain** (`Packages/Domain`): Business logic, entities, use cases, and gateway protocols. No external dependencies.
-- **Data** (`Packages/Data`): Repository implementations, AeroSpace CLI client, and data models.
+- **Data** (`Packages/Data`): Repository implementations, AeroSpace CLI client, AeroSpace event-socket
+  client, and data models.
 - **Presentation** (`Packages/Presentation`): SwiftUI Views and MVVM ViewModels using Combine.
 
 **Architecture Benefits:**
@@ -242,7 +253,6 @@ Or press `Cmd + U` in Xcode.
 - **[AsyncFileMonitor](https://github.com/rdrkr/AsyncFileMonitor)**: Async file system monitoring
 - **[Sparkle](https://github.com/sparkle-project/Sparkle)**: Software update framework
 - **[LemonSqueezy](https://github.com/lmsqueezy/lemonsqueezy-swift)**: License management SDK
-- **[ModifiedCopyMacro](https://github.com/WilhelmOks/ModifiedCopyMacro)**: Swift macro for immutable copy modifications
 
 ### Releasing
 
@@ -381,7 +391,6 @@ We welcome contributions! Here's how:
 - **[AsyncFileMonitor](https://github.com/rdrkr/AsyncFileMonitor)**: Async file monitoring for configuration changes
 - **[Sparkle](https://github.com/sparkle-project/Sparkle)**: Software update framework
 - **[LemonSqueezy](https://github.com/lmsqueezy/lemonsqueezy-swift)**: License management SDK
-- **[ModifiedCopyMacro](https://github.com/WilhelmOks/ModifiedCopyMacro)**: Swift macro for immutable modifications
 
 ---
 

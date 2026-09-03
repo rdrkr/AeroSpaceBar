@@ -225,6 +225,7 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
     private let menuBarVisibilitySubject: CurrentValueSubject<Bool, Never>
     private let screenCapturePermissionGrantedSubject: CurrentValueSubject<Bool, Never>
     private let wallpaperSubject: CurrentValueSubject<NSImage?, Never>
+    private let appleButtonFrameSubject = CurrentValueSubject<CGRect, Never>(.zero)
 
     init(
         menuBarHeight: Double = 39.0,
@@ -242,6 +243,10 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
 
     var wallpaperPublisher: AnyPublisher<NSImage?, Never> {
         wallpaperSubject.eraseToAnyPublisher()
+    }
+
+    var appleButtonFramePublisher: AnyPublisher<CGRect, Never> {
+        appleButtonFrameSubject.eraseToAnyPublisher()
     }
 
     var menuBarHeightPublisher: AnyPublisher<Double, Never> {
@@ -291,6 +296,21 @@ final class MockConfigurationGateway: ConfigurationGateway {
     private let aeroSpacePathSubject = CurrentValueSubject<String, Never>("/usr/local/bin/aerospace")
     private let focusWindowOnClickSubject = CurrentValueSubject<Bool, Never>(false)
     private let showEmptySpacesSubject = CurrentValueSubject<Bool, Never>(true)
+    private let showForegroundOverlaySubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showForegroundOverlay
+    )
+    private let showAppleButtonAsSpaceSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showAppleButtonAsSpace
+    )
+    private let appleButtonColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.appleButtonColorProperties
+    )
+    private let appleButtonGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.appleButtonGeometricProperties
+    )
+    private let appleButtonEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.appleButtonEffectProperties
+    )
     private let hiddenSpacesSubject = CurrentValueSubject<[String], Never>([])
     private let showGroupsSubject = CurrentValueSubject<Bool, Never>(true)
     private let enablePerformanceMetricsSubject = CurrentValueSubject<Bool, Never>(false)
@@ -362,6 +382,26 @@ final class MockConfigurationGateway: ConfigurationGateway {
 
     var showEmptySpacesPublisher: AnyPublisher<Bool, Never> {
         showEmptySpacesSubject.eraseToAnyPublisher()
+    }
+
+    var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> {
+        showForegroundOverlaySubject.eraseToAnyPublisher()
+    }
+
+    var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> {
+        showAppleButtonAsSpaceSubject.eraseToAnyPublisher()
+    }
+
+    var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        appleButtonColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        appleButtonGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        appleButtonEffectPropertiesSubject.eraseToAnyPublisher()
     }
 
     var hiddenSpacesPublisher: AnyPublisher<[String], Never> {
@@ -495,6 +535,26 @@ final class MockConfigurationGateway: ConfigurationGateway {
 
     func setShowEmptySpaces(_ value: Bool) {
         showEmptySpacesSubject.send(value)
+    }
+
+    func setShowForegroundOverlay(_ value: Bool) {
+        showForegroundOverlaySubject.send(value)
+    }
+
+    func setShowAppleButtonAsSpace(_ value: Bool) {
+        showAppleButtonAsSpaceSubject.send(value)
+    }
+
+    func setAppleButtonColorProperties(_ value: ColorProperties) {
+        appleButtonColorPropertiesSubject.send(value)
+    }
+
+    func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        appleButtonGeometricPropertiesSubject.send(value)
+    }
+
+    func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        appleButtonEffectPropertiesSubject.send(value)
     }
 
     func setHiddenSpaces(_ value: [String]) {

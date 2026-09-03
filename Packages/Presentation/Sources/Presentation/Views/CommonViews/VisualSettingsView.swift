@@ -43,19 +43,17 @@ struct VisualSettingsView: View {
 
     /// The main body of the visual settings view.
     var body: some View {
-        Group {
-            if themeMode.isColorCustomizable || themeMode.isEffectCustomizable {
-                backgroundSection
-                borderSection
-            }
+        if themeMode.isColorCustomizable || themeMode.isEffectCustomizable {
+            backgroundSection
+            borderSection
+        }
 
-            if metadata.showForegroundSection, themeMode.isColorCustomizable {
-                foregroundSection
-            }
+        if metadata.showForegroundSection, themeMode.isColorCustomizable {
+            foregroundSection
+        }
 
-            if themeMode.isGeometryCustomizable {
-                geometrySection
-            }
+        if themeMode.isGeometryCustomizable {
+            geometrySection
         }
     }
 

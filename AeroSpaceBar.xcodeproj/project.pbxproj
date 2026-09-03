@@ -1280,7 +1280,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 13;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1330,7 +1330,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 13;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/ModifiedCopyMacro-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
+				DEVELOPMENT_ASSET_PATHS = "AeroSpaceBar/Resources/Licenses/AeroSpace-MIT.txt AeroSpaceBar/Resources AeroSpaceBar/Info.plist AeroSpaceBar/Resources/Licenses/AsyncFileMonitor-MIT.txt AeroSpaceBar/Resources/Assets.xcassets AeroSpaceBar/AeroSpaceBar.entitlements AeroSpaceBar/Resources/Licenses/TOMLKit-MIT.txt AeroSpaceBar/Resources/Licenses/Sparkle-MIT.txt";
 				DEVELOPMENT_TEAM = 53JNQ2ENLL;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;

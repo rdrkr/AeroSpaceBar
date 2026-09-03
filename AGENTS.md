@@ -49,8 +49,9 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 │   │   └── Tests/DomainTests/
 │   ├── Data/                          # Data Access Layer (SPM package)
 │   │   ├── Sources/Data/
-│   │   │   ├── Models/               # External data models (from AeroSpace CLI)
-│   │   │   ├── Network/              # AeroSpaceCLIClient, IconCache
+│   │   │   ├── Models/               # External data models (AeroSpaceEvent, from AeroSpace CLI/socket)
+│   │   │   ├── Network/              # AeroSpaceCLIClient, AeroSpaceSocketClient,
+│   │   │   │                         # AeroSpaceEventMonitor, IconCache
 │   │   │   └── Repositories/         # Gateway implementations
 │   │   └── Tests/DataTests/
 │   └── Presentation/                  # UI Layer (SPM package)
@@ -128,7 +129,7 @@ AeroSpaceBar follows **MVVM Clean Architecture** principles with strict layer se
 ### SPM Package Dependencies
 
 - **Domain Package**:
-  - `ModifiedCopyMacro` - Swift macro for copy-on-write semantics
+  - None - the Domain layer has no external dependencies
 - **Data Package**:
   - `TOMLKit` - TOML configuration file parsing for AeroSpace configs
   - `AsyncFileMonitor` - Async file system monitoring

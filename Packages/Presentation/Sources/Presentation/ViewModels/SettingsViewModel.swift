@@ -53,6 +53,14 @@ public class SettingsViewModel: ObservableObject {
     /// The current AeroSpace version (if available).
     @Published var aeroSpaceVersion: String?
 
+    /// Whether the running AeroSpace supports the event-subscription API.
+    ///
+    /// When it does, the app is driven by AeroSpace events and the optimized
+    /// performance setting no longer has any effect.
+    var supportsEventSubscription: Bool {
+        AeroSpaceVersion(string: aeroSpaceVersion)?.supportsEventSubscription ?? false
+    }
+
     /// The path to the configuration file.
     @Published var configFilePath: String {
         didSet {

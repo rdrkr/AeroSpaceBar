@@ -30,8 +30,7 @@ struct AboutView: View {
     private let dependencies: [(name: String, license: String, fileName: String)] = [
         ("TOMLKit", "MIT", "TOMLKit-MIT"),
         ("AsyncFileMonitor", "MIT", "AsyncFileMonitor-MIT"),
-        ("Sparkle", "MIT", "Sparkle-MIT"),
-        ("ModifiedCopyMacro", "MIT", "ModifiedCopyMacro-MIT")
+        ("Sparkle", "MIT", "Sparkle-MIT")
     ]
 
     var body: some View {

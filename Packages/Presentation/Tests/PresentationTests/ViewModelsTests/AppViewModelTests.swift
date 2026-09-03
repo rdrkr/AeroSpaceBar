@@ -254,7 +254,10 @@ final class AppViewModelTests: XCTestCase {
 
     func testMemoryManagement() {
         // Given view model
-        weak var weakViewModel = viewModel
+        // Declared and assigned separately so the reference is a genuine mutable
+        // weak binding; `weak let` lets the optimizer keep the object alive.
+        weak var weakViewModel: AppViewModel?
+        weakViewModel = viewModel
 
         // When deallocating view model and breaking all references
         cancellables = nil

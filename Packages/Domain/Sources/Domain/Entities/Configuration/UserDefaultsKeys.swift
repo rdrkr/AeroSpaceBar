@@ -27,4 +27,13 @@ public enum UserDefaultsKeys: String, CaseIterable {
 
     /// Whether the user has been asked for screen capture permissions.
     case hasAskedForScreenCapturePermissions = "com.aerospacebar.preferences.hasAskedForScreenCapturePermissions"
+
+    // MARK: - AeroSpace Integration
+
+    /// Whether the AeroSpace config callbacks installed by pre-subscription
+    /// versions of this app have already been cleaned up.
+    ///
+    /// Stored in UserDefaults rather than the TOML configuration because it is a
+    /// one-time migration marker, not a user-facing setting.
+    case hasRemovedLegacyAeroSpaceCallbacks = "com.aerospacebar.preferences.hasRemovedLegacyAeroSpaceCallbacks"
 }

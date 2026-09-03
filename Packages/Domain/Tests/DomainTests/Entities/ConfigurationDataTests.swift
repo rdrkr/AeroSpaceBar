@@ -28,7 +28,10 @@ final class ConfigurationDataTests: XCTestCase {
                 themeMode: .custom,
                 themePresetColorProperties: .nord,
                 themePresetGeometricProperties: GeometricProperties(),
-                themePresetEffectProperties: EffectProperties()
+                themePresetEffectProperties: EffectProperties(),
+
+                quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+                quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
             ),
             spaces: SpacesSettings<RequiredMode>(
                 showEmptySpaces: false,
@@ -39,10 +42,16 @@ final class ConfigurationDataTests: XCTestCase {
                 spacesAppearanceMode: "all-spaces",
                 globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
                 globalSpacesGeometricProperties: GeometricProperties(),
-                globalSpacesEffectProperties: EffectProperties()
+                globalSpacesEffectProperties: EffectProperties(),
+
+                showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+                appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+                appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+                appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
             ),
             groups: GroupsSettings<RequiredMode>(
                 showGroups: false,
+                showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
                 groups: [],
                 groupsAppearanceMode: "all-groups",
                 globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -89,7 +98,10 @@ final class ConfigurationDataTests: XCTestCase {
             themeMode: .preset,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         let spaces: SpacesSettings<RequiredMode>? = SpacesSettings<RequiredMode>(
@@ -101,11 +113,17 @@ final class ConfigurationDataTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         let groups: GroupsSettings<RequiredMode>? = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [],
             groupsAppearanceMode: "per-group",
             globalGroupsColorProperties: ConfigurationDefaults.groupsGlobalColorProperties,
@@ -193,7 +211,10 @@ final class ConfigurationDataTests: XCTestCase {
                 backgroundOpacity: 0.8,
                 backgroundBlurRadius: 5,
                 borderOpacity: 1.0
-            )
+            ),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         let customSpaces = SpacesSettings<RequiredMode>(
@@ -205,11 +226,17 @@ final class ConfigurationDataTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         let customGroups = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [
                 Group(
                     id: 1,
@@ -271,7 +298,10 @@ final class ConfigurationDataTests: XCTestCase {
             themeMode: .preset,
             themePresetColorProperties: .gruvboxDark,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         let optional = ConfigurationData<OptionalMode>(
@@ -352,7 +382,10 @@ final class ConfigurationDataTests: XCTestCase {
                 themeMode: .preset,
                 themePresetColorProperties: .nord,
                 themePresetGeometricProperties: GeometricProperties(),
-                themePresetEffectProperties: EffectProperties()
+                themePresetEffectProperties: EffectProperties(),
+
+                quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+                quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
             ),
             spaces: nil, // Not in TOML
             groups: nil, // Not in TOML
@@ -393,7 +426,10 @@ final class ConfigurationDataTests: XCTestCase {
                 backgroundOpacity: 0.9,
                 backgroundBlurRadius: 8,
                 borderOpacity: 1.0
-            )
+            ),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         let spaces = SpacesSettings<RequiredMode>(
@@ -408,11 +444,17 @@ final class ConfigurationDataTests: XCTestCase {
             spacesAppearanceMode: "per-space",
             globalSpacesColorProperties: ConfigurationDefaults.spaceColorProperties,
             globalSpacesGeometricProperties: GeometricProperties(),
-            globalSpacesEffectProperties: EffectProperties()
+            globalSpacesEffectProperties: EffectProperties(),
+
+            showAppleButtonAsSpace: ConfigurationDefaults.showAppleButtonAsSpace,
+            appleButtonColorProperties: ConfigurationDefaults.appleButtonColorProperties,
+            appleButtonGeometricProperties: ConfigurationDefaults.appleButtonGeometricProperties,
+            appleButtonEffectProperties: ConfigurationDefaults.appleButtonEffectProperties
         )
 
         let groups = GroupsSettings<RequiredMode>(
             showGroups: true,
+            showForegroundOverlay: ConfigurationDefaults.showForegroundOverlay,
             groups: [
                 Group(
                     id: 1,

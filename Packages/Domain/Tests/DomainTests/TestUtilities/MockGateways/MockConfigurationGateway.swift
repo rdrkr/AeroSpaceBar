@@ -84,6 +84,27 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     private let aeroSpacePathSubject: CurrentValueSubject<String, Never>
     private let focusWindowOnClickSubject: CurrentValueSubject<Bool, Never>
     private let showEmptySpacesSubject: CurrentValueSubject<Bool, Never>
+    private let showForegroundOverlaySubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showForegroundOverlay
+    )
+    private let showAppleButtonAsSpaceSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.showAppleButtonAsSpace
+    )
+    private let appleButtonColorPropertiesSubject = CurrentValueSubject<ColorProperties, Never>(
+        ConfigurationDefaults.appleButtonColorProperties
+    )
+    private let appleButtonGeometricPropertiesSubject = CurrentValueSubject<GeometricProperties, Never>(
+        ConfigurationDefaults.appleButtonGeometricProperties
+    )
+    private let appleButtonEffectPropertiesSubject = CurrentValueSubject<EffectProperties, Never>(
+        ConfigurationDefaults.appleButtonEffectProperties
+    )
+    private let quickHideEnabledSubject = CurrentValueSubject<Bool, Never>(
+        ConfigurationDefaults.quickHideEnabled
+    )
+    private let quickHideTriggerKeySubject = CurrentValueSubject<QuickHideTriggerKey, Never>(
+        ConfigurationDefaults.quickHideTriggerKey
+    )
     private let hiddenSpacesSubject: CurrentValueSubject<[String], Never>
     private let showGroupsSubject: CurrentValueSubject<Bool, Never>
     private let enablePerformanceMetricsSubject: CurrentValueSubject<Bool, Never>
@@ -276,6 +297,62 @@ public final class MockConfigurationGateway: ConfigurationGateway {
     public func setShowEmptySpaces(_ value: Bool) {
         setShowEmptySpacesCalls.append(value)
         showEmptySpacesSubject.send(value)
+    }
+
+    public var showForegroundOverlayPublisher: AnyPublisher<Bool, Never> {
+        showForegroundOverlaySubject.eraseToAnyPublisher()
+    }
+
+    public var showAppleButtonAsSpacePublisher: AnyPublisher<Bool, Never> {
+        showAppleButtonAsSpaceSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonColorPropertiesPublisher: AnyPublisher<ColorProperties, Never> {
+        appleButtonColorPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonGeometricPropertiesPublisher: AnyPublisher<GeometricProperties, Never> {
+        appleButtonGeometricPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonEffectPropertiesPublisher: AnyPublisher<EffectProperties, Never> {
+        appleButtonEffectPropertiesSubject.eraseToAnyPublisher()
+    }
+
+    public var quickHideEnabledPublisher: AnyPublisher<Bool, Never> {
+        quickHideEnabledSubject.eraseToAnyPublisher()
+    }
+
+    public var quickHideTriggerKeyPublisher: AnyPublisher<QuickHideTriggerKey, Never> {
+        quickHideTriggerKeySubject.eraseToAnyPublisher()
+    }
+
+    public func setShowForegroundOverlay(_ value: Bool) {
+        showForegroundOverlaySubject.send(value)
+    }
+
+    public func setShowAppleButtonAsSpace(_ value: Bool) {
+        showAppleButtonAsSpaceSubject.send(value)
+    }
+
+    public func setAppleButtonColorProperties(_ value: ColorProperties) {
+        appleButtonColorPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        appleButtonGeometricPropertiesSubject.send(value)
+    }
+
+    public func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        appleButtonEffectPropertiesSubject.send(value)
+    }
+
+    public func setQuickHideEnabled(_ value: Bool) {
+        quickHideEnabledSubject.send(value)
+    }
+
+    public func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
+        quickHideTriggerKeySubject.send(value)
     }
 
     public func setHiddenSpaces(_ value: [String]) {

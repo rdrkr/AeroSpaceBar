@@ -139,21 +139,27 @@
         /// Sets the show groups feature flag configuration.
         /// - Parameter enabled: The new show groups feature flag value
         func setEnableGroups(_ enabled: Bool) {
-            if enabled == featureFlags.enableGroups { return }
+            if enabled == featureFlags.enableGroups {
+                return
+            }
             setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableGroups: enabled))
         }
 
         /// Sets the show spaces feature flag configuration.
         /// - Parameter enabled: The new show spaces feature
         func setEnableSpaces(_ enabled: Bool) {
-            if enabled == featureFlags.enableSpaces { return }
+            if enabled == featureFlags.enableSpaces {
+                return
+            }
             setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableSpaces: enabled))
         }
 
         /// Sets the software updates feature flag configuration.
         /// - Parameter enabled: The new software updates feature flag value
         func setEnableSoftwareUpdates(_ enabled: Bool) {
-            if enabled == featureFlags.enableSoftwareUpdates { return }
+            if enabled == featureFlags.enableSoftwareUpdates {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableSoftwareUpdates: enabled))
@@ -163,7 +169,9 @@
         /// Sets the show advanced settings feature flag configuration.
         /// - Parameter enabled: The new show advanced settings feature
         func setEnableAdvancedSettings(_ enabled: Bool) {
-            if enabled == featureFlags.enableAdvancedSettings { return }
+            if enabled == featureFlags.enableAdvancedSettings {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setFeatureFlagsUseCase.execute(flags: featureFlags.copy(enableAdvancedSettings: enabled))
@@ -173,7 +181,9 @@
         /// Sets the enableLicensing feature flag.
         /// - Parameter enabled: Whether licensing features should be enabled
         func setEnableLicensing(_ enabled: Bool) {
-            if enabled == enableLicensing { return }
+            if enabled == enableLicensing {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setEnableLicensingUseCase.execute(enabled: enabled)
@@ -183,7 +193,9 @@
         /// Sets the enableTrialRequest feature flag.
         /// - Parameter enabled: Whether trial request functionality should be enabled
         func setEnableTrialRequest(_ enabled: Bool) {
-            if enabled == enableTrialRequest { return }
+            if enabled == enableTrialRequest {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setEnableTrialRequestUseCase.execute(enabled: enabled)
@@ -193,7 +205,9 @@
         /// Sets the mockActiveLicense feature flag.
         /// - Parameter enabled: Whether mock license should be active
         func setMockActiveLicense(_ enabled: Bool) {
-            if enabled == mockActiveLicense { return }
+            if enabled == mockActiveLicense {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setMockActiveLicenseUseCase.execute(enabled: enabled)
@@ -203,7 +217,9 @@
         /// Sets the checkout environment.
         /// - Parameter environment: The checkout environment to use
         func setCheckoutEnvironment(_ environment: CheckoutEnvironment) {
-            if environment == checkoutEnvironment { return }
+            if environment == checkoutEnvironment {
+                return
+            }
 
             Task.detached(priority: .utility) { [self] in
                 await setCheckoutEnvironmentUseCase.execute(environment)

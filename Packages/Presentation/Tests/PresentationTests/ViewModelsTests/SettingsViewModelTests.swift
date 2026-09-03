@@ -116,7 +116,15 @@ final class SettingsViewModelTests: XCTestCase {
             getAutomaticDownloadUpdatesEnabledUseCase: getAutomaticDownloadUpdatesEnabledUseCase,
             setAutomaticDownloadUpdatesEnabledUseCase: setAutomaticDownloadUpdatesEnabledUseCase,
             getLastUpdateCheckDateUseCase: getLastUpdateCheckDateUseCase,
-            checkForUpdatesUseCase: checkForUpdatesUseCase
+            checkForUpdatesUseCase: checkForUpdatesUseCase,
+            getQuickHideEnabledUseCase: GetQuickHideEnabledUseCase(configurationGateway: configurationGateway),
+            setQuickHideEnabledUseCase: SetQuickHideEnabledUseCase(configurationGateway: configurationGateway),
+            getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase(
+                configurationGateway: configurationGateway
+            ),
+            setQuickHideTriggerKeyUseCase: SetQuickHideTriggerKeyUseCase(
+                configurationGateway: configurationGateway
+            )
         )
     }
 

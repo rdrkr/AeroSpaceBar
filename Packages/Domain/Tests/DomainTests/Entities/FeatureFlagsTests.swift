@@ -265,7 +265,7 @@ final class FeatureFlagsTests: XCTestCase {
         }
     }
 
-    // MARK: - ModifiedCopy Macro Tests
+    // MARK: - Copy Tests
 
     func testCopyMethodFromMacro() {
         // Given original flags

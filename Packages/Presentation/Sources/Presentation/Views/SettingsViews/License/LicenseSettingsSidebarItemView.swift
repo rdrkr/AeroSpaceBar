@@ -25,7 +25,7 @@ struct LicenseSettingsSidebarItemView: View {
                 if let profileImage = viewModel.profileImage {
                     Image(nsImage: profileImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                 } else {
                     Image(systemName: "person.circle.fill")
                         .resizable()

@@ -23,6 +23,8 @@ final class AeroSpaceRepositoryTests: XCTestCase {
     private var getAeroSpaceConfigPathUseCase: GetAeroSpaceConfigPathUseCase?
     private var getOptimizedPerformanceEnabledUseCase: GetOptimizedPerformanceEnabledUseCase?
     private var getSpacesColorPropertiesUseCase: GetSpacesColorPropertiesUseCase?
+    private var getAeroSpaceVersionUseCase: GetAeroSpaceVersionUseCase?
+    private var mockEventMonitor: MockAeroSpaceEventMonitor?
 
     override func setUp() async throws {
         try await super.setUp()
@@ -43,11 +45,14 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         getOptimizedPerformanceEnabledUseCase =
             GetOptimizedPerformanceEnabledUseCase(configurationGateway: mockConfigGateway)
         getSpacesColorPropertiesUseCase = GetSpacesColorPropertiesUseCase(configurationGateway: mockConfigGateway)
+        getAeroSpaceVersionUseCase = GetAeroSpaceVersionUseCase(configurationGateway: mockConfigGateway)
+        mockEventMonitor = MockAeroSpaceEventMonitor()
 
         guard
             let mockIconCache, let getAeroSpacePathUseCase, let getAeroSpaceConfigPathUseCase,
             let getOptimizedPerformanceEnabledUseCase, let getSpacesColorPropertiesUseCase, let mockCLIFactory,
-            let mockCommandExecutor, let mockRunningAppChecker else { return }
+            let mockCommandExecutor, let mockRunningAppChecker, let getAeroSpaceVersionUseCase,
+            let mockEventMonitor else { return }
 
         repository = AeroSpaceRepository(
             iconCache: mockIconCache,
@@ -55,6 +60,8 @@ final class AeroSpaceRepositoryTests: XCTestCase {
             getAeroSpaceConfigPathUseCase: getAeroSpaceConfigPathUseCase,
             getOptimizedPerformanceEnabledUseCase: getOptimizedPerformanceEnabledUseCase,
             getSpacesColorPropertiesUseCase: getSpacesColorPropertiesUseCase,
+            getAeroSpaceVersionUseCase: getAeroSpaceVersionUseCase,
+            eventMonitor: mockEventMonitor,
             cliFactory: mockCLIFactory,
             commandExecutor: mockCommandExecutor,
             runningAppChecker: mockRunningAppChecker
@@ -73,6 +80,8 @@ final class AeroSpaceRepositoryTests: XCTestCase {
         getAeroSpacePathUseCase = nil
         getAeroSpaceConfigPathUseCase = nil
         getOptimizedPerformanceEnabledUseCase = nil
+        getAeroSpaceVersionUseCase = nil
+        mockEventMonitor = nil
         getSpacesColorPropertiesUseCase = nil
         try await super.tearDown()
     }

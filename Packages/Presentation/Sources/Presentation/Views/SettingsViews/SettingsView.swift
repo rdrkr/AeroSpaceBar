@@ -142,7 +142,9 @@ public struct SettingsView: View {
         // Activate the app to make sure the first key window is activated
         NSApp.activate(ignoringOtherApps: true)
 
-        if isWindowConfigured { return }
+        if isWindowConfigured {
+            return
+        }
 
         // Wait until the main window is available
         while NSApplication.shared.keyWindow == nil {

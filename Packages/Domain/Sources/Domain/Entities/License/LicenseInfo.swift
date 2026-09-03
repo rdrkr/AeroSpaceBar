@@ -1,10 +1,8 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
 import Foundation
-internal import ModifiedCopy
 
 /// License information.
-@CopyableCombi
 public struct LicenseInfo: Codable, Equatable, Sendable {
     /// The license key.
     public var licenseKey: String

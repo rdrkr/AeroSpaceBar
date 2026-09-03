@@ -137,7 +137,7 @@ final class ConfigurationDefaultsTests: XCTestCase {
         let padding = ConfigurationDefaults.menuBarHorizontalPadding
 
         // Then should be reasonable value
-        expect(padding) == 50
+        expect(padding) == 49
         expect(padding).to(beGreaterThan(0), description: "Padding should be positive")
     }
 

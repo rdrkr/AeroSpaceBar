@@ -29,7 +29,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: themeMode,
             themePresetColorProperties: themePreset,
             themePresetGeometricProperties: geometric,
-            themePresetEffectProperties: effect
+            themePresetEffectProperties: effect,
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then all properties should be set
@@ -59,7 +62,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: themeMode,
             themePresetColorProperties: themePreset,
             themePresetGeometricProperties: geometric,
-            themePresetEffectProperties: effect
+            themePresetEffectProperties: effect,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // Then all properties should be set
@@ -87,7 +93,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: themeMode,
             themePresetColorProperties: themePreset,
             themePresetGeometricProperties: geometric,
-            themePresetEffectProperties: effect
+            themePresetEffectProperties: effect,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // Then all properties should be nil
@@ -109,7 +118,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: nil,
             themePresetColorProperties: nil,
             themePresetGeometricProperties: nil,
-            themePresetEffectProperties: nil
+            themePresetEffectProperties: nil,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // And default settings
@@ -119,7 +131,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // When decoding
@@ -148,7 +163,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .glass,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: geometric,
-            themePresetEffectProperties: effect
+            themePresetEffectProperties: effect,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // And default settings (different values)
@@ -158,7 +176,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // When decoding
@@ -184,7 +205,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .preset,
             themePresetColorProperties: nil, // Will use default
             themePresetGeometricProperties: GeometricProperties(cornerRadius: 8, borderWidth: 1),
-            themePresetEffectProperties: nil // Will use default
+            themePresetEffectProperties: nil, // Will use default
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // And default settings
@@ -194,7 +218,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // When decoding
@@ -228,7 +255,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: nil,
             themePresetColorProperties: nil,
             themePresetGeometricProperties: nil,
-            themePresetEffectProperties: nil
+            themePresetEffectProperties: nil,
+
+            quickHideEnabled: nil,
+            quickHideTriggerKey: nil
         )
 
         // Then should be correct type
@@ -243,7 +273,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .dracula,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then should be correct type
@@ -264,7 +297,10 @@ final class GeneralSettingsTests: XCTestCase {
                 themeMode: mode,
                 themePresetColorProperties: .nord,
                 themePresetGeometricProperties: GeometricProperties(),
-                themePresetEffectProperties: EffectProperties()
+                themePresetEffectProperties: EffectProperties(),
+
+                quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+                quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
             )
 
             // Then should accept the theme mode
@@ -284,7 +320,10 @@ final class GeneralSettingsTests: XCTestCase {
                 themeMode: .preset,
                 themePresetColorProperties: preset,
                 themePresetGeometricProperties: GeometricProperties(),
-                themePresetEffectProperties: EffectProperties()
+                themePresetEffectProperties: EffectProperties(),
+
+                quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+                quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
             )
 
             // Then should accept the preset
@@ -302,7 +341,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then should accept empty path
@@ -318,7 +360,10 @@ final class GeneralSettingsTests: XCTestCase {
             themeMode: .custom,
             themePresetColorProperties: .nord,
             themePresetGeometricProperties: GeometricProperties(),
-            themePresetEffectProperties: EffectProperties()
+            themePresetEffectProperties: EffectProperties(),
+
+            quickHideEnabled: ConfigurationDefaults.quickHideEnabled,
+            quickHideTriggerKey: ConfigurationDefaults.quickHideTriggerKey
         )
 
         // Then should accept long path

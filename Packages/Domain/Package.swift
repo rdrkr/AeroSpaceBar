@@ -18,15 +18,11 @@ public let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/WilhelmOks/ModifiedCopyMacro.git", exact: "2.1.2"),
         .package(url: "https://github.com/Quick/Nimble.git", exact: "13.8.0")
     ],
     targets: [
         .target(
             name: "Domain",
-            dependencies: [
-                .product(name: "ModifiedCopy", package: "ModifiedCopyMacro")
-            ],
             path: "Sources/Domain",
             resources: [
                 .process("Resources/Localizable.xcstrings")

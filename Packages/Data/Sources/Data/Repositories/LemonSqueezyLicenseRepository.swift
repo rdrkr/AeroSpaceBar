@@ -617,7 +617,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     // MARK: - Public Methods
 
     public func setEnableLicensing(_ enabled: Bool) {
-        if enabled == enableLicensingSubject.value { return }
+        if enabled == enableLicensingSubject.value {
+            return
+        }
 
         Task {
             self.enableLicensingSubject.send(enabled)
@@ -625,7 +627,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
     }
 
     public func setEnableTrialRequest(_ enabled: Bool) {
-        if enabled == enableTrialRequestSubject.value { return }
+        if enabled == enableTrialRequestSubject.value {
+            return
+        }
 
         Task {
             self.enableTrialRequestSubject.send(enabled)
@@ -634,7 +638,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
 
     #if DEBUG
         public func setMockActiveLicense(_ enabled: Bool) {
-            if enabled == mockActiveLicenseSubject.value { return }
+            if enabled == mockActiveLicenseSubject.value {
+                return
+            }
 
             Task {
                 self.mockActiveLicenseSubject.send(enabled)
@@ -642,7 +648,9 @@ public final class LemonSqueezyLicenseRepository: LicenseGateway {
         }
 
         public func setCheckoutEnvironment(_ environment: CheckoutEnvironment) {
-            if environment == checkoutEnvironmentSubject.value { return }
+            if environment == checkoutEnvironmentSubject.value {
+                return
+            }
 
             Task {
                 self.checkoutEnvironmentSubject.send(environment)

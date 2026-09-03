@@ -102,6 +102,8 @@ final class SpacesViewModelTests: XCTestCase {
             setFocusWindowOnClickUseCase: SetFocusWindowOnClickUseCase(configurationGateway: mockConfigurationGateway),
             getShowEmptySpacesUseCase: GetShowEmptySpacesUseCase(configurationGateway: mockConfigurationGateway),
             setShowEmptySpacesUseCase: SetShowEmptySpacesUseCase(configurationGateway: mockConfigurationGateway),
+            getHiddenSpacesUseCase: GetHiddenSpacesUseCase(configurationGateway: mockConfigurationGateway),
+            setHiddenSpacesUseCase: SetHiddenSpacesUseCase(configurationGateway: mockConfigurationGateway),
             getWallpaperUseCase: getWallpaperUseCase,
             getMenuBarVisibilityUseCase: getMenuBarVisibilityUseCase,
             getMenuBarHeightUseCase: GetMenuBarHeightUseCase(systemMenuBarGateway: mockSystemMenuBarGateway),
@@ -163,6 +165,30 @@ final class SpacesViewModelTests: XCTestCase {
                 configurationGateway: mockConfigurationGateway
             ),
             setThemePresetEffectPropertiesUseCase: SetThemePresetEffectPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            getShowAppleButtonAsSpaceUseCase: GetShowAppleButtonAsSpaceUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            setShowAppleButtonAsSpaceUseCase: SetShowAppleButtonAsSpaceUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            getAppleButtonColorPropertiesUseCase: GetAppleButtonColorPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            setAppleButtonColorPropertiesUseCase: SetAppleButtonColorPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            getAppleButtonGeometricPropertiesUseCase: GetAppleButtonGeometricPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            setAppleButtonGeometricPropertiesUseCase: SetAppleButtonGeometricPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            getAppleButtonEffectPropertiesUseCase: GetAppleButtonEffectPropertiesUseCase(
+                configurationGateway: mockConfigurationGateway
+            ),
+            setAppleButtonEffectPropertiesUseCase: SetAppleButtonEffectPropertiesUseCase(
                 configurationGateway: mockConfigurationGateway
             ),
             getQuickHideTriggerKeyPressStateUseCase: GetQuickHideTriggerKeyPressStateUseCase(

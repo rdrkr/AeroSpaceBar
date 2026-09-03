@@ -80,11 +80,16 @@ struct AdvancedSettingsView: View {
 
                 SettingsToggle(
                     title: LocalizedStringResource("Enable Optimized Performance"),
-                    description: LocalizedStringResource(
-                        "Utilize AeroSpace's event system for CPU consumption optimization."
-                    ),
+                    description: viewModel.supportsEventSubscription
+                        ? LocalizedStringResource(
+                            "Not needed — AeroSpaceBar is subscribed to AeroSpace's event stream."
+                        )
+                        : LocalizedStringResource(
+                            "Utilize AeroSpace's event system for CPU consumption optimization."
+                        ),
                     isOn: $viewModel.isOptimizedPerformanceEnabled
                 )
+                .disabled(viewModel.supportsEventSubscription)
                 .tag("advanced-optimized-performance-toggle")
             }
             .tag("advanced-diagnostics-section")

@@ -68,6 +68,7 @@ public final class MockSystemMenuBarGateway: SystemMenuBarGateway {
     // MARK: - Subjects
 
     private let wallpaperSubject: CurrentValueSubject<NSImage?, Never>
+    private let appleButtonFrameSubject = CurrentValueSubject<CGRect, Never>(.zero)
     private let menuBarHeightSubject: CurrentValueSubject<Double, Never>
     private let menuBarVisibilitySubject: CurrentValueSubject<Bool, Never>
     private let menuBarAppsSubject: CurrentValueSubject<[MenuBarApp], Never>
@@ -87,6 +88,10 @@ public final class MockSystemMenuBarGateway: SystemMenuBarGateway {
 
     public var wallpaperPublisher: AnyPublisher<NSImage?, Never> {
         wallpaperSubject.eraseToAnyPublisher()
+    }
+
+    public var appleButtonFramePublisher: AnyPublisher<CGRect, Never> {
+        appleButtonFrameSubject.eraseToAnyPublisher()
     }
 
     public var menuBarHeightPublisher: AnyPublisher<Double, Never> {

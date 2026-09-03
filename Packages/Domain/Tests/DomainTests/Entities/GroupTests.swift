@@ -430,7 +430,7 @@ final class GroupTests: XCTestCase {
         expect(metadata.tagPrefix) == "groups"
         expect(metadata.canAddEntities) == true
         expect(metadata.canDeleteEntities) == true
-        expect(metadata.showForegroundSection) == false
+        expect(metadata.showForegroundSection) == true
     }
 
     func testMetadataCanDeleteEntity() {

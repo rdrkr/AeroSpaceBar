@@ -72,45 +72,43 @@ struct SpacesView: View {
     /// This view creates a horizontal layout of spaces with their associated windows,
     /// using the captured desktop wallpaper as background.
     var body: some View {
-        Group {
-            ZStack(alignment: .leading) {
-                // Use captured desktop wallpaper as background
-                if let originalWallpaper = wallpaper {
-                    Group {
-                        WallpaperBackgroundView(
-                            wallpaper: originalWallpaper
-                        )
+        ZStack(alignment: .leading) {
+            // Use captured desktop wallpaper as background
+            if let originalWallpaper = wallpaper {
+                Group {
+                    WallpaperBackgroundView(
+                        wallpaper: originalWallpaper
+                    )
 
-                        SpacesContainerView(
-                            spaces: spaces,
-                            showWindowTitles: showWindowTitles,
-                            focusWindowOnClick: viewModel.focusWindowOnClick,
-                            appearanceMode: viewModel.spacesAppearanceMode,
-                            globalColorProperties: viewModel.globalSpacesColorProperties,
-                            globalGeometricProperties: viewModel.globalSpacesGeometricProperties,
-                            globalEffectProperties: viewModel.globalSpacesEffectProperties,
-                            themeMode: viewModel.themeMode,
-                            themePresetColorProperties: viewModel.themePresetColorProperties,
-                            themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
-                            themePresetEffectProperties: viewModel.themePresetEffectProperties,
-                            onSwitchToSpace: viewModel.switchToSpace,
-                            onSwitchToWindow: viewModel.switchToWindow
-                        )
-                        .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
-                        .tag("spaces-container")
-                    }
-                    .cornerRadius(cornerRadius)
-                    .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
-                    .tag("spaces-wallpaper-group")
-                } else {
-                    // Default background when no wallpaper is set
-                    Color.black
-                        .opacity(0)
-                        .tag("spaces-default-background")
+                    SpacesContainerView(
+                        spaces: spaces,
+                        showWindowTitles: showWindowTitles,
+                        focusWindowOnClick: viewModel.focusWindowOnClick,
+                        appearanceMode: viewModel.spacesAppearanceMode,
+                        globalColorProperties: viewModel.globalSpacesColorProperties,
+                        globalGeometricProperties: viewModel.globalSpacesGeometricProperties,
+                        globalEffectProperties: viewModel.globalSpacesEffectProperties,
+                        themeMode: viewModel.themeMode,
+                        themePresetColorProperties: viewModel.themePresetColorProperties,
+                        themePresetGeometricProperties: viewModel.themePresetGeometricProperties,
+                        themePresetEffectProperties: viewModel.themePresetEffectProperties,
+                        onSwitchToSpace: viewModel.switchToSpace,
+                        onSwitchToWindow: viewModel.switchToWindow
+                    )
+                    .offset(y: (isWallpaperVisible && !shouldHideView) ? 0 : -menuBarHeight)
+                    .tag("spaces-container")
                 }
+                .cornerRadius(cornerRadius)
+                .opacity((isWallpaperVisible && !shouldHideView) ? 1.0 : 0.0)
+                .tag("spaces-wallpaper-group")
+            } else {
+                // Default background when no wallpaper is set
+                Color.black
+                    .opacity(0)
+                    .tag("spaces-default-background")
             }
-            .tag("spaces-content-zstack")
         }
+        .tag("spaces-content-zstack")
         .animation(.themeEaseInOutFast, value: shouldMonitorWallpaperVisibility)
         .animation(.themeEaseInOutFast, value: monitoredWallpaperVisibility)
         .animation(.themeEaseInOutFast, value: shouldHideView)

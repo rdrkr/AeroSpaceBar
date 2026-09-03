@@ -73,17 +73,27 @@ public final class AppViewModel: ObservableObject {
     ///
     /// This method establishes Combine subscriptions to monitor changes
     /// in Quick Hide trigger key press state, enabled state, and trigger key setting.
+    ///
+    /// Uses `sink` with a weak capture rather than `assign(to:on:)`: the latter
+    /// retains `self` strongly, and because the subscription is stored in `self`'s
+    /// own `cancellables` that forms a cycle which keeps the view model alive forever.
     private func setupReactiveSubscriptions() {
         getQuickHideTriggerKeyPressStateUseCase.execute()
-            .assign(to: \.isQuickHideTriggerKeyPressed, on: self)
+            .sink { [weak self] isPressed in
+                self?.isQuickHideTriggerKeyPressed = isPressed
+            }
             .store(in: &cancellables)
 
         getQuickHideEnabledUseCase.execute()
-            .assign(to: \.isQuickHideEnabled, on: self)
+            .sink { [weak self] isEnabled in
+                self?.isQuickHideEnabled = isEnabled
+            }
             .store(in: &cancellables)
 
         getQuickHideTriggerKeyUseCase.execute()
-            .assign(to: \.quickHideTriggerKey, on: self)
+            .sink { [weak self] triggerKey in
+                self?.quickHideTriggerKey = triggerKey
+            }
             .store(in: &cancellables)
     }
 }
