@@ -78,10 +78,48 @@ fi
 CURRENT_VERSION=$(bash "$SCRIPT_DIR/version.sh" --version 2>/dev/null || echo "unknown")
 CURRENT_BUILD=$(bash "$SCRIPT_DIR/version.sh" --build 2>/dev/null || echo "0")
 
+# Highest build number that has already been released, read from the tags rather
+# than the working tree.
+#
+# The working tree alone is not a safe basis: v1.0.0-beta.14 was tagged from a
+# commit that never landed on the release branch, so the tree stayed on build 13
+# and the next release reused build 14. Sparkle compares CFBundleVersion, so a
+# duplicate build makes the update invisible to everyone already on it.
+highest_released_build() {
+    local highest=0 tag tag_build tmp
+    tmp=$(mktemp)
+
+    for tag in $(git tag -l 'v*' 2>/dev/null); do
+        if ! git show "$tag:AeroSpaceBar.xcodeproj/project.pbxproj" >"$tmp" 2>/dev/null; then
+            continue
+        fi
+
+        # Same extraction as version.sh: the main app target's build number.
+        tag_build=$(grep -B 50 "PRODUCT_BUNDLE_IDENTIFIER = com.rdrkr.AeroSpaceBar;" "$tmp" \
+            | grep "CURRENT_PROJECT_VERSION" | head -n 1 \
+            | sed 's/.*CURRENT_PROJECT_VERSION = \(.*\);/\1/' | tr -d ' ;')
+
+        if [[ "$tag_build" =~ ^[0-9]+$ ]] && [ "$tag_build" -gt "$highest" ]; then
+            highest=$tag_build
+        fi
+    done
+
+    rm -f "$tmp"
+    echo "$highest"
+}
+
 # Auto-increment build number if not provided
 if [ -z "$BUILD_NUMBER" ]; then
-    BUILD_NUMBER=$((CURRENT_BUILD + 1))
-    echo -e "${BLUE}Auto-incrementing build number: $CURRENT_BUILD → $BUILD_NUMBER${NC}"
+    RELEASED_BUILD=$(highest_released_build)
+    BASE_BUILD=$CURRENT_BUILD
+
+    if [ "$RELEASED_BUILD" -gt "$BASE_BUILD" ]; then
+        echo -e "${YELLOW}Working tree is at build $CURRENT_BUILD but build $RELEASED_BUILD is already released${NC}"
+        BASE_BUILD=$RELEASED_BUILD
+    fi
+
+    BUILD_NUMBER=$((BASE_BUILD + 1))
+    echo -e "${BLUE}Auto-incrementing build number: $BASE_BUILD → $BUILD_NUMBER${NC}"
 fi
 
 # Validate build number
