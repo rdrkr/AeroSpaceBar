@@ -254,6 +254,12 @@ Or press `Cmd + U` in Xcode.
 - **[Sparkle](https://github.com/sparkle-project/Sparkle)**: Software update framework
 - **[LemonSqueezy](https://github.com/lmsqueezy/lemonsqueezy-swift)**: License management SDK
 
+`Package.resolved` is committed so builds are reproducible. One pin is deliberate:
+**swift-collections is held at 1.2.1** (pulled in transitively by AsyncFileMonitor).
+Releases from 1.3.0 onward use the experimental `@_lifetime` attribute, whose parameter
+syntax the current Swift toolchain rejects when the package is built through Xcode, which
+fails the app build. Re-test before running `swift package update` on it.
+
 ### Releasing
 
 Releases are automated via `./Scripts/release.sh` or GitHub Actions.

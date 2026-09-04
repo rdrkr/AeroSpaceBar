@@ -22,11 +22,6 @@ public let package = Package(
         .package(url: "https://github.com/LebJe/TOMLKit.git", exact: "0.6.0"),
         .package(url: "https://github.com/lmsqueezy/lemonsqueezy-swift.git", exact: "1.3.0"),
         .package(url: "https://github.com/rdrkr/AsyncFileMonitor.git", exact: "1.0.0"),
-        // Pinned transitively (via AsyncFileMonitor). swift-collections 1.3.0+ uses
-        // the experimental `@_lifetime` attribute, whose parameter syntax the current
-        // Swift toolchain rejects when the package is built through Xcode. 1.2.1 is the
-        // newest release without it. Revisit once the toolchain accepts newer releases.
-        .package(url: "https://github.com/apple/swift-collections.git", exact: "1.2.1"),
         .package(url: "https://github.com/sparkle-project/Sparkle.git", exact: "2.8.0"),
         .package(url: "https://github.com/Quick/Nimble.git", exact: "13.8.0")
     ],
