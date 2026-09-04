@@ -23,6 +23,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0] - 2026-09-04
+
+### Added
+
+- migrate to AeroSpace event subscription API
+- added optional hidden spaces
+
+### Fixed
+
+- report expired signing certificates in release workflow
+- detect Developer ID certificate when signing releases
+- resolve Xcode icon and package dependency warnings
+- break retain cycles in ViewModel and repository subscriptions
+
+
 ## [1.0.0-beta.13] - 2026-04-15
 
 ### Added
