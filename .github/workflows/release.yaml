@@ -62,10 +62,18 @@ jobs:
           # through the release if the keychain has no usable signing identity.
           # Without this the import step is silent and a missing certificate only
           # surfaces later, during signing.
+          #
+          # `find-identity -v` lists only valid identities, so an expired
+          # certificate shows up as zero even though the import itself succeeded.
           echo "Signing identities available after import:"
           security find-identity -v -p codesigning
-          if ! security find-identity -v -p codesigning | grep -q "Developer ID Application"; then
-            echo "::error::No 'Developer ID Application' identity in the keychain after importing CERTIFICATES_P12."
+          if security find-identity -v -p codesigning | grep -q "0 valid identities found"; then
+            # Show invalid identities too: an expired certificate imports fine and
+            # only disappears from the `-v` (valid-only) listing, which otherwise
+            # makes this look like the import silently did nothing.
+            echo "All identities, including invalid/expired ones:"
+            security find-identity -p codesigning || true
+            echo "::error::CERTIFICATES_P12 imported no *valid* signing identity. If the certificate appears above but not in the valid list, it has expired - re-export the current identity from Keychain Access and update the CERTIFICATES_P12 secret."
             exit 1
           fi
 
