@@ -58,6 +58,17 @@ jobs:
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           security default-keychain -s "$KEYCHAIN_PATH"
 
+          # Report what was actually imported, and fail here rather than midway
+          # through the release if the keychain has no usable signing identity.
+          # Without this the import step is silent and a missing certificate only
+          # surfaces later, during signing.
+          echo "Signing identities available after import:"
+          security find-identity -v -p codesigning
+          if ! security find-identity -v -p codesigning | grep -q "Developer ID Application"; then
+            echo "::error::No 'Developer ID Application' identity in the keychain after importing CERTIFICATES_P12."
+            exit 1
+          fi
+
       - name: Checkout homebrew-tap repo
         uses: actions/checkout@v6
         with:

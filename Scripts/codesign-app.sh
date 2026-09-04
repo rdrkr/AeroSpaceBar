@@ -70,11 +70,25 @@ if [ -z "$APP_PATH" ]; then
 fi
 
 # Auto-detect signing identity if not provided
+#
+# "Developer ID Application" is preferred because that is what distribution
+# builds are signed with, and it is the certificate CI imports from the
+# CERTIFICATES_P12 secret. "Apple Development" is only a fallback so that a
+# local build still works on a machine that has just a development certificate.
 if [ -z "$SIGNING_IDENTITY" ]; then
-    SIGNING_IDENTITY=$(security find-identity -v -p codesigning | grep "Apple Development" | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+    AVAILABLE_IDENTITIES=$(security find-identity -v -p codesigning)
+
+    for CERTIFICATE_TYPE in "Developer ID Application" "Apple Development"; do
+        SIGNING_IDENTITY=$(echo "$AVAILABLE_IDENTITIES" | grep "$CERTIFICATE_TYPE" | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+        if [ -n "$SIGNING_IDENTITY" ]; then
+            break
+        fi
+    done
+
     if [ -z "$SIGNING_IDENTITY" ]; then
-        echo -e "${RED}Error: No Developer ID Application certificate found${NC}" >&2
-        echo -e "${YELLOW}Run 'security find-identity -v -p codesigning' to list available identities${NC}" >&2
+        echo -e "${RED}Error: No 'Developer ID Application' or 'Apple Development' certificate found${NC}" >&2
+        echo -e "${YELLOW}Identities visible to this process:${NC}" >&2
+        echo "$AVAILABLE_IDENTITIES" >&2
         exit 1
     fi
     echo -e "${BLUE}Auto-detected signing identity:${NC}"
