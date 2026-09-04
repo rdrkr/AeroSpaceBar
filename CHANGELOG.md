@@ -24,6 +24,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.0.0-beta.15] - 2026-09-04
+
+### Added
+
+- migrate to AeroSpace event subscription API
+- added optional hidden spaces
+
+### Changed
+
+- drop stale 1.0.0 appcast entry ahead of rebuild
+- bump version to 1.0.0
+
+### Fixed
+
+- push release tag with a PAT to satisfy repository rules
+- derive release build number from released tags
+- report expired signing certificates in release workflow
+- detect Developer ID certificate when signing releases
+- resolve Xcode icon and package dependency warnings
+- break retain cycles in ViewModel and repository subscriptions
+
+### Other
+
+- revert :: restore default token for release checkout
+- Update appcast for v1.0.0
+
+
 ## [1.0.0] - 2026-09-04
 
 ### Added
