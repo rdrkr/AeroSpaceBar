@@ -22,10 +22,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all history and tags, required for changelog and build number
-          # Push with a PAT rather than the default GITHUB_TOKEN: repository rules
-          # reject ref creation by the Actions token ("Cannot create ref due to
-          # creations being restricted"), which blocks pushing the release tag.
-          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
 
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
