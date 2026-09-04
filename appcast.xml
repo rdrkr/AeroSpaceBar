@@ -7,6 +7,47 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.0.0-beta.15</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.15</link>
+            <pubDate>Fri, 04 Sep 2026 08:16:53 +0000</pubDate>
+            <sparkle:version>15</sparkle:version>
+            <sparkle:shortVersionString>1.0.0-beta.15</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Added</h3>
+
+<ul>
+<li>migrate to AeroSpace event subscription API</li>
+<li>added optional hidden spaces</li>
+
+<h3>Changed</h3>
+
+<li>drop stale 1.0.0 appcast entry ahead of rebuild</li>
+<li>bump version to 1.0.0</li>
+
+<h3>Fixed</h3>
+
+<li>push release tag with a PAT to satisfy repository rules</li>
+<li>derive release build number from released tags</li>
+<li>report expired signing certificates in release workflow</li>
+<li>detect Developer ID certificate when signing releases</li>
+<li>resolve Xcode icon and package dependency warnings</li>
+<li>break retain cycles in ViewModel and repository subscriptions</li>
+
+<h3>Other</h3>
+
+<li>revert :: restore default token for release checkout</li>
+<li>Update appcast for v1.0.0</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.0.0-beta.15/AeroSpaceBar-v1.0.0-beta.15.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="v6xcGNkCNu37+uxVpsWzxDfu4u2YH9Mr2CMefGU296raFitcZXYKj+m22UAFDEMCckEVc6rOVX87oNTdxmHbDQ==" length="11881191" />
+        </item>
+        <item>
             <title>Version 1.0.0-beta.13</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.0-beta.13</link>
             <pubDate>Wed, 15 Apr 2026 13:47:28 +0000</pubDate>
