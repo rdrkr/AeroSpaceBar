@@ -633,27 +633,39 @@ public class SettingsViewModel: ObservableObject {
         // Monitor configuration changes
 
         getScreenCapturePermissionGrantedUseCase.execute()
-            .assign(to: \.screenCapturePermissionGranted, on: self)
+            .sink { [weak self] newValue in
+                self?.screenCapturePermissionGranted = newValue
+            }
             .store(in: &cancellables)
 
         getAeroSpacePathUseCase.execute()
-            .assign(to: \.aeroSpacePath, on: self)
+            .sink { [weak self] newValue in
+                self?.aeroSpacePath = newValue
+            }
             .store(in: &cancellables)
 
         getAeroSpaceVersionUseCase.execute()
-            .assign(to: \.aeroSpaceVersion, on: self)
+            .sink { [weak self] newValue in
+                self?.aeroSpaceVersion = newValue
+            }
             .store(in: &cancellables)
 
         getLogLevelUseCase.execute()
-            .assign(to: \.logLevel, on: self)
+            .sink { [weak self] newValue in
+                self?.logLevel = newValue
+            }
             .store(in: &cancellables)
 
         getEnablePerformanceMetricsUseCase.execute()
-            .assign(to: \.enablePerformanceMetrics, on: self)
+            .sink { [weak self] newValue in
+                self?.enablePerformanceMetrics = newValue
+            }
             .store(in: &cancellables)
 
         getOptimizedPerformanceEnabledUseCase.execute()
-            .assign(to: \.isOptimizedPerformanceEnabled, on: self)
+            .sink { [weak self] newValue in
+                self?.isOptimizedPerformanceEnabled = newValue
+            }
             .store(in: &cancellables)
 
         getFeatureFlagsUseCase.execute()
@@ -677,39 +689,57 @@ public class SettingsViewModel: ObservableObject {
             .store(in: &cancellables)
 
         getEnableTrialRequestUseCase.execute()
-            .assign(to: \.enableTrialRequest, on: self)
+            .sink { [weak self] newValue in
+                self?.enableTrialRequest = newValue
+            }
             .store(in: &cancellables)
 
         getConfigFilePathUseCase.execute()
-            .assign(to: \.configFilePath, on: self)
+            .sink { [weak self] newValue in
+                self?.configFilePath = newValue
+            }
             .store(in: &cancellables)
 
         getThemeModeUseCase.execute()
-            .assign(to: \.themeMode, on: self)
+            .sink { [weak self] newValue in
+                self?.themeMode = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetColorPropertiesUseCase.execute()
-            .assign(to: \.themePresetColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getQuickHideEnabledUseCase.execute()
-            .assign(to: \.quickHideEnabled, on: self)
+            .sink { [weak self] newValue in
+                self?.quickHideEnabled = newValue
+            }
             .store(in: &cancellables)
 
         getQuickHideTriggerKeyUseCase.execute()
-            .assign(to: \.quickHideTriggerKey, on: self)
+            .sink { [weak self] newValue in
+                self?.quickHideTriggerKey = newValue
+            }
             .store(in: &cancellables)
 
         getAutomaticCheckForUpdatesEnabledUseCase.execute()
-            .assign(to: \.automaticCheckForUpdatesEnabled, on: self)
+            .sink { [weak self] newValue in
+                self?.automaticCheckForUpdatesEnabled = newValue
+            }
             .store(in: &cancellables)
 
         getAutomaticDownloadUpdatesEnabledUseCase.execute()
-            .assign(to: \.automaticDownloadUpdatesEnabled, on: self)
+            .sink { [weak self] newValue in
+                self?.automaticDownloadUpdatesEnabled = newValue
+            }
             .store(in: &cancellables)
 
         getLastUpdateCheckDateUseCase.execute()
-            .assign(to: \.lastUpdateCheckDate, on: self)
+            .sink { [weak self] newValue in
+                self?.lastUpdateCheckDate = newValue
+            }
             .store(in: &cancellables)
     }
 

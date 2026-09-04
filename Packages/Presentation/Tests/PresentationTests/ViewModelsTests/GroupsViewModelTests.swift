@@ -374,6 +374,53 @@ final class GroupsViewModelTests: XCTestCase {
         expect(viewModel.groups.isEmpty) == false
         expect(mockConfigurationGateway.lastGroups.isEmpty) == false
     }
+
+    // MARK: - Memory Management
+
+    func testGroupsViewModelIsDeallocatedWhenReleased() async throws {
+        // Given a view model whose reactive subscriptions are stored in its own
+        // `cancellables`
+        weak var weakViewModel: GroupsViewModel?
+        weakViewModel = viewModel
+
+        // When every strong reference is dropped
+        cancellables = nil
+        mockConfigurationGateway = nil
+        mockSystemMenuBarGateway = nil
+        mockFeatureFlagsGateway = nil
+        getShowGroupsUseCase = nil
+        setShowGroupsUseCase = nil
+        getGroupsUseCase = nil
+        setGroupsUseCase = nil
+        getMenuBarAppsUseCase = nil
+        getFeatureFlagsUseCase = nil
+        getGroupsAppearanceModeUseCase = nil
+        setGroupsAppearanceModeUseCase = nil
+        getSpacesAppearanceModeUseCase = nil
+        getGlobalGroupsColorPropertiesUseCase = nil
+        setGlobalGroupsColorPropertiesUseCase = nil
+        getGlobalGroupsGeometricPropertiesUseCase = nil
+        setGlobalGroupsGeometricPropertiesUseCase = nil
+        getGlobalGroupsEffectPropertiesUseCase = nil
+        setGlobalGroupsEffectPropertiesUseCase = nil
+        getGlobalSpacesColorPropertiesUseCase = nil
+        getGlobalSpacesGeometricPropertiesUseCase = nil
+        getGlobalSpacesEffectPropertiesUseCase = nil
+        getThemeModeUseCase = nil
+        getThemePresetColorPropertiesUseCase = nil
+        getThemePresetGeometricPropertiesUseCase = nil
+        getThemePresetEffectPropertiesUseCase = nil
+        getMenuBarHeightUseCase = nil
+        viewModel = nil
+
+        // Let the detached tasks the `didSet` observers spawned run to completion;
+        // they hold `self` until they finish, unlike a genuine retain cycle.
+        try await Task.sleep(for: .milliseconds(500))
+
+        // Then it deallocates: the subscriptions capture `self` weakly, so storing
+        // them on the view model does not form a retain cycle
+        expect(weakViewModel).to(beNil())
+    }
 }
 
 // MARK: - Mock Gateways

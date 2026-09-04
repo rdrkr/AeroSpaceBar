@@ -59,10 +59,18 @@ final class MockSoftwareUpdateGateway: SoftwareUpdateGateway {
     // MARK: - Methods
 
     func setAutomaticCheckForUpdatesEnabled(_ enabled: Bool) {
+        if enabled == automaticCheckForUpdatesEnabledSubject.value {
+            return
+        }
+
         automaticCheckForUpdatesEnabledSubject.send(enabled)
     }
 
     func setAutomaticDownloadUpdatesEnabled(_ enabled: Bool) {
+        if enabled == automaticDownloadUpdatesEnabledSubject.value {
+            return
+        }
+
         automaticDownloadUpdatesEnabledSubject.send(enabled)
     }
 
@@ -177,10 +185,18 @@ final class MockLicenseGateway: LicenseGateway {
     }
 
     func setEnableLicensing(_ enabled: Bool) {
+        if enabled == enableLicensingSubject.value {
+            return
+        }
+
         enableLicensingSubject.send(enabled)
     }
 
     func setEnableTrialRequest(_ enabled: Bool) {
+        if enabled == enableTrialRequestSubject.value {
+            return
+        }
+
         enableTrialRequestSubject.send(enabled)
     }
 
@@ -270,22 +286,42 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
     }
 
     func setWallpaper(_ wallpaper: NSImage?) {
+        if wallpaper == wallpaperSubject.value {
+            return
+        }
+
         wallpaperSubject.send(wallpaper)
     }
 
     func setMenuBarVisibility(_ visible: Bool) {
+        if visible == menuBarVisibilitySubject.value {
+            return
+        }
+
         menuBarVisibilitySubject.send(visible)
     }
 
     func setMenuBarHeight(_ height: Double) {
+        if height == menuBarHeightSubject.value {
+            return
+        }
+
         menuBarHeightSubject.send(height)
     }
 
     func setMenuBarApps(_ apps: [MenuBarApp]) {
+        if apps == menuBarAppsSubject.value {
+            return
+        }
+
         menuBarAppsSubject.send(apps)
     }
 
     func setScreenCapturePermissionGranted(_ granted: Bool) {
+        if granted == screenCapturePermissionGrantedSubject.value {
+            return
+        }
+
         screenCapturePermissionGrantedSubject.send(granted)
     }
 }
@@ -522,82 +558,162 @@ final class MockConfigurationGateway: ConfigurationGateway {
 
     /// Methods
     func setShowWindowTitles(_ value: Bool) {
+        if value == showWindowTitlesSubject.value {
+            return
+        }
+
         showWindowTitlesSubject.send(value)
     }
 
     func setAeroSpacePath(_ path: String) {
+        if path == aeroSpacePathSubject.value {
+            return
+        }
+
         aeroSpacePathSubject.send(path)
     }
 
     func setFocusWindowOnClick(_ value: Bool) {
+        if value == focusWindowOnClickSubject.value {
+            return
+        }
+
         focusWindowOnClickSubject.send(value)
     }
 
     func setShowEmptySpaces(_ value: Bool) {
+        if value == showEmptySpacesSubject.value {
+            return
+        }
+
         showEmptySpacesSubject.send(value)
     }
 
     func setShowForegroundOverlay(_ value: Bool) {
+        if value == showForegroundOverlaySubject.value {
+            return
+        }
+
         showForegroundOverlaySubject.send(value)
     }
 
     func setShowAppleButtonAsSpace(_ value: Bool) {
+        if value == showAppleButtonAsSpaceSubject.value {
+            return
+        }
+
         showAppleButtonAsSpaceSubject.send(value)
     }
 
     func setAppleButtonColorProperties(_ value: ColorProperties) {
+        if value == appleButtonColorPropertiesSubject.value {
+            return
+        }
+
         appleButtonColorPropertiesSubject.send(value)
     }
 
     func setAppleButtonGeometricProperties(_ value: GeometricProperties) {
+        if value == appleButtonGeometricPropertiesSubject.value {
+            return
+        }
+
         appleButtonGeometricPropertiesSubject.send(value)
     }
 
     func setAppleButtonEffectProperties(_ value: EffectProperties) {
+        if value == appleButtonEffectPropertiesSubject.value {
+            return
+        }
+
         appleButtonEffectPropertiesSubject.send(value)
     }
 
     func setHiddenSpaces(_ value: [String]) {
+        if value == hiddenSpacesSubject.value {
+            return
+        }
+
         hiddenSpacesSubject.send(value)
     }
 
     func setShowGroups(_ value: Bool) {
+        if value == showGroupsSubject.value {
+            return
+        }
+
         showGroupsSubject.send(value)
     }
 
     func setEnablePerformanceMetrics(_ value: Bool) {
+        if value == enablePerformanceMetricsSubject.value {
+            return
+        }
+
         enablePerformanceMetricsSubject.send(value)
     }
 
     func setIsOptimizedPerformanceEnabled(_ value: Bool) {
+        if value == isOptimizedPerformanceEnabledSubject.value {
+            return
+        }
+
         isOptimizedPerformanceEnabledSubject.send(value)
     }
 
     func setLogLevel(_ level: Logger.Level) {
+        if level == logLevelSubject.value {
+            return
+        }
+
         logLevelSubject.send(level)
     }
 
     func setConfigFilePath(_ path: String) {
+        if path == configFilePathSubject.value {
+            return
+        }
+
         configFilePathSubject.send(path)
     }
 
     func setHasAskedForScreenCapturePermissions(_ value: Bool) {
+        if value == hasAskedForScreenCapturePermissionsSubject.value {
+            return
+        }
+
         hasAskedForScreenCapturePermissionsSubject.send(value)
     }
 
     func setSpacesColorProperties(_ value: [ColorProperties]) {
+        if value == spacesColorPropertiesSubject.value {
+            return
+        }
+
         spacesColorPropertiesSubject.send(value)
     }
 
     func setSpacesGeometricProperties(_ value: [GeometricProperties]) {
+        if value == spacesGeometricPropertiesSubject.value {
+            return
+        }
+
         spacesGeometricPropertiesSubject.send(value)
     }
 
     func setSpacesEffectProperties(_ value: [EffectProperties]) {
+        if value == spacesEffectPropertiesSubject.value {
+            return
+        }
+
         spacesEffectPropertiesSubject.send(value)
     }
 
     func setSpacesAppearanceMode(_ value: SpacesAppearanceMode) {
+        if value == spacesAppearanceModeSubject.value {
+            return
+        }
+
         spacesAppearanceModeSubject.send(value)
     }
 
@@ -606,66 +722,130 @@ final class MockConfigurationGateway: ConfigurationGateway {
     }
 
     func setGlobalSpacesColorProperties(_ value: ColorProperties) {
+        if value == globalSpacesColorPropertiesSubject.value {
+            return
+        }
+
         globalSpacesColorPropertiesSubject.send(value)
     }
 
     func setGlobalSpacesGeometricProperties(_ value: GeometricProperties) {
+        if value == globalSpacesGeometricPropertiesSubject.value {
+            return
+        }
+
         globalSpacesGeometricPropertiesSubject.send(value)
     }
 
     func setGlobalSpacesEffectProperties(_ value: EffectProperties) {
+        if value == globalSpacesEffectPropertiesSubject.value {
+            return
+        }
+
         globalSpacesEffectPropertiesSubject.send(value)
     }
 
     func setGroups(_ value: [Domain.Group]) {
+        if value == groupsSubject.value {
+            return
+        }
+
         groupsSubject.send(value)
     }
 
     func setGroupsAppearanceMode(_ value: GroupsAppearanceMode) {
+        if value == groupsAppearanceModeSubject.value {
+            return
+        }
+
         groupsAppearanceModeSubject.send(value)
     }
 
     func setGlobalGroupsColorProperties(_ value: ColorProperties) {
+        if value == globalGroupsColorPropertiesSubject.value {
+            return
+        }
+
         globalGroupsColorPropertiesSubject.send(value)
     }
 
     func setGlobalGroupsGeometricProperties(_ value: GeometricProperties) {
+        if value == globalGroupsGeometricPropertiesSubject.value {
+            return
+        }
+
         globalGroupsGeometricPropertiesSubject.send(value)
     }
 
     func setGlobalGroupsEffectProperties(_ value: EffectProperties) {
+        if value == globalGroupsEffectPropertiesSubject.value {
+            return
+        }
+
         globalGroupsEffectPropertiesSubject.send(value)
     }
 
     func setThemeMode(_ value: ThemeMode) {
+        if value == themeModeSubject.value {
+            return
+        }
+
         themeModeSubject.send(value)
     }
 
     func setThemePresetColorProperties(_ value: ThemePresetColorProperties) {
+        if value == themePresetColorPropertiesSubject.value {
+            return
+        }
+
         themePresetColorPropertiesSubject.send(value)
     }
 
     func setThemePresetGeometricProperties(_ value: GeometricProperties) {
+        if value == themePresetGeometricPropertiesSubject.value {
+            return
+        }
+
         themePresetGeometricPropertiesSubject.send(value)
     }
 
     func setThemePresetEffectProperties(_ value: EffectProperties) {
+        if value == themePresetEffectPropertiesSubject.value {
+            return
+        }
+
         themePresetEffectPropertiesSubject.send(value)
     }
 
     func setQuickHideEnabled(_ value: Bool) {
+        if value == quickHideEnabledSubject.value {
+            return
+        }
+
         quickHideEnabledSubject.send(value)
     }
 
     func setQuickHideTriggerKey(_ value: QuickHideTriggerKey) {
+        if value == quickHideTriggerKeySubject.value {
+            return
+        }
+
         quickHideTriggerKeySubject.send(value)
     }
 
     func setAutomaticCheckForUpdatesEnabled(_ value: Bool) {
+        if value == automaticCheckForUpdatesEnabledSubject.value {
+            return
+        }
+
         automaticCheckForUpdatesEnabledSubject.send(value)
     }
 
     func setAutomaticDownloadUpdatesEnabled(_ value: Bool) {
+        if value == automaticDownloadUpdatesEnabledSubject.value {
+            return
+        }
+
         automaticDownloadUpdatesEnabledSubject.send(value)
     }
 

@@ -285,6 +285,42 @@ final class SpacesViewModelTests: XCTestCase {
         RunLoop.main.run(until: Date().addingTimeInterval(0.1))
         expect(viewModel.wallpaper).toNot(beNil())
     }
+
+    // MARK: - Memory Management
+
+    func testSpacesViewModelIsDeallocatedWhenReleased() async throws {
+        // Given a view model whose reactive subscriptions are stored in its own
+        // `cancellables`
+        weak var weakViewModel: SpacesViewModel?
+        weakViewModel = viewModel
+
+        // When every strong reference is dropped
+        cancellables = nil
+        getSpacesUseCase = nil
+        setFocusSpaceUseCase = nil
+        setFocusWindowUseCase = nil
+        getAeroSpaceStatusUseCase = nil
+        startAeroSpaceUseCase = nil
+        getWallpaperUseCase = nil
+        getMenuBarVisibilityUseCase = nil
+        mockSpacesGateway = nil
+        mockSystemMenuBarGateway = nil
+        mockConfigurationGateway = nil
+        mockKeyboardShortcutsGateway = nil
+        viewModel = nil
+
+        // Then it deallocates: the subscriptions capture `self` weakly, so storing
+        // them on the view model does not form a retain cycle.
+        //
+        // Polled rather than checked immediately because the `didSet` observers
+        // spawn detached tasks that hold `self` until they finish; those are
+        // transient, unlike the subscription cycle this guards against.
+        // Let the detached tasks the `didSet` observers spawned run to completion;
+        // they hold `self` until they finish, unlike a genuine retain cycle.
+        try await Task.sleep(for: .milliseconds(500))
+
+        expect(weakViewModel).to(beNil())
+    }
 }
 
 // MARK: - Mock Gateways

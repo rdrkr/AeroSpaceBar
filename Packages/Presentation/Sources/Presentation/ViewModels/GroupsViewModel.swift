@@ -541,16 +541,22 @@ public final class GroupsViewModel: ObservableObject {
     private func setupBasicSubscriptions() {
         // Subscribe to configuration changes
         getShowGroupsUseCase.execute()
-            .assign(to: \.showGroups, on: self)
+            .sink { [weak self] newValue in
+                self?.showGroups = newValue
+            }
             .store(in: &cancellables)
 
         getGroupsUseCase.execute()
-            .assign(to: \.groups, on: self)
+            .sink { [weak self] newValue in
+                self?.groups = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to menu bar apps changes
         getMenuBarAppsUseCase.execute()
-            .assign(to: \.menuBarApps, on: self)
+            .sink { [weak self] newValue in
+                self?.menuBarApps = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to feature flags changes
@@ -567,7 +573,9 @@ public final class GroupsViewModel: ObservableObject {
     private func setupGroupsAppearanceSubscriptions() {
         // Subscribe to groups appearance mode changes
         getGroupsAppearanceModeUseCase.execute()
-            .assign(to: \.groupsAppearanceMode, on: self)
+            .sink { [weak self] newValue in
+                self?.groupsAppearanceMode = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to spaces appearance mode changes
@@ -597,67 +605,99 @@ public final class GroupsViewModel: ObservableObject {
             .store(in: &cancellables)
 
         getGlobalGroupsColorPropertiesUseCase.execute()
-            .assign(to: \.globalGroupsColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalGroupsColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalGroupsGeometricPropertiesUseCase.execute()
-            .assign(to: \.globalGroupsGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalGroupsGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalGroupsEffectPropertiesUseCase.execute()
-            .assign(to: \.globalGroupsEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalGroupsEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesColorPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesGeometricPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesEffectPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemeModeUseCase.execute()
-            .assign(to: \.themeMode, on: self)
+            .sink { [weak self] newValue in
+                self?.themeMode = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetColorPropertiesUseCase.execute()
-            .assign(to: \.themePresetColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetGeometricPropertiesUseCase.execute()
-            .assign(to: \.themePresetGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetEffectPropertiesUseCase.execute()
-            .assign(to: \.themePresetEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getMenuBarHeightUseCase.execute()
-            .assign(to: \.menuBarHeight, on: self)
+            .sink { [weak self] newValue in
+                self?.menuBarHeight = newValue
+            }
             .store(in: &cancellables)
 
         getShowAppleButtonAsSpaceUseCase.execute()
-            .assign(to: \.showAppleButtonAsSpace, on: self)
+            .sink { [weak self] newValue in
+                self?.showAppleButtonAsSpace = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonFrameUseCase.execute()
-            .assign(to: \.appleButtonFrame, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonFrame = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonColorPropertiesUseCase.execute()
-            .assign(to: \.appleButtonColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonGeometricPropertiesUseCase.execute()
-            .assign(to: \.appleButtonGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonEffectPropertiesUseCase.execute()
-            .assign(to: \.appleButtonEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getShowForegroundOverlayUseCase.execute()

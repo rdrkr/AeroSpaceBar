@@ -314,4 +314,27 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.navigateBackward()
         expect(viewModel.canNavigateForward) == true
     }
+
+    // MARK: - Memory Management
+
+    func testSettingsViewModelIsDeallocatedWhenReleased() async throws {
+        // Given a view model whose reactive subscriptions are stored in its own
+        // `cancellables`
+        weak var weakViewModel: SettingsViewModel?
+        weakViewModel = viewModel
+
+        // When every strong reference is dropped
+        cancellables = nil
+        mockConfigurationGateway = nil
+        mockSystemMenuBarGateway = nil
+        viewModel = nil
+
+        // Let the detached tasks the `didSet` observers spawned run to completion;
+        // they hold `self` until they finish, unlike a genuine retain cycle.
+        try await Task.sleep(for: .milliseconds(500))
+
+        // Then it deallocates: the subscriptions capture `self` weakly, so storing
+        // them on the view model does not form a retain cycle
+        expect(weakViewModel).to(beNil())
+    }
 }

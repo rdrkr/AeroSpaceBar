@@ -242,17 +242,23 @@ public final class LicenseViewModel: ObservableObject {
     private func setupSubscriptions() {
         // Subscribe to license info changes
         getLicenseInfoUseCase.execute()
-            .assign(to: \.licenseInfo, on: self)
+            .sink { [weak self] newValue in
+                self?.licenseInfo = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to enableLicensing feature flag changes
         getEnableLicensingUseCase.execute()
-            .assign(to: \.enableLicense, on: self)
+            .sink { [weak self] newValue in
+                self?.enableLicense = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to enableTrialRequest feature flag changes
         getEnableTrialRequestUseCase.execute()
-            .assign(to: \.enableTrialRequest, on: self)
+            .sink { [weak self] newValue in
+                self?.enableTrialRequest = newValue
+            }
             .store(in: &cancellables)
 
         // Clear activation error when license key input changes

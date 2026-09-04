@@ -238,37 +238,51 @@
         private func setupSubscriptions() {
             // Subscribe to feature flags changes
             getFeatureFlagsUseCase.execute()
-                .assign(to: \.featureFlags, on: self)
+                .sink { [weak self] newValue in
+                    self?.featureFlags = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to enableLicensing feature flag changes
             getEnableLicensingUseCase.execute()
-                .assign(to: \.enableLicensing, on: self)
+                .sink { [weak self] newValue in
+                    self?.enableLicensing = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to enableTrialRequest feature flag changes
             getEnableTrialRequestUseCase.execute()
-                .assign(to: \.enableTrialRequest, on: self)
+                .sink { [weak self] newValue in
+                    self?.enableTrialRequest = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to mockActiveLicense feature flag changes
             getMockActiveLicenseUseCase.execute()
-                .assign(to: \.mockActiveLicense, on: self)
+                .sink { [weak self] newValue in
+                    self?.mockActiveLicense = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to checkout environment changes
             getCheckoutEnvironmentUseCase.execute()
-                .assign(to: \.checkoutEnvironment, on: self)
+                .sink { [weak self] newValue in
+                    self?.checkoutEnvironment = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to license info changes
             getLicenseInfoUseCase.execute()
-                .assign(to: \.licenseInfo, on: self)
+                .sink { [weak self] newValue in
+                    self?.licenseInfo = newValue
+                }
                 .store(in: &cancellables)
 
             // Subscribe to screen capture permissions changes
             getHasAskedForScreenCapturePermissionsUseCase.execute()
-                .assign(to: \.hasAskedForScreenCapturePermissions, on: self)
+                .sink { [weak self] newValue in
+                    self?.hasAskedForScreenCapturePermissions = newValue
+                }
                 .store(in: &cancellables)
         }
 

@@ -80,7 +80,9 @@ public final class FeatureFlagsRepository: FeatureFlagsGateway {
     private func setupLicenseAwareFeatureFlags() {
         // Subscribe to license info changes
         getLicenseInfoUseCase.execute()
-            .assign(to: \.licenseInfo, on: self)
+            .sink { [weak self] newValue in
+                self?.licenseInfo = newValue
+            }
             .store(in: &cancellables)
 
         Publishers.CombineLatest3(

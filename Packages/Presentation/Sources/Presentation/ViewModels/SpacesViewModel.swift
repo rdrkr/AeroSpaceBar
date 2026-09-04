@@ -476,12 +476,16 @@ public final class SpacesViewModel: ObservableObject {
     private func setupReactiveSubscriptions() {
         // Monitor AeroSpace running status changes
         getAeroSpaceStatusUseCase.execute()
-            .assign(to: \.isAeroSpaceRunning, on: self)
+            .sink { [weak self] newValue in
+                self?.isAeroSpaceRunning = newValue
+            }
             .store(in: &cancellables)
 
         // Monitor wallpaper changes
         getWallpaperUseCase.execute()
-            .assign(to: \.wallpaper, on: self)
+            .sink { [weak self] newValue in
+                self?.wallpaper = newValue
+            }
             .store(in: &cancellables)
 
         // Monitor spaces changes
@@ -497,15 +501,21 @@ public final class SpacesViewModel: ObservableObject {
 
         // Monitor UI configuration changes
         getMenuBarHeightUseCase.execute()
-            .assign(to: \.menuBarHeight, on: self)
+            .sink { [weak self] newValue in
+                self?.menuBarHeight = newValue
+            }
             .store(in: &cancellables)
 
         getShowWindowTitlesUseCase.execute()
-            .assign(to: \.showWindowTitles, on: self)
+            .sink { [weak self] newValue in
+                self?.showWindowTitles = newValue
+            }
             .store(in: &cancellables)
 
         getFocusWindowOnClickUseCase.execute()
-            .assign(to: \.focusWindowOnClick, on: self)
+            .sink { [weak self] newValue in
+                self?.focusWindowOnClick = newValue
+            }
             .store(in: &cancellables)
 
         getShowEmptySpacesUseCase.execute()
@@ -524,7 +534,9 @@ public final class SpacesViewModel: ObservableObject {
 
         // Monitor system menu bar visibility changes
         getMenuBarVisibilityUseCase.execute()
-            .assign(to: \.isMenuBarVisible, on: self)
+            .sink { [weak self] newValue in
+                self?.isMenuBarVisible = newValue
+            }
             .store(in: &cancellables)
 
         // Subscribe to feature flags changes
@@ -537,59 +549,87 @@ public final class SpacesViewModel: ObservableObject {
             .store(in: &cancellables)
 
         getSpacesAppearanceModeUseCase.execute()
-            .assign(to: \.spacesAppearanceMode, on: self)
+            .sink { [weak self] newValue in
+                self?.spacesAppearanceMode = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesColorPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesGeometricPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getGlobalSpacesEffectPropertiesUseCase.execute()
-            .assign(to: \.globalSpacesEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.globalSpacesEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemeModeUseCase.execute()
-            .assign(to: \.themeMode, on: self)
+            .sink { [weak self] newValue in
+                self?.themeMode = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetColorPropertiesUseCase.execute()
-            .assign(to: \.themePresetColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetGeometricPropertiesUseCase.execute()
-            .assign(to: \.themePresetGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getThemePresetEffectPropertiesUseCase.execute()
-            .assign(to: \.themePresetEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.themePresetEffectProperties = newValue
+            }
             .store(in: &cancellables)
 
         getQuickHideTriggerKeyPressStateUseCase.execute()
-            .assign(to: \.isQuickHideTriggerKeyPressed, on: self)
+            .sink { [weak self] newValue in
+                self?.isQuickHideTriggerKeyPressed = newValue
+            }
             .store(in: &cancellables)
 
         getQuickHideEnabledUseCase.execute()
-            .assign(to: \.isQuickHideEnabled, on: self)
+            .sink { [weak self] newValue in
+                self?.isQuickHideEnabled = newValue
+            }
             .store(in: &cancellables)
 
         getShowAppleButtonAsSpaceUseCase.execute()
-            .assign(to: \.showAppleButtonAsSpace, on: self)
+            .sink { [weak self] newValue in
+                self?.showAppleButtonAsSpace = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonColorPropertiesUseCase.execute()
-            .assign(to: \.appleButtonColorProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonColorProperties = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonGeometricPropertiesUseCase.execute()
-            .assign(to: \.appleButtonGeometricProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonGeometricProperties = newValue
+            }
             .store(in: &cancellables)
 
         getAppleButtonEffectPropertiesUseCase.execute()
-            .assign(to: \.appleButtonEffectProperties, on: self)
+            .sink { [weak self] newValue in
+                self?.appleButtonEffectProperties = newValue
+            }
             .store(in: &cancellables)
     }
 

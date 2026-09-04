@@ -431,7 +431,9 @@ public final class AeroSpaceRepository: SpacesGateway {
     /// Sets up subscription to monitor executable path changes.
     private func setupUseCaseObservers() {
         getAeroSpacePathUseCase.execute()
-            .assign(to: \.aeroSpaceExecutable, on: self)
+            .sink { [weak self] newValue in
+                self?.aeroSpaceExecutable = newValue
+            }
             .store(in: &cancellables)
 
         getOptimizedPerformanceEnabledUseCase.execute()
