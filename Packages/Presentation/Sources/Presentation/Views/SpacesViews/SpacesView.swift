@@ -29,6 +29,11 @@ struct SpacesView: View {
     /// Whether the mouse is currently over the SpacesView.
     @State private var isMouseHovering = false
 
+    /// Creates a spaces bar with state scoped to its hosting display.
+    init(displayViewModel: DisplayMenuBarViewModel) {
+        self.displayViewModel = displayViewModel
+    }
+
     // MARK: - Computed Properties
 
     /// Computed property for wallpaper to avoid repeated access
