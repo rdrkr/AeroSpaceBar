@@ -143,6 +143,10 @@ Display selections are saved locally using display UUIDs, separately from the TO
 selections are retained and restored when those displays reconnect. Selecting no connected displays hides the spaces
 bars; use Settings to select a display again. **Forget Disconnected Displays** removes saved disconnected selections.
 
+For the best background match, grant **Screen Recording** access to the running app and reopen it. Without access,
+the wallpaper-only fallback can leave a visible strip on some displays. The half-screen wallpaper mask is intentional:
+it hides native application menus behind the spaces bar.
+
 ### Keyboard Shortcuts
 
 - `Cmd + ,`: Open settings window
@@ -261,12 +265,22 @@ The existing **Release** workflow is unchanged.
 
 1. Push your branch to your fork with GitHub Actions enabled.
 2. Open **Actions → Build** and select the run for your branch.
-3. Download **AeroSpaceBar-macos-arm64-debug.zip** from the run's artifacts and extract the app.
+3. Download **AeroSpaceBar-macos-arm64-debug.zip** from the run's artifacts and extract **AeroSpaceBar CI.app**.
+4. Move the test app to Applications, quit any other AeroSpaceBar instance, and launch the test app.
+5. Grant **AeroSpaceBar CI** Screen Recording access under **System Settings → Privacy & Security →
+   Screen & System Audio Recording**, then quit and reopen it. The app's **Settings → General → Permissions** section
+   should report that screen capture permissions are granted.
 
 Artifacts expire after seven days. This is an Apple Silicon test build, ad-hoc signed but **not notarized**.
-Quit any installed AeroSpaceBar before launching it; the test app shares the existing bundle identifier and settings.
-macOS may require approval under **System Settings → Privacy & Security → Open Anyway**, and permission prompts
-may appear again. A successful CI build does not replace testing the feature with multiple physical displays.
+macOS may require approval under **System Settings → Privacy & Security → Open Anyway**.
+
+CI builds use the separate bundle identifier `com.rdrkr.AeroSpaceBar.CI`. The installed release's privacy permissions
+expect its developer signature and cannot authorize an ad-hoc-signed test build with the same identity. Display
+selections and other UserDefaults preferences are separate for CI builds; the TOML configuration file is still shared.
+Permissions may need to be granted again after replacing a CI build because its ad-hoc signing identity can change.
+Do not reset the release app's permissions just to authorize a test build.
+
+A successful CI build does not replace testing the feature with multiple physical displays.
 
 ### Testing
 
