@@ -72,6 +72,9 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.showEmptySpaces
     )
 
+    /// Machine-local display preferences, independent of the portable TOML configuration.
+    let spacesDisplayPreferences = SpacesDisplayPreferences()
+
     /// Subject for hidden spaces.
     private let hiddenSpacesSubject = CurrentValueSubject<[String], Never>(
         ConfigurationDefaults.hiddenSpaces
@@ -1149,6 +1152,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         showWindowTitlesSubject.send(ConfigurationDefaults.showWindowTitles)
         focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
         showEmptySpacesSubject.send(ConfigurationDefaults.showEmptySpaces)
+        spacesDisplayPreferences.reset()
         hiddenSpacesSubject.send(ConfigurationDefaults.hiddenSpaces)
         showGroupsSubject.send(ConfigurationDefaults.showGroups)
         showForegroundOverlaySubject.send(ConfigurationDefaults.showForegroundOverlay)

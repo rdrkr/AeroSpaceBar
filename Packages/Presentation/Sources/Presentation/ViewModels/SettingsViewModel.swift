@@ -218,7 +218,24 @@ public class SettingsViewModel: ObservableObject {
         }
     }
 
+    private var isApplyingSpacesDisplayConfiguration = false
+
+    /// Display selection for spaces.
+    @Published var spacesDisplayConfiguration = ConfigurationDefaults.spacesDisplayConfiguration {
+        didSet {
+            guard !isApplyingSpacesDisplayConfiguration, spacesDisplayConfiguration != oldValue else { return }
+
+            let value = spacesDisplayConfiguration
+            Task { @MainActor in
+                await setSpacesDisplayConfigurationUseCase.execute(value: value)
+            }
+        }
+    }
+
     // MARK: - Display Use Cases
+
+    private let getSpacesDisplayConfigurationUseCase: GetSpacesDisplayConfigurationUseCase
+    private let setSpacesDisplayConfigurationUseCase: SetSpacesDisplayConfigurationUseCase
 
     // MARK: - System Menu Bar Use Cases
 
@@ -276,6 +293,8 @@ public class SettingsViewModel: ObservableObject {
 
     /// Initializes the settings view model with dependencies.
     /// - Parameters:
+    ///   - getSpacesDisplayConfigurationUseCase: Use case to observe the display selection.
+    ///   - setSpacesDisplayConfigurationUseCase: Use case to update the display selection.
     ///   - getMenuBarAppsUseCase: Use case to get menu bar apps.
     ///   - getScreenCapturePermissionGrantedUseCase: Use case to get screen capture permission status.
     ///   - requestScreenCapturePermissionsUseCase: Use case to request screen capture permissions.
@@ -311,6 +330,8 @@ public class SettingsViewModel: ObservableObject {
     ///   - getQuickHideTriggerKeyUseCase: Use case to get Quick Hide trigger key.
     ///   - setQuickHideTriggerKeyUseCase: Use case to set Quick Hide trigger key.
     init(
+        getSpacesDisplayConfigurationUseCase: GetSpacesDisplayConfigurationUseCase,
+        setSpacesDisplayConfigurationUseCase: SetSpacesDisplayConfigurationUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getScreenCapturePermissionGrantedUseCase: GetScreenCapturePermissionGrantedUseCase,
         requestScreenCapturePermissionsUseCase: RequestScreenCapturePermissionsUseCase,
@@ -346,6 +367,9 @@ public class SettingsViewModel: ObservableObject {
         getQuickHideTriggerKeyUseCase: GetQuickHideTriggerKeyUseCase,
         setQuickHideTriggerKeyUseCase: SetQuickHideTriggerKeyUseCase
     ) {
+        self.getSpacesDisplayConfigurationUseCase = getSpacesDisplayConfigurationUseCase
+        self.setSpacesDisplayConfigurationUseCase = setSpacesDisplayConfigurationUseCase
+
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
         self.getScreenCapturePermissionGrantedUseCase = getScreenCapturePermissionGrantedUseCase
@@ -631,6 +655,15 @@ public class SettingsViewModel: ObservableObject {
     /// Setup reactive subscriptions to UseCase publishers.
     private func setupReactiveSubscriptions() {
         // Monitor configuration changes
+        getSpacesDisplayConfigurationUseCase.execute()
+            .sink { [weak self] value in
+                guard let self, spacesDisplayConfiguration != value else { return }
+
+                isApplyingSpacesDisplayConfiguration = true
+                spacesDisplayConfiguration = value
+                isApplyingSpacesDisplayConfiguration = false
+            }
+            .store(in: &cancellables)
 
         getScreenCapturePermissionGrantedUseCase.execute()
             .sink { [weak self] newValue in

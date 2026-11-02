@@ -10,6 +10,14 @@ internal import ScreenCaptureKit
 /// Repository for capturing and managing desktop wallpaper dynamically and tracking system menu bar state.
 @MainActor
 public final class SystemMenuBarRepository: SystemMenuBarGateway {
+    /// An explicit target for a spaces panel; nil follows the primary display for groups.
+    private let displayID: CGDirectDisplayID?
+
+    /// Resolves the primary display dynamically when the system display arrangement changes.
+    private var targetDisplayID: CGDirectDisplayID {
+        displayID ?? CGMainDisplayID()
+    }
+
     /// Publisher that emits wallpaper image updates.
     private let wallpaperSubject = CurrentValueSubject<NSImage?, Never>(nil)
 
@@ -88,13 +96,16 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     ///     request status
     ///   - setHasAskedForAccessibilityPermissionsUseCase: The use case for setting Accessibility permission
     ///     request status
+    ///   - displayID: The display to observe, or nil to follow the primary display and observe groups.
     public init(
         getShowGroupsUseCase: GetShowGroupsUseCase,
         getHasAskedForScreenCapturePermissionsUseCase: GetHasAskedForScreenCapturePermissionsUseCase,
         setHasAskedForScreenCapturePermissionsUseCase: SetHasAskedForScreenCapturePermissionsUseCase,
         getHasAskedForAccessibilityPermissionsUseCase: GetHasAskedForAccessibilityPermissionsUseCase,
-        setHasAskedForAccessibilityPermissionsUseCase: SetHasAskedForAccessibilityPermissionsUseCase
+        setHasAskedForAccessibilityPermissionsUseCase: SetHasAskedForAccessibilityPermissionsUseCase,
+        displayID: CGDirectDisplayID? = nil
     ) {
+        self.displayID = displayID
         self.getShowGroupsUseCase = getShowGroupsUseCase
         self.getHasAskedForScreenCapturePermissionsUseCase = getHasAskedForScreenCapturePermissionsUseCase
         self.setHasAskedForScreenCapturePermissionsUseCase = setHasAskedForScreenCapturePermissionsUseCase
@@ -130,6 +141,9 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         if hasPermission {
             return
         }
+
+        // The shared primary repository owns permission prompting, not each spaces panel.
+        guard displayID == nil else { return }
 
         // Check if we've already asked the user
         hasAskedForPermissionsCancellable = getHasAskedForScreenCapturePermissionsUseCase.execute()
@@ -235,7 +249,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         recognizeAppleButtonWindow(windows: screenWindows)
 
         // Only recognize menu bar apps if show groups is enabled
-        if showGroupsEnabled {
+        if displayID == nil, showGroupsEnabled {
             recognizeSystemMenuBarApps(windows: screenWindows)
         }
     }
@@ -275,6 +289,25 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 self?.startPeriodicTasks()
             }
         }
+    }
+
+    /// Stops display-scoped work when a panel is removed or its display disconnects.
+    public func stop() {
+        stopPeriodicTasks()
+        accessibilityScanTask?.cancel()
+        accessibilityScanTask = nil
+        showGroupsCancellable?.cancel()
+        hasAskedForPermissionsCancellable?.cancel()
+        hasAskedForAccessibilityPermissionsCancellable?.cancel()
+        let center = NSWorkspace.shared.notificationCenter
+        if let screenSleepNotificationObserver {
+            center.removeObserver(screenSleepNotificationObserver)
+        }
+        if let screenWakeNotificationObserver {
+            center.removeObserver(screenWakeNotificationObserver)
+        }
+        screenSleepNotificationObserver = nil
+        screenWakeNotificationObserver = nil
     }
 
     /// Stops the periodic tasks for window recognition and wallpaper capture.
@@ -347,9 +380,14 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     ///
     /// This resource-intensive method runs less frequently to capture and update
     /// the wallpaper image when the menu bar is visible.
-    private func captureWallpaperImage() {
-        // Find the menu bar window to get its frame for clipping
-        guard let menuBarFrame = lastMenuBarFrame else {
+    private func captureWallpaperImage() async {
+        // Capture only while this display's menu bar is visible.
+        guard
+            !Task.isCancelled,
+            CGDisplayIsActive(targetDisplayID) != 0,
+            menuBarVisibilitySubject.value,
+            let menuBarFrame = lastMenuBarFrame
+        else {
             Logger.warning("Menu bar is hidden, skipping wallpaper capture", category: Logger.userInterface)
             return
         }
@@ -358,9 +396,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
 
         // Use ScreenCaptureKit on macOS 15+ for better performance and future compatibility
         if #available(macOS 15.0, *), screenCapturePermissionGrantedSubject.value {
-            Task {
-                await captureWallpaperUsingScreenCaptureKit(menuBarFrame: menuBarFrame)
-            }
+            await captureWallpaperUsingScreenCaptureKit(menuBarFrame: menuBarFrame)
         } else {
             captureWallpaperUsingLegacyAPI(menuBarFrame: menuBarFrame)
         }
@@ -372,19 +408,26 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// - Parameter menuBarFrame: The menu bar frame to use for clipping the capture area.
     @available(macOS 15.0, *)
     private func captureWallpaperUsingScreenCaptureKit(menuBarFrame: CGRect) async {
+        let captureDisplayID = targetDisplayID
+        let displayBounds = CGDisplayBounds(captureDisplayID)
+        let processID = ProcessInfo.processInfo.processIdentifier
+
+        // ScreenCaptureKit uses coordinates local to the selected display, not global CG coordinates.
+        let sourceRect = menuBarFrame.offsetBy(dx: -displayBounds.minX, dy: -displayBounds.minY)
+
         // Capture the image in a nonisolated context
         let result = await Task<NSImage?, Never>.detached {
             do {
                 // Get shareable content to access displays and windows
                 let content = try await SCShareableContent.current
 
-                // Find the main display
+                // Match the panel's display, not whichever display is currently primary.
                 guard
-                    let mainDisplay = content.displays.first(where: { display in
-                        display.displayID == CGMainDisplayID()
+                    let captureDisplay = content.displays.first(where: { display in
+                        display.displayID == captureDisplayID
                     })
                 else {
-                    Logger.warning("Main display not found in shareable content", category: Logger.config)
+                    Logger.warning("Target display not found in shareable content", category: Logger.config)
                     return nil as NSImage?
                 }
 
@@ -394,7 +437,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                     let isMenuBarWindow = window.title == "Menubar"
 
                     // Exclude AeroSpaceBar app windows
-                    let isAeroSpaceBarWindow = window.owningApplication?.bundleIdentifier == "com.rdrkr.AeroSpaceBar"
+                    let isAeroSpaceBarWindow = window.owningApplication?.processID == processID
 
                     return isAeroSpaceBarWindow || isMenuBarWindow
                 }
@@ -403,13 +446,13 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 let configuration = SCStreamConfiguration()
                 configuration.width = Int(menuBarFrame.width)
                 configuration.height = Int(menuBarFrame.height)
-                configuration.sourceRect = menuBarFrame
+                configuration.sourceRect = sourceRect
                 configuration.showsCursor = false
                 configuration.capturesAudio = false
 
                 // Create a content filter that captures the display region excluding specified windows
                 // This will include wallpaper and visual effects, but not the menu bar UI itself
-                let contentFilter = SCContentFilter(display: mainDisplay, excludingWindows: windowsToExclude)
+                let contentFilter = SCContentFilter(display: captureDisplay, excludingWindows: windowsToExclude)
 
                 // Capture the display region
                 let cgImage = try await SCScreenshotManager.captureImage(
@@ -436,6 +479,15 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         }
         .value
 
+        // Discard captures completed after teardown, disconnect, or a display arrangement change.
+        guard
+            !Task.isCancelled,
+            captureDisplayID == targetDisplayID,
+            CGDisplayIsActive(captureDisplayID) != 0,
+            CGDisplayBounds(captureDisplayID) == displayBounds,
+            lastMenuBarFrame == menuBarFrame
+        else { return }
+
         // Update state on the main actor
         await MainActor.run {
             if let nsImage = result {
@@ -460,7 +512,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// but excludes the menu bar UI and AeroSpaceBar app windows.
     /// - Parameter menuBarFrame: The menu bar frame to use for clipping the capture area.
     private func captureWallpaperUsingLegacyAPI(menuBarFrame: CGRect) {
-        // Find the wallpaper window for the main display
+        // Find the wallpaper window for this repository's display.
         guard let wallpaperWindow = findDesktopWallpaperWindow() else {
             Logger.info("No wallpaper window found", category: Logger.config)
             return
@@ -587,7 +639,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         Logger.info("Requested Accessibility permissions for menu bar status items", category: Logger.config)
     }
 
-    /// Finds the desktop wallpaper window for the main display.
+    /// Finds the desktop wallpaper window for the target display.
     /// - Returns: The wallpaper window info, or nil if not found
     private func findDesktopWallpaperWindow() -> WindowInfo? {
         let windows = WindowInfo.getOnScreenWindows()
@@ -595,14 +647,14 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             // Wallpaper window criteria:
             // - Belongs to the Dock process
             // - Has a title that starts with "Wallpaper"
-            // - Is within the main display bounds
+            // - Is within the target display bounds
             window.owningApplication?.bundleIdentifier == "com.apple.dock" &&
                 window.title?.hasPrefix("Wallpaper") == true &&
-                CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
+                CGDisplayBounds(targetDisplayID).contains(window.frame)
         }
     }
 
-    /// Finds the system menu bar window for the main display.
+    /// Finds the system menu bar window for the target display.
     /// - Parameter windows: The current list of on-screen windows.
     /// - Returns: The menu bar window info, or nil if not found
     private func findSystemMenuBarWindow(windows: [WindowInfo]) -> WindowInfo? {
@@ -612,12 +664,12 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
             // - Is on screen
             // - Has the menu bar layer level
             // - Has title "Menubar"
-            // - Is within the main display bounds
+            // - Is within the target display bounds
             window.isWindowServerWindow &&
                 window.isOnScreen &&
                 window.layer == kCGMainMenuWindowLevel &&
                 window.title == "Menubar" &&
-                CGDisplayBounds(CGMainDisplayID()).contains(window.frame)
+                CGDisplayBounds(targetDisplayID).contains(window.frame)
         }
     }
 
@@ -699,12 +751,7 @@ private struct WindowInfo {
         guard
             unsafe CFArrayCreate(kCFAllocatorDefault, &pointer, 1, nil) != nil,
             let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[CFString: CFTypeRef]],
-            let dictionary = list.first(where: { ($0[kCGWindowNumber] as? CGWindowID) == windowID })
-        else {
-            return nil
-        }
-
-        guard
+            let dictionary = list.first(where: { ($0[kCGWindowNumber] as? CGWindowID) == windowID }),
             let frameDict = dictionary[kCGWindowBounds] as? NSDictionary,
             let frame = CGRect(dictionaryRepresentation: frameDict),
             let layer = dictionary[kCGWindowLayer] as? Int,

@@ -23,6 +23,9 @@ public enum UserDefaultsKeys: String, CaseIterable {
     /// The path to the configuration file (stored in UserDefaults to bootstrap TOML loading).
     case configFilePath = "com.aerospacebar.preferences.configFilePath"
 
+    /// Display selection for spaces, encoded as JSON.
+    case spacesDisplayConfiguration = "com.aerospacebar.preferences.spacesDisplayConfiguration"
+
     // MARK: - Screen Capture Permissions
 
     /// Whether the user has been asked for screen capture permissions.
