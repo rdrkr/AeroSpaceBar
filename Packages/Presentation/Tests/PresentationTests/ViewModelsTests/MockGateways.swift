@@ -327,6 +327,21 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
 }
 
 final class MockConfigurationGateway: ConfigurationGateway {
+    private let spacesDisplayConfigurationSubject = CurrentValueSubject<SpacesDisplayConfiguration, Never>(.init())
+    private(set) var setSpacesDisplayConfigurationCalls: [SpacesDisplayConfiguration] = []
+    var spacesDisplayConfigurationPublisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+        spacesDisplayConfigurationSubject.eraseToAnyPublisher()
+    }
+
+    func setSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+        setSpacesDisplayConfigurationCalls.append(value)
+        spacesDisplayConfigurationSubject.send(value)
+    }
+
+    func emitSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+        spacesDisplayConfigurationSubject.send(value)
+    }
+
     // Publishers
     private let showWindowTitlesSubject = CurrentValueSubject<Bool, Never>(true)
     private let aeroSpacePathSubject = CurrentValueSubject<String, Never>("/usr/local/bin/aerospace")

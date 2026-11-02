@@ -11,6 +11,17 @@ import Foundation
 /// the values emitted by publishers.
 @MainActor
 public final class MockConfigurationGateway: ConfigurationGateway {
+    private let spacesDisplayConfigurationSubject = CurrentValueSubject<SpacesDisplayConfiguration, Never>(.init())
+    public private(set) var setSpacesDisplayConfigurationCalls: [SpacesDisplayConfiguration] = []
+    public var spacesDisplayConfigurationPublisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+        spacesDisplayConfigurationSubject.eraseToAnyPublisher()
+    }
+
+    public func setSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+        setSpacesDisplayConfigurationCalls.append(value)
+        spacesDisplayConfigurationSubject.send(value)
+    }
+
     // MARK: - Call Tracking
 
     public private(set) var setShowWindowTitlesCalls: [Bool] = []

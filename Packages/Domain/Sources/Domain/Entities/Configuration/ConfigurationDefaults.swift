@@ -31,6 +31,9 @@ public enum ConfigurationDefaults {
     /// Whether to show empty spaces in the interface.
     public static let showEmptySpaces = false
 
+    /// Default display selection for spaces.
+    public static let spacesDisplayConfiguration = SpacesDisplayConfiguration()
+
     /// The list of space IDs to hide from the menu bar interface.
     public static let hiddenSpaces: [String] = []
 

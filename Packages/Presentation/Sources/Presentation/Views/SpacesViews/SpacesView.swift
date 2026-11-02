@@ -14,6 +14,9 @@ struct SpacesView: View {
     /// The spaces ViewModel for managing spaces data and interactions.
     @EnvironmentObject private var viewModel: SpacesViewModel
 
+    /// Wallpaper and menu bar metrics for the display hosting this panel.
+    @ObservedObject private var displayViewModel: DisplayMenuBarViewModel
+
     /// Standard open settings view action.
     @Environment(\.openSettings) private var openSettings
 
@@ -30,7 +33,7 @@ struct SpacesView: View {
 
     /// Computed property for wallpaper to avoid repeated access
     private var wallpaper: NSImage? {
-        viewModel.wallpaper
+        displayViewModel.wallpaper
     }
 
     /// Computed property for spaces to avoid repeated access
@@ -40,7 +43,7 @@ struct SpacesView: View {
 
     /// Computed property for menu bar height
     private var menuBarHeight: Double {
-        viewModel.menuBarHeight
+        displayViewModel.menuBarHeight
     }
 
     /// Computed property for window corner radius
@@ -58,7 +61,7 @@ struct SpacesView: View {
     private var shouldHideView: Bool {
         !viewModel.isSpacesEnabled ||
             (viewModel.isQuickHideEnabled && isMouseHovering && viewModel.isQuickHideTriggerKeyPressed) ||
-            !viewModel.isMenuBarVisible ||
+            !displayViewModel.isMenuBarVisible ||
             !viewModel.isAeroSpaceRunning
     }
 
@@ -112,7 +115,7 @@ struct SpacesView: View {
         .animation(.themeEaseInOutFast, value: shouldMonitorWallpaperVisibility)
         .animation(.themeEaseInOutFast, value: monitoredWallpaperVisibility)
         .animation(.themeEaseInOutFast, value: shouldHideView)
-        .animation(.themeEaseInOutFast, value: viewModel.isMenuBarVisible)
+        .animation(.themeEaseInOutFast, value: displayViewModel.isMenuBarVisible)
         .animation(.themeEaseInOutFast, value: viewModel.spacesAppearanceMode)
         .animation(.themeEaseInOutFast, value: viewModel.themeMode)
         .animation(.themeEaseInOutFast, value: showWindowTitles)
@@ -121,7 +124,7 @@ struct SpacesView: View {
         .onHover { hovering in
             isMouseHovering = hovering
         }
-        .onChange(of: viewModel.wallpaper) { oldWallpaper, newWallpaper in
+        .onChange(of: displayViewModel.wallpaper) { oldWallpaper, newWallpaper in
             handleWallpaperChange(
                 oldWallpaper: oldWallpaper,
                 newWallpaper: newWallpaper,
@@ -130,8 +133,8 @@ struct SpacesView: View {
         }
         .onChange(of: viewModel.spaces) { _, newSpaces in
             handleWallpaperChange(
-                oldWallpaper: viewModel.wallpaper,
-                newWallpaper: viewModel.wallpaper,
+                oldWallpaper: displayViewModel.wallpaper,
+                newWallpaper: displayViewModel.wallpaper,
                 spaces: newSpaces
             )
         }
@@ -172,6 +175,11 @@ struct SpacesView: View {
 }
 
 #Preview {
-    SpacesView()
-        .environmentObject(DependencyContainer.shared.getSpacesViewModel())
+    let container = DependencyContainer.shared
+    SpacesView(displayViewModel: DisplayMenuBarViewModel(
+        getWallpaperUseCase: container.makeGetWallpaperUseCase(),
+        getMenuBarHeightUseCase: container.makeGetMenuBarHeightUseCase(),
+        getMenuBarVisibilityUseCase: container.makeGetMenuBarVisibilityUseCase()
+    ))
+    .environmentObject(container.getSpacesViewModel())
 }

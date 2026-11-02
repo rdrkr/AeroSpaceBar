@@ -37,6 +37,7 @@ the menu bar.
 - 🔧 **Spaces & Groups**: Organize and manage workspace windows and menubar groups with custom ranges and settings
 - 🎨 **Advanced Theming**: Comprehensive theme system with presets and per-space customization
 - 🌐 **System Integration**: Automatic menu bar visibility matching and wallpaper detection
+- 🖥️ **Multiple Displays**: Show spaces on the primary display, all displays, or selected displays
 - 📡 **Event-Driven**: Subscribes to AeroSpace's native event stream (v0.21.0+) instead of polling,
   and leaves your AeroSpace config untouched
 - 🔄 **Software Updates**: Automatic update checking and installation via Sparkle
@@ -120,13 +121,27 @@ You can also open `AeroSpaceBar.xcodeproj` in Xcode and build with `Cmd + R`.
 
 - **General**: Appearance, behavior, and basic settings
 - **Groups**: Menu bar group organization and per-group visual customization
-- **Spaces**: Per-space visual properties and appearance
+- **Spaces**: Display selection, per-space visual properties, and appearance
 - **Advanced**: Theme presets, TOML configuration, and software updates
 - **Developer**: Logging, performance metrics, and feature flags
 
 > [!NOTE]
 > **Enable Optimized Performance** (Settings → Advanced) only affects the legacy polling path. On
 > AeroSpace v0.21.0-Beta and newer the app is driven by AeroSpace events, so the toggle is disabled.
+
+### Spaces on Multiple Displays
+
+In **Settings → Spaces → Show Spaces On**, choose **Primary Display** (default), **All Displays**, or
+**Selected Displays**. Each selected display gets its own spaces bar, wallpaper background, and menu bar visibility
+tracking. To show menu bars on secondary displays, enable macOS **Displays have separate Spaces** under
+System Settings → Desktop & Dock → Mission Control (macOS may require logging out).
+
+All bars show the same workspace list, including the existing hidden/empty-space preferences; workspaces are not
+filtered by monitor. Menu bar groups and their overlays remain on the primary display.
+
+Display selections are saved locally using display UUIDs, separately from the TOML configuration. Disconnected
+selections are retained and restored when those displays reconnect. Selecting no connected displays hides the spaces
+bars; use Settings to select a display again. **Forget Disconnected Displays** removes saved disconnected selections.
 
 ### Keyboard Shortcuts
 
@@ -237,6 +252,21 @@ AeroSpaceBar/
 
 The Xcode project includes a pre-build script that automatically runs SwiftFormat and SwiftLint. If linting fails,
 the build fails.
+
+#### Build on GitHub without installing Xcode locally
+
+The **Build** workflow (`.github/workflows/build.yaml`) runs on pushes, pull requests, and manual dispatches.
+It builds the full Debug app on a macOS runner with Xcode, without developer certificates or release secrets.
+The existing **Release** workflow is unchanged.
+
+1. Push your branch to your fork with GitHub Actions enabled.
+2. Open **Actions → Build** and select the run for your branch.
+3. Download **AeroSpaceBar-macos-arm64-debug.zip** from the run's artifacts and extract the app.
+
+Artifacts expire after seven days. This is an Apple Silicon test build, ad-hoc signed but **not notarized**.
+Quit any installed AeroSpaceBar before launching it; the test app shares the existing bundle identifier and settings.
+macOS may require approval under **System Settings → Privacy & Security → Open Anyway**, and permission prompts
+may appear again. A successful CI build does not replace testing the feature with multiple physical displays.
 
 ### Testing
 

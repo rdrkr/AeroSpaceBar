@@ -1,0 +1,75 @@
+# Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
+
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build macOS app
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Install code quality tools
+        run: brew install swiftformat swiftlint
+
+      - name: Build without signing credentials
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project AeroSpaceBar.xcodeproj \
+            -scheme AeroSpaceBar \
+            -configuration Debug \
+            -destination 'platform=macOS,arch=arm64' \
+            -derivedDataPath build \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee build.log
+
+      - name: Package test app
+        run: |
+          app=build/Build/Products/Debug/AeroSpaceBar.app
+          test -d "$app"
+          # Ad-hoc signing permits local Apple Silicon testing without a developer certificate.
+          codesign --force --deep --sign - "$app"
+          codesign --verify --deep --strict "$app"
+          # Archive the bundle first to preserve framework symlinks and executable permissions.
+          ditto -c -k --sequesterRsrc --keepParent "$app" AeroSpaceBar-macos-arm64-debug.zip
+
+      - name: Upload test app
+        uses: actions/upload-artifact@v7
+        with:
+          path: AeroSpaceBar-macos-arm64-debug.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7

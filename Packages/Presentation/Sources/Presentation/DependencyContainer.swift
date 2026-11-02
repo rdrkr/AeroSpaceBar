@@ -76,6 +76,8 @@ public final class DependencyContainer {
 
     /// The SettingsViewModel instance.
     private lazy var settingsViewModel: SettingsViewModel = .init(
+        getSpacesDisplayConfigurationUseCase: makeGetSpacesDisplayConfigurationUseCase(),
+        setSpacesDisplayConfigurationUseCase: makeSetSpacesDisplayConfigurationUseCase(),
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getScreenCapturePermissionGrantedUseCase: makeGetScreenCapturePermissionGrantedUseCase(),
         requestScreenCapturePermissionsUseCase: makeRequestScreenCapturePermissionsUseCase(),
@@ -162,6 +164,46 @@ public final class DependencyContainer {
         getQuickHideTriggerKeyPressStateUseCase: makeGetQuickHideTriggerKeyPressStateUseCase(),
         getQuickHideEnabledUseCase: makeGetQuickHideEnabledUseCase()
     )
+
+    /// Creates display-local menu bar state. Call stop when its panel is removed.
+    func makeDisplayMenuBarViewModel(displayID: CGDirectDisplayID) -> (
+        viewModel: DisplayMenuBarViewModel, stop: @MainActor () -> Void
+    ) {
+        // Reuse the shared primary capture rather than capturing its wallpaper twice.
+        let repository: SystemMenuBarRepository?
+        let gateway: SystemMenuBarGateway
+        if displayID == CGMainDisplayID() {
+            repository = nil
+            gateway = systemMenuBarGateway
+        } else {
+            let displayRepository = SystemMenuBarRepository(
+                getShowGroupsUseCase: makeGetShowGroupsUseCase(),
+                getHasAskedForScreenCapturePermissionsUseCase: makeGetHasAskedForScreenCapturePermissionsUseCase(),
+                setHasAskedForScreenCapturePermissionsUseCase: makeSetHasAskedForScreenCapturePermissionsUseCase(),
+                getHasAskedForAccessibilityPermissionsUseCase: makeGetHasAskedForAccessibilityPermissionsUseCase(),
+                setHasAskedForAccessibilityPermissionsUseCase: makeSetHasAskedForAccessibilityPermissionsUseCase(),
+                displayID: displayID
+            )
+            repository = displayRepository
+            gateway = displayRepository
+        }
+        let viewModel = DisplayMenuBarViewModel(
+            getWallpaperUseCase: GetWallpaperUseCase(systemMenuBarGateway: gateway),
+            getMenuBarHeightUseCase: GetMenuBarHeightUseCase(systemMenuBarGateway: gateway),
+            getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase(systemMenuBarGateway: gateway)
+        )
+        return (viewModel, { repository?.stop() })
+    }
+
+    /// Creates the use case for observing spaces display selection.
+    func makeGetSpacesDisplayConfigurationUseCase() -> GetSpacesDisplayConfigurationUseCase {
+        GetSpacesDisplayConfigurationUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates the use case for persisting spaces display selection.
+    func makeSetSpacesDisplayConfigurationUseCase() -> SetSpacesDisplayConfigurationUseCase {
+        SetSpacesDisplayConfigurationUseCase(configurationGateway: configurationGateway)
+    }
 
     /// The LicenseViewModel instance.
     private lazy var licenseViewModel: LicenseViewModel = .init(

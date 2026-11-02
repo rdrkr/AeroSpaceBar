@@ -1,5 +1,6 @@
 // Copyright (c) 2025 AeroSpaceBar by Ronen Druker.
 
+import Combine
 import Domain
 import SwiftUI
 
@@ -13,8 +14,33 @@ import SwiftUI
 /// - Managing the application's lifecycle events
 @MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    /// The menu bar panel that displays the spaces interface.
-    private var spacesPanel: NSPanel?
+    /// The independently positioned spaces panels, keyed by persistent display UUID.
+    private var spacesPanels: [String: DisplaySpacesPanel] = [:]
+
+    /// The current display selection and its live configuration subscription.
+    private var spacesDisplayConfiguration = SpacesDisplayConfiguration()
+    private var displayConfigurationCancellable: AnyCancellable?
+
+    /// A spaces panel and the resources scoped to its connected display.
+    private final class DisplaySpacesPanel {
+        var panel: NSPanel?
+        let displayID: CGDirectDisplayID
+        let isPrimary: Bool
+        let viewModel: DisplayMenuBarViewModel
+        let stop: @MainActor () -> Void
+
+        init(
+            displayID: CGDirectDisplayID,
+            isPrimary: Bool,
+            viewModel: DisplayMenuBarViewModel,
+            stop: @escaping @MainActor () -> Void
+        ) {
+            self.displayID = displayID
+            self.isPrimary = isPrimary
+            self.viewModel = viewModel
+            self.stop = stop
+        }
+    }
 
     /// The groups panel that displays the groups interface.
     private var groupsPanel: NSPanel?
@@ -24,9 +50,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
 
     /// The About window instance to prevent multiple windows.
     private var aboutWindow: NSPanel?
-
-    /// The spaces ViewModel for managing spaces data and interactions.
-    private var spacesViewModel: SpacesViewModel?
 
     /// The groups ViewModel for managing groups data and interactions.
     private var groupsViewModel: GroupsViewModel?
@@ -44,6 +67,15 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             "version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
             "build": Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         ])
+
+        displayConfigurationCancellable = dependencyContainer.makeGetSpacesDisplayConfigurationUseCase()
+            .execute()
+            .sink { [weak self] configuration in
+                guard let self else { return }
+
+                spacesDisplayConfiguration = configuration
+                reconcileSpacesPanels()
+            }
 
         // Initialize the ViewModels and setup panels
         Task { @MainActor in
@@ -90,27 +122,68 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     /// Initializes all panels (Release builds or fallback)
     @MainActor
     private func initializeAllPanels() {
-        guard let screenFrame = NSScreen.main?.frame else { return }
-
-        spacesViewModel = dependencyContainer.getSpacesViewModel()
-        Logger.info("SpacesViewModel initialized", category: Logger.app)
+        reconcileSpacesPanels()
+        guard let screenFrame = NSScreen.screens.first?.frame else { return }
 
         groupsViewModel = dependencyContainer.getGroupsViewModel()
         Logger.info("GroupsViewModel initialized", category: Logger.app)
 
-        setupSpacesPanel(screenFrame: screenFrame)
         setupGroupsPanel(screenFrame: screenFrame)
         setupGroupsForegroundOverlayPanel(screenFrame: screenFrame)
     }
 
-    /// Configures and displays the menu bar panel.
-    ///
-    /// This method creates or updates the menu bar panel with the correct dimensions
-    /// and content. The panel spans half the screen width and the full screen height.
-    /// positioned on the left side of the screen.
-    /// - Parameter screenFrame: The frame of the main screen (optional).
-    @MainActor
-    private func setupSpacesPanel(screenFrame: CGRect) {
+    /// Adds, updates, and removes display-local panels after selection or screen changes.
+    private func reconcileSpacesPanels() {
+        let displays = ConnectedDisplay.current.filter { display in
+            spacesDisplayConfiguration.includesDisplay(id: display.id, isPrimary: display.isPrimary)
+        }
+        let connectedIDs = Set(displays.map(\.id))
+
+        for id in Array(spacesPanels.keys) where !connectedIDs.contains(id) {
+            removeSpacesPanel(id: id)
+        }
+
+        for display in displays {
+            // Primary panels share the groups repository, which follows primary-display changes.
+            if
+                let existing = spacesPanels[display.id],
+                existing.displayID != display.displayID || existing.isPrimary != display.isPrimary
+            {
+                removeSpacesPanel(id: display.id)
+            }
+            if spacesPanels[display.id] == nil {
+                let resources = dependencyContainer.makeDisplayMenuBarViewModel(displayID: display.displayID)
+                spacesPanels[display.id] = DisplaySpacesPanel(
+                    displayID: display.displayID,
+                    isPrimary: display.isPrimary,
+                    viewModel: resources.viewModel,
+                    stop: resources.stop
+                )
+            }
+            guard let entry = spacesPanels[display.id] else { continue }
+
+            setupSpacesPanel(entry, screenFrame: display.screen.frame)
+        }
+    }
+
+    /// Stops capture and closes a panel when its display is deselected or disconnected.
+    private func removeSpacesPanel(id: String) {
+        guard let entry = spacesPanels.removeValue(forKey: id) else { return }
+
+        entry.stop()
+        entry.panel?.close()
+    }
+
+    /// Releases display-scoped tasks when the application terminates.
+    public func applicationWillTerminate(_: Notification) {
+        displayConfigurationCancellable?.cancel()
+        for id in Array(spacesPanels.keys) {
+            removeSpacesPanel(id: id)
+        }
+    }
+
+    /// Positions the spaces panel in the left half of its display.
+    private func setupSpacesPanel(_ entry: DisplaySpacesPanel, screenFrame: CGRect) {
         let spacesFrame = NSRect(
             x: screenFrame.origin.x,
             y: screenFrame.origin.y,
@@ -118,16 +191,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             height: screenFrame.height
         )
 
-        guard let spacesViewModel else {
-            Logger.warning("SpacesViewModel not initialized yet", category: Logger.app)
-            return
-        }
-
-        let spacesView = SpacesView()
-            .environmentObject(spacesViewModel)
+        let spacesView = SpacesView(displayViewModel: entry.viewModel)
+            .environmentObject(dependencyContainer.getSpacesViewModel())
 
         setupPanel(
-            &spacesPanel,
+            &entry.panel,
             frame: spacesFrame,
             level: Int(CGWindowLevelForKey(.statusWindow)),
             hostingRootView: AnyView(spacesView)
@@ -230,6 +298,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             backing: .buffered,
             defer: false
         )
+        newPanel.isReleasedWhenClosed = false
         newPanel.level = NSWindow.Level(rawValue: level)
         newPanel.backgroundColor = .clear
         newPanel.hasShadow = false
