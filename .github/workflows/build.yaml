@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 30
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      TEST_BUNDLE_ID: com.rdrkr.AeroSpaceBar.CI
+      TEST_APP_NAME: AeroSpaceBar CI
 
     steps:
       - name: Checkout code
@@ -45,12 +47,17 @@ jobs:
             -derivedDataPath build \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO \
+            "PRODUCT_BUNDLE_IDENTIFIER=$TEST_BUNDLE_ID" \
+            "INFOPLIST_KEY_CFBundleDisplayName=$TEST_APP_NAME" \
             build 2>&1 | tee build.log
 
       - name: Package test app
         run: |
-          app=build/Build/Products/Debug/AeroSpaceBar.app
-          test -d "$app"
+          app="build/Build/Products/Debug/$TEST_APP_NAME.app"
+          mv build/Build/Products/Debug/AeroSpaceBar.app "$app"
+          # Separate TCC identity: release permissions require the author's signing certificate.
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Contents/Info.plist")" = "$TEST_BUNDLE_ID"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$app/Contents/Info.plist")" = "$TEST_APP_NAME"
           # Ad-hoc signing permits local Apple Silicon testing without a developer certificate.
           codesign --force --deep --sign - "$app"
           codesign --verify --deep --strict "$app"
