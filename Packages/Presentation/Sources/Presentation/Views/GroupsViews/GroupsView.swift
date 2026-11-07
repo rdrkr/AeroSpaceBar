@@ -26,12 +26,17 @@ struct GroupsView: View {
 
     // MARK: - Computed Properties
 
+    /// The status items positioned on this panel's display.
+    private var menuBarApps: [MenuBarApp] {
+        displayViewModel.localMenuBarApps(from: viewModel.menuBarApps)
+    }
+
     /// Whether the groups view should be shown.
     private var shouldShowView: Bool {
         displayViewModel.showsGroups
             && viewModel.isGroupsFeatureEnabled
             && viewModel.showGroups
-            && !viewModel.menuBarApps.isEmpty
+            && !menuBarApps.isEmpty
     }
 
     /// Whether the Apple Button background should be shown.
@@ -76,7 +81,7 @@ struct GroupsView: View {
         } else {
             GroupsCanvasView(
                 groups: viewModel.groups,
-                menuBarApps: viewModel.menuBarApps,
+                menuBarApps: menuBarApps,
                 appearanceMode: viewModel.groupsAppearanceMode,
                 showForegroundOverlay: viewModel.showForegroundOverlay,
                 globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
@@ -113,17 +118,17 @@ struct GroupsView: View {
     /// - Parameter group: The group to compute the frame for.
     /// - Returns: The computed frame rectangle, or `.zero` if the group has no visible apps.
     private func glassGroupFrame(for group: Domain.Group) -> CGRect {
-        let actualEndIndex = group.getEndIndex(menuBarAppsCount: viewModel.menuBarApps.count)
+        let actualEndIndex = group.getEndIndex(menuBarAppsCount: menuBarApps.count)
         guard
             group.startIndex > 0,
             actualEndIndex >= group.startIndex,
-            actualEndIndex <= viewModel.menuBarApps.count
+            actualEndIndex <= menuBarApps.count
         else {
             return .zero
         }
 
         let range = group.startIndex ... actualEndIndex
-        let apps = Array(viewModel.menuBarApps.dropFirst(range.lowerBound - 1).prefix(range.count))
+        let apps = Array(menuBarApps.dropFirst(range.lowerBound - 1).prefix(range.count))
         guard !apps.isEmpty else { return .zero }
 
         let minX = apps.map(\.frame.minX).min() ?? 0
@@ -156,7 +161,7 @@ struct GroupsView: View {
             // Groups content always stays in the view hierarchy to survive sleep/wake
             // cycles. Opacity is applied directly to hide it when disabled.
             groupsContent
-                .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -displayViewModel.menuBarHeight)
+                .offset(y: !menuBarApps.isEmpty ? 0 : -displayViewModel.menuBarHeight)
                 .opacity(shouldShowView ? 1.0 : 0.0)
 
             // Apple Button background - rendered independently of groups
@@ -175,7 +180,7 @@ struct GroupsView: View {
             }
         }
         .animation(.themeEaseInOutFast, value: viewModel.groups)
-        .animation(.themeEaseInOutFast, value: viewModel.menuBarApps)
+        .animation(.themeEaseInOutFast, value: menuBarApps)
         .ignoresSafeArea()
         .opacity(shouldShowView || shouldShowAppleButton ? 1.0 : 0.0)
         .animation(.themeEaseInOutFast, value: shouldShowView)

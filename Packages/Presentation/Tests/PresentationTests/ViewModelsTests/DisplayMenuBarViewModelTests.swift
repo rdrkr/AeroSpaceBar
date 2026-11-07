@@ -55,6 +55,37 @@ final class DisplayMenuBarViewModelTests: XCTestCase {
         expect(second.appleButtonFrame) == frame
     }
 
+    func testPrimaryDisplayKeepsStatusItemFrames() {
+        let viewModel = makeViewModel(gateway: MockSystemMenuBarGateway(menuBarHeight: 30))
+        let apps = [MenuBarApp(id: "item", frame: CGRect(x: 2_810, y: 0, width: 17, height: 30))]
+
+        expect(viewModel.localMenuBarApps(from: apps)) == apps
+    }
+
+    func testProjectsStatusItemsFromTheRightEdgeOfTheDisplay() {
+        let viewModel = makeViewModel(gateway: MockSystemMenuBarGateway(menuBarHeight: 39))
+        viewModel.statusItemsGeometry = .init(primaryWidth: 3_008, displayWidth: 1_800, minX: 0)
+        let apps = [MenuBarApp(id: "item", frame: CGRect(x: 2_810, y: 0, width: 17, height: 30))]
+
+        expect(viewModel.localMenuBarApps(from: apps)) == [
+            MenuBarApp(id: "item", frame: CGRect(x: 1_602, y: 0, width: 17, height: 39))
+        ]
+    }
+
+    func testClipsStatusItemsHiddenBehindTheCameraHousing() {
+        let viewModel = makeViewModel(gateway: MockSystemMenuBarGateway(menuBarHeight: 39))
+        viewModel.statusItemsGeometry = .init(primaryWidth: 3_008, displayWidth: 1_800, minX: 1_010)
+        let apps = [
+            MenuBarApp(id: "partial", frame: CGRect(x: 2_200, y: 0, width: 40, height: 30)),
+            MenuBarApp(id: "hidden", frame: CGRect(x: 2_100, y: 0, width: 40, height: 30))
+        ]
+
+        expect(viewModel.localMenuBarApps(from: apps).map(\.frame)) == [
+            CGRect(x: 1_010, y: 0, width: 22, height: 39),
+            CGRect(x: 1_010, y: 0, width: 0, height: 39)
+        ]
+    }
+
     private func makeViewModel(gateway: SystemMenuBarGateway) -> DisplayMenuBarViewModel {
         DisplayMenuBarViewModel(
             getWallpaperUseCase: GetWallpaperUseCase(systemMenuBarGateway: gateway),

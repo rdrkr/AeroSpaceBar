@@ -11,7 +11,7 @@ public final class SetSpacesDisplayConfigurationUseCase {
     }
 
     /// Persists the display configuration.
-    public func execute(value: SpacesDisplayConfiguration) async {
+    public func execute(value: DisplayConfiguration) async {
         await configurationGateway.setSpacesDisplayConfiguration(value)
     }
 }

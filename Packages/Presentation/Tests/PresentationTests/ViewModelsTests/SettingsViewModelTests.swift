@@ -27,7 +27,7 @@ final class SettingsViewModelTests: XCTestCase {
     }
 
     @MainActor
-    private func createViewModel(initialDisplayConfiguration: SpacesDisplayConfiguration = .init()) {
+    private func createViewModel(initialDisplayConfiguration: DisplayConfiguration = .init()) {
         mockConfigurationGateway = MockConfigurationGateway()
         mockConfigurationGateway?.emitSpacesDisplayConfiguration(initialDisplayConfiguration)
         mockSystemMenuBarGateway = MockSystemMenuBarGateway()
@@ -94,6 +94,12 @@ final class SettingsViewModelTests: XCTestCase {
             setSpacesDisplayConfigurationUseCase: SetSpacesDisplayConfigurationUseCase(
                 configurationGateway: configurationGateway
             ),
+            getGroupsDisplayConfigurationUseCase: GetGroupsDisplayConfigurationUseCase(
+                configurationGateway: configurationGateway
+            ),
+            setGroupsDisplayConfigurationUseCase: SetGroupsDisplayConfigurationUseCase(
+                configurationGateway: configurationGateway
+            ),
             getMenuBarAppsUseCase: getMenuBarAppsUseCase,
             getScreenCapturePermissionGrantedUseCase: getScreenCapturePermissionGrantedUseCase,
             requestScreenCapturePermissionsUseCase: requestScreenCapturePermissionsUseCase,
@@ -150,7 +156,7 @@ final class SettingsViewModelTests: XCTestCase {
     }
 
     func testSpacesDisplayConfigurationInitializationAndUpdates() async {
-        let initial = SpacesDisplayConfiguration(mode: .selected, selectedDisplayIDs: ["saved"])
+        let initial = DisplayConfiguration(mode: .selected, selectedDisplayIDs: ["saved"])
         createViewModel(initialDisplayConfiguration: initial)
         guard let viewModel, let mockConfigurationGateway else {
             XCTFail("View model and gateway should be initialized")
@@ -160,16 +166,32 @@ final class SettingsViewModelTests: XCTestCase {
         expect(viewModel.spacesDisplayConfiguration) == initial
         expect(mockConfigurationGateway.setSpacesDisplayConfigurationCalls.isEmpty) == true
 
-        let external = SpacesDisplayConfiguration(mode: .all, selectedDisplayIDs: ["saved"])
+        let external = DisplayConfiguration(mode: .all, selectedDisplayIDs: ["saved"])
         mockConfigurationGateway.emitSpacesDisplayConfiguration(external)
         expect(viewModel.spacesDisplayConfiguration) == external
         await Task.yield()
         expect(mockConfigurationGateway.setSpacesDisplayConfigurationCalls.isEmpty) == true
 
-        let changed = SpacesDisplayConfiguration(mode: .selected, selectedDisplayIDs: ["new"])
+        let changed = DisplayConfiguration(mode: .selected, selectedDisplayIDs: ["new"])
         viewModel.spacesDisplayConfiguration = changed
         await Task.yield()
         expect(mockConfigurationGateway.setSpacesDisplayConfigurationCalls) == [changed]
+    }
+
+    func testGroupsDisplayConfigurationPersistsIndependently() async {
+        createViewModel()
+        guard let viewModel, let mockConfigurationGateway else {
+            XCTFail("View model and gateway should be initialized")
+            return
+        }
+
+        let changed = DisplayConfiguration(mode: .selected, selectedDisplayIDs: ["groups"])
+        viewModel.groupsDisplayConfiguration = changed
+        await Task.yield()
+
+        expect(mockConfigurationGateway.setGroupsDisplayConfigurationCalls) == [changed]
+        expect(mockConfigurationGateway.setSpacesDisplayConfigurationCalls.isEmpty) == true
+        expect(viewModel.spacesDisplayConfiguration) == DisplayConfiguration()
     }
 
     // MARK: - Navigation Tests

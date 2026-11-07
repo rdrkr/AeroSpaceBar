@@ -27,6 +27,15 @@ actor MenuBarItemsAccessibilityReader {
         let frame: CGRect
     }
 
+    /// Status items read from whichever menu bar currently hosts them.
+    struct ReadResult: Equatable {
+        /// The visible status items, projected onto the target menu bar and sorted from right to left.
+        let items: [MenuBarApp]
+
+        /// Whether the items were read directly from the target menu bar.
+        let isFromTargetMenuBar: Bool
+    }
+
     /// An application known to expose an extras menu bar.
     private struct ItemOwner {
         /// The process identifier of the application.
@@ -74,23 +83,71 @@ actor MenuBarItemsAccessibilityReader {
         _ = AXIsProcessTrustedWithOptions(options)
     }
 
-    /// Reads the status items currently shown in the main display's menu bar.
+    /// Reads the status items of the active menu bar and projects them onto the target menu bar.
     /// - Parameters:
-    ///   - menuBarHeight: The current menu bar height, used to filter and normalize item frames.
-    ///   - displayBounds: The bounds of the main display in global coordinates.
-    /// - Returns: The visible status items, sorted from right to left.
-    func readItems(menuBarHeight: Double, displayBounds: CGRect) -> [MenuBarApp] {
+    ///   - menuBars: The frames of every visible menu bar in global coordinates.
+    ///   - targetMenuBar: The menu bar to express item frames in.
+    /// - Returns: The visible status items and whether they came from the target menu bar.
+    func readItems(menuBars: [CGRect], targetMenuBar: CGRect) -> ReadResult {
         refreshItemOwnersIfNeeded()
 
         let rawItems = itemOwners.flatMap { owner in
             Self.readRawItems(of: owner)
         }
 
-        return Self.normalizedItems(
+        return Self.readResult(rawItems: rawItems, menuBars: menuBars, targetMenuBar: targetMenuBar)
+    }
+
+    /// Builds a read result from raw items reported on the active menu bar.
+    ///
+    /// The Accessibility API reports a single frame per status item, on the menu bar of the active display,
+    /// so the frames can belong to any display and are projected onto the target menu bar.
+    /// - Parameters:
+    ///   - rawItems: The status items read from the Accessibility API.
+    ///   - menuBars: The frames of every visible menu bar in global coordinates.
+    ///   - targetMenuBar: The menu bar to express item frames in.
+    /// - Returns: The visible status items and whether they came from the target menu bar.
+    static func readResult(rawItems: [RawItem], menuBars: [CGRect], targetMenuBar: CGRect) -> ReadResult {
+        let sourceMenuBar = activeMenuBar(rawItems: rawItems, menuBars: menuBars) ?? targetMenuBar
+        let items = normalizedItems(
             rawItems: rawItems,
-            menuBarHeight: menuBarHeight,
-            displayBounds: displayBounds
+            menuBarHeight: sourceMenuBar.height,
+            displayBounds: sourceMenuBar
         )
+
+        return ReadResult(
+            items: items.map { $0.projected(from: sourceMenuBar, to: targetMenuBar) },
+            isFromTargetMenuBar: sourceMenuBar == targetMenuBar
+        )
+    }
+
+    /// Finds the menu bar currently hosting the status items.
+    /// - Parameters:
+    ///   - rawItems: The status items read from the Accessibility API.
+    ///   - menuBars: The frames of every visible menu bar in global coordinates.
+    /// - Returns: The menu bar containing the most items, or `nil` if none contains any.
+    static func activeMenuBar(rawItems: [RawItem], menuBars: [CGRect]) -> CGRect? {
+        let candidates = menuBars.map { menuBar in
+            (menuBar: menuBar, itemCount: rawItems.count { isVisible($0, in: menuBar) })
+        }
+
+        return candidates
+            .filter { $0.itemCount > 0 }
+            .max { $0.itemCount < $1.itemCount }?
+            .menuBar
+    }
+
+    /// Returns whether an item is shown inside a menu bar strip.
+    /// - Parameters:
+    ///   - item: The status item.
+    ///   - menuBar: The menu bar frame in global coordinates.
+    /// - Returns: `true` if the item lies within the strip; hidden items are reported outside of it.
+    private static func isVisible(_ item: RawItem, in menuBar: CGRect) -> Bool {
+        item.frame.width > 0 &&
+            item.frame.minY >= menuBar.minY &&
+            item.frame.minY < menuBar.maxY &&
+            item.frame.minX >= menuBar.minX &&
+            item.frame.maxX <= menuBar.maxX
     }
 
     /// Filters raw status items to the ones visible in the menu bar and normalizes their frames.
@@ -115,14 +172,14 @@ actor MenuBarItemsAccessibilityReader {
     ) -> [MenuBarApp] {
         guard menuBarHeight > 0 else { return [] }
 
+        let menuBar = CGRect(
+            x: displayBounds.minX,
+            y: displayBounds.minY,
+            width: displayBounds.width,
+            height: menuBarHeight
+        )
         let visibleItems = rawItems
-            .filter { item in
-                item.frame.width > 0 &&
-                    item.frame.minY >= displayBounds.minY &&
-                    item.frame.minY < displayBounds.minY + menuBarHeight &&
-                    item.frame.minX >= displayBounds.minX &&
-                    item.frame.maxX <= displayBounds.maxX
-            }
+            .filter { isVisible($0, in: menuBar) }
             .sorted { $0.frame.minX < $1.frame.minX }
 
         return visibleItems.indices

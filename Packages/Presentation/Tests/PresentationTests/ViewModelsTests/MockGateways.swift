@@ -331,18 +331,29 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
 }
 
 final class MockConfigurationGateway: ConfigurationGateway {
-    private let spacesDisplayConfigurationSubject = CurrentValueSubject<SpacesDisplayConfiguration, Never>(.init())
-    private(set) var setSpacesDisplayConfigurationCalls: [SpacesDisplayConfiguration] = []
-    var spacesDisplayConfigurationPublisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+    private let spacesDisplayConfigurationSubject = CurrentValueSubject<DisplayConfiguration, Never>(.init())
+    private(set) var setSpacesDisplayConfigurationCalls: [DisplayConfiguration] = []
+    var spacesDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
         spacesDisplayConfigurationSubject.eraseToAnyPublisher()
     }
 
-    func setSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+    func setSpacesDisplayConfiguration(_ value: DisplayConfiguration) {
         setSpacesDisplayConfigurationCalls.append(value)
         spacesDisplayConfigurationSubject.send(value)
     }
 
-    func emitSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+    private let groupsDisplayConfigurationSubject = CurrentValueSubject<DisplayConfiguration, Never>(.init())
+    private(set) var setGroupsDisplayConfigurationCalls: [DisplayConfiguration] = []
+    var groupsDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
+        groupsDisplayConfigurationSubject.eraseToAnyPublisher()
+    }
+
+    func setGroupsDisplayConfiguration(_ value: DisplayConfiguration) {
+        setGroupsDisplayConfigurationCalls.append(value)
+        groupsDisplayConfigurationSubject.send(value)
+    }
+
+    func emitSpacesDisplayConfiguration(_ value: DisplayConfiguration) {
         spacesDisplayConfigurationSubject.send(value)
     }
 

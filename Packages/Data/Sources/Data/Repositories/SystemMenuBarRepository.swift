@@ -576,7 +576,7 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
 
         // macOS 27+ no longer backs status items with individual windows, so fall back to Accessibility.
         guard !foundApps.isEmpty else {
-            recognizeSystemMenuBarAppsUsingAccessibility()
+            recognizeSystemMenuBarAppsUsingAccessibility(windows: windows)
             return
         }
 
@@ -588,7 +588,8 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// Used when the window list exposes no status item windows (macOS 27+). Requests Accessibility
     /// permissions once if the app is not trusted yet. The scan runs off the main actor and never overlaps
     /// with a previous scan that is still in flight.
-    private func recognizeSystemMenuBarAppsUsingAccessibility() {
+    /// - Parameter windows: The current list of on-screen windows.
+    private func recognizeSystemMenuBarAppsUsingAccessibility(windows: [WindowInfo]) {
         guard MenuBarItemsAccessibilityReader.isTrusted else {
             checkAndRequestAccessibilityPermissionsIfNeeded()
             return
@@ -597,14 +598,29 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         guard accessibilityScanTask == nil else { return }
 
         let reader = accessibilityReader
-        let menuBarHeight = menuBarHeightSubject.value
         let displayBounds = CGDisplayBounds(CGMainDisplayID())
+        let targetMenuBar = CGRect(
+            origin: displayBounds.origin,
+            size: CGSize(width: displayBounds.width, height: menuBarHeightSubject.value)
+        )
+        let menuBars = findMenuBarFrames(windows: windows) + [targetMenuBar]
 
         accessibilityScanTask = Task { [weak self] in
-            let foundApps = await reader.readItems(menuBarHeight: menuBarHeight, displayBounds: displayBounds)
-            self?.publishMenuBarApps(foundApps)
+            let result = await reader.readItems(menuBars: menuBars, targetMenuBar: targetMenuBar)
+            self?.publishMenuBarApps(from: result)
             self?.accessibilityScanTask = nil
         }
+    }
+
+    /// Publishes status items read from the active menu bar.
+    ///
+    /// A narrower active menu bar can hide items that the primary one shows. Shrinking the list would
+    /// permanently cap saved group ranges, so only the primary menu bar may reduce the item count.
+    /// - Parameter result: The status items read through the Accessibility API.
+    private func publishMenuBarApps(from result: MenuBarItemsAccessibilityReader.ReadResult) {
+        guard result.isFromTargetMenuBar || result.items.count >= menuBarAppsSubject.value.count else { return }
+
+        publishMenuBarApps(result.items)
     }
 
     /// Publishes the recognized menu bar applications if they differ from the current value.
@@ -652,6 +668,20 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
                 window.title?.hasPrefix("Wallpaper") == true &&
                 CGDisplayBounds(targetDisplayID).contains(window.frame)
         }
+    }
+
+    /// Finds the frames of the system menu bars on every display.
+    /// - Parameter windows: The current list of on-screen windows.
+    /// - Returns: The frame of each visible menu bar in global coordinates.
+    private func findMenuBarFrames(windows: [WindowInfo]) -> [CGRect] {
+        windows
+            .filter { window in
+                window.isWindowServerWindow &&
+                    window.isOnScreen &&
+                    window.layer == kCGMainMenuWindowLevel &&
+                    window.title == "Menubar"
+            }
+            .map(\.frame)
     }
 
     /// Finds the system menu bar window for the target display.

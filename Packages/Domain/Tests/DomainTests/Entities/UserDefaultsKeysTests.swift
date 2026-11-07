@@ -26,8 +26,10 @@ final class UserDefaultsKeysTests: XCTestCase {
         let allCases = UserDefaultsKeys.allCases
 
         // Then should have all cases
-        expect(allCases.count) == 6
+        expect(allCases.count) == 8
         expect(allCases.contains(.logLevel)) == true
+        expect(allCases.contains(.spacesDisplayConfiguration)) == true
+        expect(allCases.contains(.groupsDisplayConfiguration)) == true
         expect(allCases.contains(.enablePerformanceMetrics)) == true
         expect(allCases.contains(.configFilePath)) == true
         expect(allCases.contains(.hasAskedForScreenCapturePermissions)) == true

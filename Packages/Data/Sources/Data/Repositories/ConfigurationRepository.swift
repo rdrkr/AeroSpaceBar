@@ -72,8 +72,17 @@ public final class ConfigurationRepository: ConfigurationGateway {
         ConfigurationDefaults.showEmptySpaces
     )
 
-    /// Machine-local display preferences, independent of the portable TOML configuration.
-    let spacesDisplayPreferences = SpacesDisplayPreferences()
+    /// Machine-local spaces display preferences, independent of the portable TOML configuration.
+    let spacesDisplayPreferences = DisplayPreferences(
+        key: .spacesDisplayConfiguration,
+        defaultValue: ConfigurationDefaults.spacesDisplayConfiguration
+    )
+
+    /// Machine-local groups display preferences, independent of the portable TOML configuration.
+    let groupsDisplayPreferences = DisplayPreferences(
+        key: .groupsDisplayConfiguration,
+        defaultValue: ConfigurationDefaults.groupsDisplayConfiguration
+    )
 
     /// Subject for hidden spaces.
     private let hiddenSpacesSubject = CurrentValueSubject<[String], Never>(
@@ -1153,6 +1162,7 @@ public final class ConfigurationRepository: ConfigurationGateway {
         focusWindowOnClickSubject.send(ConfigurationDefaults.focusWindowOnClick)
         showEmptySpacesSubject.send(ConfigurationDefaults.showEmptySpaces)
         spacesDisplayPreferences.reset()
+        groupsDisplayPreferences.reset()
         hiddenSpacesSubject.send(ConfigurationDefaults.hiddenSpaces)
         showGroupsSubject.send(ConfigurationDefaults.showGroups)
         showForegroundOverlaySubject.send(ConfigurationDefaults.showForegroundOverlay)

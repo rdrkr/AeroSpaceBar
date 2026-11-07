@@ -20,6 +20,11 @@ struct ConnectedDisplay: Identifiable {
     /// Whether this display hosts the primary menu bar.
     let isPrimary: Bool
 
+    /// The leftmost display-local position where status items can appear, right of any camera housing.
+    var statusItemsMinX: CGFloat {
+        screen.auxiliaryTopRightArea.map { $0.minX - screen.frame.minX } ?? 0
+    }
+
     /// Enumerates screens afresh so reconnects and arrangement changes are reflected.
     static var current: [Self] {
         NSScreen.screens.enumerated().compactMap { index, screen in

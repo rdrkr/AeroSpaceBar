@@ -16,7 +16,7 @@ struct SettingsDisplaySelection: View {
     let emptySelectionMessage: LocalizedStringResource
 
     /// The binding to the display selection.
-    @Binding var configuration: SpacesDisplayConfiguration
+    @Binding var configuration: DisplayConfiguration
 
     /// The currently connected displays, refreshed when the screen arrangement changes.
     @State private var displays: [ConnectedDisplay] = ConnectedDisplay.current
@@ -44,7 +44,7 @@ struct SettingsDisplaySelection: View {
     init(
         title: LocalizedStringResource,
         emptySelectionMessage: LocalizedStringResource,
-        configuration: Binding<SpacesDisplayConfiguration>
+        configuration: Binding<DisplayConfiguration>
     ) {
         self.title = title
         self.emptySelectionMessage = emptySelectionMessage
@@ -53,9 +53,9 @@ struct SettingsDisplaySelection: View {
 
     var body: some View {
         Picker(selection: $configuration.mode) {
-            Text(LocalizedStringResource("Primary Display")).tag(SpacesDisplayConfiguration.Mode.primary)
-            Text(LocalizedStringResource("All Displays")).tag(SpacesDisplayConfiguration.Mode.all)
-            Text(LocalizedStringResource("Selected Displays")).tag(SpacesDisplayConfiguration.Mode.selected)
+            Text(LocalizedStringResource("Primary Display")).tag(DisplayConfiguration.Mode.primary)
+            Text(LocalizedStringResource("All Displays")).tag(DisplayConfiguration.Mode.all)
+            Text(LocalizedStringResource("Selected Displays")).tag(DisplayConfiguration.Mode.selected)
         } label: {
             VStack(alignment: .leading) {
                 Text(title)

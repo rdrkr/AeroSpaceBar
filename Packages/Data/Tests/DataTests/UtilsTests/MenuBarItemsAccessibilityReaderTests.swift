@@ -14,6 +14,62 @@ final class MenuBarItemsAccessibilityReaderTests: XCTestCase {
     /// Menu bar height used by the tests.
     private let menuBarHeight = 39.0
 
+    func testFindsTheMenuBarHostingTheItems() {
+        let primary = CGRect(x: 0, y: 0, width: 3_008, height: 30)
+        let laptop = CGRect(x: -1_800, y: 0, width: 1_800, height: 39)
+        let rawItems = [
+            MenuBarItemsAccessibilityReader.RawItem(
+                ownerIdentifier: "owner",
+                index: 0,
+                frame: CGRect(x: -198, y: 8, width: 16, height: 24)
+            )
+        ]
+
+        expect(MenuBarItemsAccessibilityReader.activeMenuBar(rawItems: rawItems, menuBars: [primary, laptop])) == laptop
+        expect(MenuBarItemsAccessibilityReader.activeMenuBar(rawItems: [], menuBars: [primary, laptop])).to(beNil())
+    }
+
+    func testProjectsItemsFromAnotherMenuBarOntoTheTarget() {
+        let primary = CGRect(x: 0, y: 0, width: 3_008, height: 30)
+        let laptop = CGRect(x: -1_800, y: 0, width: 1_800, height: 39)
+        let rawItems = [
+            MenuBarItemsAccessibilityReader.RawItem(
+                ownerIdentifier: "owner",
+                index: 0,
+                frame: CGRect(x: -198, y: 8, width: 16, height: 24)
+            )
+        ]
+
+        let result = MenuBarItemsAccessibilityReader.readResult(
+            rawItems: rawItems,
+            menuBars: [primary, laptop],
+            targetMenuBar: primary
+        )
+
+        expect(result.isFromTargetMenuBar) == false
+        expect(result.items.map(\.frame)) == [CGRect(x: 2_802, y: 0, width: 32, height: 30)]
+    }
+
+    func testReadsItemsDirectlyFromTheTargetMenuBar() {
+        let primary = CGRect(x: 0, y: 0, width: 3_008, height: 30)
+        let rawItems = [
+            MenuBarItemsAccessibilityReader.RawItem(
+                ownerIdentifier: "owner",
+                index: 0,
+                frame: CGRect(x: 2_810, y: 0, width: 17, height: 30)
+            )
+        ]
+
+        let result = MenuBarItemsAccessibilityReader.readResult(
+            rawItems: rawItems,
+            menuBars: [primary],
+            targetMenuBar: primary
+        )
+
+        expect(result.isFromTargetMenuBar) == true
+        expect(result.items.count) == 1
+    }
+
     func testDropsItemsOutsideMenuBar() {
         // Given a visible item, an item hidden at the bottom-left, and an item past the right edge
         let rawItems = [

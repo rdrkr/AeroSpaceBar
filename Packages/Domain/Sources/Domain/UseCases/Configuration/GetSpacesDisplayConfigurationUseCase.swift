@@ -13,7 +13,7 @@ public final class GetSpacesDisplayConfigurationUseCase {
     }
 
     /// Returns the current configuration and subsequent changes.
-    public func execute() -> AnyPublisher<SpacesDisplayConfiguration, Never> {
+    public func execute() -> AnyPublisher<DisplayConfiguration, Never> {
         configurationGateway.spacesDisplayConfigurationPublisher
     }
 }

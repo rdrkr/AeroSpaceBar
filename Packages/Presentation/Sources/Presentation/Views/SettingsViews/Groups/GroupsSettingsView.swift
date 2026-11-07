@@ -38,9 +38,23 @@ struct GroupsSettingsView: View {
                 }
             },
             prepend: {
+                displaySelectionSection
                 foregroundOverlaySection
             }
         )
+    }
+
+    /// The section choosing which displays show groups.
+    private var displaySelectionSection: some View {
+        Section {
+            SettingsDisplaySelection(
+                title: LocalizedStringResource("Show Groups On"),
+                emptySelectionMessage: LocalizedStringResource(
+                    "Choose at least one connected display to show groups."
+                ),
+                configuration: $settingsViewModel.groupsDisplayConfiguration
+            )
+        }
     }
 
     /// The foreground overlay toggle section with description and note.
