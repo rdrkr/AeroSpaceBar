@@ -26,6 +26,9 @@ public enum UserDefaultsKeys: String, CaseIterable {
     /// Display selection for spaces, encoded as JSON.
     case spacesDisplayConfiguration = "com.aerospacebar.preferences.spacesDisplayConfiguration"
 
+    /// Display selection for groups, encoded as JSON.
+    case groupsDisplayConfiguration = "com.aerospacebar.preferences.groupsDisplayConfiguration"
+
     // MARK: - Screen Capture Permissions
 
     /// Whether the user has been asked for screen capture permissions.

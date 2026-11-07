@@ -22,6 +22,11 @@ struct GroupsForegroundOverlayHostView: View {
         self.displayViewModel = displayViewModel
     }
 
+    /// The status items positioned on this panel's display.
+    private var menuBarApps: [MenuBarApp] {
+        displayViewModel.localMenuBarApps(from: viewModel.menuBarApps)
+    }
+
     /// Whether the groups overlay should be shown.
     private var shouldShowGroupsOverlay: Bool {
         displayViewModel.showsGroups
@@ -29,7 +34,7 @@ struct GroupsForegroundOverlayHostView: View {
             && viewModel.themeMode != .glass
             && viewModel.isGroupsFeatureEnabled
             && viewModel.showGroups
-            && !viewModel.menuBarApps.isEmpty
+            && !menuBarApps.isEmpty
     }
 
     /// Whether the Apple Button foreground overlay should be shown.
@@ -118,7 +123,7 @@ struct GroupsForegroundOverlayHostView: View {
             // Groups foreground overlay
             GroupsForegroundOverlayView(
                 groups: viewModel.groups,
-                menuBarApps: viewModel.menuBarApps,
+                menuBarApps: menuBarApps,
                 appearanceMode: viewModel.groupsAppearanceMode,
                 globalGroupsColorProperties: viewModel.globalGroupsColorProperties,
                 globalGroupsGeometricProperties: viewModel.globalGroupsGeometricProperties,
@@ -134,7 +139,7 @@ struct GroupsForegroundOverlayHostView: View {
             .opacity(shouldShowGroupsOverlay ? 1.0 : 0.0)
             .animation(.themeEaseInOutFast, value: shouldShowGroupsOverlay)
             .animation(.themeEaseInOutFast, value: viewModel.groups)
-            .animation(.themeEaseInOutFast, value: viewModel.menuBarApps)
+            .animation(.themeEaseInOutFast, value: menuBarApps)
             .animation(.themeEaseInOutFast, value: viewModel.groupsAppearanceMode)
             .animation(.themeEaseInOutFast, value: viewModel.themeMode)
 

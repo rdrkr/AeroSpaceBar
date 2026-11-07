@@ -4,42 +4,59 @@ import Combine
 import Domain
 import Foundation
 
-/// Machine-local spaces display preferences, independent of the portable TOML configuration.
+/// Machine-local display preferences, independent of the portable TOML configuration.
 public extension ConfigurationRepository {
     /// Observes this machine's spaces display selection.
-    var spacesDisplayConfigurationPublisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+    var spacesDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
         spacesDisplayPreferences.publisher
     }
 
-    /// Persists this machine's display selection.
-    func setSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+    /// Observes this machine's groups display selection.
+    var groupsDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
+        groupsDisplayPreferences.publisher
+    }
+
+    /// Persists this machine's spaces display selection.
+    func setSpacesDisplayConfiguration(_ value: DisplayConfiguration) {
         spacesDisplayPreferences.set(value)
+    }
+
+    /// Persists this machine's groups display selection.
+    func setGroupsDisplayConfiguration(_ value: DisplayConfiguration) {
+        groupsDisplayPreferences.set(value)
     }
 }
 
-/// Owns persistence and the private subject backing display selection.
+/// Owns persistence and the private subject backing one display selection.
 @MainActor
-final class SpacesDisplayPreferences {
+final class DisplayPreferences {
     private let defaults: UserDefaults
-    private let key = UserDefaultsKeys.spacesDisplayConfiguration.rawValue
-    private let subject: CurrentValueSubject<SpacesDisplayConfiguration, Never>
+    private let key: String
+    private let defaultValue: DisplayConfiguration
+    private let subject: CurrentValueSubject<DisplayConfiguration, Never>
 
-    /// Restores display selection from this machine's preferences.
-    init(defaults: UserDefaults = .standard) {
+    /// Restores a display selection from this machine's preferences.
+    /// - Parameters:
+    ///   - key: The preference key storing the selection.
+    ///   - defaultValue: The selection used when nothing valid is saved.
+    ///   - defaults: The preference store.
+    init(key: UserDefaultsKeys, defaultValue: DisplayConfiguration, defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        let saved = defaults.data(forKey: key).flatMap { data in
-            try? JSONDecoder().decode(SpacesDisplayConfiguration.self, from: data)
+        self.key = key.rawValue
+        self.defaultValue = defaultValue
+        let saved = defaults.data(forKey: key.rawValue).flatMap { data in
+            try? JSONDecoder().decode(DisplayConfiguration.self, from: data)
         }
-        subject = CurrentValueSubject(saved ?? ConfigurationDefaults.spacesDisplayConfiguration)
+        subject = CurrentValueSubject(saved ?? defaultValue)
     }
 
     /// The initial display selection and subsequent changes.
-    var publisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+    var publisher: AnyPublisher<DisplayConfiguration, Never> {
         subject.eraseToAnyPublisher()
     }
 
     /// Saves the selection before notifying observers.
-    func set(_ value: SpacesDisplayConfiguration) {
+    func set(_ value: DisplayConfiguration) {
         guard
             value != subject.value,
             let data = try? JSONEncoder().encode(value) else { return }
@@ -51,6 +68,6 @@ final class SpacesDisplayPreferences {
     /// Restores primary-display behavior and clears the saved preference.
     func reset() {
         defaults.removeObject(forKey: key)
-        subject.send(ConfigurationDefaults.spacesDisplayConfiguration)
+        subject.send(defaultValue)
     }
 }

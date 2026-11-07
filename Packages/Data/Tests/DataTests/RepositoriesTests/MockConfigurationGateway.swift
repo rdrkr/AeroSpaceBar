@@ -9,15 +9,26 @@ import Foundation
 /// Mock implementation of ConfigurationGateway for testing.
 @MainActor
 public final class MockConfigurationGateway: ConfigurationGateway {
-    private let spacesDisplayConfigurationSubject = CurrentValueSubject<SpacesDisplayConfiguration, Never>(.init())
-    public private(set) var setSpacesDisplayConfigurationCalls: [SpacesDisplayConfiguration] = []
-    public var spacesDisplayConfigurationPublisher: AnyPublisher<SpacesDisplayConfiguration, Never> {
+    private let spacesDisplayConfigurationSubject = CurrentValueSubject<DisplayConfiguration, Never>(.init())
+    public private(set) var setSpacesDisplayConfigurationCalls: [DisplayConfiguration] = []
+    public var spacesDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
         spacesDisplayConfigurationSubject.eraseToAnyPublisher()
     }
 
-    public func setSpacesDisplayConfiguration(_ value: SpacesDisplayConfiguration) {
+    public func setSpacesDisplayConfiguration(_ value: DisplayConfiguration) {
         setSpacesDisplayConfigurationCalls.append(value)
         spacesDisplayConfigurationSubject.send(value)
+    }
+
+    private let groupsDisplayConfigurationSubject = CurrentValueSubject<DisplayConfiguration, Never>(.init())
+    public private(set) var setGroupsDisplayConfigurationCalls: [DisplayConfiguration] = []
+    public var groupsDisplayConfigurationPublisher: AnyPublisher<DisplayConfiguration, Never> {
+        groupsDisplayConfigurationSubject.eraseToAnyPublisher()
+    }
+
+    public func setGroupsDisplayConfiguration(_ value: DisplayConfiguration) {
+        setGroupsDisplayConfigurationCalls.append(value)
+        groupsDisplayConfigurationSubject.send(value)
     }
 
     // MARK: - Call Tracking

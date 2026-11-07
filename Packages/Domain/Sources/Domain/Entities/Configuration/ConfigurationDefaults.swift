@@ -32,7 +32,10 @@ public enum ConfigurationDefaults {
     public static let showEmptySpaces = false
 
     /// Default display selection for spaces.
-    public static let spacesDisplayConfiguration = SpacesDisplayConfiguration()
+    public static let spacesDisplayConfiguration = DisplayConfiguration()
+
+    /// Default display selection for groups.
+    public static let groupsDisplayConfiguration = DisplayConfiguration()
 
     /// The list of space IDs to hide from the menu bar interface.
     public static let hiddenSpaces: [String] = []

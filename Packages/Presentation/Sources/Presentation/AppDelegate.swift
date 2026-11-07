@@ -17,9 +17,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     /// The panels of each display showing spaces or groups, keyed by persistent display UUID.
     private var displayPanels: [String: DisplayPanels] = [:]
 
-    /// The current display selection and its live configuration subscription.
-    private var spacesDisplayConfiguration = SpacesDisplayConfiguration()
-    private var displayConfigurationCancellable: AnyCancellable?
+    /// The current spaces display selection.
+    private var spacesDisplayConfiguration = DisplayConfiguration()
+
+    /// The current groups display selection.
+    private var groupsDisplayConfiguration = DisplayConfiguration()
+
+    /// The live spaces and groups display selection subscriptions.
+    private var displayConfigurationCancellables = Set<AnyCancellable>()
 
     /// The panels of one connected display and the resources scoped to that display.
     private final class DisplayPanels {
@@ -80,7 +85,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             "build": Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         ])
 
-        displayConfigurationCancellable = dependencyContainer.makeGetSpacesDisplayConfigurationUseCase()
+        dependencyContainer.makeGetSpacesDisplayConfigurationUseCase()
             .execute()
             .sink { [weak self] configuration in
                 guard let self else { return }
@@ -88,6 +93,17 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
                 spacesDisplayConfiguration = configuration
                 reconcileDisplayPanels()
             }
+            .store(in: &displayConfigurationCancellables)
+
+        dependencyContainer.makeGetGroupsDisplayConfigurationUseCase()
+            .execute()
+            .sink { [weak self] configuration in
+                guard let self else { return }
+
+                groupsDisplayConfiguration = configuration
+                reconcileDisplayPanels()
+            }
+            .store(in: &displayConfigurationCancellables)
 
         // Initialize the ViewModels and setup panels
         Task { @MainActor in
@@ -140,10 +156,12 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
 
     /// Adds, updates, and removes display-local panels after selection or screen changes.
     private func reconcileDisplayPanels() {
-        let displays = ConnectedDisplay.current.filter { display in
+        let connectedDisplays = ConnectedDisplay.current
+        let displays = connectedDisplays.filter { display in
             showsSpaces(on: display) || showsGroups(on: display)
         }
         let connectedIDs = Set(displays.map(\.id))
+        let primaryWidth = connectedDisplays.first(where: \.isPrimary)?.screen.frame.width
 
         for id in Array(displayPanels.keys) where !connectedIDs.contains(id) {
             removeDisplayPanels(id: id)
@@ -168,7 +186,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             }
             guard let entry = displayPanels[display.id] else { continue }
 
-            configurePanels(entry, for: display)
+            configurePanels(entry, for: display, primaryWidth: primaryWidth)
         }
     }
 
@@ -181,19 +199,27 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
 
     /// Returns whether a display shows groups.
     /// - Parameter display: The display to evaluate.
-    /// - Returns: `true` if the display shows groups.
+    /// - Returns: `true` if the groups display selection includes the display.
     private func showsGroups(on display: ConnectedDisplay) -> Bool {
-        display.isPrimary
+        groupsDisplayConfiguration.includesDisplay(id: display.id, isPrimary: display.isPrimary)
     }
 
     /// Applies the current selection to one display's panels.
     /// - Parameters:
     ///   - entry: The panels of the display.
     ///   - display: The connected display.
-    private func configurePanels(_ entry: DisplayPanels, for display: ConnectedDisplay) {
+    ///   - primaryWidth: The width of the primary display, if connected.
+    private func configurePanels(_ entry: DisplayPanels, for display: ConnectedDisplay, primaryWidth: CGFloat?) {
         let showsSpaces = showsSpaces(on: display)
         entry.viewModel.showsAppleButton = showsSpaces
         entry.viewModel.showsGroups = showsGroups(on: display)
+        entry.viewModel.statusItemsGeometry = display.isPrimary ? nil : primaryWidth.map { width in
+            DisplayMenuBarViewModel.StatusItemsGeometry(
+                primaryWidth: width,
+                displayWidth: display.screen.frame.width,
+                minX: display.statusItemsMinX
+            )
+        }
 
         if showsSpaces {
             setupSpacesPanel(entry, screenFrame: display.screen.frame)
@@ -218,7 +244,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
 
     /// Releases display-scoped tasks when the application terminates.
     public func applicationWillTerminate(_: Notification) {
-        displayConfigurationCancellable?.cancel()
+        displayConfigurationCancellables.removeAll()
         for id in Array(displayPanels.keys) {
             removeDisplayPanels(id: id)
         }

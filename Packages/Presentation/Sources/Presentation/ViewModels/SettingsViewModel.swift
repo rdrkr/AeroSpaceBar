@@ -232,10 +232,26 @@ public class SettingsViewModel: ObservableObject {
         }
     }
 
+    private var isApplyingGroupsDisplayConfiguration = false
+
+    /// Display selection for groups.
+    @Published var groupsDisplayConfiguration = ConfigurationDefaults.groupsDisplayConfiguration {
+        didSet {
+            guard !isApplyingGroupsDisplayConfiguration, groupsDisplayConfiguration != oldValue else { return }
+
+            let value = groupsDisplayConfiguration
+            Task { @MainActor in
+                await setGroupsDisplayConfigurationUseCase.execute(value: value)
+            }
+        }
+    }
+
     // MARK: - Display Use Cases
 
     private let getSpacesDisplayConfigurationUseCase: GetSpacesDisplayConfigurationUseCase
     private let setSpacesDisplayConfigurationUseCase: SetSpacesDisplayConfigurationUseCase
+    private let getGroupsDisplayConfigurationUseCase: GetGroupsDisplayConfigurationUseCase
+    private let setGroupsDisplayConfigurationUseCase: SetGroupsDisplayConfigurationUseCase
 
     // MARK: - System Menu Bar Use Cases
 
@@ -295,6 +311,8 @@ public class SettingsViewModel: ObservableObject {
     /// - Parameters:
     ///   - getSpacesDisplayConfigurationUseCase: Use case to observe the display selection.
     ///   - setSpacesDisplayConfigurationUseCase: Use case to update the display selection.
+    ///   - getGroupsDisplayConfigurationUseCase: Use case to observe the groups display selection.
+    ///   - setGroupsDisplayConfigurationUseCase: Use case to update the groups display selection.
     ///   - getMenuBarAppsUseCase: Use case to get menu bar apps.
     ///   - getScreenCapturePermissionGrantedUseCase: Use case to get screen capture permission status.
     ///   - requestScreenCapturePermissionsUseCase: Use case to request screen capture permissions.
@@ -332,6 +350,8 @@ public class SettingsViewModel: ObservableObject {
     init(
         getSpacesDisplayConfigurationUseCase: GetSpacesDisplayConfigurationUseCase,
         setSpacesDisplayConfigurationUseCase: SetSpacesDisplayConfigurationUseCase,
+        getGroupsDisplayConfigurationUseCase: GetGroupsDisplayConfigurationUseCase,
+        setGroupsDisplayConfigurationUseCase: SetGroupsDisplayConfigurationUseCase,
         getMenuBarAppsUseCase: GetMenuBarAppsUseCase,
         getScreenCapturePermissionGrantedUseCase: GetScreenCapturePermissionGrantedUseCase,
         requestScreenCapturePermissionsUseCase: RequestScreenCapturePermissionsUseCase,
@@ -369,6 +389,8 @@ public class SettingsViewModel: ObservableObject {
     ) {
         self.getSpacesDisplayConfigurationUseCase = getSpacesDisplayConfigurationUseCase
         self.setSpacesDisplayConfigurationUseCase = setSpacesDisplayConfigurationUseCase
+        self.getGroupsDisplayConfigurationUseCase = getGroupsDisplayConfigurationUseCase
+        self.setGroupsDisplayConfigurationUseCase = setGroupsDisplayConfigurationUseCase
 
         // Initialize System Menu Bar Use Cases
         self.getMenuBarAppsUseCase = getMenuBarAppsUseCase
@@ -662,6 +684,16 @@ public class SettingsViewModel: ObservableObject {
                 isApplyingSpacesDisplayConfiguration = true
                 spacesDisplayConfiguration = value
                 isApplyingSpacesDisplayConfiguration = false
+            }
+            .store(in: &cancellables)
+
+        getGroupsDisplayConfigurationUseCase.execute()
+            .sink { [weak self] value in
+                guard let self, groupsDisplayConfiguration != value else { return }
+
+                isApplyingGroupsDisplayConfiguration = true
+                groupsDisplayConfiguration = value
+                isApplyingGroupsDisplayConfiguration = false
             }
             .store(in: &cancellables)
 

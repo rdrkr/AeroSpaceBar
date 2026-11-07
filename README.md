@@ -37,7 +37,7 @@ the menu bar.
 - 🔧 **Spaces & Groups**: Organize and manage workspace windows and menubar groups with custom ranges and settings
 - 🎨 **Advanced Theming**: Comprehensive theme system with presets and per-space customization
 - 🌐 **System Integration**: Automatic menu bar visibility matching and wallpaper detection
-- 🖥️ **Multiple Displays**: Show spaces on the primary display, all displays, or selected displays
+- 🖥️ **Multiple Displays**: Show spaces and groups on the primary display, all displays, or selected displays
 - 📡 **Event-Driven**: Subscribes to AeroSpace's native event stream (v0.21.0+) instead of polling,
   and leaves your AeroSpace config untouched
 - 🔄 **Software Updates**: Automatic update checking and installation via Sparkle
@@ -120,7 +120,7 @@ You can also open `AeroSpaceBar.xcodeproj` in Xcode and build with `Cmd + R`.
 ### Settings
 
 - **General**: Appearance, behavior, and basic settings
-- **Groups**: Menu bar group organization and per-group visual customization
+- **Groups**: Display selection, menu bar group organization, and per-group visual customization
 - **Spaces**: Display selection, per-space visual properties, and appearance
 - **Advanced**: Theme presets, TOML configuration, and software updates
 - **Developer**: Logging, performance metrics, and feature flags
@@ -137,8 +137,11 @@ tracking. To show menu bars on secondary displays, enable macOS **Displays have 
 System Settings → Desktop & Dock → Mission Control (macOS may require logging out).
 
 All bars show the same workspace list, including the existing hidden/empty-space preferences; workspaces are not
-filtered by monitor. The **Show Apple Button as Space** background follows the same display selection. Menu bar groups
-and their overlays remain on the primary display.
+filtered by monitor. The **Show Apple Button as Space** background follows the same display selection.
+
+**Settings → Groups → Show Groups On** works the same way, independently of the spaces selection. macOS shows the same
+status items on every menu bar, so groups are positioned from the right edge of each display. Items hidden behind a
+camera housing are left out of their group's background.
 
 Display selections are saved locally using display UUIDs, separately from the TOML configuration. Disconnected
 selections are retained and restored when those displays reconnect. Selecting no connected displays hides the spaces

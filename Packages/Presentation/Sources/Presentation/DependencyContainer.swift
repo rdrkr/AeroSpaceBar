@@ -78,6 +78,8 @@ public final class DependencyContainer {
     private lazy var settingsViewModel: SettingsViewModel = .init(
         getSpacesDisplayConfigurationUseCase: makeGetSpacesDisplayConfigurationUseCase(),
         setSpacesDisplayConfigurationUseCase: makeSetSpacesDisplayConfigurationUseCase(),
+        getGroupsDisplayConfigurationUseCase: makeGetGroupsDisplayConfigurationUseCase(),
+        setGroupsDisplayConfigurationUseCase: makeSetGroupsDisplayConfigurationUseCase(),
         getMenuBarAppsUseCase: makeGetMenuBarAppsUseCase(),
         getScreenCapturePermissionGrantedUseCase: makeGetScreenCapturePermissionGrantedUseCase(),
         requestScreenCapturePermissionsUseCase: makeRequestScreenCapturePermissionsUseCase(),
@@ -199,6 +201,16 @@ public final class DependencyContainer {
     /// Creates the use case for observing spaces display selection.
     func makeGetSpacesDisplayConfigurationUseCase() -> GetSpacesDisplayConfigurationUseCase {
         GetSpacesDisplayConfigurationUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates the use case for observing groups display selection.
+    func makeGetGroupsDisplayConfigurationUseCase() -> GetGroupsDisplayConfigurationUseCase {
+        GetGroupsDisplayConfigurationUseCase(configurationGateway: configurationGateway)
+    }
+
+    /// Creates the use case for persisting groups display selection.
+    func makeSetGroupsDisplayConfigurationUseCase() -> SetGroupsDisplayConfigurationUseCase {
+        SetGroupsDisplayConfigurationUseCase(configurationGateway: configurationGateway)
     }
 
     /// Creates the use case for persisting spaces display selection.
