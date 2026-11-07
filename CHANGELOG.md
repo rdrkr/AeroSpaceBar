@@ -33,6 +33,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.1.0] - 2026-11-07
+
+### Added
+
+- show groups on selected displays and read status items from the active menu bar
+
+### Fixed
+
+- draw the Apple button on every display selected for spaces
+- show the empty display selection hint as the Show Spaces On subtitle
+
+### Other
+
+- Give CI apps a separate identity for privacy permissions
+- Expose spaces view initializer for display-scoped state
+- Add multi-monitor spaces and a downloadable CI test build
+
+
 ## [1.0.3] - 2026-09-15
 
 ### Fixed
