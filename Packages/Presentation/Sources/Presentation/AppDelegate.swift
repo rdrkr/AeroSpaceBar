@@ -14,21 +14,42 @@ import SwiftUI
 /// - Managing the application's lifecycle events
 @MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    /// The independently positioned spaces panels, keyed by persistent display UUID.
-    private var spacesPanels: [String: DisplaySpacesPanel] = [:]
+    /// The panels of each display showing spaces or groups, keyed by persistent display UUID.
+    private var displayPanels: [String: DisplayPanels] = [:]
 
     /// The current display selection and its live configuration subscription.
     private var spacesDisplayConfiguration = SpacesDisplayConfiguration()
     private var displayConfigurationCancellable: AnyCancellable?
 
-    /// A spaces panel and the resources scoped to its connected display.
-    private final class DisplaySpacesPanel {
-        var panel: NSPanel?
+    /// The panels of one connected display and the resources scoped to that display.
+    private final class DisplayPanels {
+        /// The panel hosting the spaces bar, present only while the display shows spaces.
+        var spacesPanel: NSPanel?
+
+        /// The panel drawing group and Apple Button backgrounds below the system menu bar.
+        var groupsPanel: NSPanel?
+
+        /// The panel drawing foreground colors above the system menu bar icons.
+        var groupsForegroundOverlayPanel: NSPanel?
+
+        /// The display's current Core Graphics identifier.
         let displayID: CGDirectDisplayID
+
+        /// Whether the display was the primary display when these panels were created.
         let isPrimary: Bool
+
+        /// The menu bar state shared by this display's panels.
         let viewModel: DisplayMenuBarViewModel
+
+        /// Stops the resources scoped to this display.
         let stop: @MainActor () -> Void
 
+        /// Creates the panel container for a display.
+        /// - Parameters:
+        ///   - displayID: The display's current Core Graphics identifier.
+        ///   - isPrimary: Whether the display is the primary display.
+        ///   - viewModel: The menu bar state shared by this display's panels.
+        ///   - stop: Stops the resources scoped to this display.
         init(
             displayID: CGDirectDisplayID,
             isPrimary: Bool,
@@ -42,17 +63,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
         }
     }
 
-    /// The groups panel that displays the groups interface.
-    private var groupsPanel: NSPanel?
-
-    /// The foreground overlay panel that draws colored rectangles above system menu bar icons.
-    private var groupsForegroundOverlayPanel: NSPanel?
-
     /// The About window instance to prevent multiple windows.
     private var aboutWindow: NSPanel?
-
-    /// The groups ViewModel for managing groups data and interactions.
-    private var groupsViewModel: GroupsViewModel?
 
     /// The dependency container for accessing services.
     private let dependencyContainer = DependencyContainer.shared
@@ -74,7 +86,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
                 guard let self else { return }
 
                 spacesDisplayConfiguration = configuration
-                reconcileSpacesPanels()
+                reconcileDisplayPanels()
             }
 
         // Initialize the ViewModels and setup panels
@@ -122,68 +134,101 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
     /// Initializes all panels (Release builds or fallback)
     @MainActor
     private func initializeAllPanels() {
-        reconcileSpacesPanels()
-        guard let screenFrame = NSScreen.screens.first?.frame else { return }
-
-        groupsViewModel = dependencyContainer.getGroupsViewModel()
-        Logger.info("GroupsViewModel initialized", category: Logger.app)
-
-        setupGroupsPanel(screenFrame: screenFrame)
-        setupGroupsForegroundOverlayPanel(screenFrame: screenFrame)
+        reconcileDisplayPanels()
+        Logger.info("Display panels initialized", category: Logger.app)
     }
 
     /// Adds, updates, and removes display-local panels after selection or screen changes.
-    private func reconcileSpacesPanels() {
+    private func reconcileDisplayPanels() {
         let displays = ConnectedDisplay.current.filter { display in
-            spacesDisplayConfiguration.includesDisplay(id: display.id, isPrimary: display.isPrimary)
+            showsSpaces(on: display) || showsGroups(on: display)
         }
         let connectedIDs = Set(displays.map(\.id))
 
-        for id in Array(spacesPanels.keys) where !connectedIDs.contains(id) {
-            removeSpacesPanel(id: id)
+        for id in Array(displayPanels.keys) where !connectedIDs.contains(id) {
+            removeDisplayPanels(id: id)
         }
 
         for display in displays {
             // Primary panels share the groups repository, which follows primary-display changes.
             if
-                let existing = spacesPanels[display.id],
+                let existing = displayPanels[display.id],
                 existing.displayID != display.displayID || existing.isPrimary != display.isPrimary
             {
-                removeSpacesPanel(id: display.id)
+                removeDisplayPanels(id: display.id)
             }
-            if spacesPanels[display.id] == nil {
+            if displayPanels[display.id] == nil {
                 let resources = dependencyContainer.makeDisplayMenuBarViewModel(displayID: display.displayID)
-                spacesPanels[display.id] = DisplaySpacesPanel(
+                displayPanels[display.id] = DisplayPanels(
                     displayID: display.displayID,
                     isPrimary: display.isPrimary,
                     viewModel: resources.viewModel,
                     stop: resources.stop
                 )
             }
-            guard let entry = spacesPanels[display.id] else { continue }
+            guard let entry = displayPanels[display.id] else { continue }
 
-            setupSpacesPanel(entry, screenFrame: display.screen.frame)
+            configurePanels(entry, for: display)
         }
     }
 
-    /// Stops capture and closes a panel when its display is deselected or disconnected.
-    private func removeSpacesPanel(id: String) {
-        guard let entry = spacesPanels.removeValue(forKey: id) else { return }
+    /// Returns whether a display shows the spaces bar and the Apple Button background.
+    /// - Parameter display: The display to evaluate.
+    /// - Returns: `true` if the spaces display selection includes the display.
+    private func showsSpaces(on display: ConnectedDisplay) -> Bool {
+        spacesDisplayConfiguration.includesDisplay(id: display.id, isPrimary: display.isPrimary)
+    }
+
+    /// Returns whether a display shows groups.
+    /// - Parameter display: The display to evaluate.
+    /// - Returns: `true` if the display shows groups.
+    private func showsGroups(on display: ConnectedDisplay) -> Bool {
+        display.isPrimary
+    }
+
+    /// Applies the current selection to one display's panels.
+    /// - Parameters:
+    ///   - entry: The panels of the display.
+    ///   - display: The connected display.
+    private func configurePanels(_ entry: DisplayPanels, for display: ConnectedDisplay) {
+        let showsSpaces = showsSpaces(on: display)
+        entry.viewModel.showsAppleButton = showsSpaces
+        entry.viewModel.showsGroups = showsGroups(on: display)
+
+        if showsSpaces {
+            setupSpacesPanel(entry, screenFrame: display.screen.frame)
+        } else {
+            entry.spacesPanel?.close()
+            entry.spacesPanel = nil
+        }
+        setupGroupsPanel(entry, screenFrame: display.screen.frame)
+        setupGroupsForegroundOverlayPanel(entry, screenFrame: display.screen.frame)
+    }
+
+    /// Stops capture and closes a display's panels when it is deselected or disconnected.
+    /// - Parameter id: The persistent display UUID.
+    private func removeDisplayPanels(id: String) {
+        guard let entry = displayPanels.removeValue(forKey: id) else { return }
 
         entry.stop()
-        entry.panel?.close()
+        entry.spacesPanel?.close()
+        entry.groupsPanel?.close()
+        entry.groupsForegroundOverlayPanel?.close()
     }
 
     /// Releases display-scoped tasks when the application terminates.
     public func applicationWillTerminate(_: Notification) {
         displayConfigurationCancellable?.cancel()
-        for id in Array(spacesPanels.keys) {
-            removeSpacesPanel(id: id)
+        for id in Array(displayPanels.keys) {
+            removeDisplayPanels(id: id)
         }
     }
 
     /// Positions the spaces panel in the left half of its display.
-    private func setupSpacesPanel(_ entry: DisplaySpacesPanel, screenFrame: CGRect) {
+    /// - Parameters:
+    ///   - entry: The panels of the display.
+    ///   - screenFrame: The frame of the display.
+    private func setupSpacesPanel(_ entry: DisplayPanels, screenFrame: CGRect) {
         let spacesFrame = NSRect(
             x: screenFrame.origin.x,
             y: screenFrame.origin.y,
@@ -195,75 +240,48 @@ public final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegat
             .environmentObject(dependencyContainer.getSpacesViewModel())
 
         setupPanel(
-            &entry.panel,
+            &entry.spacesPanel,
             frame: spacesFrame,
             level: Int(CGWindowLevelForKey(.statusWindow)),
             hostingRootView: AnyView(spacesView)
         )
     }
 
-    /// Configures and displays the groups panel.
+    /// Configures and displays a display's groups panel.
     ///
-    /// This method creates or updates the groups panel with the correct dimensions
-    /// and content. The panel spans half the screen width and the full screen height,
-    /// positioned on the right side of the screen.
-    /// - Parameter screenFrame: The frame of the main screen.
-    @MainActor
-    private func setupGroupsPanel(screenFrame: CGRect) {
-        // System Menu Bar applications origin position is relative the to full screen size,
-        // so we need to set the groups panel to cover the full screen width.
-        let groupsFrame = NSRect(
-            x: screenFrame.origin.x,
-            y: screenFrame.origin.y,
-            width: screenFrame.width,
-            height: screenFrame.height
-        )
-
-        guard let groupsViewModel else {
-            Logger.warning("GroupsViewModel not initialized yet", category: Logger.app)
-            return
-        }
-
-        let groupsView = GroupsView()
-            .environmentObject(groupsViewModel)
+    /// System menu bar item positions are relative to the full screen size, so the panel covers the
+    /// full display. It also hosts the Apple Button background.
+    /// - Parameters:
+    ///   - entry: The panels of the display.
+    ///   - screenFrame: The frame of the display.
+    private func setupGroupsPanel(_ entry: DisplayPanels, screenFrame: CGRect) {
+        let groupsView = GroupsView(displayViewModel: entry.viewModel)
+            .environmentObject(dependencyContainer.getGroupsViewModel())
 
         setupPanel(
-            &groupsPanel,
-            frame: groupsFrame,
+            &entry.groupsPanel,
+            frame: screenFrame,
             level: Int(CGWindowLevelForKey(.utilityWindow)),
             hostingRootView: AnyView(groupsView),
             ignoresMouseEvents: true
         )
     }
 
-    /// Configures and displays the groups foreground overlay panel.
+    /// Configures and displays a display's groups foreground overlay panel.
     ///
     /// This panel draws semi-transparent foreground color rectangles above the system menu bar icons.
     /// It sits at `statusWindow` level (above system menu bar icons) and ignores mouse events
-    /// so clicks pass through to the actual menu bar icons underneath. The panel only covers the
-    /// right half of the screen (where groups reside) to avoid interfering with the system menu
-    /// bar event handling on the left side where the spaces panel operates.
-    /// - Parameter screenFrame: The frame of the main screen.
-    @MainActor
-    private func setupGroupsForegroundOverlayPanel(screenFrame: CGRect) {
-        let overlayFrame = NSRect(
-            x: screenFrame.origin.x,
-            y: screenFrame.origin.y,
-            width: screenFrame.width,
-            height: screenFrame.height
-        )
-
-        guard let groupsViewModel else {
-            Logger.warning("GroupsViewModel not initialized yet for foreground overlay", category: Logger.app)
-            return
-        }
-
-        let overlayView = GroupsForegroundOverlayHostView()
-            .environmentObject(groupsViewModel)
+    /// so clicks pass through to the actual menu bar icons underneath.
+    /// - Parameters:
+    ///   - entry: The panels of the display.
+    ///   - screenFrame: The frame of the display.
+    private func setupGroupsForegroundOverlayPanel(_ entry: DisplayPanels, screenFrame: CGRect) {
+        let overlayView = GroupsForegroundOverlayHostView(displayViewModel: entry.viewModel)
+            .environmentObject(dependencyContainer.getGroupsViewModel())
 
         setupPanel(
-            &groupsForegroundOverlayPanel,
-            frame: overlayFrame,
+            &entry.groupsForegroundOverlayPanel,
+            frame: screenFrame,
             level: Int(CGWindowLevelForKey(.statusWindow)),
             hostingRootView: AnyView(overlayView),
             ignoresMouseEvents: true

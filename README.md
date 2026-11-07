@@ -137,7 +137,8 @@ tracking. To show menu bars on secondary displays, enable macOS **Displays have 
 System Settings → Desktop & Dock → Mission Control (macOS may require logging out).
 
 All bars show the same workspace list, including the existing hidden/empty-space preferences; workspaces are not
-filtered by monitor. Menu bar groups and their overlays remain on the primary display.
+filtered by monitor. The **Show Apple Button as Space** background follows the same display selection. Menu bar groups
+and their overlays remain on the primary display.
 
 Display selections are saved locally using display UUIDs, separately from the TOML configuration. Disconnected
 selections are retained and restored when those displays reconnect. Selecting no connected displays hides the spaces

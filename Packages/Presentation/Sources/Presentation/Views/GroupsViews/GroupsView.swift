@@ -15,16 +15,30 @@ struct GroupsView: View {
     /// The groups ViewModel for managing groups data and interactions.
     @EnvironmentObject private var viewModel: GroupsViewModel
 
+    /// Menu bar state and content visibility for the display hosting this panel.
+    @ObservedObject private var displayViewModel: DisplayMenuBarViewModel
+
+    /// Creates a groups view scoped to its hosting display.
+    /// - Parameter displayViewModel: The display-local menu bar state.
+    init(displayViewModel: DisplayMenuBarViewModel) {
+        self.displayViewModel = displayViewModel
+    }
+
     // MARK: - Computed Properties
 
     /// Whether the groups view should be shown.
     private var shouldShowView: Bool {
-        viewModel.isGroupsFeatureEnabled && viewModel.showGroups && !viewModel.menuBarApps.isEmpty
+        displayViewModel.showsGroups
+            && viewModel.isGroupsFeatureEnabled
+            && viewModel.showGroups
+            && !viewModel.menuBarApps.isEmpty
     }
 
     /// Whether the Apple Button background should be shown.
     private var shouldShowAppleButton: Bool {
-        viewModel.showAppleButtonAsSpace && viewModel.appleButtonFrame != .zero
+        displayViewModel.showsAppleButton
+            && viewModel.showAppleButtonAsSpace
+            && displayViewModel.appleButtonFrame != .zero
     }
 
     /// The color properties used for the Apple Button based on the current spaces appearance mode.
@@ -142,13 +156,13 @@ struct GroupsView: View {
             // Groups content always stays in the view hierarchy to survive sleep/wake
             // cycles. Opacity is applied directly to hide it when disabled.
             groupsContent
-                .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -viewModel.menuBarHeight)
+                .offset(y: !viewModel.menuBarApps.isEmpty ? 0 : -displayViewModel.menuBarHeight)
                 .opacity(shouldShowView ? 1.0 : 0.0)
 
             // Apple Button background - rendered independently of groups
             if shouldShowAppleButton {
                 AppleButtonBackgroundView(
-                    frame: viewModel.appleButtonFrame,
+                    frame: displayViewModel.appleButtonFrame,
                     showForegroundOverlay: viewModel.showForegroundOverlay,
                     colorProperties: appleButtonColorProperties,
                     geometricProperties: appleButtonGeometricProperties,
@@ -173,6 +187,7 @@ struct GroupsView: View {
 }
 
 #Preview {
-    GroupsView()
-        .environmentObject(DependencyContainer.shared.getGroupsViewModel())
+    let container = DependencyContainer.shared
+    GroupsView(displayViewModel: container.makeDisplayMenuBarViewModel(displayID: CGMainDisplayID()).viewModel)
+        .environmentObject(container.getGroupsViewModel())
 }
