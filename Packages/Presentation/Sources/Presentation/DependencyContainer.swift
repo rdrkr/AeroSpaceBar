@@ -190,7 +190,8 @@ public final class DependencyContainer {
         let viewModel = DisplayMenuBarViewModel(
             getWallpaperUseCase: GetWallpaperUseCase(systemMenuBarGateway: gateway),
             getMenuBarHeightUseCase: GetMenuBarHeightUseCase(systemMenuBarGateway: gateway),
-            getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase(systemMenuBarGateway: gateway)
+            getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase(systemMenuBarGateway: gateway),
+            getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase(systemMenuBarGateway: gateway)
         )
         return (viewModel, { repository?.stop() })
     }

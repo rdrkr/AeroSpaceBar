@@ -181,10 +181,6 @@ struct SpacesView: View {
 
 #Preview {
     let container = DependencyContainer.shared
-    SpacesView(displayViewModel: DisplayMenuBarViewModel(
-        getWallpaperUseCase: container.makeGetWallpaperUseCase(),
-        getMenuBarHeightUseCase: container.makeGetMenuBarHeightUseCase(),
-        getMenuBarVisibilityUseCase: container.makeGetMenuBarVisibilityUseCase()
-    ))
-    .environmentObject(container.getSpacesViewModel())
+    SpacesView(displayViewModel: container.makeDisplayMenuBarViewModel(displayID: CGMainDisplayID()).viewModel)
+        .environmentObject(container.getSpacesViewModel())
 }

@@ -42,11 +42,25 @@ final class DisplayMenuBarViewModelTests: XCTestCase {
         expect(second.isMenuBarVisible) == true
     }
 
+    func testAppleButtonFrameFollowsItsDisplay() {
+        let firstGateway = MockSystemMenuBarGateway(menuBarHeight: 24)
+        let secondGateway = MockSystemMenuBarGateway(menuBarHeight: 32)
+        let first = makeViewModel(gateway: firstGateway)
+        let second = makeViewModel(gateway: secondGateway)
+        let frame = CGRect(x: 8, y: 0, width: 39, height: 32)
+
+        secondGateway.setAppleButtonFrame(frame)
+
+        expect(first.appleButtonFrame) == .zero
+        expect(second.appleButtonFrame) == frame
+    }
+
     private func makeViewModel(gateway: SystemMenuBarGateway) -> DisplayMenuBarViewModel {
         DisplayMenuBarViewModel(
             getWallpaperUseCase: GetWallpaperUseCase(systemMenuBarGateway: gateway),
             getMenuBarHeightUseCase: GetMenuBarHeightUseCase(systemMenuBarGateway: gateway),
-            getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase(systemMenuBarGateway: gateway)
+            getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase(systemMenuBarGateway: gateway),
+            getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase(systemMenuBarGateway: gateway)
         )
     }
 }

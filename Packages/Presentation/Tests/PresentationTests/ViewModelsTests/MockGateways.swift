@@ -301,6 +301,10 @@ final class MockSystemMenuBarGateway: SystemMenuBarGateway {
         menuBarVisibilitySubject.send(visible)
     }
 
+    func setAppleButtonFrame(_ frame: CGRect) {
+        appleButtonFrameSubject.send(frame)
+    }
+
     func setMenuBarHeight(_ height: Double) {
         if height == menuBarHeightSubject.value {
             return

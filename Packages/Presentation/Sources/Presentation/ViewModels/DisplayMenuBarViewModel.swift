@@ -16,13 +16,23 @@ final class DisplayMenuBarViewModel: ObservableObject {
     /// Whether this display's menu bar is currently visible.
     @Published private(set) var isMenuBarVisible = false
 
+    /// The Apple Button frame on this display, in panel-local coordinates.
+    @Published private(set) var appleButtonFrame: CGRect = .zero
+
+    /// Whether groups are drawn on this display.
+    @Published var showsGroups = false
+
+    /// Whether the Apple Button background is allowed on this display.
+    @Published var showsAppleButton = false
+
     private var cancellables = Set<AnyCancellable>()
 
     /// Subscribes to the display-scoped repository through system menu bar use cases.
     init(
         getWallpaperUseCase: GetWallpaperUseCase,
         getMenuBarHeightUseCase: GetMenuBarHeightUseCase,
-        getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase
+        getMenuBarVisibilityUseCase: GetMenuBarVisibilityUseCase,
+        getAppleButtonFrameUseCase: GetAppleButtonFrameUseCase
     ) {
         getWallpaperUseCase.execute()
             .sink { [weak self] in self?.wallpaper = $0 }
@@ -32,6 +42,9 @@ final class DisplayMenuBarViewModel: ObservableObject {
             .store(in: &cancellables)
         getMenuBarVisibilityUseCase.execute()
             .sink { [weak self] in self?.isMenuBarVisible = $0 }
+            .store(in: &cancellables)
+        getAppleButtonFrameUseCase.execute()
+            .sink { [weak self] in self?.appleButtonFrame = $0 }
             .store(in: &cancellables)
     }
 }

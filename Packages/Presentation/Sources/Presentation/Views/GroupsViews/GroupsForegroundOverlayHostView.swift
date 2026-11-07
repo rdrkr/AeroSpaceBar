@@ -13,9 +13,19 @@ struct GroupsForegroundOverlayHostView: View {
     /// The groups ViewModel for accessing group configuration and menu bar app data.
     @EnvironmentObject private var viewModel: GroupsViewModel
 
+    /// Menu bar state and content visibility for the display hosting this panel.
+    @ObservedObject private var displayViewModel: DisplayMenuBarViewModel
+
+    /// Creates a foreground overlay host scoped to its hosting display.
+    /// - Parameter displayViewModel: The display-local menu bar state.
+    init(displayViewModel: DisplayMenuBarViewModel) {
+        self.displayViewModel = displayViewModel
+    }
+
     /// Whether the groups overlay should be shown.
     private var shouldShowGroupsOverlay: Bool {
-        viewModel.showForegroundOverlay
+        displayViewModel.showsGroups
+            && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.isGroupsFeatureEnabled
             && viewModel.showGroups
@@ -24,10 +34,11 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// Whether the Apple Button foreground overlay should be shown.
     private var shouldShowAppleButtonOverlay: Bool {
-        viewModel.showForegroundOverlay
+        displayViewModel.showsAppleButton
+            && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.showAppleButtonAsSpace
-            && viewModel.appleButtonFrame != .zero
+            && displayViewModel.appleButtonFrame != .zero
     }
 
     // MARK: - Apple Button Property Resolution
@@ -82,7 +93,7 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// The adjusted frame for the Apple Button foreground overlay.
     private var appleButtonAdjustedFrame: CGRect {
-        let frame = viewModel.appleButtonFrame
+        let frame = displayViewModel.appleButtonFrame
         guard frame != .zero else { return .zero }
 
         let borderWidth = appleButtonResolvedGeometricProperties.borderWidth
@@ -131,7 +142,7 @@ struct GroupsForegroundOverlayHostView: View {
             appleButtonForegroundOverlay
                 .opacity(shouldShowAppleButtonOverlay ? 1.0 : 0.0)
                 .animation(.themeEaseInOutFast, value: shouldShowAppleButtonOverlay)
-                .animation(.themeEaseInOutFast, value: viewModel.appleButtonFrame)
+                .animation(.themeEaseInOutFast, value: displayViewModel.appleButtonFrame)
                 .animation(.themeEaseInOutFast, value: viewModel.themeMode)
                 .animation(.themeEaseInOutFast, value: viewModel.spacesAppearanceMode)
         }
