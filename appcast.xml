@@ -7,6 +7,38 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.1.0</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.1.0</link>
+            <pubDate>Sat, 07 Nov 2026 16:10:42 +0000</pubDate>
+            <sparkle:version>19</sparkle:version>
+            <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Added</h3>
+
+<ul>
+<li>show groups on selected displays and read status items from the active menu bar</li>
+
+<h3>Fixed</h3>
+
+<li>draw the Apple button on every display selected for spaces</li>
+<li>show the empty display selection hint as the Show Spaces On subtitle</li>
+
+<h3>Other</h3>
+
+<li>Give CI apps a separate identity for privacy permissions</li>
+<li>Expose spaces view initializer for display-scoped state</li>
+<li>Add multi-monitor spaces and a downloadable CI test build</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.1.0/AeroSpaceBar-v1.1.0.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="xQiOIiaJ58UIISuVR8coLzITikYB8pybYwBLHXLkc+SCt9VOxUP5QNHkBHIx9xKGnlDF2WQrx3oc+/qZvNHGCQ==" length="12078132" />
+        </item>
+        <item>
             <title>Version 1.0.3</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.0.3</link>
             <pubDate>Tue, 15 Sep 2026 11:44:05 +0000</pubDate>
