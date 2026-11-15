@@ -33,7 +33,8 @@ struct GroupsView: View {
 
     /// Whether the groups view should be shown.
     private var shouldShowView: Bool {
-        displayViewModel.showsGroups
+        displayViewModel.isMenuBarVisible
+            && displayViewModel.showsGroups
             && viewModel.isGroupsFeatureEnabled
             && viewModel.showGroups
             && !menuBarApps.isEmpty
@@ -41,7 +42,8 @@ struct GroupsView: View {
 
     /// Whether the Apple Button background should be shown.
     private var shouldShowAppleButton: Bool {
-        displayViewModel.showsAppleButton
+        displayViewModel.isMenuBarVisible
+            && displayViewModel.showsAppleButton
             && viewModel.showAppleButtonAsSpace
             && displayViewModel.appleButtonFrame != .zero
     }

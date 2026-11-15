@@ -29,7 +29,8 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// Whether the groups overlay should be shown.
     private var shouldShowGroupsOverlay: Bool {
-        displayViewModel.showsGroups
+        displayViewModel.isMenuBarVisible
+            && displayViewModel.showsGroups
             && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.isGroupsFeatureEnabled
@@ -39,7 +40,8 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// Whether the Apple Button foreground overlay should be shown.
     private var shouldShowAppleButtonOverlay: Bool {
-        displayViewModel.showsAppleButton
+        displayViewModel.isMenuBarVisible
+            && displayViewModel.showsAppleButton
             && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.showAppleButtonAsSpace
