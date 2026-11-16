@@ -34,6 +34,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+
+## [1.1.1] - 2026-11-16
+
+### Changed
+
+- share groups visibility checks and slide groups up when hidden
+
+### Fixed
+
+- treat fullscreen Spaces as a hidden menu bar on displays with a camera housing
+- hide groups and backgrounds when the menu bar is hidden
+
+### Other
+
+- style :: apply SwiftFormat and SwiftLint autofixes
+
+
 ## [1.1.0] - 2026-11-07
 
 ### Added
