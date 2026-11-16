@@ -170,10 +170,8 @@ struct ProfileSection: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
 
-        if panel.runModal() == .OK, let url = panel.url {
-            if let image = NSImage(contentsOf: url) {
-                onSetProfileImage(image)
-            }
+        if panel.runModal() == .OK, let url = panel.url, let image = NSImage(contentsOf: url) {
+            onSetProfileImage(image)
         }
     }
 

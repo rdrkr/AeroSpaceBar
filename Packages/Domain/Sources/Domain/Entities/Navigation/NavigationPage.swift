@@ -40,9 +40,9 @@ public protocol NavigationPage: Equatable, Hashable, Identifiable, Sendable {
 }
 
 /// Default protocol implementations.
+@MainActor
 public extension NavigationPage {
     /// A default view builder that returns the default icon for this page.
-    @MainActor
     var defaultIcon: some View {
         let image = Image(systemName: symbolName)
             .resizable()
@@ -77,7 +77,6 @@ public extension NavigationPage {
     }
 
     /// A default view builder that returns the sidebar item view for this navigation page.
-    @MainActor
     func defaultViewForSidebar(_ icon: AnyView) -> some View {
         HStack(spacing: 5) {
             icon

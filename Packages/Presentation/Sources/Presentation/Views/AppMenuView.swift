@@ -20,7 +20,7 @@ public struct AppMenuView: View {
     @Environment(\.openSettings) private var openSettings
 
     /// Environment action to dismiss the current modal presentation.
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
 
     public init() { }
 

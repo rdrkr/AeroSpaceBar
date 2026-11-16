@@ -145,9 +145,9 @@ struct GroupsForegroundOverlayView: View, Animatable {
                     width: frameData.values[baseIndex + 2],
                     height: frameData.values[baseIndex + 3]
                 )
-                guard frame.width > 0, frame.height > 0 else { continue }
-
-                guard let foregroundColor = resolvedForegroundColor(for: group) else { continue }
+                guard
+                    frame.width > 0, frame.height > 0,
+                    let foregroundColor = resolvedForegroundColor(for: group) else { continue }
 
                 let backgroundTintColor = resolvedBackgroundTintColor(for: group)
                 let bgOpacity = resolvedBackgroundOpacity(for: group)

@@ -671,11 +671,9 @@ public final class AeroSpaceRepository: SpacesGateway {
                     space.windows.append(mutableWindow)
                     spaceDict[workspace] = space
                 }
-            } else if let focusedSpace {
-                if var space = spaceDict[focusedSpace.id] {
-                    space.windows.append(mutableWindow)
-                    spaceDict[focusedSpace.id] = space
-                }
+            } else if let focusedSpace, var space = spaceDict[focusedSpace.id] {
+                space.windows.append(mutableWindow)
+                spaceDict[focusedSpace.id] = space
             }
         }
 

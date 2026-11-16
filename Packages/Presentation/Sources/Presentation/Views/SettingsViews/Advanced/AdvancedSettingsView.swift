@@ -10,13 +10,13 @@ import UniformTypeIdentifiers
 /// including application behavior controls and debugging options.
 struct AdvancedSettingsView: View {
     /// The main settings view model containing application-wide settings
-    @EnvironmentObject var viewModel: SettingsViewModel
+    @EnvironmentObject private var viewModel: SettingsViewModel
 
     /// The spaces view model managing AeroSpace window and space configurations
-    @EnvironmentObject var spacesViewModel: SpacesViewModel
+    @EnvironmentObject private var spacesViewModel: SpacesViewModel
 
     /// The groups view model managing group configurations and visual settings
-    @EnvironmentObject var groupsViewModel: GroupsViewModel
+    @EnvironmentObject private var groupsViewModel: GroupsViewModel
 
     /// Controls the presentation state of the reset confirmation alert
     @State private var showingResetConfirmation = false

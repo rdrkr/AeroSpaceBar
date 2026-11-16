@@ -501,9 +501,7 @@ public final class GroupsViewModel: ObservableObject {
     private func updateGroupConfigurationsForMenuBarAppsChange(oldCount: Int, newCount: Int) {
         // If newCount is 0, it might be a transient state (e.g. app launch or rapid updates).
         // We should not wipe out groups in this case.
-        guard newCount > 0 else { return }
-
-        guard !groups.isEmpty else { return }
+        guard newCount > 0, !groups.isEmpty else { return }
 
         var updatedGroups = groups
 

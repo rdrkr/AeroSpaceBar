@@ -82,12 +82,10 @@ struct TriggerKeyRecorderView: View {
                 return nil
             }
 
-            if event.type == .flagsChanged {
-                if let key = mapModifierFlags(event.modifierFlags) {
-                    triggerKey = key
-                    stopRecording()
-                    return nil
-                }
+            if event.type == .flagsChanged, let key = mapModifierFlags(event.modifierFlags) {
+                triggerKey = key
+                stopRecording()
+                return nil
             }
 
             return event

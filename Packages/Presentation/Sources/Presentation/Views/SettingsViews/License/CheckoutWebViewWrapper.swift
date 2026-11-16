@@ -90,30 +90,27 @@ struct CheckoutWebViewWrapper: NSViewRepresentable {
             // This happens after the user completes payment on the checkout page
             if
                 url.host == "success.aerospacebar.app",
-                url.path == "/checkout"
-            {
+                url.path == "/checkout",
                 // Extract license key from URL parameters
-                if
-                    let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                    let queryItems = components.queryItems,
-                    let licenseKeyItem = queryItems.first(where: { $0.name == "license_key" }),
-                    let licenseKey = licenseKeyItem.value,
-                    !licenseKey.isEmpty
-                {
-                    Logger.info("Checkout completed successfully with license key", category: Logger.app)
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                let queryItems = components.queryItems,
+                let licenseKeyItem = queryItems.first(where: { $0.name == "license_key" }),
+                let licenseKey = licenseKeyItem.value,
+                !licenseKey.isEmpty
+            {
+                Logger.info("Checkout completed successfully with license key", category: Logger.app)
 
-                    // Allow the success page to load (avoids WebKit warnings)
-                    decisionHandler(.allow, preferences)
+                // Allow the success page to load (avoids WebKit warnings)
+                decisionHandler(.allow, preferences)
 
-                    // Call success callback with the license key and dismiss after brief delay
-                    Task { @MainActor in
-                        self.onCheckoutSuccess?(licenseKey)
-                        // Brief delay to allow success page to show before closing
-                        try? await Task.sleep(for: .seconds(0.5))
-                        self.onDismiss()
-                    }
-                    return
+                // Call success callback with the license key and dismiss after brief delay
+                Task { @MainActor in
+                    self.onCheckoutSuccess?(licenseKey)
+                    // Brief delay to allow success page to show before closing
+                    try? await Task.sleep(for: .seconds(0.5))
+                    self.onDismiss()
                 }
+                return
             }
 
             // Allow all other navigations (checkout page, payment forms, etc.)

@@ -14,7 +14,7 @@ struct LicenseMenuItemView: View {
     @Environment(\.openSettings) private var openSettings
 
     /// Environment action to dismiss the current modal presentation.
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
 
     /// The current license information containing status and metadata.
     @Binding private var licenseInfo: LicenseInfo

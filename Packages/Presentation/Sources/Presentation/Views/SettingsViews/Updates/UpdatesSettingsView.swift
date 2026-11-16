@@ -9,7 +9,7 @@ import SwiftUI
 /// and manual update checking functionality.
 struct UpdatesSettingsView: View {
     /// The main settings view model containing application-wide settings
-    @EnvironmentObject var viewModel: SettingsViewModel
+    @EnvironmentObject private var viewModel: SettingsViewModel
 
     /// The associated navigation page
     let navigationOption: RootNavigationPage = .updates

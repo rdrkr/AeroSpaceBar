@@ -246,10 +246,11 @@ final class SoftwareUpdateGatewayTests: XCTestCase {
 
         // Then
         await fulfillment(of: [expectation], timeout: 1.0)
-        if let unwrappedReceivedDate = receivedDate, let date = unwrappedReceivedDate {
-            if let unwrappedInitialDate = initialDate {
-                expect(date) > unwrappedInitialDate
-            }
+        if
+            let unwrappedReceivedDate = receivedDate, let date = unwrappedReceivedDate,
+            let unwrappedInitialDate = initialDate
+        {
+            expect(date) > unwrappedInitialDate
         }
     }
 
