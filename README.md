@@ -147,6 +147,11 @@ Display selections are saved locally using display UUIDs, separately from the TO
 selections are retained and restored when those displays reconnect. Selecting no connected displays hides the spaces
 bars; use Settings to select a display again. **Forget Disconnected Displays** removes saved disconnected selections.
 
+Spaces, groups, and the Apple Button background hide on a display while it shows a fullscreen app, and return when
+you leave fullscreen. This also works on displays with a camera housing, where macOS keeps the menu bar window on
+screen in fullscreen. While fullscreen, they stay hidden even when you reveal the menu bar by moving the pointer to the
+top of the screen.
+
 For the best background match, grant **Screen Recording** access to the running app and reopen it. Without access,
 the wallpaper-only fallback can leave a visible strip on some displays. The half-screen wallpaper mask is intentional:
 it hides native application menus behind the spaces bar.

@@ -54,6 +54,16 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
     /// The task for capturing wallpaper images.
     private var wallpaperCaptureTask: Task<Void, Never>?
 
+    /// The one-off wallpaper capture scheduled after the menu bar becomes visible again.
+    private var menuBarReturnCaptureTask: Task<Void, Never>?
+
+    /// How long to wait after the menu bar becomes visible before recapturing the wallpaper.
+    ///
+    /// Leaving a fullscreen Space animates the desktop back in. A periodic capture taken during that
+    /// animation would show a misaligned wallpaper until the next periodic capture, so one extra capture
+    /// runs after the animation has settled.
+    private static let menuBarReturnCaptureDelay: Duration = .seconds(1)
+
     /// Use case for accessing show groups setting.
     private let getShowGroupsUseCase: GetShowGroupsUseCase
 
@@ -316,22 +326,46 @@ public final class SystemMenuBarRepository: SystemMenuBarGateway {
         windowRecognitionTask = nil
         wallpaperCaptureTask?.cancel()
         wallpaperCaptureTask = nil
+        menuBarReturnCaptureTask?.cancel()
+        menuBarReturnCaptureTask = nil
+    }
+
+    /// Recaptures the wallpaper once the animation that brings the menu bar back has settled.
+    ///
+    /// Replaces any capture already scheduled, so repeated visibility changes trigger a single capture.
+    private func scheduleWallpaperCaptureAfterMenuBarReturns() {
+        menuBarReturnCaptureTask?.cancel()
+        menuBarReturnCaptureTask = Task { [weak self] in
+            try? await Task.sleep(for: Self.menuBarReturnCaptureDelay)
+            guard !Task.isCancelled else { return }
+
+            await self?.captureWallpaperImage()
+        }
     }
 
     /// Recognizes windows and updates menu bar visibility and height.
     ///
     /// This lightweight method runs frequently to detect menu bar state changes without
     /// performing expensive wallpaper capture operations.
+    ///
+    /// The menu bar counts as hidden while the display shows a native fullscreen Space. On displays
+    /// with a camera housing the menu bar window stays on screen in fullscreen, so its presence alone
+    /// would keep spaces and groups drawn over the black strip above the fullscreen app.
     /// - Parameter windows: The current list of on-screen windows.
     private func recognizeSystemMenuBar(windows: [WindowInfo]) {
         // Find the menu bar window
         let menuBarWindow = findSystemMenuBarWindow(windows: windows)
-        let isMenuBarVisible = menuBarWindow != nil
+        let isShowingFullScreenSpace = FullScreenSpaceDetector.isShowingFullScreenSpace(on: targetDisplayID)
+        let isMenuBarVisible = menuBarWindow != nil && !isShowingFullScreenSpace
 
         // Update menu bar visibility if it has changed
         if isMenuBarVisible != menuBarVisibilitySubject.value {
             Logger.debug("Menu bar visibility changed to: \(isMenuBarVisible)", category: Logger.userInterface)
             menuBarVisibilitySubject.send(isMenuBarVisible)
+
+            if isMenuBarVisible {
+                scheduleWallpaperCaptureAfterMenuBarReturns()
+            }
         }
 
         // Update the menu bar height if it has changed and is visible
