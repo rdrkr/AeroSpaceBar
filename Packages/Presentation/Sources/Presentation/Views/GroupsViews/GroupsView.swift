@@ -33,8 +33,7 @@ struct GroupsView: View {
 
     /// Whether the groups view should be shown.
     private var shouldShowView: Bool {
-        displayViewModel.isMenuBarVisible
-            && displayViewModel.showsGroups
+        displayViewModel.canShowGroups
             && viewModel.isGroupsFeatureEnabled
             && viewModel.showGroups
             && !menuBarApps.isEmpty
@@ -42,8 +41,7 @@ struct GroupsView: View {
 
     /// Whether the Apple Button background should be shown.
     private var shouldShowAppleButton: Bool {
-        displayViewModel.isMenuBarVisible
-            && displayViewModel.showsAppleButton
+        displayViewModel.canShowAppleButton
             && viewModel.showAppleButtonAsSpace
             && displayViewModel.appleButtonFrame != .zero
     }
@@ -161,9 +159,10 @@ struct GroupsView: View {
     var body: some View {
         ZStack {
             // Groups content always stays in the view hierarchy to survive sleep/wake
-            // cycles. Opacity is applied directly to hide it when disabled.
+            // cycles. Opacity is applied directly to hide it when disabled, and it slides
+            // up by the menu bar height when hidden, matching SpacesView.
             groupsContent
-                .offset(y: !menuBarApps.isEmpty ? 0 : -displayViewModel.menuBarHeight)
+                .offset(y: shouldShowView ? 0 : -displayViewModel.menuBarHeight)
                 .opacity(shouldShowView ? 1.0 : 0.0)
 
             // Apple Button background - rendered independently of groups

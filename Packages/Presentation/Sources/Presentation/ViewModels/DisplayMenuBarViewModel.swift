@@ -40,6 +40,21 @@ final class DisplayMenuBarViewModel: ObservableObject {
     /// The geometry used to place status items on this display, or nil on the primary display.
     @Published var statusItemsGeometry: StatusItemsGeometry?
 
+    /// Whether groups can be drawn on this display right now.
+    ///
+    /// Groups follow the menu bar: they are drawn only when this display is selected for groups
+    /// and its menu bar is visible, so they hide together with spaces in fullscreen.
+    var canShowGroups: Bool {
+        showsGroups && isMenuBarVisible
+    }
+
+    /// Whether the Apple Button background can be drawn on this display right now.
+    ///
+    /// The background is drawn only when this display is selected for it and its menu bar is visible.
+    var canShowAppleButton: Bool {
+        showsAppleButton && isMenuBarVisible
+    }
+
     private var cancellables = Set<AnyCancellable>()
 
     /// Subscribes to the display-scoped repository through system menu bar use cases.

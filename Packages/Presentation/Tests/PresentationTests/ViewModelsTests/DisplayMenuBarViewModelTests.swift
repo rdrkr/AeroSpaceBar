@@ -86,6 +86,36 @@ final class DisplayMenuBarViewModelTests: XCTestCase {
         ]
     }
 
+    /// Groups and the Apple Button are shown on a selected display only while its menu bar is visible.
+    func testGroupsAndAppleButtonFollowMenuBarVisibility() {
+        let gateway = MockSystemMenuBarGateway(menuBarHeight: 24)
+        let viewModel = makeViewModel(gateway: gateway)
+        viewModel.showsGroups = true
+        viewModel.showsAppleButton = true
+
+        expect(viewModel.canShowGroups) == true
+        expect(viewModel.canShowAppleButton) == true
+
+        gateway.setMenuBarVisibility(false)
+
+        expect(viewModel.canShowGroups) == false
+        expect(viewModel.canShowAppleButton) == false
+
+        gateway.setMenuBarVisibility(true)
+
+        expect(viewModel.canShowGroups) == true
+        expect(viewModel.canShowAppleButton) == true
+    }
+
+    /// A visible menu bar does not show groups or the Apple Button on a display that is not selected for them.
+    func testGroupsAndAppleButtonStayHiddenOnUnselectedDisplay() {
+        let viewModel = makeViewModel(gateway: MockSystemMenuBarGateway(menuBarHeight: 24))
+
+        expect(viewModel.isMenuBarVisible) == true
+        expect(viewModel.canShowGroups) == false
+        expect(viewModel.canShowAppleButton) == false
+    }
+
     private func makeViewModel(gateway: SystemMenuBarGateway) -> DisplayMenuBarViewModel {
         DisplayMenuBarViewModel(
             getWallpaperUseCase: GetWallpaperUseCase(systemMenuBarGateway: gateway),

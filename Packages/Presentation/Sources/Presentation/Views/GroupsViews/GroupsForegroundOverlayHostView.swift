@@ -7,8 +7,9 @@ import SwiftUI
 ///
 /// This view reads the required properties from the groups ViewModel and renders
 /// foreground overlay rectangles for both regular groups and the Apple Button.
-/// It controls visibility based on the groups feature state and only renders
-/// overlays when groups are visible and the foreground color differs from the system default.
+/// It controls visibility based on the groups feature state and the display's menu bar
+/// visibility, so overlays hide together with the menu bar (for example in fullscreen). It only
+/// renders overlays when groups are visible and the foreground color differs from the system default.
 struct GroupsForegroundOverlayHostView: View {
     /// The groups ViewModel for accessing group configuration and menu bar app data.
     @EnvironmentObject private var viewModel: GroupsViewModel
@@ -29,8 +30,7 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// Whether the groups overlay should be shown.
     private var shouldShowGroupsOverlay: Bool {
-        displayViewModel.isMenuBarVisible
-            && displayViewModel.showsGroups
+        displayViewModel.canShowGroups
             && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.isGroupsFeatureEnabled
@@ -40,8 +40,7 @@ struct GroupsForegroundOverlayHostView: View {
 
     /// Whether the Apple Button foreground overlay should be shown.
     private var shouldShowAppleButtonOverlay: Bool {
-        displayViewModel.isMenuBarVisible
-            && displayViewModel.showsAppleButton
+        displayViewModel.canShowAppleButton
             && viewModel.showForegroundOverlay
             && viewModel.themeMode != .glass
             && viewModel.showAppleButtonAsSpace
