@@ -7,6 +7,36 @@
         <description>Most recent changes with links to updates for AeroSpaceBar</description>
         <language>en</language>
         <item>
+            <title>Version 1.1.1</title>
+            <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.1.1</link>
+            <pubDate>Mon, 16 Nov 2026 10:46:43 +0000</pubDate>
+            <sparkle:version>20</sparkle:version>
+            <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                    
+<h3>Changed</h3>
+
+<ul>
+<li>share groups visibility checks and slide groups up when hidden</li>
+
+<h3>Fixed</h3>
+
+<li>treat fullscreen Spaces as a hidden menu bar on displays with a camera housing</li>
+<li>hide groups and backgrounds when the menu bar is hidden</li>
+
+<h3>Other</h3>
+
+<li>style :: apply SwiftFormat and SwiftLint autofixes</li>
+                ]]>
+            </description>
+            <enclosure
+            url="https://github.com/rdrkr/AeroSpaceBar/releases/download/v1.1.1/AeroSpaceBar-v1.1.1.zip"
+            type="application/octet-stream"
+            sparkle:edSignature="ct3CRwwCGySR89w18neB4fVJ+24/SMnr7Y6ykpCGupPnGVV1EusNz0XaHRO2PangwQ0Pgt5lRLBoqaSihKWCBA==" length="12084030" />
+        </item>
+        <item>
             <title>Version 1.1.0</title>
             <link>https://github.com/rdrkr/AeroSpaceBar/releases/tag/v1.1.0</link>
             <pubDate>Sat, 07 Nov 2026 16:10:42 +0000</pubDate>
